@@ -2,10 +2,13 @@
 
 namespace App\Traits;
 
-use Illuminate\Http\Request;
+// use App\Models\Company;
+use App\Helpers\FilenameSanitizer;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Template;
 
-// use App\PDFMerger;
-use App\Configuration;
+use Illuminate\Http\Request;
 
 trait BillableDocumentControllerTrait
 {
@@ -70,8 +73,8 @@ trait BillableDocumentControllerTrait
         //
         // Loop through Documents
 
-        // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-        $company = \App\Context::getContext()->company;
+        // $company = Company::find( intval(Configuration::get('DEF_COMPANY')) );
+        $company = Context::getContext()->company;
         $names = [];
 
         foreach ($documents as $document) {
@@ -79,8 +82,8 @@ trait BillableDocumentControllerTrait
 
                 // Template
                 $t = $document->template ?? 
-                    \App\Template::find( $document->customer->getInvoiceTemplateId() );
-                    // \App\Template::find( Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE') );
+                    Template::find( $document->customer->getInvoiceTemplateId() );
+                    // Template::find( Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE') );
 
                 if ( !$t )
                     return redirect()->back()
@@ -197,14 +200,14 @@ die();
         else
             $entity = 'none';
 
-        // abi_r($document->hasManyThrough('App\CustomerInvoiceLineTax', 'App\CustomerInvoiceLine'), true);
+        // abi_r($document->hasManyThrough('App\Models\CustomerInvoiceLineTax', 'App\Models\CustomerInvoiceLine'), true);
 
-        // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-        $company = \App\Context::getContext()->company;
+        // $company = Company::find( intval(Configuration::get('DEF_COMPANY')) );
+        $company = Context::getContext()->company;
 
         // Template
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE') );
+             Template::find( Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE') );
 
         if ( !$t )
             return redirect()->back()
@@ -246,7 +249,7 @@ die();
 
         $file_name = $file_name . '_' . $document->{$entity}->name_regular;
 
-        $sanitizer = new \App\FilenameSanitizer( $file_name );
+        $sanitizer = new FilenameSanitizer( $file_name );
 
         $sanitizer->stripPhp()
             ->stripRiskyCharacters()
@@ -335,13 +338,13 @@ die();
 */
 
 
-        // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-        $company = \App\Context::getContext()->company;
+        // $company = Company::find( intval(Configuration::get('DEF_COMPANY')) );
+        $company = Context::getContext()->company;
 
         // Template
         // $seq_id = $this->sequence_id > 0 ? $this->sequence_id : Configuration::get('DEF_'.strtoupper( $this->getClassSnakeCase() ).'_SEQUENCE');
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE') );
+             Template::find( Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE') );
 
         if ( !$t )
             return redirect()->back()

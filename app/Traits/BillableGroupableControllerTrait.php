@@ -2,26 +2,24 @@
 
 namespace App\Traits;
 
-use Illuminate\Http\Request;
+use App\Models\Configuration;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerInvoiceLineTax;
+use App\Models\CustomerOrder as Document;
+use App\Models\CustomerOrderLine as DocumentLine;
+use App\Models\CustomerOrderLineTax as DocumentLineTax;
+use App\Models\CustomerShippingSlip;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\CustomerShippingSlipLineTax;
+use App\Models\DocumentAscription;
+use App\Models\Sequence;
+use App\Models\ShippingMethod;
+use App\Models\Template;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use App\Customer;
-use App\CustomerOrder as Document;
-use App\CustomerOrderLine as DocumentLine;
-use App\CustomerOrderLineTax as DocumentLineTax;
-
-use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-use App\CustomerInvoiceLineTax;
-
-use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
-use App\CustomerShippingSlipLineTax;
-use App\DocumentAscription;
-
-use App\Configuration;
-use App\Sequence;
-use App\Template;
+use Illuminate\Http\Request;
 
 trait BillableGroupableControllerTrait
 {
@@ -95,7 +93,7 @@ foreach ($addresses as $shipping_address_id) {
         // Header
         $shipping_method_id = $customer->getShippingMethodId();
 
-        $shipping_method = \App\ShippingMethod::find($shipping_method_id);
+        $shipping_method = ShippingMethod::find($shipping_method_id);
         $carrier_id = $shipping_method ? $shipping_method->carrier_id : null;
         // Common data
         $data = [

@@ -4,9 +4,9 @@ namespace App\Traits;
 
 // A Trait for: class ProductionSheet
 
-use App\CustomerOrderLine;
-use App\Product;
-use App\LotItem;
+use App\Models\CustomerOrderLine;
+use App\Models\Product;
+use App\Models\LotItem;
 
 trait ProductionSheetLotsTrait
 {

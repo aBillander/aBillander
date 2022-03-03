@@ -4,9 +4,9 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 
-use App\Configuration;
-use App\Product;
-use App\ShippingMethod;
+use App\Models\Configuration;
+use App\Models\Product;
+use App\Models\ShippingMethod;
 
 trait SupplierBillableFormsControllerTrait
 {
@@ -217,7 +217,7 @@ trait SupplierBillableFormsControllerTrait
             'unit_price' => $request->input('unit_price', 0.0),
             'discount_percent' => $request->input('discount_percent', 0.0),
             'unit_supplier_final_price' => $request->input('unit_supplier_final_price'),
-            'tax_id' => $request->input('tax_id', \App\Configuration::get('DEF_TAX')),
+            'tax_id' => $request->input('tax_id', Configuration::get('DEF_TAX')),
 
             'line_sort_order' => $request->input('line_sort_order'),
             'notes' => $request->input('notes', ''),
@@ -281,7 +281,7 @@ trait SupplierBillableFormsControllerTrait
             'unit_price' => $request->input('unit_price', 0.0),
             'discount_percent' => $request->input('discount_percent', 0.0),
             'unit_supplier_final_price' => $request->input('unit_supplier_final_price'),
-            'tax_id' => $request->input('tax_id', \App\Configuration::get('DEF_TAX')),
+            'tax_id' => $request->input('tax_id', Configuration::get('DEF_TAX')),
 
             'line_sort_order' => $request->input('line_sort_order'),
             'notes' => $request->input('notes', ''),

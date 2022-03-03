@@ -2,9 +2,9 @@
 
 namespace App\Traits;
 
-use App\StockMovement;
+use App\Models\StockMovement;
 
-use App\Configuration;
+use App\Models\Configuration;
 
 trait SupplierBillableStockMovementsTrait
 {

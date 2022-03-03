@@ -4,9 +4,9 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 
-use App\Configuration;
-use App\Product;
-use App\ShippingMethod;
+use App\Models\Configuration;
+use App\Models\Product;
+use App\Models\ShippingMethod;
 
 trait BillableFormsControllerTrait
 {

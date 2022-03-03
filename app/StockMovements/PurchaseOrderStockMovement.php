@@ -2,8 +2,8 @@
 
 namespace App\StockMovements;
 
-use App\StockMovement;
-use App\WarehouseProductLine;
+use App\Models\StockMovement;
+use App\Models\WarehouseProductLine;
 
 class PurchaseOrderStockMovement extends StockMovement implements StockMovementInterface
 {
@@ -71,7 +71,7 @@ class PurchaseOrderStockMovement extends StockMovement implements StockMovementI
 /*
         // Update Combination
         if ($this->combination_id > 0) {
-            $combination = \App\Combination::find($this->combination_id);
+            $combination = \App\Models\Combination::find($this->combination_id);
             $quantity_onhand = $combination->quantity_onhand + $this->quantity;
 
             // Average price stuff

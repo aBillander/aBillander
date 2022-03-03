@@ -2,12 +2,12 @@
 
 namespace App\Traits;
 
-use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-use App\CustomerInvoiceLineTax;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerInvoiceLineTax;
 
-use App\Configuration;
-use App\DocumentAscription;
+use App\Models\Configuration;
+use App\Models\DocumentAscription;
 
 trait BillableInvoiceableTrait
 {

@@ -2,7 +2,8 @@
 
 namespace App\Traits;
 
-use App\Configuration;
+use App\Models\Configuration;
+// use App\Models\CustomerOrderLineTax;
 
 trait BillableTotalsTrait
 {
@@ -174,7 +175,7 @@ trait BillableTotalsTrait
                 $totals[$line->tax_rule_id]->taxable_base   += $line->taxable_base;
                 $totals[$line->tax_rule_id]->total_line_tax += $line->total_line_tax;
             } else {
-                $tax = new \App\CustomerOrderLineTax();
+                $tax = new CustomerOrderLineTax();
                 $tax->taxable_base   = $line->taxable_base; 
                 $tax->percent        = $line->percent;
                 $line_tax->amount    = $rule->amount;

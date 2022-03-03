@@ -5,23 +5,23 @@ namespace App\Traits;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-use App\Customer;
-use App\CustomerOrder as Document;
-use App\CustomerOrderLine as DocumentLine;
-use App\CustomerOrderLineTax as DocumentLineTax;
+use App\Models\Customer;
+use App\Models\CustomerOrder as Document;
+use App\Models\CustomerOrderLine as DocumentLine;
+use App\Models\CustomerOrderLineTax as DocumentLineTax;
 
-use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-use App\CustomerInvoiceLineTax;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerInvoiceLineTax;
 
-use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
-use App\CustomerShippingSlipLineTax;
-use App\DocumentAscription;
+use App\Models\CustomerShippingSlip;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\CustomerShippingSlipLineTax;
+use App\Models\DocumentAscription;
 
-use App\Configuration;
-use App\Sequence;
-use App\Template;
+use App\Models\Configuration;
+use App\Models\Sequence;
+use App\Models\Template;
 
 trait BillableShippingSlipableControllerTrait
 {

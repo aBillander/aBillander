@@ -2,10 +2,11 @@
 
 namespace App\Traits;
 
-use App\SalesRep;
-use App\Price;
-
-use App\Configuration;
+use App\Models\Configuration;
+use App\Models\Combination;
+use App\Helpers\Price;
+use App\Models\Product;
+use App\Models\SalesRep;
 
 trait SupplierBillableDocumentAsIsLinesTrait
 {

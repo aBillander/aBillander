@@ -2,14 +2,15 @@
 
 namespace App\ShippingMethods;
 
-use App\Configuration;
-use App\Tax;
-use App\ShippingMethod;
+use App\Models\Configuration;
+use App\Models\Tax;
+use App\Models\ShippingMethod;
+use App\Models\Cart;
 
 class RegularDeliveryRouteShippingMethod extends ShippingMethod implements ShippingMethodCalculatorInterface
 {
 
-    public function calculateCartCostPrice( \App\Cart $cart )
+    public function calculateCartCostPrice( Cart $cart )
     {
         $shipping_label = Configuration::get('ABCC_SHIPPING_LABEL');
 

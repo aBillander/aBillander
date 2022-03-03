@@ -2,10 +2,12 @@
 
 namespace App\Traits;
 
-use App\SalesRep;
-use App\Price;
+use App\Models\Configuration;
+use App\Models\SalesRep;
+use App\Models\Product;
+use App\Models\Combination;
 
-use App\Configuration;
+use App\Helpers\Price;
 
 trait BillableDocumentAsIsLinesTrait
 {
@@ -31,12 +33,12 @@ trait BillableDocumentAsIsLinesTrait
 
         // Product
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $combination = Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
+            $product = Product::with('tax')->findOrFail(intval($product_id));
         }
 
         $reference  = $product->reference;
@@ -108,7 +110,7 @@ trait BillableDocumentAsIsLinesTrait
         // Customer Final Price
         if ( array_key_exists('unit_customer_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
+            $unit_customer_final_price = new Price( $params['unit_customer_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
 
             $unit_customer_final_price->applyTaxPercent( $tax_percent );
 

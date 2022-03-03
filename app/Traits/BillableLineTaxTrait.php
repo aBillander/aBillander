@@ -2,9 +2,9 @@
 
 namespace App\Traits;
 
-use App\Traits\BillableIntrospectorTrait;
+use App\Models\Traits\BillableIntrospectorTrait;
 
-use App\Configuration;
+use App\Models\Configuration;
 
 use ReflectionClass;
 

@@ -11,7 +11,7 @@ namespace App\Traits;
     luego: función para unir lotes. Pero entonces, ¿se pierde trazabilidad?
 */
 
-use App\Lot;
+use App\Models\Lot;
 
 trait LotGeneratorTrait
 {
@@ -54,7 +54,7 @@ trait LotGeneratorTrait
      * Default lot generator. SHOULD NOT DELETE.
      *
      * @param  \Carbon\Carbon $mfg_date
-     * @param  \App\Product  $product
+     * @param  \App\Models\Product  $product
      * @param  String $expiry_time (used if $product = null)
      * @return String
     */
@@ -74,7 +74,7 @@ trait LotGeneratorTrait
      * Lot generator LongCaducity. Customize according to your needs.
      *
      * @param  \Carbon\Carbon $mfg_date
-     * @param  \App\Product  $product
+     * @param  \App\Models\Product  $product
      * @param  String $expiry_time (used if $product = null)
      * @return String
     */
@@ -161,7 +161,7 @@ trait LotGeneratorTrait
      * Lot generator main function.
      *
      * @param  \Carbon\Carbon $mfg_date
-     * @param  \App\Product  $product
+     * @param  \App\Models\Product  $product
      * @param  String $expiry_time (used if $product = null)
      * @return String
     */

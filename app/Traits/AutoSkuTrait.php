@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Models\Configuration;
+
 trait AutoSkuTrait
 {
     /**
@@ -19,10 +21,10 @@ trait AutoSkuTrait
         }
 
         // Calculate SKU
-        $pid_str = strval(intval( $pid + \App\Configuration::get('SKU_PREFIX_OFFSET') ));
+        $pid_str = strval(intval( $pid + Configuration::get('SKU_PREFIX_OFFSET') ));
         $lp = strlen( $pid_str );
-        if ( $lp < \App\Configuration::get('SKU_PREFIX_LENGTH') ) 
-             $lp = \App\Configuration::get('SKU_PREFIX_LENGTH');
+        if ( $lp < Configuration::get('SKU_PREFIX_LENGTH') ) 
+             $lp = Configuration::get('SKU_PREFIX_LENGTH');
 
         $sku = str_pad($pid_str, $lp, '0', STR_PAD_LEFT);
 
@@ -31,10 +33,10 @@ trait AutoSkuTrait
             // Calculate SKU suffix
             $cid_str = strval(intval( $cid ));
             $lc = strlen( $cid_str );
-            if ( $lc < \App\Configuration::get('SKU_SUFFIX_LENGTH') ) 
-                 $lc = \App\Configuration::get('SKU_SUFFIX_LENGTH');
+            if ( $lc < Configuration::get('SKU_SUFFIX_LENGTH') ) 
+                 $lc = Configuration::get('SKU_SUFFIX_LENGTH');
 
-            $sku .= \App\Configuration::get('SKU_SEPARATOR') . str_pad($cid_str, $lc, '0', STR_PAD_LEFT);
+            $sku .= Configuration::get('SKU_SEPARATOR') . str_pad($cid_str, $lc, '0', STR_PAD_LEFT);
         }
 
         if ($autosave) {

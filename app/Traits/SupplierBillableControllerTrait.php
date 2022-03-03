@@ -4,12 +4,12 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 
-use App\Context;
-use App\Configuration;
-use App\Supplier;
-use App\Currency;
-use App\Product;
-use App\Combination;
+use App\Models\Context;
+use App\Models\Configuration;
+use App\Models\Supplier;
+use App\Models\Currency;
+use App\Models\Product;
+use App\Models\Combination;
 
 trait SupplierBillableControllerTrait
 {
@@ -56,7 +56,7 @@ trait SupplierBillableControllerTrait
                                     ->isNotBlocked()
                                     ->with('currency')
                                     ->with('addresses')
-                                    ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                     ->get();
 
 //            return $suppliers;
@@ -108,7 +108,7 @@ trait SupplierBillableControllerTrait
                                 ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 
@@ -129,7 +129,7 @@ trait SupplierBillableControllerTrait
                                 ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 
@@ -343,7 +343,7 @@ trait SupplierBillableControllerTrait
 */
         // Recent Sales
         $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
-        $class = '\App\\'.$model.'Line';
+        $class = '\App\\Models\\'.$model.'Line';
         $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
         $tableLines = \Str::snake($model).'_lines';

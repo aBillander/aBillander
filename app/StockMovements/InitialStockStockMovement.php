@@ -2,8 +2,8 @@
 
 namespace App\StockMovements;
 
-use App\StockMovement;
-use App\WarehouseProductLine;
+use App\Models\StockMovement;
+use App\Models\WarehouseProductLine;
 
 class InitialStockStockMovement extends StockMovement implements StockMovementInterface
 {

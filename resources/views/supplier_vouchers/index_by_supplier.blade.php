@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Supplier Vouchers') }} @parent @stop
+@section('title') {{ l('Supplier Vouchers') }} @parent @endsection
 
 
 @section('content')
@@ -165,9 +165,9 @@
 		<tr>
 			<td>{{ $payment->id }}</td>
 			<td>
-          <a href="{{ URL::to('supplierinvoices/' . optional($payment->supplierInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->supplierInvoice->document_reference or '' }}</a></td>
+          <a href="{{ URL::to('supplierinvoices/' . optional($payment->supplierInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->supplierInvoice->document_reference ?? '' }}</a></td>
 			<!-- td>
-          <a href="{{ URL::to('suppliers/' . optional(optional($payment->supplierInvoice)->supplier)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->supplierInvoice->supplier->name_regular or '' }}</a></td -->
+          <a href="{{ URL::to('suppliers/' . optional(optional($payment->supplierInvoice)->supplier)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->supplierInvoice->supplier->name_regular ?? '' }}</a></td -->
 			<td>{{ $payment->name }}</td>
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>
@@ -270,7 +270,7 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')
 

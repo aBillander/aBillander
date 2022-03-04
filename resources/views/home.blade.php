@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Welcome') }} @parent @stop
+@section('title') {{ l('Welcome') }} @parent @endsection
 
 
 @section('content')
@@ -18,7 +18,7 @@
             {{ csrf_field() }}
         </form>
 
-         <!-- a href="{{{ URL::to('auth/logout') }}}">{{ Auth::user()->getFullName() }}</a --> <span style="color: #cccccc;">/</span> {{ l('Home') }}
+         <!-- a href="{{ URL::to('auth/logout') }}">{{ Auth::user()->getFullName() }}</a --> <span style="color: #cccccc;">/</span> {{ l('Home') }}
     </h2>        
 </div>
 
@@ -57,4 +57,4 @@
 {{-- HTML::image('img/picture.jpg', 'a picture', array('class' => 'thumb')) --}}
 </div>
 
-@stop
+@endsection

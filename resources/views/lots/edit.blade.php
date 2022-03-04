@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Lots - Edit') }} @parent @stop
+@section('title') {{ l('Lots - Edit') }} @parent @endsection
 
 
 @section('content')
@@ -102,3 +102,6 @@ $label_short = strlen($label) > 40 ? substr($label, 0, 40)."&hellip;" : $label;
 @include('model_attachments/_form_attachments')
 
 @endsection
+
+
+@include('lots._modal_lot_split')

@@ -1,6 +1,6 @@
 @extends('abcc.layouts.master')
 
-@section('title') {{ l('Addresses - Edit', 'addresses') }} @parent @stop
+@section('title') {{ l('Addresses - Edit', 'addresses') }} @parent @endsection
 
 
 @section('content')

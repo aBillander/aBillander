@@ -19,6 +19,8 @@ return [
 	'Info'    => 'Información',
 	'Warning' => 'Aviso',
 	'Error'   => 'Error',
+
+	'Hide / Show' => 'Ocultar / Mostrar',
 	
 	'Please check the form below for errors' => 'Por favor, compruebe los errores en el formulario más abajo',
 	'You are not allowed to do this'                                      =>  'No está autorizado',
@@ -53,6 +55,9 @@ return [
 	'Some records in the list [ :id ] do not exist'              =>  'Algunos registros en la lista [ :id ] no existen',
 	'Records in the list [ :id ] are not groupable, because ":field" is not the same. ' => 'Los Registros en la lista [ :id ] no pueden agruparse, porque ":field" no es el mismo para todos. ',
 	'This record has been successfully published &#58&#58 (:id) :name as id=:web_id'     => 'El registro se ha publicado correctamente &#58&#58 (:id) :name como id=:web_id',
+
+	'There are Taxes that are not defined for the Country of the Customer &#58&#58 (:id) ' => 'Hay Impuestos que no están definidos para el País del Cliente',
+	'There are Ecotaxes that are not defined for the Country of the Customer &#58&#58 (:id) ' => 'Hay Eco-Impuestos que no están definidos para el País del Cliente',
 
 	'Too many Records for this Query &#58&#58 (:id) ' => 'Demasiados Registros para esta Consulta &#58&#58 (:id) ',
 
@@ -262,6 +267,8 @@ return [
 	'Date'     => 'Fecha',
 	'From'     => 'Desde',
 	'To'     => 'Hasta',
+	'From ID'     => 'Desde ID',
+	'To ID'     => 'Hasta ID',
 
 	'Filter'     => 'Filtrar',
 	'Search' => 'Buscar',
@@ -283,8 +290,10 @@ return [
 	'Undo'     => 'Deshacer',
 	'Apply'     => 'Aplicar',
 	'Refresh'     => 'Refrescar',
+	'Refresh Data'     => 'Refrescar Datos',
 	'Show'     => 'Mostrar',
 	'Show Preview'     => 'Vista Previa',
+	'Show more'     => 'Mostrar más',
 	'Show Log'     => 'Mostrar el Log',
 	'Progress'     => 'Progreso',
 	'Duplicate' => 'Duplicar',
@@ -306,6 +315,8 @@ return [
 	'Go to'     => 'Ir a',
 	'Send'     => 'Enviar',
 	'Send to Customer'     => 'Enviar al Cliente',
+	'Quick Send to Customer'     => 'Envío rápido',
+	'Custom Send to Customer'    => 'Envío personalizado',
 	'Send to Supplier'     => 'Enviar al Proveedor',
 	'Sending...'     => 'Enviando...',
 	'Send eMail'     => 'Enviar eMail',
@@ -364,6 +375,7 @@ return [
 	'Your Message'     => 'Su Mensaje',
 	'From (name)'     => 'De (nombre)',
 	'From (email)'     => 'De (email)',
+	'Copy to (comma separated list of emails)' => 'Copia a (lista de emails separados por una coma)',
 
 	'-- Please, select --'     => '-- Seleccione --',
 	'-- Click to Select --'     => '-- Haga click para Seleccionar --',

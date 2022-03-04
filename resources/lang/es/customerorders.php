@@ -188,6 +188,8 @@ return [
 	'Service'     => 'Servicio',
 	'Discount Line'     => 'Línea de Descuento',
 	'Text Line'     => 'Línea de Texto',
+
+    'Add Lots to Line' => 'Añadir Lotes a la Línea',
 	
 	// modal_product_search
 	'Quick Add Lines'     => 'Entrada rápida de Productos',
@@ -337,6 +339,7 @@ return [
 //	'Create Shipping Slip'     => 'Crear Albarán',
 	'Create Invoice'     => 'Crear Factura',
 	'Order: :id [:date]'     => 'Pedido: :id [:date]',
+	'Your Order: ' => 'Su Pedido: ',
 	'Shipping Slip: :id [:date]'     => 'Albarán: :id [:date]',
 	'Invoice: :id [:date]'     => 'Factura: :id [:date]',
 

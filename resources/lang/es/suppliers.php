@@ -77,6 +77,7 @@ return [
 
 	'Website'     => 'Web',
 	'Is Creditor?' => '¿Es Acreedor?',
+	'Approved?' => '¿Está Aprobado?',
 	'Misc'     => 'Otros',
 
 	'Sequence for Invoices'     => 'Serie de Facturas',
@@ -135,6 +136,8 @@ return [
 	'Products by Supplier' => 'Productos por Proveedor',
 	'Product' => 'Producto',
 	'Document' => 'Documento',
+	'Re-Ordering' => 'Re-Aprovisionar',
+	'New Order to Supplier' => 'Crear Pedido al Proveedor',
 
 	'Price Rules' => 'Reglas de Precio',
 	'Category' => 'Categoría',

@@ -67,6 +67,11 @@
                     <p>
                         — aBillander Fembot Team</p>
                 </div>
+
+                <div class="">
+                {!! HTML::image('assets/theme/images/fembots.jpg', 'Lara Billander', array('title' => 'aBillander Fembot Team', 'width' => '200', 'xheight' => '176', 'class' => 'center-block', 'style' => 'padding: 10px; -webkit-border-radius: 18px;')) !!}
+                </div>
+
                 <!-- div class="error-actions">
                     <a href="#" style="margin-top: 10px;" class="btn btn-info btn-lg"><span class="glyphicon glyphicon-home">
                     </span>Take Me Home </a>

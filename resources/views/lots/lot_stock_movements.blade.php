@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Lot Stock Movements') }} @parent @stop
+@section('title') {{ l('Lot Stock Movements') }} @parent @endsection
 
 
 @section('content')
@@ -18,18 +18,87 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 --}}
+
+@if($lot->product->lot_tracking > 0)
+        <button class="btn xbtn-sm alert-danger lot_stock_adjustment" type="button" style="margin-right: 32px;" title="{{l('Stock Adjustment')}}">
+           <i class="fa fa-th-large"></i>
+           &nbsp; {{l('Stock Adjustment')}}
+        </button>
+@endif
+
+{{--
         <a href="{{ route('lot.stockmovements.export', [$lot->id] + Request::all()) }}" class="btn xbtn-sm btn-grey" style="margin-right: 32px;"  
-                title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>{{-- see: warehouses/indexProducts.blade.php --}}
+                title="{{l('Export', [], 'layouts')}} ({{ l('Lot Stock Movements') }})"><i class="fa fa-file-excel-o"></i> {{l('Export Movements')}}</a> { {-- see: warehouses/indexProducts.blade.php --} }
+--}}
+
+<div class="btn-group" style="margin-right: 32px;">
+  <a href="#" class="btn btn-grey"><i class="fa fa-file-excel-o"></i> &nbsp; {{l('Export Movements')}}</a>
+  <a href="#" class="btn btn-grey dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
+  <ul class="dropdown-menu">
+    <li><a href="{{ route('lot.stockmovements.export', [$lot->id, 'movements']) }}">{{ l('Movements only') }}</a></li>
+    <li><a href="{{ route('lot.stockmovements.export', [$lot->id, 'allocations']) }}">{{ l('Allocations only') }}</a></li>
+    <li><a href="{{ route('lot.stockmovements.export', [$lot->id]) }}">{{ l('Movements and Allocations') }}</a></li>
+  </ul>
+</div>
 
         <a href="{{ URL::to('lots') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Lots') }}</a>
 
 
     </div>
     <h2>
-        {{ l('Lot Stock Movements') }} <span style="color: #cccccc;">::</span> <a href="{{ route( 'lots.edit', $lot->id ) }}" title="{{l('Go to', [], 'layouts')}}">{{ $lot->reference }}</a>   </h2><h3>
-        <span class="lead well well-sm alert-warning"><a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}#inventory" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->reference }}</a></span>  {{ $lot->product->name }} </h3><h3>
-        {{ l('Initial Stock') }}: {{ $lot->measureunit->quantityable($lot->quantity_initial) }} ({{ optional($lot->measureunit)->sign }})
-    </h3>        
+        {{ l('Lot Stock Movements') }} <span style="color: #cccccc;">::</span> <a href="{{ route( 'lots.edit', $lot->id ) }}" title="{{l('Go to', [], 'layouts')}}">{{ $lot->reference }}</a>   <span class="badge" style="background-color: #3a87ad;" title="{{ optional($lot->measureunit)->name }}"> &nbsp; {{ optional($lot->measureunit)->sign }} &nbsp; </span>
+    </h2>
+    <h3>
+        <span class="lead well well-sm alert-warning"><a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}#inventory" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->reference }}</a></span>  {{ $lot->product->name }}
+    </h3>     
+</div>
+
+
+<div class="container">
+    <div class="row">
+
+            <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title">{{ l('Stock Summary') }} &nbsp;
+                   <span class="badge" style="background-color: #3a87ad;" title="{{ optional($lot->measureunit)->name }}"> &nbsp; {{ optional($lot->measureunit)->sign }} &nbsp; </span>
+               </h3>
+              </div>
+              <div class="panel-body">
+
+<div id="div_stocksummary">
+   <div class="table-responsive">
+
+<table id="stocksummary" class="table table-hover">
+    <thead>
+        <tr>
+            <th>{{l('Initial Stock')}}</th>
+            <th>{{l('Current Stock')}}</th>
+            <th>{{l('Allocated Stock')}}</th>
+            <th>{{l('Available Stock')}}</th>
+            <th> </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ $lot->measureunit->quantityable($lot->quantity_initial) }}</td>
+            <td>{{ $lot->measureunit->quantityable($lot->quantity) }}</td>
+            <td>{{ $lot->measureunit->quantityable($lot->allocatedQuantity()) }}</td>
+            <td>{{ $lot->measureunit->quantityable($lot->quantity - $lot->allocatedQuantity()) }}</td>
+        </tr>
+
+    </tbody>
+</table>
+
+   </div>
+</div>
+                  
+
+              </div><!-- div class="panel-body" ENDS -->
+            </div>
+            </div>
+
+    </div><!-- div class="row" ENDS -->
 </div>
 
 
@@ -203,6 +272,10 @@
 
    </div>
 </div>
+
+@include('lots/lot_stock_allocations')
+
+@include('lots/_modal_lot_stock_adjustment')
 
 @endsection
 

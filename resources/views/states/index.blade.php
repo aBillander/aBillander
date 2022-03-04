@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('States') }} @parent @stop
+@section('title') {{ l('States') }} @parent @endsection
 
 
 @section('content')
@@ -45,7 +45,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('countries/'.$country->id.'/states/' . $state->id ) }}" 
                 		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                		data-title="{{ l('States') }} :: ({{$state->id}}) {{{ $state->name }}} " 
+                		data-title="{{ l('States') }} :: ({{$state->id}}) {{ $state->name }} " 
                 		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('states/' . $state->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
@@ -67,6 +67,6 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')

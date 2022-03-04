@@ -51,7 +51,7 @@
               <a class="view-image" data-html="false" data-toggle="modal" 
                      href="{{ URL::to( \App\Image::$products_path . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
                      data-content="{{l('You are going to view a record. Are you sure?')}}" 
-                     data-title="{{ l('Product Images') }} :: ({{$img->id}}) {{{ $img->caption }}} " 
+                     data-title="{{ l('Product Images') }} :: ({{$img->id}}) {{ $img->caption }} " 
                      onClick="return false;" title="{{l('View Image')}}">
 
                       <img src="{{ URL::to( \App\Image::$products_path . $img->getImageFolder() . $img->id . '-small_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
@@ -69,7 +69,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                      href="{{ URL::to('products/' . $product->id.'/images/' . $img->id ) }}" 
                      data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                     data-title="{{ l('Product Images') }} :: ({{$img->id}}) {{{ $img->caption }}} " 
+                     data-title="{{ l('Product Images') }} :: ({{$img->id}}) {{ $img->caption }} " 
                      onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
 
                 </td>
@@ -149,7 +149,7 @@ $(function() {
 });
 </script>
 
-@stop
+@endsection
 
 
 @include('products._modal_view_image')

@@ -1,13 +1,13 @@
 @extends('layouts.master')
 
-@section('title')  {{ l('Languages') }} @parent @stop
+@section('title')  {{ l('Languages') }} @parent @endsection
 
 
 @section('content')
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
-        <a href="{{{ URL::to('languages/create') }}}" class="btn btn-sm btn-success" 
+        <a href="{{ URL::to('languages/create') }}" class="btn btn-sm btn-success" 
                 title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
     </div>
     <h2>
@@ -73,6 +73,6 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')

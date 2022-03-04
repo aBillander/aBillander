@@ -36,6 +36,7 @@ class ConfigurationKeysController extends Controller {
                         'ENABLE_MCRM',
                         'ENABLE_MANUFACTURING',
                         'MRP_WITH_STOCK',
+                        'MRP_ONORDER_WITHOUT_REORDER',
                         'MRP_WITH_ZERO_ORDERS',
                         'ENABLE_LOTS',
                         'PRINT_LOT_NUMBER_ON_DOCUMENTS',
@@ -56,6 +57,7 @@ class ConfigurationKeysController extends Controller {
                         'DOCUMENT_ROUNDING_METHOD',
                         'SKU_AUTOGENERATE',
                         'TAX_BASED_ON_SHIPPING_ADDRESS',
+                        'SUPPLIER_PRICES_ENTERED_WITH_TAX',
 
                     ],
 

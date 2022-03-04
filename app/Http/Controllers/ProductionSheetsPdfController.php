@@ -8,8 +8,11 @@ use Illuminate\Http\Request;
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
+use App\Traits\BillableIntrospectorTrait;
+
 class ProductionSheetsPdfController extends Controller
 {
+   use BillableIntrospectorTrait;
 
 
    protected $productionSheet;

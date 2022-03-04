@@ -306,11 +306,21 @@ class ProductionSheetOrdersController extends BillableController
                     // Select Documents
                     $documents_by_ws_by_addrr_by_meth = $documents_by_ws_by_addrr->where('shipping_method_id', $method_id);
 
-                    $customers = $documents_by_ws_by_addrr_by_meth->unique('customer_id')->pluck('customer_id')->all();
+                    // Payment Method
+                    $pay_methods = $documents_by_ws_by_addrr_by_meth->unique('payment_method_id')->pluck('payment_method_id')->all();
+
+                    foreach ($pay_methods as $pay_method_id) {
+                        # code...
+                        // Select Documents
+                        $documents_by_ws_by_addrr_by_meth_by_pmeth = $documents_by_ws_by_addrr_by_meth->where('payment_method_id', $pay_method_id);
+
+/* Custmers inner loop */
+
+                    $customers = $documents_by_ws_by_addrr_by_meth_by_pmeth->unique('customer_id')->pluck('customer_id')->all();
 
                     foreach ($customers as $customer_id) {
                         # code...
-                        $documents_by_ws_by_addrr_by_meth_by_cust = $documents_by_ws_by_addrr_by_meth->where('customer_id', $customer_id);
+                        $documents_by_ws_by_addrr_by_meth_by_pmeth_by_cust = $documents_by_ws_by_addrr_by_meth_by_pmeth->where('customer_id', $customer_id);
 
                         $customer = $this->customer->find($customer_id);
 
@@ -319,13 +329,14 @@ class ProductionSheetOrdersController extends BillableController
                             'warehouse_id'        => $warehouse_id,
                             'shipping_address_id' => $address_id,
                             'shipping_method_id'  => $method_id,
+                            'payment_method_id'   => $pay_method_id,
 
                             'customer'            => $customer,
                         ];
 
                         if ( $params['should_group'] > 0 )
                         {
-                            $shippingslip = $this->shippingslipDocumentGroup( $documents_by_ws_by_addrr_by_meth_by_cust, $params + $extra_params);
+                            $shippingslip = $this->shippingslipDocumentGroup( $documents_by_ws_by_addrr_by_meth_by_pmeth_by_cust, $params + $extra_params);
 
                             $success[] = l('This record has been successfully created &#58&#58 (:id) ', ['id' => $shippingslip->id], 'layouts');
 
@@ -333,17 +344,20 @@ class ProductionSheetOrdersController extends BillableController
 
                         } else {
                             //
-                            $ids = $documents_by_ws_by_addrr_by_meth_by_cust->unique('id')->pluck('id')->all();
+                            $ids = $documents_by_ws_by_addrr_by_meth_by_pmeth_by_cust->unique('id')->pluck('id')->all();
 
                             foreach ($ids as $id) {
                                 # code...
-                                $docs = $documents_by_ws_by_addrr_by_meth_by_cust->where('id', $id);
+                                $docs = $documents_by_ws_by_addrr_by_meth_by_pmeth_by_cust->where('id', $id);
 
                                 $shippingslip = $this->shippingslipDocumentGroup( $docs, $params + $extra_params);
 
                                 $success[] = l('This record has been successfully created &#58&#58 (:id) ', ['id' => $shippingslip->id], 'layouts');
                             }
                         }
+                    }
+/* */
+
                     }
                 }
             }
@@ -443,7 +457,7 @@ class ProductionSheetOrdersController extends BillableController
 //            'carrier_id' => $carrier_id,              // Not needed: calculated al saving event
             'sales_rep_id' => $customer->sales_rep_id,
             'currency_id' => $customer->currency->id,
-            'payment_method_id' => $customer->getPaymentMethodId(),
+            'payment_method_id' => $params['payment_method_id'] > 0 ? $params['payment_method_id'] : $customer->getPaymentMethodId(),
             'template_id' => (int) $params['template_id'] > 0 ? $params['template_id'] : $customer->getShippingSlipTemplateId() ,
         ];
 
@@ -489,10 +503,13 @@ class ProductionSheetOrdersController extends BillableController
             $i++;
 
             // Text line announces Shipping Slip
+            $your_order = '';
+            if ( $document->reference_customer )
+                $your_order = ' - '.l('Your Order: ').$document->reference_customer;
             $line_data = [
                 'line_sort_order' => $i*10, 
                 'line_type' => 'comment', 
-                'name' => l('Order: :id [:date]', ['id' => $document->document_reference, 'date' => abi_date_short($document->document_date)]),
+                'name' => l('Order: :id [:date]', ['id' => $document->document_reference, 'date' => abi_date_short($document->document_date)]).$your_order,
 //                'product_id' => , 
 //                'combination_id' => , 
                 'reference' => $document->document_reference, 
@@ -588,6 +605,21 @@ class ProductionSheetOrdersController extends BillableController
                     $shippingslip_line->taxes()->save($shippingslip_line_tax);
 
                 }
+
+                // Oops! Move Lot allocations from Customer Order to Customer Shipping Slip
+                if ( Configuration::isTrue('ENABLE_LOTS') && 
+                    ($line->line_type == 'product')       && 
+                    ($line->product->lot_tracking > 0) )
+                {
+                    //
+                    $lotitems = $line->lotitems;
+
+                    foreach ($lotitems as $lot_item) {
+                        // code...
+                        $shippingslip_line->lotitems()->save($lot_item);
+                    }                    
+                }
+
             }
 
             // Not so fast, Sony Boy

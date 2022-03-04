@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Documents') }} @parent @stop
+@section('title') {{ l('Documents') }} @parent @endsection
 
 
 @section('content')
@@ -70,6 +70,9 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
                       <li><a href="{{ route('productionsheet.orders', [$productionSheet->id]) }}"><i class="fa fa-shopping-bag"></i> {{ l('Customer Orders') }}</a></li>
                       <li><a href="{{ route('productionsheet.shippingslips', [$productionSheet->id]) }}"><i class="fa fa-truck"></i> {{ l('Shipping Slips') }}</a></li>
                       <li><a href="{{ route('productionsheet.invoices', [$productionSheet->id]) }}"><i class="fa fa-money"></i> {{ l('Customer Invoices') }}</a></li>
+
+                      <li><a href="{{ route('productionsheet.vouchers', [$productionSheet->id]) }}"><i class="fa fa-credit-card text-info"></i> {{ l('Customer Vouchers') }}</a></li>
+
                       <li class="divider"></li>
                       <!-- li class="divider"></li -->
                       <!-- li><a href="#">Separated link</a></li -->
@@ -144,9 +147,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
 <div class="row">
 
    <div class="col-lg-9 col-md-9">
-   <div class="table-responsive">
 
 @if ($documents->count())
+   <div class="table-responsive">
+
 <table id="documents" class="table table-hover">
     <thead>
         <tr>
@@ -372,7 +376,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
       </div>
       <div class="tab-pane fade" id="tab2default_s">
                 
-          @if ($documents->where('invoiced_at', null)->count())
+          @if ($documents->where('is_invoiceable', '>', 0)->where('invoiced_at', null)->count())
 
                 @include('production_sheet_shipping_slips.index_form_group')
           

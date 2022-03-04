@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Lots') }} @parent @stop
+@section('title') {{ l('Lots') }} @parent @endsection
 
 
 @section('content')
@@ -86,10 +86,45 @@
 <div class="row">
          
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('warehouse_id') ? 'has-error' : '' }}">
-            {{ l('Warehouse') }}
+            {!! Form::label('warehouse_id', l('Warehouse')) !!}
             {!! Form::select('warehouse_id', ['0' => l('-- All --', [], 'layouts')] + $warehouseList, null, array('class' => 'form-control', 'id' => 'warehouse_id')) !!}
             {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}
          </div>
+
+        <div class="form-group col-lg-2 col-md-2 col-sm-2">
+            {!! Form::label('quantity', l('Quantity')) !!}
+
+            <div class="input-group select-group">
+
+                {!! Form::select('quantity_prefix', $quantity_prefixList, 'eq', array('class' => 'form-control input-group-addon', 'id' => 'quantity_prefix')) !!}
+            
+                {!! Form::text('quantity', null, array('class' => 'form-control')) !!}
+
+            </div>
+
+        </div>
+
+{{-- Very difficult to filter by allocated quantity...
+
+        <div class="form-group col-lg-2 col-md-2 col-sm-2">
+            {!! Form::label('quantity', l('Allocated Quantity')) !!}
+
+            <div class="input-group select-group">
+
+                {!! Form::select('allocated_quantity_prefix', $quantity_prefixList, 'eq', array('class' => 'form-control input-group-addon', 'id' => 'quantity_prefix')) !!}
+            
+                {!! Form::text('allocated_quantity', null, array('class' => 'form-control')) !!}
+
+            </div>
+
+        </div>
+
+        <div class="form-group col-lg-2 col-md-2 col-sm-2">
+            {!! Form::label('allocated_quantity', l('Allocated Quantity')) !!}
+            {!! Form::text('allocated_quantity', null, array('class' => 'form-control')) !!}
+        </div>
+--}}
+
 {{--
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('movement_type_id', l('Movement type')) !!}
@@ -130,7 +165,9 @@
                     <i class="fa fa-question-circle abi-help"></i>
               </a -->
             </th>
+            <th class="text-right">{{l('Allocated Quantity')}}</th>
             <th>{{l('Measure Unit')}}</th>
+            <th>{{l('Weight')}} (<span class="text-success">{{ optional($weight_unit)->sign }}</span>)</th>
             <th>{{l('Manufacture Date')}}</th>
             <th>{{l('Expiry Date')}}</th>
             <th class="text-center">{{ l('Blocked', [], 'layouts') }}</th>
@@ -145,7 +182,7 @@
 		<tr>
       <td>{{ $lot->id }}</td>
       <td>{{ $lot->reference }}</td>
-      <td>{{ $lot->warehouse->alias_name ?? '-' }}</td>
+      <td title="{{ $lot->warehouse->alias_name ?? '-' }}">{{ $lot->warehouse->alias ?? '-' }}</td>
       <td>[<a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->reference }}</a>] {{ $lot->product->name }}
 {{--
                     @if ( $lot->combination_id > 0 )
@@ -156,7 +193,22 @@
 --}}
             </td>
       <td class="text-right">{{ $lot->as_quantity('quantity') }}</td>
+      <td class="text-right 
+
+@if( ($lot_allocated_qty = $lot->allocatedQuantity()) > 0.0 )
+    @if( $lot_allocated_qty < $lot->quantity )
+        alert-warning
+    @elseif ( $lot_allocated_qty > $lot->quantity )
+        btn-info
+    @else
+        alert-danger
+    @endif
+@endif
+      ">{{ $lot->as_quantityable( $lot_allocated_qty ) }}</td>
       <td>{{ optional($lot->measureunit)->sign }}</td>
+
+      <td class="text-center">{{ $lot->getWeight() }}</td>
+
       <td>{{ abi_date_short( $lot->manufactured_at ) }}</td>
       <td>{{ abi_date_short( $lot->expiry_at ) }}</td>
 
@@ -180,7 +232,7 @@
 
             <td class="text-right button-pad">
                 @if (  is_null($lot->deleted_at))
-                <a class="btn btn-sm alert-info" href="{{ route( 'lot.stockmovements', [$lot->id] ) }}" title="{{ l('Lot Stock Movements') }}" xtarget="_stockmovements"><i class="fa fa-outdent"></i></a>
+                <a class="btn btn-sm alert-info" href="{{ route( 'lot.stockmovements', [$lot->id] ) }}" title="{{ l('Lot Stock Movements') }}" target="_stockmovements"><i class="fa fa-outdent"></i></a>
                        
                 <a class="btn btn-sm btn-info" href="{{ route( 'stockmovements.index', ['search_status' => 1, 'lot_id' => $lot->id, 'lot_reference' => $lot->reference] ) }}" title="{{ l('Stock Movements') }}" target="_stockmovements"><i class="fa fa-outdent"></i></a>
                        
@@ -271,6 +323,12 @@ $(document).ready(function() {
             https://stackoverflow.com/questions/7033420/jquery-date-picker-z-index-issue
     --}}
   .ui-datepicker{ z-index: 9999 !important;}
+
+
+  {{-- Quantity prefix selector --}}
+    .select-group input.form-control{ width: 65%}
+    .select-group select.input-group-addon { width: 35%; }
+
 </style>
 
 @endsection

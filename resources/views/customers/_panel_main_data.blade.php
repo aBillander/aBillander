@@ -23,6 +23,13 @@
               {!! Form::text('reference_external', null, array('class' => 'form-control', 'id' => 'reference_external')) !!}
               {!! $errors->first('reference_external', '<span class="help-block">:message</span>') !!}
             </div>
+
+            <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('accounting_id') ? 'has-error' : '' !!}">
+              {{ l('Accounting ID') }}
+              {!! Form::text('accounting_id', null, array('class' => 'form-control', 'id' => 'accounting_id')) !!}
+              {!! $errors->first('accounting_id', '<span class="help-block">:message</span>') !!}
+            </div>
+
         </div>
 
 @include('addresses._form_fields_model_customer')
@@ -78,6 +85,16 @@
                        </div>
                      </div>
                    </div>
+
+                  <div class="form-group col-lg-4 col-md-4 col-sm-4 {!! $errors->has('cc_addresses') ? 'has-error' : '' !!}">
+                    {{ l('Invoice copy to') }}
+                         <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                            data-content="{{ l('Comma separated list of email addresses, as in: name1@site.com,name2@site.com') }}">
+                                <i class="fa fa-question-circle abi-help"></i>
+                         </a>
+                    {!! Form::text('cc_addresses', null, array('class' => 'form-control', 'id' => 'cc_addresses')) !!}
+                    {!! $errors->first('cc_addresses', '<span class="help-block">:message</span>') !!}
+                  </div>
 
         </div>
 

@@ -94,6 +94,28 @@ class BillableLine extends Model
     |--------------------------------------------------------------------------
     */
 
+    public function getDocumentRoute()
+    {
+            static $segment;
+
+            if ($segment) return $segment;
+
+            $str = get_class($this);    // Otherwise $str = BillableLine
+
+            // $segments = array_reverse(explode('\\', $str));
+            $segments = explode('\\', $str);
+
+
+            // Last segment
+            $str = end($segments);
+            $str = substr( $str, 0, strpos($str, "Line") );
+
+            $segment = \Str::plural(strtolower($str));
+
+            return $segment;
+    }
+
+
     // Kind of deprecated function. Try not to use.
     public function getQuantityTotalAttribute()
     {

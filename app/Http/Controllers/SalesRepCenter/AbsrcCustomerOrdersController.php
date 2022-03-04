@@ -101,9 +101,37 @@ class AbsrcCustomerOrdersController extends BillableController
 
         $documents->setPath('orders');
 
+
+        if ( 0 && Configuration::isTrue('ENABLE_MANUFACTURING') )
+        {
+            $suffix = '_export_mfg';
+
+            $manufacturing_statusList = [
+                            'unasigned' => 'No asignados',
+                            'asigned' => 'Asignados a Hojas de Producción abiertas',
+                            'ongoing' => 'Los dos anteriores (Pedidos en curso)',
+            ];
+            
+        } else {
+            $suffix = '';
+            
+            $manufacturing_statusList = [];
+        }
+        
+        if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+        {
+            $wooc_statusList = [
+                        '1' => 'Sólo Pedidos WooCommerce',
+            ];
+
+        } else {
+
+            $wooc_statusList = [];
+        }
+
         $statusList = Document::getStatusList();
 
-        return view($this->view_path.'.index', $this->modelVars() +  compact('documents', 'statusList'));
+        return view($this->view_path.'.index'.$suffix, $this->modelVars() +  compact('documents', 'statusList', 'manufacturing_statusList', 'wooc_statusList'));
 	}
 
     /**
@@ -168,7 +196,7 @@ class AbsrcCustomerOrdersController extends BillableController
         $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
         $currencyList = \App\Currency::pluck('name', 'id')->toArray();
         $salesrepList = \App\SalesRep::where('id', optional($salesrep)->id)->pluck('alias', 'id')->toArray();
-        $warehouseList =\App\Warehouse::select('id', \DB::raw("concat('[', alias, '] ', name) as full_name"))->pluck('full_name', 'id')->toArray();
+        $warehouseList = Auth::user()->getAllowedWarehouseList();
         $shipping_methodList = \App\ShippingMethod::pluck('name', 'id')->toArray();
         
         return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList', 'templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'warehouseList', 'shipping_methodList'));
@@ -213,7 +241,7 @@ class AbsrcCustomerOrdersController extends BillableController
         $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
         $currencyList = \App\Currency::pluck('name', 'id')->toArray();
         $salesrepList = \App\SalesRep::where('id', optional($salesrep)->id)->pluck('alias', 'id')->toArray();
-        $warehouseList =\App\Warehouse::select('id', \DB::raw("concat('[', alias, '] ', name) as full_name"))->pluck('full_name', 'id')->toArray();
+        $warehouseList = Auth::user()->getAllowedWarehouseList();
         $shipping_methodList = \App\ShippingMethod::pluck('name', 'id')->toArray();
         
         return view($this->view_path.'.create', $this->modelVars() + compact('customer_id', 'sequenceList', 'templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'warehouseList', 'shipping_methodList'));
@@ -423,7 +451,7 @@ if (0) {
         $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
         $currencyList = \App\Currency::pluck('name', 'id')->toArray();
         $salesrepList = \App\SalesRep::where('id', optional($salesrep)->id)->pluck('alias', 'id')->toArray();
-        $warehouseList =\App\Warehouse::select('id', \DB::raw("concat('[', alias, '] ', name) as full_name"))->pluck('full_name', 'id')->toArray();
+        $warehouseList = Auth::user()->getAllowedWarehouseList();
         $shipping_methodList = \App\ShippingMethod::pluck('name', 'id')->toArray();
 
         return view($this->view_path.'.edit', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document', 'sequenceList', 'templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'warehouseList', 'shipping_methodList'));

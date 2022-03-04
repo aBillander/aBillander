@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Shipping Method Rules - Create') }} :: @parent @stop
+@section('title') {{ l('Shipping Method Rules - Create') }} :: @parent @endsection
 
 
 @section('content')

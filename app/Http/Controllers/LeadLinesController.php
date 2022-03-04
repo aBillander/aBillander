@@ -35,7 +35,7 @@ class LeadLinesController extends Controller
                         ->with('party')
                         ->with('leadlines')
                         ->with('leadlines.assignedto')
-                        ->find($leadId);
+                        ->findOrFail($leadId);
         
         $leadlines = $lead->leadlines;
 
@@ -106,8 +106,17 @@ class LeadLinesController extends Controller
      */
     public function edit($leadId, $id)
     {
-        $lead = $this->lead->findOrFail($leadId);
-        $leadline = $this->leadline->findOrFail($id);
+        // $lead = $this->lead->findOrFail($leadId);
+        // $leadline = $this->leadline->findOrFail($id);
+
+        $leadline = $this->leadline
+                                ->with('lead')
+                                ->whereHas('lead', function($q) use ($leadId) {
+                                    $q->where('id', $leadId);
+                                })
+                                ->findOrFail($id);
+
+        $lead = $leadline->lead;
 
         $statusList = $this->leadline->getStatusList();
 

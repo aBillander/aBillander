@@ -116,8 +116,6 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
 @endif
 
    </div>
-
-
 </div><!-- div class="panel-body" -->
 
 <div class="panel-footer">

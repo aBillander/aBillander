@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Customer Groups - Edit') }} @parent @stop
+@section('title') {{ l('Customer Groups - Edit') }} @parent @endsection
 
 
 @section('content') 
@@ -39,4 +39,4 @@
       </div>
    </div>
 </div>
-@stop
+@endsection

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Customer Vouchers') }} @parent @stop
+@section('title') {{ l('Customer Vouchers') }} @parent @endsection
 
 
 @section('content')
@@ -182,6 +182,10 @@
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('bulk_payment_type_id') ? 'has-error' : '' }}">
     {!! Form::label('bulk_payment_type_id', l('Payment Type')) !!}
+                    <!-- a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                              data-content="{{ l('If you do not select anything, every Voucher will go with its Payment Type.') }}">
+                          <i class="fa fa-question-circle abi-help"></i>
+                    </a -->
     {!! Form::select('bulk_payment_type_id', array('' => l('-- Please, select --', [], 'layouts')) + $payment_typeList, null, array('class' => 'form-control')) !!}
     {!! $errors->first('bulk_payment_type_id', '<span class="help-block">:message</span>') !!}
 </div>
@@ -238,13 +242,17 @@
 	<tbody id="payment_lines">
 	@foreach ($payments as $payment)
 		<tr>
+@if( $payment->status == 'pending' )
       <td class="text-center warning">{!! Form::checkbox('payment_group[]', $payment->id, false, ['class' => 'case xcheckbox', 'onchange' => 'calculateSelectedAmount()']) !!}</td>
+@else
+            <td></td>
+@endif
 			<td>{{ $payment->id }}</td>
 			<td>
-          <a href="{{ URL::to('customerinvoices/' . optional($payment->customerinvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerinvoice->document_reference or '' }}</a></td>
+          <a href="{{ URL::to('customerinvoices/' . optional($payment->customerinvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerinvoice->document_reference ?? '' }}</a></td>
       <td>{{ abi_date_short(optional($payment->customerinvoice)->document_date) }}</td>
 			<!-- td>
-          <a href="{{ URL::to('customers/' . optional(optional($payment->customerinvoice)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerinvoice->customer->name_regular or '' }}</a></td -->
+          <a href="{{ URL::to('customers/' . optional(optional($payment->customerinvoice)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->customerinvoice->customer->name_regular ?? '' }}</a></td -->
 			<td>{{ $payment->name }}</td>
 			<td @if ( !$payment->payment_date AND $payment->is_overdue ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>
@@ -364,7 +372,7 @@
 {!! Form::close() !!}
 
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')
 

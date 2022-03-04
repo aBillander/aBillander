@@ -44,15 +44,25 @@
             </div>
          </div>
 
-    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
+
+@if ( $lot->quantity != 0 )
+                <br />
+                <a class="btn xbtn-sm btn-danger split-lot" href="{{ route('lots.split', $lot->id) }}" title="{{l('Split Lot')}}" xstyle="margin-right: 16px"
+                    data-owarehouse="{{ $lot->warehouse_id > 0 ? $lot->warehouse_id : \App\Configuration::getInt('DEF_WAREHOUSE') }}"
+                    >
+                    <i class="fa fa-scissors"></i> {{ l('Split Lot') }}
+                </a>
+@endif
     </div>
 
+{{--
     <div class=" hidden form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('quantity') ? 'has-error' : '' }}">
         {!! Form::label('quantity', l('New Quantity')) !!}
         {!! Form::text('quantity', null, array('class' => 'form-control')) !!}
         {!! $errors->first('quantity', '<span class="help-block">:message</span>') !!}
     </div>
-
+--}}
 </div>
 
 <div class="row">
@@ -84,8 +94,8 @@
          
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('warehouse_id') ? 'has-error' : '' }}">
             {{ l('Warehouse') }}
-            {!! Form::select('warehouse_id', \App\Warehouse::selectorList(), null, array('class' => ' hide form-control', 'id' => 'warehouse_id')) !!}
-            {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}            
+            {{-- !! Form::select('warehouse_id', \App\Warehouse::selectorList(), null, array('class' => ' hide form-control', 'id' => 'warehouse_id')) !!}
+                        {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !! --}}            
 
             <div class="form-control" style="background-color: #eeeeee; opacity: 1;">
                 {{ $lot->warehouse->alias_name }}

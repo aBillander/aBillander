@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') Error 403 @parent @stop
+@section('title') Error 403 @parent @endsection
 
 
 @section('content')
@@ -20,4 +20,4 @@
                             -moz-border-radius: 18px;
                             -khtml-border-radius: 18px;
                             -webkit-border-radius: 18px;">
-@stop
+@endsection

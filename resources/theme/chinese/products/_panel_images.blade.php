@@ -150,7 +150,7 @@ $(function() {
 });
 </script>
 
-@stop
+@endsection
 
 
 @include('products._modal_view_image')

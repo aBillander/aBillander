@@ -10,6 +10,11 @@ class ProductionOrder extends Model
 {
     use ViewFormatterTrait;
 
+    public static $created_vias = array(
+            'manufacturing', 
+            'manual',
+        );
+
     public static $statuses = array(
             'simulated', 
             'planned', 
@@ -31,9 +36,14 @@ class ProductionOrder extends Model
                             'warehouse_id', 'production_sheet_id'
                           ];
 
-    public static $rules = array(
-//    	'id'    => 'required|unique',
-    	);
+    public static $rules = [
+                            'due_date' => 'required|date',
+                            'finish_date' => 'nullable|date|after_or_equal:document_date',
+//                            'warehouse_id' => 'exists:warehouses,id',
+//                            'work_center_id' => 'exists:work_centers,id',
+                            'planned_quantity' => 'required|numeric',
+                            'finished_quantity' => 'required|numeric',
+               ];
     
 
 
@@ -58,11 +68,46 @@ class ProductionOrder extends Model
     |--------------------------------------------------------------------------
     */
 
+    public function getDocumentDateAttribute()
+    {
+            return $this->due_date;
+    }
+
+    public function getFinishableAttribute()
+    {
+        if ( $this->status == 'finished' ) return false;
+
+        return true;
+    }
+
+
+    public function getEditableAttribute()
+    {
+        // return !( $this->locked || $this->status == 'closed' || $this->status == 'canceled' );
+        return !( $this->status == 'finished' );
+    }
+
+    public function getDeletableAttribute()
+    {
+        // return !( $this->status == 'closed' || $this->status == 'canceled' );
+        return $this->status != 'finished';
+    }
+
+    public function getUnfinishableAttribute()
+    {
+        if ( $this->status != 'finished' ) return false;
+
+        // if ( optional($this->rightAscriptions)->count() || optional($this->leftAscriptions)->count() ) return false;
+
+        return true;
+    }
+
+
     public static function getStatusList()
     {
             $list = [];
             foreach (static::$statuses as $status) {
-                $list[$status] = l($status, [], 'appmultilang');
+                $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
                 // alternative => $list[$status] = l(static::class.'.'.$status, [], 'appmultilang');
             }
 
@@ -71,7 +116,7 @@ class ProductionOrder extends Model
 
     public static function getStatusName( $status )
     {
-            return l($status, [], 'appmultilang');
+            return l(get_called_class().'.'.$status, [], 'appmultilang');
     }
 
     public static function isStatus( $status )
@@ -81,7 +126,7 @@ class ProductionOrder extends Model
 
     public function getStatusNameAttribute()
     {
-            return l($this->status, 'appmultilang');
+            return l(get_called_class().'.'.$this->status, 'appmultilang');
     }
 
     
@@ -483,13 +528,18 @@ if ( $bomitem )
                 $query->where('active', '>', 0);
         }
 
+        if (array_key_exists('due_date', $params) && $params['due_date'])
+        {
+            $query->where('production_orders.due_date', $params['due_date']);
+        }
+
         return $query;
     }
     
 
     /*
     |--------------------------------------------------------------------------
-    | Statuss changes & actions
+    | Status changes & actions
     |--------------------------------------------------------------------------
     */
     
@@ -516,12 +566,14 @@ if ( $bomitem )
         return true;
     }
 
-    public function unfinish( $status = null )
+    public function unfinish( $status = 'released' )
     {
         // Can I ...?
         if ( $this->status != 'finished' ) return false;
 
         // Do stuf...
+        $this->document_reference = null;
+        $this->finished_quantity = 0.0;
         $this->status = $status ?: 'released';
         $this->finish_date =null;
 
@@ -532,6 +584,26 @@ if ( $bomitem )
 
         return true;
     }
+    
+
+
+    public function getMaxLineSortOrder()
+    {
+        // $this->load(['lines']);
+
+        if ( $this->lines->count() )
+            return $this->lines->max('line_sort_order');
+
+        return 0;           // Or: return intval( $this->customershippingsliplines->max('line_sort_order') );
+    }
+    
+    public function getNextLineSortOrder()
+    {
+        $inc = 10;
+
+        return $this->getMaxLineSortOrder() + $inc;
+    }
+    
     
 
     /*
@@ -567,7 +639,8 @@ if ( $bomitem )
     
     public function productionorderlines()
     {
-        return $this->hasMany('App\ProductionOrderLine', 'production_order_id');
+        return $this->hasMany('App\ProductionOrderLine', 'production_order_id')
+                    ->orderBy('line_sort_order', 'ASC');
     }
     
     // Alias
@@ -578,7 +651,13 @@ if ( $bomitem )
     
     public function productionordertoollines()
     {
-        return $this->hasMany('App\ProductionOrderLine', 'production_order_id');
+        return $this->hasMany('App\ProductionOrderToolLine', 'production_order_id');
+    }
+    
+    // Alias
+    public function tool_lines()
+    {
+        return $this->productionordertoollines();
     }
 
     /**
@@ -609,6 +688,27 @@ if ( $bomitem )
     }
 
 
+    public function lotitem()
+    {
+        return $this->hasOne('App\LotItem', 'lotable_id', 'id')
+                    ->where('lotable_type', ProductionOrder::class)->with('lot');
+    }
+
+    public function getLotAttribute()
+    {
+/*
+        if (!$this->relationLoaded('lotitem')) {
+            $this->load('lotitem.lot');
+        }
+
+        return $this->lotitem->lot;
+*/
+        // Better approach for testing: take last created lot
+        return $this->lots->sortByDesc('id')->first();
+
+    }
+
+
     /*
     |--------------------------------------------------------------------------
     | Data Factory :: Scopes
@@ -636,50 +736,68 @@ if ( $bomitem )
     {
         // Let's rock!
 
+        //
+        // Finished product first
+        //
+
         // Deal with Lots (ノಠ益ಠ)ノ彡┻━┻
         $lot = null;
-        // Create Lot for finished product first
-        if ( Configuration::isTrue('ENABLE_LOTS') )
-        if ( array_key_exists('lot_tracking', $params) && $params['lot_tracking'] ) // Same as $this->product->lot_tracking (pero puede querer fabricarse alguna vez sin lote?)
+
+        // Create Lot for finished product
+        if ( Configuration::isTrue('ENABLE_LOTS') && $this->product->lot_tracking > 0 )
         {
-            if ( array_key_exists('lot_params', $params))
-            {
-                $lot_params = $params['lot_params'];
 
-            } else {
-                // Set some default...
-                $theDate = \Carbon\Carbon::now();
-                $lot_params = [
-                    'reference' => $theDate->format('Y-m-d'),
-                    'product_id' => $this->product_id, 
-        //            'combination_id' => ,
-                    'quantity_initial' => $this->finished_quantity, 
-                    'quantity' => $this->finished_quantity, 
-                    'measure_unit_id' => $this->product->measure_unit_id, 
-        //            'package_measure_unit_id' => , 
-        //            'pmu_conversion_rate' => ,
-                    'manufactured_at' => $theDate, 
-                    'expiry_at' => $theDate->addDays( $this->product->expiry_time ),
-                    'notes' => 'Production Order: #'.$this->id,
+            // Set some default...
+            $finish_date = $params['finish_date'] ?? \Carbon\Carbon::now();
+            $lot_reference = $params['lot_reference'] ?: Lot::generate( $finish_date, $this->product, $this->product->expiry_time);
+            $expiry_at = Lot::getExpiryDate( $finish_date, $this->product->expiry_time );
+            $finished_quantity = $params['finished_quantity'] ?? $this->planned_quantity;
 
-                    'warehouse_id' => $this->warehouse_id,
-                ];
+            $warehouse_id = $params['warehouse_id'] ?? $this->warehouse_id;
+            if ( ! $warehouse_id )
+            {    
+                $warehouse_id = Configuration::getInt('DEF_WAREHOUSE');
+                $this->warehouse_id = $warehouse_id;
+                $this->save();
             }
+
+            $lot_params = [
+                'reference' => $lot_reference,
+                'product_id' => $this->product_id, 
+    //            'combination_id' => ,
+                'quantity_initial' => $finished_quantity, 
+                'quantity' => $finished_quantity, 
+                'measure_unit_id' => $this->product->measure_unit_id, 
+    //            'package_measure_unit_id' => , 
+    //            'pmu_conversion_rate' => ,
+                'manufactured_at' => $finish_date, 
+//                    'expiry_at' => $finish_date->addDays( $this->product->expiry_time ),
+                'expiry_at' => $expiry_at,
+                'notes' => 'Production Order: #'.$this->id,
+
+                'warehouse_id' => $warehouse_id,
+            ];
+            
 
             // Time for "some magic"
             // Create Lot
             $lot = Lot::create($lot_params);
 
-            // $lot_item = LotItem::create(['lot_id' => $lot->id]);
+            $data = [
+                'lot_id' => $lot->id,
+                'is_reservation' => 0,
+                'quantity' => $finished_quantity,
+            ];
 
-            // $document->lotitems()->save($lot_item);
+            $lot_item = LotItem::create( $data );
+            $this->lotitems()->save($lot_item);
 
             // Cannot return this back: not good practice:
             // $success[] = l('Se ha creado un lote &#58&#58 (:id) ', ['id' => $lot->reference], 'layouts') . 
             //    'para el Producto: ['.$document->product_reference.'] '.$document->product_name;
         }
 
-        // Production Order Header
+        // Production Order Header Stock Movement
             $data = [
                     'date' => \Carbon\Carbon::now(),
 
@@ -723,7 +841,11 @@ if ( $bomitem )
                 $this->stockmovements()->save( $stockmovement );
 
                 if ($lot)
+                {
                     $lot->stockmovements()->save( $stockmovement );
+                    $stockmovement->update(['lot_quantity_after_movement' => $stockmovement->quantity]);
+                    $lot->update(['blocked' => 0]);
+                }
             }
 
         //
@@ -732,7 +854,14 @@ if ( $bomitem )
         foreach ($this->lines as $line) {
             //
             // Only products, please!!!
+            if ( ! ( $line->type == 'product' ) ) continue;
             if ( ! ( $line->product_id > 0 ) )         continue;
+
+            if ( Configuration::isTrue('ENABLE_LOTS') && ($line->product->lot_tracking > 0)  )
+            {
+                $this->makeStockMovementsLineLots( $line );
+                continue;
+            }
 
             //
             $data = [
@@ -744,7 +873,7 @@ if ( $bomitem )
                     'document_reference' => $this->document_reference,
 
 //                    'quantity_before_movement' => $line->,
-                    'quantity' => $line->required_quantity,
+                    'quantity' => $line->real_quantity,
                     'measure_unit_id' => $line->measure_unit_id,
 //                    'quantity_after_movement' => $line->,
 
@@ -776,11 +905,6 @@ if ( $bomitem )
             {
                 //
                 $line->stockmovements()->save( $stockmovement );
-
-                // Time for "some magic"
-                // Discount quantities from Lots (if applicable)
-
-                // To Do...
             }
         }
 
@@ -809,6 +933,7 @@ if ( $bomitem )
 
     public function canRevertStockMovements()
     {
+        if (0)
         if ( $this->status == 'finished' ) return true;
 
         return false;
@@ -882,6 +1007,172 @@ if ( $bomitem )
         $this->save();
 
         return true;
+    }
+
+
+
+/* *********************************************************************************************** */
+
+    
+    public function makeStockMovementsLineLots( $line )
+    {
+        // Let's rock!
+        foreach ($line->lotitems as $lotitem) {
+            //
+            $lot = $lotitem->lot;
+
+            $data = [
+                    'date' => \Carbon\Carbon::now(),
+
+//                    'stockmovementable_id' => $line->,
+//                    'stockmovementable_type' => $line->,
+
+                    'document_reference' => $this->document_reference,
+
+//                    'quantity_before_movement' => $line->,
+                    'quantity' => $line->real_quantity,
+                    'measure_unit_id' => $line->measure_unit_id,
+//                    'quantity_after_movement' => $line->,
+
+                    'price' => $line->product->cost_price,
+                    'price_currency' => $line->product->cost_price,
+//                    'currency_id' => $this->currency_id,
+//                    'conversion_rate' => $this->currency_conversion_rate,
+
+                    'notes' => '',
+
+                    'product_id' => $line->product_id,
+                    'combination_id' => $line->combination_id,
+                    'reference' => $line->reference,
+                    'name' => $line->name,
+
+                    'warehouse_id' => $this->warehouse_id,
+//                    'warehouse_counterpart_id' => $line->,
+
+                    'movement_type_id' => StockMovement::MANUFACTURING_INPUT,
+
+//                    'user_id' => $line->,
+
+//                    'inventorycode'
+            ];
+
+            $stockmovement = StockMovement::createAndProcess( $data );
+
+            if ( $stockmovement )
+            {
+                //
+                $line->stockmovements()->save( $stockmovement );
+
+                $lot_quantity_after_movement = $lot->quantity - $stockmovement->quantity;
+
+                $lot->stockmovements()->save( $stockmovement );
+                $stockmovement->update(['lot_quantity_after_movement' => $lot_quantity_after_movement]);
+                $lot->update(['blocked' => 0, 'quantity' => $lot_quantity_after_movement]);
+
+                $lotitem->update(['is_reservation' => 0]);
+            }
+        }
+
+        return true;
+    }
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Document Lines Stuff
+    |--------------------------------------------------------------------------
+    */
+    
+    
+
+    /**
+     * Add Product to Production Order
+     *
+     *     'line_sort_order', 'type', 'product_id', 'combination_id', 'reference', 'name', bom_line_quantity', 'bom_quantity', 'required_quantity', 'real_quantity', 'measure_unit_id', 'warehouse_id'
+     *
+     */
+    public function addProductLine( $product_id, $combination_id = null, $quantity = 1.0, $params = [] )
+    {
+        // Do the Mambo!
+        // $line_type = 'product';
+
+        // Product
+        if ($combination_id>0) {
+            $combination = Combination::with('product')->findOrFail(intval($combination_id));
+            $product = $combination->product;
+            $product->reference = $combination->reference;
+            $product->name = $product->name.' | '.$combination->name;
+        } else {
+            $product = Product::findOrFail(intval($product_id));
+        }
+
+        $type = 'product';
+
+        $reference  = $product->reference;
+        $name = array_key_exists('name', $params) 
+                            ? $params['name'] 
+                            : $product->name;
+
+        $measure_unit_id = array_key_exists('measure_unit_id', $params) 
+                            ? $params['measure_unit_id'] 
+                            : $product->measure_unit_id;
+
+        $warehouse_id = array_key_exists('warehouse_id', $params) 
+                            ? $params['warehouse_id'] 
+                            : Configuration::get('DEF_WAREHOUSE');
+
+
+
+        // Misc
+        $line_sort_order = array_key_exists('line_sort_order', $params) 
+                            ? $params['line_sort_order'] 
+                            : $this->getNextLineSortOrder();
+
+        $bom_line_quantity = array_key_exists('bom_line_quantity', $params) 
+                            ? $params['bom_line_quantity'] 
+                            : 0.0;
+
+        $bom_quantity = array_key_exists('bom_quantity', $params) 
+                            ? $params['bom_quantity'] 
+                            : 0.0;
+
+        $locked = array_key_exists('locked', $params) 
+                            ? $params['locked'] 
+                            : 0;
+
+
+        // Build OrderLine Object
+        $data = [
+            'line_sort_order' => $line_sort_order,
+            'type' => $type,
+
+            'product_id' => $product->id,
+            'reference' => $reference,
+            'name' => $name,
+
+            'bom_line_quantity' => $bom_line_quantity,
+            'bom_quantity' => $bom_quantity,
+
+            'required_quantity' => $quantity,
+//            'real_quantity' => 0.0,
+
+            'measure_unit_id' => $measure_unit_id,
+
+            'warehouse_id' => $warehouse_id,
+        ];
+
+
+        // Finishing touches
+        $document_line = ProductionOrderLine::create( $data );
+
+        $this->lines()->save($document_line);
+
+
+        // Good boy, bye then
+        return $document_line;
+
     }
 
 }

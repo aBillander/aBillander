@@ -128,10 +128,10 @@ return [
 	'WOOC_DEF_CUSTOMER_GROUP.name'     => 'Grupo de Clientes',
 	'WOOC_DEF_CUSTOMER_GROUP.help'     => 'Los Clientes que se importan desde WooCommerce serán asignados a este Grupo.',		// Imported Customers will be asigned to this Group
 	'WOOC_DEF_CUSTOMER_PRICE_LIST.name'     => 'Tarifa',
-	'WOOC_DEF_CUSTOMER_PRICE_LIST.help'     => 'Esta Tarifa se usará para actualizar el Precio de los Productos en la Tienda. También, los Clientes que se importan desde WooCommerce se les asignará esta Tarifa.',	// Imported Customers will be asigned this Price List
+	'WOOC_DEF_CUSTOMER_PRICE_LIST.help'     => 'Esta Tarifa se usará para actualizar el Precio de los Productos en la Tienda. Si no selecciona una Tarifa, se utilizará el Precio de la Ficha del Producto. Además, los Clientes que se importan desde WooCommerce se les asignará esta Tarifa.',	// Imported Customers will be asigned this Price List
 
 	'WOOC_DEF_WAREHOUSE.name'     => 'Almacén',
-	'WOOC_DEF_WAREHOUSE.help'     => 'Este Almacén se usará para actualizar el Stock Físico de los Productos en la Tienda.',
+	'WOOC_DEF_WAREHOUSE.help'     => 'Este Almacén se usará para actualizar el Stock Físico de los Productos en la Tienda. Si no selecciona un Almacén, se utilizará el Stock Total del Producto.',
 
 	'WOOC_DEF_LANGUAGE.name'     => 'Idioma',
 	'WOOC_DEF_LANGUAGE.help'     => 'Idioma de la Tienda WooCommerce.',
@@ -147,6 +147,15 @@ return [
 
 	'WOOC_USE_LOCAL_PRODUCT_NAME.name'     => 'Usar el Nombre local del Producto',
 	'WOOC_USE_LOCAL_PRODUCT_NAME.help'     => 'En los Pedidos importados, usar el Nombre del Producto en lugar del Nombre en WooCommerce.',
+
+
+	'WOOC_DEF_PRODUCT_STATUS.name'     => 'Subir a WooCommerce Productos en Estado:',
+	'WOOC_DEF_PRODUCT_STATUS.help'     => '',
+	'WOOC_DEF_MANAGE_STOCK.name'       => '¿Gestionar el Inventario en WooCommerce?',
+	'WOOC_DEF_MANAGE_STOCK.help'       => 'Per Item: Según el campo "Control de Stock" de cada Producto.',
+	'WOOC_DEF_REVIEWS_ALLOWED.name'    => 'Activar valoraciones de Productos',
+	'WOOC_DEF_REVIEWS_ALLOWED.help'    => '',
+
 	''     => '',
 	''     => '',
 
@@ -229,6 +238,28 @@ return [
 	'Sale Price' => 'Precio en Oferta',
 	'Tax' => 'Impuesto',
 	'Weight' => 'Peso',
+
+	'name' => 'Nombre del Producto',
+	'sku' => 'SKU',
+	'status' => 'Estado',
+	'featured' => 'Producto destacado?',
+	'manage_stock' => 'Gestión de Inventario?',
+	'stock_status' => 'En Inventario?',
+	'reviews_allowed' => 'Permitir Valoraciones',
+
+	'stock_quantity' => 'Stock en Tienda',
+	'catalog_visibility' => 'Visibilidad',
+
+	'regular_price' => 'Precio Normal',
+	'sale_price' => 'Precio en Oferta',
+	'Product regular price.' => 'Precio Normal del Producto.',
+	'Product sale price.' => 'Precio en Oferta del Producto.',
+
+	'description' => 'Descripción',
+	'short_description' => 'Descripción corta',
+
+	'Fill only if \'manage_stock\' is set to \'Yes\'.' => 'Rellenar sólo si \'Gestión de Inventario?\' tiene el valor \'Sí\'.',
+	'Fill only if \'manage_stock\' is set to \'No\'.'  => 'Rellenar sólo si \'Gestión de Inventario?\' tiene el valor \'No\'.',
 
 
 	/*

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Customer Cheque Details') }} @parent @stop
+@section('title') {{ l('Customer Cheque Details') }} @parent @endsection
 
 
 @section('content')
@@ -65,7 +65,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('cheques/' . $cheque->id.'/chequedetails/' . $chequedetail->id ) }}" 
                 		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                		data-title="{{ l('Customer Cheque Details') }} :: ({{$chequedetail->id}}) {{{ $chequedetail->name }}} " 
+                		data-title="{{ l('Customer Cheque Details') }} :: ({{$chequedetail->id}}) {{ $chequedetail->name }} " 
                 		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('chequedetails/' . $chequedetail->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>

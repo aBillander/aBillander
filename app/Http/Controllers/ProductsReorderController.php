@@ -9,6 +9,7 @@ use App\Configuration;
 use App\Product;
 use App\Category;
 use App\Supplier;
+use App\WorkCenter;
 
 use Excel;
 
@@ -38,13 +39,14 @@ class ProductsReorderController extends Controller
                               ->isActive()
                               ->filter( $request->all() )
                               ->with('measureunit')
-                              ->with('mainsupplier')
+//                              ->with('mainsupplier')
 //                              ->with('combinations')                                  
 //                              ->with('category')
 //                              ->with('tax')
 //                            ->orderBy('position', 'asc')
 //                            ->orderBy('name', 'asc')
 //                              ->orderByRaw('(quantity_onhand - reorder_point) asc')
+                              ->orderBy('work_center_id', 'asc')
                               ->orderBy('reference', 'asc')
                               ;
     }
@@ -87,6 +89,8 @@ class ProductsReorderController extends Controller
             }
             
             $products = $this->indexQueryRaw( $request );
+
+            // abi_toSQL($products);die();
             
             $products = $products->paginate( $items_per_page );
 
@@ -105,7 +109,9 @@ class ProductsReorderController extends Controller
 
         $product_mrptypeList = Product::getMrpTypeList();
 
-        return view('products_reorder.index', compact('products', 'product_procurementtypeList', 'product_mrptypeList', 'supplierList'));
+        $work_centerList = WorkCenter::pluck('name', 'id')->toArray();
+
+        return view('products_reorder.index', compact('products', 'product_procurementtypeList', 'product_mrptypeList', 'supplierList', 'work_centerList'));
 
     }
 
@@ -121,8 +127,13 @@ class ProductsReorderController extends Controller
         $procurement_type = $request->input('procurement_type', null);
         $mrp_type = $request->input('mrp_type', null);
         $stock_control = $request->input('stock_control', -1);
+        $work_center_id = $request->input('work_center_id', -1);
 
         $products = $this->indexQueryRaw( $request )->get();
+
+        $supplierList = Supplier::select('id', \DB::raw("concat('[', id, '] ', name_fiscal) as full_name"))->pluck('full_name', 'id')->toArray();
+
+        $work_centerList = WorkCenter::pluck('name', 'id')->toArray();
 
         // Lets get dirty!!
 
@@ -133,10 +144,13 @@ class ProductsReorderController extends Controller
         $ribbon2 = $procurement_type == '' ? 'todos' : $procurement_type;
         $ribbon3 = $mrp_type == '' ? 'todos' : $mrp_type;
         $ribbon4 = $stock_control < 0 ? 'todos' : ($stock_control == 1 ? 'Sí' : 'No');
+        $ribbon5 = $work_center_id < 0 ? 'todos' : $work_centerList[ $work_center_id ];
+        // $ribbon6 = $work_center_id < 0 ? '' : ' :: ' . $work_centerList[ $work_center_id ];
 
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Re-Aprovisionamiento de Productos :: ', '', '', '', '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Re-Aprovisionamiento de Productos', '', '', '', '', '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Centro de Trabajo: '.$ribbon5];
         $data[] = ['Categorías: '.$ribbon1];
         $data[] = ['Aprovisionamiento: '.$ribbon2];
         $data[] = ['Planificación: '.$ribbon3];
@@ -148,7 +162,7 @@ class ProductsReorderController extends Controller
         // Define the Excel spreadsheet headers
         $header_names = [
 
-                        l('Reference'), l('Product Name'), l('Main Supplier'), l('Procurement type'), l('MRP type'), l('Stock Control'),
+                        l('Centro de Trabajo'), l('Reference'), l('Product Name'), l('Main Supplier'), l('Procurement type'), l('MRP type'), l('Stock Control'),
 
                         l('Stock'), l('Allocated'), l('On Order'), l('Available'), 
                         l('Re-Order Point'), l('Maximum stock'), l('Suggested Quantity'), l('Measure Unit'),
@@ -157,13 +171,15 @@ class ProductsReorderController extends Controller
 
         $data[] = $header_names;
 
+        if ( $products->count() > 0 )
         foreach ($products as $product) 
         {
                 $supplier_label = '';
-                if ( $product->procurement_type == 'purchase' && $product->mainsupplier )
-                    $supplier_label = '['.$product->mainsupplier->id .'] '.$product->mainsupplier->name_fiscal;
+                if ( ($product->procurement_type == 'purchase') && ($product->main_supplier_id > 0) )
+                    $supplier_label = $supplierList[ $product->main_supplier_id ] ?? '-';
 
                 $row = [];
+                $row[] = (string) array_key_exists($product->work_center_id, $work_centerList) ? $work_centerList[ $product->work_center_id ] : '-';
                 $row[] = (string) $product->reference;
                 $row[] = $product->name;
                 $row[] = $supplier_label;
@@ -207,7 +223,13 @@ class ProductsReorderController extends Controller
                     ]
                 ]);
 
-                $sheet->getStyle('A8:N8')->applyFromArray([
+                $sheet->getStyle('A3:A3')->applyFromArray([
+                    'font' => [
+                        'bold' => true
+                    ]
+                ]);
+
+                $sheet->getStyle('A9:O9')->applyFromArray([
                     'font' => [
                         'bold' => true
                     ]

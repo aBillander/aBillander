@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Coming soon', [], 'layouts') }} @parent @stop
+@section('title') {{ l('Coming soon', [], 'layouts') }} @parent @endsection
 
 
 @section('content')
@@ -19,4 +19,4 @@
                             -moz-border-radius: 18px;
                             -khtml-border-radius: 18px;
                             -webkit-border-radius: 18px;">
-@stop
+@endsection

@@ -34,6 +34,9 @@ return [
 	// Bank Accounts
 	'Bank Account has :relation' => 'La Cuenta Bancaria tiene :relation',
 
+	// Address
+	'Address has :relation' => 'La Dirección tiene :relation',
+
 	''     => '',
 	''     => '',
 	''     => '',

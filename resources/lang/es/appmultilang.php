@@ -496,6 +496,47 @@ return array(
 	'App\SalesRep.external'  => 'Agente Externo',
 	'App\SalesRep.employee' => 'Empleado',
 
+	/*
+	|--------------------------------------------------------------------------
+	| Lot generators
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\Lot.Default' => 'Por defecto',
+    'App\Lot.LongCaducity' => 'Caducidad larga',
+    'App\Lot.ShortCaducity' => 'Caducidad corta',
+    'App\Lot.CaducityDate' => 'Fecha Caducidad',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Lot policies
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\Lot.FIFO' => 'Más antiguo primero',
+    'App\Lot.LIFO' => 'Más reciente primero',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Production Order Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\ProductionOrder.released'    => 'Lanzada',
+    'App\ProductionOrder.finished'  => 'Terminada',
+
+
+/* **************************************************************************** */
+
 
 	/*
 	|--------------------------------------------------------------------------

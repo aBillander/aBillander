@@ -80,7 +80,7 @@ background-color: #f9f9f9;">{{ $payment->amount }}</div>
 
 <div class="row">
 
- <div class="form-group col-lg-12 col-md-12 col-sm-12 {{{ $errors->has('notes') ? 'has-error' : '' }}}">
+ <div class="form-group col-lg-12 col-md-12 col-sm-12 {{ $errors->has('notes') ? 'has-error' : '' }}">
     {{ l('Notes', [], 'layouts') }}
     {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '2')) !!}
     {{ $errors->first('notes', '<span class="help-block">:message</span>') }}

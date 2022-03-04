@@ -74,9 +74,15 @@ return [
 	'Given a Cost Price, changing the Margin, the Selling Price is recalculated. By changing the Sale Price the Margin is recalculated. The value of the Margin will not be saved, since it is calculated from the Sales Price and the Cost Price.'     => 'Dado un Precio de Coste, cambiando el Margen se recalcula el Precio de Venta. Cambiando el Precio de Venta se recalcula el Margen. El valor del Margen no se guardará, ya que se calcula a partir del Precio de Venta y del Precio de Coste.',
 
 	'Lot tracking?' => '¿Control de Lotes?',
+	'Activate Lot tracking' => 'Activar Control de Lotes',
+	'Deactivate Lot tracking' => 'Desactivar Control de Lotes',
 	'Use Lot and Expiry Date tracking for this Product.' => 'Usar Control de Lotes y de Fecha de Caducidad para este Producto.',
 	'Expiry Time' => 'Plazo de Caducidad',
-	'Number of Days before expiry.' => 'Número de Días antes de que el Producto caduque.',
+	'Number of Days before expiry. Examples:<br /><ul><li>5 or 5d -> 5 days</li><li>8m -> 8 months</li><li>2y -> 2 years</li></ul>' => 'Número de Días antes de que el Producto caduque. Ejemplos:<br /><ul><li>5 ó 5d -> 5 días</li><li>8m -> 8 meses</li><li>2a ó 2y -> 2 años</li></ul>',
+	'Lot Generator' => 'Generador de Lotes',
+	'Select the function to calculate Lot Numbers.' => 'Selecccione la función para calcular el Número del Lote.',
+	'Lot Policy' => 'Política de Lotes',
+	'Automatic Lot allocation to Documents will be done on this basis.' => 'La asignación automática de Lotes a Documentos se hará con este criterio.',
 
 
 	/*
@@ -135,6 +141,7 @@ return [
 
 	'Reorder point'     => 'Stock reaprovisionamiento',
 	'Maximum stock'     => 'Stock máximo',
+	'Minimum stock'     => 'Stock mínimo',
 	'Warehouse'     => 'Almacén',
 	'Quantity'     => 'Cantidad',
 	'TOTAL'     => 'TOTAL',
@@ -297,6 +304,8 @@ return [
     'Prices are exclusive of Ecotax' => 'El Precio no incluye la Ecotasa',
     'Prices are inclusive of Ecotax' => 'El Precio incluye la Ecotasa',
 
+    'Pending Movements after Date' => 'Movimientos Pendientes desde',
+
 
 	/*
 	|--------------------------------------------------------------------------
@@ -311,6 +320,10 @@ return [
     'Import Descriptions' => 'Importar Descripciones',
     'Update Price' => 'Actualizar Precio',
     'Update Stock' => 'Actualizar Stock',
+    'Update Name' => 'Actualizar Nombre',
+    'Update Description' => 'Actualizar Descripción',
+    'Update Name & Description' => 'Actualizar Nombre y Descripción',
+    'Update Images' => 'Actualizar Imágenes',
 
 
 
@@ -362,5 +375,12 @@ return [
     'View Product' => 'Ir al Producto',
 
     'This Product is of Type "Grouped"' => 'Este Producto es de Tipo "Agrupado"',
+
+
+    'Available Stock: <br />[Physical Stock] <br />+ [Orders to Suppliers] <br />- [Customer Orders] <br />+ [Not finished Production Orders] <br />- [Production Orders Reserves]' => 'Stock Disponible: <br />[Stock físico] <br />+ [Pedios a Proveedores] <br />- [Pedidos de Clientes] <br />+ [Ordenes de Fabricación no terminadas] <br />- [Reservas de Ordenes de Fabricación]',
+
+
+    // Lots stuff
+    'A Lot will be created with the quantity in stock.' => 'Se creará un Lote con la cantidad en stock.',
 
 ];

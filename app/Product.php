@@ -122,7 +122,7 @@ class Product extends Model {
 
                             'tax_id', 'ecotax_id', 'category_id', 'main_supplier_id', 'purchase_measure_unit_id', 
 
-                            'lot_tracking', 'expiry_time', 
+                            'lot_tracking', 'expiry_time', 'lot_number_generator', 'lot_policy', 
 
                             'measure_unit_id', 'work_center_id', 'route_notes', 'machine_capacity', 'units_per_tray', 
 
@@ -188,6 +188,7 @@ class Product extends Model {
     {
         parent::boot();
 
+        // See ProductsController::indexQueryRaw()
         static::addGlobalScope(new ShowOnlyActiveScope( Configuration::isTrue('SHOW_PRODUCTS_ACTIVE_ONLY') ));      // (new ManagerResolver());
 
         static::created(function($product)
@@ -387,11 +388,11 @@ class Product extends Model {
 
 
 
-    public function getQuantityAllocatedAttribute()
+    public function getQuantityOnorderAttribute()
     {
-        // Allocated by Customer Orders
+        // On Order by Supplier Orders
         // Document status = 'confirmed'
-        $lines1 = CustomerOrderLine::
+        $lines1 = SupplierOrderLine::
                       where('product_id', $this->id)
                     ->whereHas('document', function($q)
                             {
@@ -402,9 +403,9 @@ class Product extends Model {
 
         $count1 = $lines1->sum('quantity');
 
-        // Allocated by Customer Shipping Slips
+        // On Order by Supplier Shipping Slips
         // Document status = 'confirmed'
-        $lines2 = CustomerShippingSlipLine::
+        $lines2 = SupplierShippingSlipLine::
                       where('product_id', $this->id)
                     ->whereHas('document', function($q)
                             {
@@ -416,14 +417,159 @@ class Product extends Model {
         $count2 = $lines2->sum('quantity');
 
 
-        // Allocated by Customer Invoices
+        // On Order by Supplier Invoices
         // Document status = 'confirmed' && created_via = 'manual'
-        $lines3 = CustomerInvoiceLine::
+        $lines3 = SupplierInvoiceLine::
                       where('product_id', $this->id)
                     ->whereHas('document', function($q)
                             {
                                 $q->where('status', 'confirmed');
                                 $q->where('created_via', 'manual');
+                            }
+                    )
+                    ->get();
+
+        $count3 = $lines3->sum('quantity');
+
+        
+
+
+        $count = $count1 + $count2 + $count3;
+
+        return $count;
+    }
+
+    public function getAllocations( $min_date = null )
+    {
+        // Allocated by Customer Orders
+        // Document status = 'confirmed'
+        $lines1 = CustomerOrderLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
+                            }
+                    )
+                    ->with('document')
+                    ->with('document.customer')
+                    ->get();
+
+
+        // Allocated by Customer Shipping Slips
+        // Document status = 'confirmed'
+        $lines2 = CustomerShippingSlipLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
+                            }
+                    )
+                    ->with('document')
+                    ->with('document.customer')
+                    ->get();
+
+        $count2 = $lines2->sum('quantity');
+
+
+        // Allocated by Customer Invoices
+        // Document status = 'confirmed' && created_via = 'manual'
+        $lines3 = CustomerInvoiceLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+                                $q->where('created_via', 'manual');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
+                            }
+                    )
+                    ->with('document')
+                    ->with('document.customer')
+                    ->get();
+
+        $count3 = $lines3->sum('quantity');
+
+        
+
+
+        $lines = $lines1->merge($lines2)->merge($lines3);
+
+        // Do some sorting here (by document_date, ASC):
+        $lines = $lines->sortBy(function ($line, $key) {
+            return $line->document->document_date;
+        });
+
+        return $lines;
+    }
+
+    public function getQuantityAllocatedAttribute()
+    // To Do: refactor using getAllocations()
+    {
+        $date = Configuration::get('STOCKMOVEMENTS_AFTER_DATE');
+
+        try {
+
+            $min_date = $date ? 
+                        \Carbon\Carbon::createFromFormat('Y-m-d', $date) :
+                        null;
+            
+        } catch (\Exception $e) {
+
+            $min_date = \Carbon\Carbon::now()->subDays(130);
+            
+        }    
+
+        // Allocated by Customer Orders
+        // Document status = 'confirmed'
+        $lines1 = CustomerOrderLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
+                            }
+                    )
+                    ->get();
+
+        $count1 = $lines1->sum('quantity');
+
+        // Allocated by Customer Shipping Slips
+        // Document status = 'confirmed'
+        $lines2 = CustomerShippingSlipLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
+                            }
+                    )
+                    ->get();
+
+        $count2 = $lines2->sum('quantity');
+
+
+        // Allocated by Customer Invoices
+        // Document status = 'confirmed' && created_via = 'manual'
+        $lines3 = CustomerInvoiceLine::
+                      where('product_id', $this->id)
+                    ->whereHas('document', function($q) use ($min_date)
+                            {
+                                $q->where('status', 'confirmed');
+                                $q->where('created_via', 'manual');
+
+                                if ($min_date != null)
+                                    $q->where('document_date', '>=', $min_date);
                             }
                     )
                     ->get();
@@ -562,18 +708,22 @@ class Product extends Model {
 
         if ( isset($params['reference']) && trim($params['reference']) !== '' )
         {
-            $query->where('reference', 'LIKE', '%' . trim($params['reference']) . '%');
-            $query->orWhere('ean13', 'LIKE', '%' . trim($params['reference']) . '%');
+            $reference = $params['reference'];
+            $query->where( function($query) use ($reference) {                                
+                    $query->where('reference', 'LIKE', '%' . $reference . '%');
+                    $query->orWhere('ean13', 'LIKE', '%' . $reference . '%');
+            } );
             // $query->orWhere('combinations.reference', 'LIKE', '%' . trim($params['reference'] . '%'));
 
+            /*
             // Moved from controller
-            $reference = $params['reference'];
             $query->orWhereHas('combinations', function($q) use ($reference)
                                 {
                                     // http://stackoverflow.com/questions/20801859/laravel-eloquent-filter-by-column-of-relationship
                                     $q->where('reference', 'LIKE', '%' . $reference . '%');
                                 }
             );  // ToDo: if name is supplied, shows records that match reference but do not match name (due to orWhere condition)
+            */
         }
 
         if ( isset($params['name']) && trim($params['name']) !== '' )
@@ -616,6 +766,11 @@ class Product extends Model {
                   ->orderBy('position', 'asc');
         }
 
+        if ( isset($params['work_center_id']) && $params['work_center_id'] > 0 )
+        {
+            $query->where('work_center_id', '=', $params['work_center_id']);
+        }
+
         if ( isset($params['manufacturer_id']) && $params['manufacturer_id'] > 0 && 0)
         {
             $query->where('manufacturer_id', '=', $params['manufacturer_id']);
@@ -633,10 +788,34 @@ class Product extends Model {
 
         if ( isset($params['active']) )
         {
-            if ( $params['active'] == 0 )
-                $query->where('active', '=', 0);
-            if ( $params['active'] == 1 )
-                $query->where('active', '>', 0);
+            if ( Configuration::isTrue('SHOW_PRODUCTS_ACTIVE_ONLY') )
+            {
+                if ( $params['active'] == 1 )
+                {
+                    // Show active products, same as global scope ShowOnlyActiveScope
+                    // Do nothing
+                    ;
+
+                } else {
+                    // Show not active products (0) or all (-1)
+                    // Remove global scope
+                    $query->withoutGlobalScope(ShowOnlyActiveScope::class);
+
+                    // https://www.manifest.uk.com/blog/overriding-eloquent-global-scopes
+
+                    // Show not active products (0)
+                    if ( $params['active'] == 0 )
+                        $query->where('active', '=', 0);
+                }
+
+            } else {
+
+                if ( $params['active'] == 0 )
+                    $query->where('active', '=', 0);
+                
+                if ( $params['active'] == 1 )
+                    $query->where('active', '>', 0);
+            }
         }
 
         return $query;
@@ -881,7 +1060,30 @@ class Product extends Model {
             'stock1'   => $count1,
         ];
     }
-    
+
+ 
+
+ /* ************************************************************************************* */
+
+    // Brand new stuff
+
+    public function getStockByWarehouse( $warehouse = null )
+    {
+        if ( $warehouse == null ) $warehouse = Configuration::getInt('DEF_WAREHOUSE');
+        $warehouse_id = $warehouse instanceof Warehouse
+                    ? $warehouse->id
+                    : (int) $warehouse ;
+
+        $line = $this->warehouselines()->where('warehouse_id', $warehouse_id)->get()->first();
+
+        if($line)
+            return $line->quantity;
+
+        return 0.0;
+    }   
+
+
+ /* ************************************************************************************* */
 
     
 
@@ -1005,6 +1207,23 @@ class Product extends Model {
     public function purchasemeasureunit()
     {
         return $this->belongsTo('App\MeasureUnit', 'purchase_measure_unit_id');
+    }
+
+    // Handy method
+    public function getSupplymeasureunitAttribute()
+    {
+        return $this->purchasemeasureunit ?? $this->measureunit;
+    }
+
+    // Handy method
+    public function getSupplymeasureunitConversionRateAttribute()
+    {
+        $munit = $this->supplymeasureunit;
+
+        if ( $this->measure_unit_id == $munit->id )     // Same unit
+            return 1.0;
+
+        return $this->productmeasureunits->where('measure_unit_id', $munit->id)->first()->conversion_rate;
     }
     
     public function productmeasureunits()      // http://advancedlaravel.com/eloquent-relationships-examples
@@ -1234,10 +1453,32 @@ class Product extends Model {
         return $this->hasMany('App\ProductionOrderLine');
     }
 
+    
+
     public function lots()
     {
         return $this->hasMany('App\Lot')->orderBy('expiry_at', 'DESC');
     }
+
+    public function availableLots()
+    {
+        // $sort_order = ($this->lot_policy == 'FIFO' ? 'ASC' : 'DESC');
+        // ^-- Will not work, since "$this" is not defined
+
+        return $this->hasMany('App\Lot')->where('quantity', '>', 0)->orderBy('expiry_at', 'ASC');   // Most common sorting, I guess (FIFO)
+    }
+
+    public function availableLotsSorted()
+    {
+        $sort_order = ($this->lot_policy == 'FIFO' ? 'ASC' : 'DESC');
+
+        if ($sort_order == 'ASC')
+            return $this->availableLots;
+
+        return $this->availableLots->sortByDesc('expiry_at');
+    }
+
+
 
     public function pricelistlines()
     {
@@ -1302,6 +1543,7 @@ class Product extends Model {
  //                   'measure_unit', 'quantity_decimal_places', 
                     'reorder_point', 'price', 'price_tax_inc',
                     'quantity_onhand', 'quantity_onorder', 'quantity_allocated', 
+                    'cost_average', 
                     'blocked', 'active', 
  //                   'tax_id',
         ];
@@ -1751,14 +1993,54 @@ class Product extends Model {
     */
 
     /**
-     * Scope a query to only include finishe products.
+     * Scope a query to only include finished products.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeIsManufactured($query)
+    public function scopeIsManufactured($query, $apply = true)
     {
-        return $query->where('procurement_type', 'manufacture');
+        if ( !$apply )
+            return $query;
+
+        return $query->where(function ($query) {
+                            $query->where('procurement_type', 'manufacture');
+                            $query->orWhere('procurement_type', 'assembly');
+                    });
+    }
+
+    /**
+     * Scope a query to only include assemblies.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsAssembly($query, $apply = true)
+    {
+        if ( !$apply )
+            return $query;
+
+        return $query->where(function ($query) {
+                            $query->orWhere('procurement_type', 'assembly');
+                    });
+    }
+
+    /**
+     * Scope a query to only include part items products (raw materials or sub-assemblies).
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsPartItem($query, $apply = true)
+    {
+        if ( !$apply )
+            return $query;
+
+        return $query->where(function ($query) {
+                            $query->where(  'procurement_type', 'assembly');
+                            $query->orWhere('procurement_type', 'purchase');
+                            $query->orWhere('procurement_type', 'none');
+                    });
     }
 
     public function scopeIsPurchased($query)

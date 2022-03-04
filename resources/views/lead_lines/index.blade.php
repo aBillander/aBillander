@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Lead Lines') }} @parent @stop
+@section('title') {{ l('Lead Lines') }} @parent @endsection
 
 
 @section('content')
@@ -70,7 +70,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('leads/' . $lead->id.'/leadlines/' . $leadline->id ) }}" 
                 		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                		data-title="{{ l('Lead Lines') }} :: ({{$leadline->id}}) {{{ $leadline->name }}} " 
+                		data-title="{{ l('Lead Lines') }} :: ({{$leadline->id}}) {{ $leadline->name }} " 
                 		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('leadlines/' . $leadline->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>
@@ -91,6 +91,6 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')

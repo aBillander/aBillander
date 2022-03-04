@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Commission Settlements - Create') }} @parent @stop
+@section('title') {{ l('Commission Settlements - Create') }} @parent @endsection
 
 
 @section('content')
@@ -8,7 +8,12 @@
 <div class="row">
 	<div class="col-md-8 col-md-offset-2" style="margin-top: 50px">
 		<div class="panel panel-info">
-			<div class="panel-heading"><h3 class="panel-title">{{ l('New Commission Settlement') }}</h3></div>
+			<div class="panel-heading">
+                <h3 class="panel-title">{{ l('New Commission Settlement') }}
+                    @if ( $salesrep ) 
+                        :: &nbsp; <strong>{{ $salesrep->name }}</strong> <span class="btn btn-xs btn-grey" title="{{l('Commission Percent')}}">{{ $salesrep->as_percent( 'commission_percent' ) }}%</span>
+                    @endif
+                </h3></div>
 			<div class="panel-body">
 
 				@include('errors.list')
@@ -43,6 +48,7 @@
 
     $(document).ready(function() {
 
+{{--
         $("#autocustomer_name").val('');
 
         // To get focus;
@@ -73,7 +79,7 @@
 
            return true;
          });
-
+--}}
     });
 
 

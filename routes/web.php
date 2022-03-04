@@ -8,6 +8,10 @@
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
+
+php artisan route:clear
+php artisan route:cache
+
 |
 */
 
@@ -191,10 +195,11 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('/jennifer/reports/invoices'  , 'JenniferController@reportInvoices'  )->name('jennifer.reports.invoices');
         Route::post('/jennifer/reports/bankorders', 'JenniferController@reportBankOrders')->name('jennifer.reports.bankorders');
         Route::post('/jennifer/reports/inventory' , 'JenniferController@reportInventory' )->name('jennifer.reports.inventory');
+        Route::post('/jennifer/reports/customersbalance' , 'JenniferController@reportCustomersBalance' )->name('jennifer.reports.customersbalance');
         Route::post('/jennifer/reports/mod347'                   , 'JenniferController@index347'    )->name('jennifer.reports.index347');
         Route::get( '/jennifer/reports/mod347/{mod347_year}/show', 'JenniferController@index347Show'    )->name('jennifer.reports.index347.show');
         Route::get( '/jennifer/reports/mod347/{mod347_year}'     , 'JenniferController@reportModelo347'    )->name('jennifer.reports.mod347');
-        Route::get( '/jennifer/reports/mod347/{mod347_year}/email/{customer_id}', 'JenniferController@sendemail')->name('jennifer.reports.mod347.email'  );
+        Route::get( '/jennifer/reports/mod347/{mod347_year}/email/{customer_id}', 'JenniferController@reportModelo347Email')->name('jennifer.reports.mod347.email'  );
         Route::get( '/jennifer/reports/mod347/{mod347_year}/customer/{customer_id}', 'JenniferController@reportModelo347Customer')->name('jennifer.reports.mod347.customer');
         Route::get( '/jennifer/reports/mod347/{mod347_year}/supplier/{supplier_id}', 'JenniferController@reportModelo347Supplier')->name('jennifer.reports.mod347.supplier');
 
@@ -336,6 +341,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('suppliers.addresses', 'SupplierAddressesController');
 
         Route::get('suppliers/{id}/products',  'SuppliersController@getProducts')->name('supplier.products');
+        Route::get('suppliers/{id}/reorder',            'SuppliersController@getReorderForm' )->name('supplier.reorder.form');
+        Route::post('suppliers/{id}/products/reorder',  'SuppliersController@ProductsReorder')->name('supplier.products.reorder');
 
         Route::resource('suppliers.supplierpricelistlines', 'SupplierPriceListLinesController');
 
@@ -370,13 +377,19 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('tools', 'ToolsController');
 
         Route::resource('lots', 'LotsController');
+        Route::post('lots/{lot}/quantity', 'LotsController@updateQuantity')->name('lots.update.quantity');
         Route::get( 'export/lots', 'LotsController@export' )->name('lots.export');
         Route::get( 'lots/{lot}/stockmovements',        'LotsController@stockmovements' )->name('lot.stockmovements'       );
-        Route::get( 'export/lots/{lot}/stockmovements', 'LotsController@export' )->name('lot.stockmovements.export');
+        Route::get( 'export/lots/{lot}/stockmovements',   'LotsController@exportMovements'   )->name('lot.stockmovements.export');
+        Route::get( 'export/lots/{lot}/stockallocations', 'LotsController@exportAllocations' )->name('lot.stockallocations.export');
 
         Route::post('lots/{id}/attachment',         'LotsController@attachmentStore'  )->name('lots.attachment.store'  );
         Route::get( 'lots/{id}/attachment/{aid}',   'LotsController@attachmentShow'   )->name('lots.attachment.show'   );
         Route::delete('lots/{id}/attachment/{aid}', 'LotsController@attachmentDestroy')->name('lots.attachment.destroy');
+
+        Route::post('lots/{lot}/split', 'LotsController@split')->name('lots.split');
+
+        Route::resource('lotitems', 'LotItemsController');
 
         Route::resource('products', 'ProductsController');
         Route::get('products/{id}/stockmovements',   'ProductsController@getStockMovements'  )->name('products.stockmovements');
@@ -404,6 +417,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('products/{id}/bom/pdf', 'ProductsController@getPdfBom')->name('product.bom.pdf');
 
         Route::get('products/{id}/duplicate',     'ProductsController@duplicate'   )->name('product.duplicate'  );
+
+        Route::get('products/{id}/lottracking',   'ProductsController@lotTracking'  )->name('product.lottracking'  );
+        Route::post('products/lottracking/activate', 'ProductsController@lotTrackingActivate'  )->name('product.lottracking.activate'  );
+        Route::get('products/{id}/lotuntracking', 'ProductsController@lotUntracking')->name('product.lotuntracking');
 
         Route::post('products/{id}/combine', array('as' => 'products.combine', 'uses'=>'ProductsController@combine'));
         Route::get('products/ajax/name_lookup'  , array('uses' => 'ProductsController@ajaxProductSearch', 
@@ -438,9 +455,10 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('productboms/{id}/duplicate', 'ProductBOMsController@duplicateBOM')->name('productbom.duplicate');
         Route::post('productboms/sortlines', 'ProductBOMsController@sortLines')->name('productbom.sortlines');
 
-        Route::resource('productionorders', 'ProductionOrdersController');
-        Route::get('productionorders/order/searchproduct', 'ProductionOrdersController@searchProduct')->name('productionorder.searchproduct');
-        Route::post('productionorders/order/storeorder', 'ProductionOrdersController@storeOrder')->name('productionorder.storeorder');
+        // See web_mfg.php
+//        Route::resource('productionorders', 'ProductionOrdersController');
+//        Route::get('productionorders/order/searchproduct', 'ProductionOrdersController@searchProduct')->name('productionorder.searchproduct');
+//        Route::post('productionorders/order/storeorder', 'ProductionOrdersController@storeOrder')->name('productionorder.storeorder');
 
         Route::resource('assemblyorders', 'AssemblyOrdersController');
 
@@ -463,6 +481,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::resource('productionsheets', 'ProductionSheetsController');
         Route::post('productionsheets/{id}/addorders', 'ProductionSheetsController@addOrders')->name('productionsheet.addorders');
         Route::get('productionsheets/{id}/calculate', 'ProductionSheetsController@calculate')->name('productionsheet.calculate');
+        Route::get('productionsheets/{id}/assign/lots', 'ProductionSheetsController@assignLots')->name('productionsheet.assign.lots');
         Route::get('productionsheets/{id}/getlines', 'ProductionSheetsController@getCustomerOrderOrderLines')->name('productionsheet.getCustomerOrderLines');
         Route::get('productionsheets/{id}/customerorderssummary', 'ProductionSheetsController@getCustomerOrdersSummary')->name('productionsheet.getCustomerOrdersSummary');
 
@@ -487,6 +506,17 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::post('productionsheetorders/shippingslips',  'ProductionSheetOrdersController@createShippingSlips')->name('productionsheet.create.shippingslips');
 
+
+        // Production Sheet Production Requirements
+        Route::resource('productionsheets.productionrequirements', 'ProductionSheetProductionRequirementsController');
+
+        Route::get('productionsheets/{id}/getproductionrequirements',       'ProductionSheetsController@getProductionRequirements'     )->name('productionsheet.getproductionrequirements'     );
+
+        Route::post('productionsheets/{id}/quickaddproductionrequirements', 'ProductionSheetsController@quickAddProductionRequirements')->name('productionsheet.quickaddproductionrequirements');
+
+        Route::post('productionsheets/deleteproductionrequirement/{lid}',   'ProductionSheetsController@deleteProductionRequirement'   )->name('productionsheet.deleteproductionrequirement' );
+
+
         // Production Sheet Shipping Slips
         Route::get( 'productionsheetshippingslips/{id}',  'ProductionSheetShippingSlipsController@shippingslipsIndex')->name('productionsheet.shippingslips');
 
@@ -499,25 +529,36 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::post('productionsheetinvoices/close',  'ProductionSheetInvoicesController@closeInvoices')->name('productionsheet.close.invoices');
 
+        // Production Sheet Vouchers
+        Route::get( 'productionsheetvouchers/{id}',  'ProductionSheetVouchersController@vouchersIndex')->name('productionsheet.vouchers');
 
 
+        // Production Sheet Delivery Routes
         Route::get( 'productionsheets/{id}/deliveryroute/{route_id}', 'ProductionSheetsDeliveryRoutesController@export' )->name('productionsheet.deliveryroute');
 
         Route::get( 'productionsheets/{id}/tourline', 'ProductionSheetsTourlineController@export' )->name('productionsheet.tourline');
 
-        // Production Sheet Production Orders
-        Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->name('productionsheet.productionorders');
 
-        Route::get('productionsheetproductionorders/{id}/finish' , 'ProductionSheetProductionOrdersController@finish'    )->name('productionsheet.productionorders.finish');
+        // Production Sheet Production Orders
+        Route::get( 'productionsheetproductionorders/{id}',   'ProductionSheetProductionOrdersController@productionordersIndex')->where('id', '[0-9]+')->name('productionsheet.productionorders');
+
+        Route::post('productionsheetproductionorders/finish' , 'ProductionSheetProductionOrdersController@finish'    )->name('productionsheet.productionorders.finish');
 
         Route::post('productionsheetproductionorders/finish/bulk', 'ProductionSheetProductionOrdersController@finishBulk')->name('productionsheet.productionorders.bulk.finish');
 
-        Route::post('productionsheetproductionorders/finish/withlot', 'ProductionSheetProductionOrdersController@finishWithLot')->name('productionsheet.productionorders.finish.withlot');
+        Route::get('productionsheetproductionorders/finishedlot/reference' , 'ProductionSheetProductionOrdersController@getLotReference')->name('productionsheet.productionorders.getlotreference');
+
+        // Deprecated; keep for reference; use productionsheet.productionorders.finish instead
+        // Route::post('productionsheetproductionorders/finish/withlot', 'ProductionSheetProductionOrdersController@finishWithLot')->name('productionsheet.productionorders.finish.withlot');
+
+
+        // Production Sheet Stock Analysis
+        Route::get( 'productionsheets/{id}/stock', 'ProductionSheetStockController@stockIndex' )->name('productionsheet.stock');
 
 
 
         Route::resource('customers', 'CustomersController');
-        Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customerorders.create.withcustomer');
+// Duplicate        Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customerorders.create.withcustomer');
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup'));
         Route::get('customers/{id}/getorders',             'CustomersController@getOrders'    )->name('customer.getorders');
         Route::get('customers/{id}/getpricerules',         'CustomersController@getPriceRules')->name('customer.getpricerules');
@@ -717,6 +758,7 @@ foreach ($pairs as $pair) {
 
 
         Route::post($path.'/{id}/storeline',    $controller.'@storeDocumentLine'   )->name($path.'.storeline'  );
+        Route::post($path.'/{id}/fetch/save',   $controller.'@fetchAndSaveField'   )->name($path.'.fetch.save' );
         Route::post($path.'/{id}/updatetotal',  $controller.'@updateDocumentTotal' )->name($path.'.updatetotal');
         Route::get($path.'/{id}/getline/{lid}', $controller.'@getDocumentLine'     )->name($path.'.getline'    );
         Route::post($path.'/updateline/{lid}',  $controller.'@updateDocumentLine'  )->name($path.'.updateline' );
@@ -790,6 +832,13 @@ foreach ($pairs as $pair) {
         Route::get('customershippingslips/{id}/undeliver'  , 'CustomerShippingSlipsController@undeliver')->name('customershippingslip.undeliver');
 
         Route::get('customershippingslips/pending/today',  'CustomerShippingSlipsController@getTodaysShippingSlips')->name('customershippingslips.for.today');
+
+
+    
+        Route::resource('customerorderlines.lots', 'CustomerOrderLineLotsController');
+
+        Route::resource('customershippingsliplines.lots', 'CustomerShippingSlipLineLotsController');
+
 
 
         Route::post('customerinvoices/{id}/shippingslip/add'  , 'CustomerInvoicesController@addShippingSlipToInvoice')->name('customerinvoice.shippingslip.add');

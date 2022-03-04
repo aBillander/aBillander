@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Currency Converter') }} @parent @stop
+@section('title') {{ l('Currency Converter') }} @parent @endsection
 
 
 @section('content')

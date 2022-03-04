@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Supplier Vouchers') }} @parent @stop
+@section('title') {{ l('Supplier Vouchers') }} @parent @endsection
 
 
 @section('content')
@@ -167,7 +167,7 @@
 @endif
       </td>
 			<td>
-          <a href="{{ URL::to('supplierinvoices/' . optional($payment->supplierInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->supplierInvoice->document_reference or '' }}</a></td>
+          <a href="{{ URL::to('supplierinvoices/' . optional($payment->supplierInvoice)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->supplierInvoice->document_reference ?? '' }}</a></td>
 			<td>
           <a href="{{ URL::to('suppliers/' . optional($payment->supplier)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $payment->supplier->name_regular }}</a></td>
 			<td>{{ $payment->name }}</td>

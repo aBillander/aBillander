@@ -104,25 +104,95 @@
 
   $reference = $item['reference'];
 
-  $orders = $sheet->customerorders()->whereHas('lines', function($q) use ($reference) {
-      $q->where('reference', $reference);
-  })->get();
+  $orders = $sheet->customerorders()
+                  ->whereHas('lines', function($q) use ($reference) {
+                      $q->where('reference', $reference);
+                  })
+                  ->with(['lines' => function($q) use ($reference) {
+                                        $q->where('reference', $reference);
+                                        $q->with('lotitems');
+                                    }])
+                  ->get();
 
 @endphp
 
 
   @foreach ($orders as $order)
           <tr>
-            <td width="17%" class="xbutton-pad text-right">{{ $order->document_reference ?: 'Borrador' }}
+            <td width="17%" class="xbutton-pad text-right">
+
+@if( $order->status == 'closed' )
+     <u>{{ $order->document_reference ?: 'Borrador' }}</u>
+@else
+    {{ $order->document_reference ?: 'Borrador' }}
+@endif
 
                 @if (0 && $order->reference)
                     <br />[{{ $order->reference }}
                 @endif
 
             </td>
-            <td width="73%" xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}
+            <td width="63%" xstyle="border-bottom: 1px #ccc solid;">{!! $order->customerInfo() !!}
+
+@if( $order->status != 'closed' )
+
+                @foreach ($order->lines->where( 'reference', $reference) as $line)
+
+                    @if( !$line->lotitems->count() )
+                        @continue
+                    @endif
+
+@if ($line->lotitems->count() > 1)
+        <table>
+            <tr>
+                <td style="border-bottom: 0px #ccc solid !important;"><i>Lotes:</i></td>
+                <td style="border-bottom: 0px #ccc solid !important;"><i>
+                    @foreach( $line->lotitems as $lotitem )
+                        {{ $lotitem->as_quantity('quantity') }} ud. Lote <b>{{ $lotitem->lot->reference }}</b> ({{ abi_date_short( $lotitem->lot->expiry_at ) }})<br />
+                    @endforeach                 
+                </i></td>
+            </tr>
+        </table>
+@else
+                <br />
+                <span class="">
+                <i>Lote: 
+                    @foreach( $line->lotitems as $lotitem )
+                        <b>{{ $lotitem->lot->reference }}</b> ({{ abi_date_short( $lotitem->lot->expiry_at ) }})<br />
+                        @break
+                    @endforeach
+                </i>
+                </span>
+
+@endif
+
+{{--
+                    <br />
+                    @foreach($line->lotitems as $item)
+                        <i><b>{{ $item->lot->reference }}</b></i> ({{ niceQuantity($item->quantity) }}) {{ abi_date_short( $lotitem->lot->expiry_at ) }}   <br />
+                    @endforeach
+--}}
+                @endforeach
+
+@endif
+
             </td>
             <td width="10%" class="text-right" xstyle="border-right: 1px #ccc solid;"><strong>{{ niceQuantity($order->lines->where( 'reference', $reference)->sum('quantity')) }}</strong>
+            </td>
+            <td width="10%">
+                @if ( $order->hasShippingAddress() )
+
+
+
+                {{ $order->shippingaddress->alias }} 
+                 <!-- a href="javascript:void(0);">
+                    <button type="button" class="btn btn-xs btn-grey" data-toggle="popover" data-placement="top" data-content="{{ $order->shippingaddress->firstname }} {{ $order->shippingaddress->lastname }}<br />{{ $order->shippingaddress->address1 }}<br />{{ $order->shippingaddress->city }} - {{ $order->shippingaddress->state->name }} <a href=&quot;javascript:void(0)&quot; class=&quot;btn btn-grey btn-xs disabled&quot;>{{ $order->shippingaddress->phone }}</a>" data-original-title="" title="">
+                        <i class="fa fa-address-card-o"></i>
+                    </button>
+                 </a -->
+
+
+                @endif
             </td>
 {{--            
             <td xstyle="border-bottom: 1px #ccc solid;">
@@ -154,6 +224,7 @@
     </tbody>
 </table>
 
+<p><b>NOTA:</b> Los pedidos subrayados están cerrados y no tienen lotes asignados.</p>
 
 @else
 <div class="alert alert-warning alert-block">

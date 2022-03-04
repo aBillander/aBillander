@@ -11,6 +11,7 @@ use App\MeasureUnit;
 use App\Combination;
 use App\Currency;
 use App\Address;
+use App\Tax;
 
 use App\StockMovement;
 
@@ -166,6 +167,45 @@ class BillableController extends Controller
 
         return $document;
 */
+        
+        // Let's see if we can add lines
+        $cannot_add_lines_msg = '';
+        $cannot_add_lines_data = ['id' => ''];
+
+        // Check Taxes of the Customer Country
+        if ( $document->lines->count() == 0 )       // Check only with empty doc. Assume no changes afterwards!!!
+        {
+            $taxing_address = $document->taxingaddress;
+
+            // Loop throu all Taxes
+            $taxes = Tax::
+                          where('active', '>', 0)
+                        ->get();
+
+            foreach ($taxes as $tax) {
+                // Tax defeined for this address?
+                $tax_percent = $tax->getTaxPercent( $taxing_address );
+
+                if( is_null( $tax_percent ) )
+                {
+                    $cannot_add_lines_msg = 'There are Taxes that are not defined for the Country of the Customer &#58&#58 (:id) ';
+                    break;
+                }
+            }
+
+            if ( $cannot_add_lines_msg == '' )          // if ( $cannot_add_lines_msg != '' ) => then no more checks need to be done!
+            // Ecotaxes stuff
+            if ( Configuration::isTrue('ENABLE_ECOTAXES') )
+            {
+                // To do: perform check
+                
+            }
+        }
+
+        if ( $cannot_add_lines_msg != '' )
+            return view($this->view_path.'._panel_document_lines_cannot_add', $this->modelVars() + compact('document', 'cannot_add_lines_msg', 'cannot_add_lines_data'));
+
+
         if ( Configuration::isTrue('ENABLE_LOTS') )
         if ( strpos($this->model, 'ShippingSlip') !== false )
         {
@@ -766,6 +806,49 @@ class BillableController extends Controller
     }
 
 
+
+
+    public function fetchAndSaveField(Request $request, $document_id)
+    {
+        $document = $this->document
+//                        ->with('customershippingsliplines')
+//                        ->with('customershippingsliplines.product')
+                        ->findOrFail($document_id);
+
+        $field = $request->input('field', '');
+
+        if ($field == 'weight')
+        {
+            $value = $document->getWeight();
+            
+        } else 
+        if ($field == 'volume')
+        {
+            $value = $document->getVolume();
+            
+        } else 
+        {
+            return response()->json( [
+                    'msg' => 'KO',
+                    'document' => $document_id,
+                    'value' => '',
+            ] );
+            
+        }        
+
+        $document->{$field} = $value;
+
+        $document->save();
+
+        return response()->json( [
+                'msg' => 'OK',
+                'document' => $document_id,
+                'field' => $field,
+                'value' => $value,
+        ] );
+    }
+
+
 /* ********************************************************************************************* */  
 
 
@@ -778,6 +861,15 @@ class BillableController extends Controller
     public function duplicateDocument($id)
     {
         $document = $this->document->findOrFail($id);
+
+        // Let's see what we have:
+        if ($document->customer)
+            $entity = 'customer';
+        else
+        if ($document->supplier)
+            $entity = 'supplier';
+        else
+            $entity = 'none';
 
         // Duplicate
         $clone = $document->replicate();
@@ -797,7 +889,6 @@ class BillableController extends Controller
 
         $clone->document_reference = null;
         $clone->reference = '';
-        $clone->reference_customer = '';
         $clone->reference_external = '';
 
         $clone->document_prefix      = null;
@@ -813,16 +904,39 @@ class BillableController extends Controller
         $clone->delivery_date = null;
         $clone->delivery_date_real = null;
         $clone->close_date = null;
+
+        $clone->down_payment = 0.0;
+
+        $clone->shipping_slip_at = null;
+        $clone->aggregated_at = null;
+        $clone->backordered_at = null;
         
         $clone->tracking_number = null;
 
-        $clone->parent_document_id = null;
-
-        $clone->production_sheet_id = null;
         $clone->export_date = null;
         
         $clone->secure_key = null;
         $clone->import_key = '';
+
+
+        $clone->{"reference_$entity"} = '';
+//        $clone->{"notes_from_$entity"} = '';
+//        $clone->{"notes"} = '';
+//        $clone->{"notes_fto_$entity"} = '';
+        
+
+        if ( $entity == 'customer' )
+        {
+            $clone->parent_document_id = null;
+
+            $clone->production_sheet_id = null;
+
+            $clone->invoiced_at = null;
+            
+        } else if ( $entity == 'supplier' )
+        {
+            $clone->fulfillment_status = 'pending';
+        }
 
 
         $clone->save();

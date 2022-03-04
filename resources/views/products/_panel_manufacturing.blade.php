@@ -30,7 +30,7 @@
             <td>{{ $bom->alias }}</td>
             <td>{{ $bom->name }}</td>
             <td>{{ $bom->quantity }}</td>
-            <td>{{ $bom->measureunit->name OR '' }}</td>
+            <td>{{ $bom->measureunit->name ?? '' }}</td>
             <td class="text-center">
                 @if ($bom->notes)
                  <a href="javascript:void(0);">

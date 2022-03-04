@@ -240,14 +240,36 @@
          
         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('weight') ? 'has-error' : '' }}">
            {{ l('Weight') }} (<span class="text-success">{{ optional($weight_unit)->sign }}</span>)
-           {!! Form::text('weight', null, array('class' => 'form-control', 'id' => 'weight')) !!}
+
+                      <div class="input-group">
+
+           {!! Form::text('weight', null, array('class' => 'form-control', 'id' => 'weight', 'onclick' => "this.select()")) !!}
            {!! $errors->first('weight', '<span class="help-block">:message</span>') !!}
+
+                        <span class="input-group-btn">
+                          <button class="fetch-weight btn xbtn-sm btn-lightblue" type="button" title="{{l('Apply and Save')}}">
+                              <span class="fa fa-calculator"></span>
+                          </button>
+                        </span>
+
+                      </div>
         </div>
 
         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('volume') ? 'has-error' : '' }}">
            {{ l('Volume') }} (<span class="text-success">{{ optional($volume_unit)->sign }}</span>)
-           {!! Form::text('volume', null, array('class' => 'form-control', 'id' => 'volume')) !!}
+
+                      <div class="input-group">
+
+           {!! Form::text('volume', null, array('class' => 'form-control', 'id' => 'volume', 'onclick' => "this.select()")) !!}
            {!! $errors->first('volume', '<span class="help-block">:message</span>') !!}
+
+                        <span class="input-group-btn">
+                          <button class="fetch-volume btn xbtn-sm btn-lightblue" type="button" title="{{l('Apply and Save')}}">
+                              <span class="fa fa-calculator"></span>
+                          </button>
+                        </span>
+
+                      </div>
         </div>
 
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('tracking_number') ? 'has-error' : '' }}">

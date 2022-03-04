@@ -42,41 +42,6 @@
                      {!! Form::text('maximum_stock', null, array('class' => 'form-control', 'id' => 'maximum_stock')) !!}
                      {!! $errors->first('maximum_stock', '<span class="help-block">:message</span>') !!}
                   </div>
-
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
-
-                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-lot_tracking">
-                     {!! Form::label('lot_tracking', l('Lot tracking?'), ['class' => 'control-label']) !!}
-                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                                data-content="{{ l('Use Lot and Expiry Date tracking for this Product.') }}">
-                                    <i class="fa fa-question-circle abi-help"></i>
-                             </a>
-                     <div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('lot_tracking', '1', false, ['id' => 'lot_tracking_on']) !!}
-                           {!! l('Yes', [], 'layouts') !!}
-                         </label>
-                       </div>
-                       <div class="radio-inline">
-                         <label>
-                           {!! Form::radio('lot_tracking', '0', true, ['id' => 'lot_tracking_off']) !!}
-                           {!! l('No', [], 'layouts') !!}
-                         </label>
-                       </div>
-                     </div>
-                   </div>
-
-                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('expiry_time') ? 'has-error' : '' }}">
-                     {{ l('Expiry Time') }}
-                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                                data-content="{{ l('Number of Days before expiry.') }}">
-                                    <i class="fa fa-question-circle abi-help"></i>
-                             </a>
-                     {!! Form::text('expiry_time', null, array('class' => 'form-control', 'id' => 'expiry_time')) !!}
-                     {!! $errors->first('expiry_time', '<span class="help-block">:message</span>') !!}
-                  </div>
-@endif
         </div>
 
 
@@ -86,8 +51,113 @@
 
 </div>
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
 
+
+@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+
+        <div class="row" style="margin-bottom: 15px;">
+                 <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                 </div>
+        </div>
+
+        <div class="row">
+
+                   <div class="form-group col-lg-2 col-md-2 col-sm-2" id="div-lot_tracking">
+                     {!! Form::label('lot_tracking', l('Lot tracking?'), ['class' => 'control-label']) !!}
+                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top"  data-container="body" 
+                                                data-content="{{ l('Use Lot and Expiry Date tracking for this Product.') }}">
+                                    <i class="fa fa-question-circle abi-help"></i>
+                             </a>
+@if( $product->quantity_onhand == 0.0 )
+                     <div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('lot_tracking', '1', true, ['id' => 'lot_tracking_on']) !!}
+                           {!! l('Yes', [], 'layouts') !!}
+                         </label>
+                       </div>
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('lot_tracking', '0', false, ['id' => 'lot_tracking_off']) !!}
+                           {!! l('No', [], 'layouts') !!}
+                         </label>
+                       </div>
+                     </div>
+@else
+                     <div class="form-control">
+
+                       <div class="radio-inline">
+                         <label>
+                           {!! Form::radio('lot_tracking_info', '1', true, ['id' => 'lot_tracking_info_on']) !!}
+                            @if( $product->lot_tracking > 0 )
+                              {{ l('Yes', [], 'layouts') }}
+                            @else
+                              {{ l('No', [], 'layouts') }}
+                            @endif
+                         </label>
+                       </div>
+
+                     </div>
+@endif
+                   </div>
+
+@if ( $product->lot_tracking )
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('expiry_time') ? 'has-error' : '' }}">
+                     {{ l('Expiry Time') }}
+                             <a href="javascript:void(0);" data-toggle="popover" 
+                                          data-placement="top" data-container="body" data-html="true" 
+                                          data-content="{{ l('Number of Days before expiry. Examples:<br /><ul><li>5 or 5d -> 5 days</li><li>8m -> 8 months</li><li>2y -> 2 years</li></ul>') }}">
+                                    <i class="fa fa-question-circle abi-help"></i>
+                             </a>
+                     {!! Form::text('expiry_time', null, array('class' => 'form-control', 'id' => 'expiry_time')) !!}
+                     {!! $errors->first('expiry_time', '<span class="help-block">:message</span>') !!}
+                  </div>
+
+                 <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('lot_number_generator') ? 'has-error' : '' }}">
+                    {{ l('Lot Generator') }}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top"  data-container="body" 
+                                      data-content="{{ l('Select the function to calculate Lot Numbers.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                    {!! Form::select('lot_number_generator', \App\Lot::getGeneratorList(), null, array('class' => 'form-control', 'id' => 'lot_number_generator')) !!}
+                    {!! $errors->first('lot_number_generator', '<span class="help-block">:message</span>') !!}
+                 </div>
+
+                 <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('lot_policy') ? 'has-error' : '' }}">
+                    {{ l('Lot Policy') }}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top"  data-container="body" 
+                                      data-content="{{ l('Automatic Lot allocation to Documents will be done on this basis.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                    {!! Form::select('lot_policy', \App\Lot::getLotPolicyList(), null, array('class' => 'form-control', 'id' => 'lot_policy')) !!}
+                    {!! $errors->first('lot_policy', '<span class="help-block">:message</span>') !!}
+                 </div>
+
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
+
+                      <br /><a class="btn xbtn-sm btn-warning" href="{{ URL::to('products/' . $product->id . '/lotuntracking') }}" title="{{l('Deactivate Lot tracking')}}" xonclick="return false;"><i class="fa fa-cube"></i> {{l('Deactivate Lot tracking')}}</a>
+
+                  </div>
+
+@else
+        @if( $product->quantity_onhand > 0.0 )
+
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
+
+                      <br /><a class="btn xbtn-sm btn-lightblue activate-lot-tracking" href="{{ URL::to('products/' . $product->id . '/lottracking') }}" title="{{l('Activate Lot tracking')}}" onclick="return false;"><i class="fa fa-cubes"></i> {{l('Activate Lot tracking')}}</a>
+
+                  </div>
+
+        @endif
+@endif
+        </div>
+
+@endif
+
+
+
+@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+{{--
 @php
     $out_of_stockList = [
           'hide'    => l('Hide Product'),
@@ -96,7 +166,7 @@
           'default' => l('Default Configuration'),
     ];
 @endphp
-
+--}}
         <div class="row" style="margin-bottom: 15px;">
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
                  </div>
@@ -202,4 +272,16 @@
 
 </script>
 @endsection
-    
+
+
+
+@section('styles')    @parent
+
+  <style type="text/css">
+      .xxpopover{
+          width:800px !important;
+      }
+  </style>
+
+@endsection
+ 

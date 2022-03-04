@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Sales Representatives') }} @parent @stop
+@section('title') {{ l('Sales Representatives') }} @parent @endsection
 
 
 @section('content')
@@ -29,7 +29,7 @@
             <!-- th class="text-left">{{l('Alias')}}</th -->
             <th class="text-left">{{l('Identification')}}</th>
             <th class="text-left">{{l('Contact')}}</th>
-            <th class="text-left">{{l('Address')}}</th>
+            <!-- th class="text-left">{{l('Address')}}</th -->
             <th class="text-left">{{l('Commission (%)')}}</th>
             <th class="text-left">{{l('Max. Discount allowed (%)')}}</th>
             <th class="text-left">{{l('Withholdings (%)')}}</th>
@@ -50,11 +50,11 @@
                 {{ $salesrep->email }}
             </td>
 
-            <td>{{-- $salesrep->address->name_commercial }}<br />
+            <!-- td>{{-- $salesrep->address->name_commercial }}<br />
                 {{ $salesrep->address->address1 }} {{ $salesrep->address->address2 }}<br />
                 {{ $salesrep->address->postcode }} {{ $salesrep->address->city }}, {{ $salesrep->address->state }}<br />
                 {{ $salesrep->address->country --}}
-            </td>
+            </td -->
             <td>{{ ( $salesrep->commission_percent ) }}</td>
             <td>{{ ( $salesrep->max_discount_allowed ) }}</td>
             <td>{{ ( $salesrep->pitw ) }}</td>

@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\ProductionSheet;
-// use App\ProductionSheetRegistry;
 use Illuminate\Http\Request;
+
+use App\ProductionSheet;
+use App\Configuration;
 
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
+use App\Traits\ProductionRequirementableControllerTrait;
+
 class ProductionSheetsController extends Controller
 {
+
+   use ProductionRequirementableControllerTrait;
 
 
    protected $productionSheet;
@@ -34,7 +39,12 @@ class ProductionSheetsController extends Controller
 
         $sheets->setPath('productionsheets');
 
-        return view('production_sheets.index', compact('sheets'));
+       $productionsheet_typeList = [
+             'onorder'  => l('Fulfill Customer Orders'),
+             'reorder'  => l('Restock Warehouse'),
+       ];
+
+        return view('production_sheets.index', compact('sheets', 'productionsheet_typeList'));
     }
 
     /**
@@ -44,7 +54,12 @@ class ProductionSheetsController extends Controller
      */
     public function create()
     {
-        return view('production_sheets.create');
+       $productionsheet_typeList = [
+             'onorder'  => l('Fulfill Customer Orders'),
+             'reorder'  => l('Restock Warehouse'),
+       ];
+
+        return view('production_sheets.create', compact('productionsheet_typeList'));
     }
 
     /**
@@ -61,6 +76,10 @@ class ProductionSheetsController extends Controller
 
         $sheet = $this->productionSheet->create($request->all() + ['is_dirty' => 0]);
 
+        if ( $sheet->type == 'reorder' )
+                return redirect()->route('productionsheets.show', [$sheet->id])
+                        ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $sheet->id], 'layouts') . $request->input('name'));
+
         return redirect('productionsheets')
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $sheet->id], 'layouts') . $request->input('name'));
     }
@@ -73,9 +92,21 @@ class ProductionSheetsController extends Controller
      */
     public function show($id)
     {
-        $sheet = $this->productionSheet->findOrFail($id);
+        $sheet = $this->productionSheet
+                        ->with('customerorders')
+                        ->with('productionorders')
+                        ->with('productionorderlines')
+                        ->with('productionordertoollines')
+                        ->with('productionrequirements')
+                        ->with('productionrequirements.product')
+                        ->findOrFail($id);
 
-        return view('production_sheets.show', compact('sheet'));
+       $productionsheet_typeList = [
+             'onorder'  => l('Fulfill Customer Orders'),
+             'reorder'  => l('Restock Warehouse'),
+       ];
+
+        return view('production_sheets.show', compact('sheet', 'productionsheet_typeList'));
     }
 
     /**
@@ -89,8 +120,13 @@ class ProductionSheetsController extends Controller
         $sheet = $this->productionSheet->findOrFail($id);
 
         $sheet->due_date = abi_date_form_short($sheet->due_date);
+
+       $productionsheet_typeList = [
+             'onorder'  => l('Fulfill Customer Orders'),
+             'reorder'  => l('Restock Warehouse'),
+       ];
         
-        return view('production_sheets.edit', compact('sheet'));
+        return view('production_sheets.edit', compact('sheet', 'productionsheet_typeList'));
     }
 
     /**
@@ -110,7 +146,8 @@ class ProductionSheetsController extends Controller
 
         $sheet->update($request->all());
 
-        return redirect('productionsheets')
+//        return redirect('productionsheets')
+        return redirect()->back()
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name'));
     }
 
@@ -132,14 +169,45 @@ class ProductionSheetsController extends Controller
      */
 
 
-    public function calculate($id)
+    public function calculate($id, Request $request)
     {
         $sheet = $this->productionSheet->findOrFail($id);
 
-        $sheet->calculateProductionOrders( \App\Configuration::isTrue('MRP_WITH_STOCK') );
+        $mrp_types = ['onorder', 'reorder', 'xall'];
+
+        $mrp_type = $request->input('mrp_type');
+
+        if ( !in_array($mrp_type, $mrp_types) )
+            $mrp_type = $sheet->type;
+
+        // abi_r($mrp_type);die();
+
+        $params = [
+            'withStock' => Configuration::isTrue('MRP_WITH_STOCK'),
+            'mrp_type'  => $mrp_type,
+        ];
+
+        $sheet->calculateProductionOrders( $params );
 
         return redirect('productionsheets/'.$id)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+    }
+
+
+    public function assignLots($id)
+    {
+        $sheet = $this->productionSheet->findOrFail($id);
+
+        $result = $sheet->assignLotsToCustomerOrders();
+
+        if ( count($result) ) {
+            return redirect('productionsheets/'.$id)
+                    ->with('error', $result);
+        } else {
+            return redirect('productionsheets/'.$id)
+                    ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts'));
+        }
+
     }
 
 

@@ -319,9 +319,13 @@ class ImportSuppliersController extends Controller
                         //    $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'identification' es inválido. ".$data['identification']);
                     }
 
+                    $data['approval_number'] = $data['approval_number'] ?? '';
+
                     // $data['sales_equalization'] = (int) $data['sales_equalization'] > 0 ? 1 : 0;
 
-                    $data['blocked'] = (int) $data['blocked'] > 0 ? 1 : 0;
+                    $data['blocked']  = (int) ($data['blocked']  ?? 0) > 0 ? 1 : 0;
+
+                    $data['approved'] = (int) ($data['approved'] ?? 1) > 0 ? 1 : 0;
 
 
 
@@ -710,7 +714,7 @@ if ($country) {
         $data = [];  
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'name_fiscal', 'name_commercial', 'identification', 'reference_external', 'accounting_id', 
+        $headers = [ 'id', 'name_fiscal', 'name_commercial', 'identification', 'approval_number', 'reference_external', 'accounting_id', 
                     // 'sales_equalization', 
                     'website', // 'customer_center_url', 'customer_center_user', 'customer_center_password', 
 

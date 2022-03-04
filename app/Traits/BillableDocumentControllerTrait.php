@@ -383,13 +383,19 @@ die();
             if ($request->isMethod('post'))
             {
                 // ... this is POST method (call from popup)
+                $copy_to_list = str_replace(' ', '', str_replace(';', ',', $request->input('copy_to_list', '')));
+
                 $subject = $request->input('email_subject');
             }
             if ($request->isMethod('get'))
             {
                 // ... this is GET method (call from button)
+                $copy_to_list = $document->{$entity}->cc_addresses;
+
                 $subject = l($this->getParentClassLowerCase().'.default.subject :num :date', [ 'num' => $document->number, 'date' => abi_date_short($document->document_date) ], 'emails') . ' ' . $document->{$entity}->name_regular;
             }
+
+            $ccList  = $copy_to_list ? explode(',', $copy_to_list) : [];
 
             $template_vars = array(
                 'company'       => $company,
@@ -405,17 +411,21 @@ die();
                 'fromName' => $company->name_fiscal,
                 'to'       => $document->{$entity}->address->email,
                 'toName'   => $document->{$entity}->name_fiscal,
+                'ccList'   => $ccList,              // An array of email addresses
                 'subject'  => $subject,
                 );
 
-            
+            // abi_r($data, true);die();
 
             // http://belardesign.com/2013/09/11/how-to-smtp-for-mailing-in-laravel/
             \Mail::send('emails.'.$this->getParentClassLowerCase().'.default', $template_vars, function($message) use ($data, $pathToFile)
             {
                 $message->from($data['from'], $data['fromName']);
 
-                $message->to( $data['to'], $data['toName'] )->bcc( $data['from'] )->subject( $data['subject'] );    // Will send blind copy to sender!
+                $message->to( $data['to'], $data['toName'] )
+                        ->cc( $data['ccList'] )
+                        ->bcc( $data['from'] )    // Will send blind copy to sender!
+                        ->subject( $data['subject'] );
                 
                 $message->attach($pathToFile);
 

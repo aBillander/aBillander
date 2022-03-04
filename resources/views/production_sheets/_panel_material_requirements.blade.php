@@ -13,6 +13,7 @@
       <th>{{l('Product Name')}}</th>
       <th>{{l('Quantity')}}</th>
       <th>{{l('Measure Unit')}}</th>
+      <th>{{l('Stock on hand')}}</th>
       <th class="text-right"> </th>
     </tr>
   </thead>
@@ -28,8 +29,14 @@
       <td>{{ $order['name'] }}</td>
       <td>{{ $product->as_quantityable($order['quantity']) }}</td>
       <td>{{ $product->measureunit->name }}</td>
+      <td>{{ $product->as_quantity('quantity_onhand') }}</td>
 
+@if( ($qty = $product->quantity_onhand - $order['quantity']) < 0.0 )
+           <td class="text-right alert-danger" style="width:1px; white-space: nowrap;">
+            {{ $product->as_quantityable( $qty ) }}
+@else
            <td class="text-right" style="width:1px; white-space: nowrap;">
+@endif
 
                 <!-- a class="btn btn-sm btn-lightblue" href="{{ URL::to('productionsheets/' . $sheet->id . '/show') }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-folder-open-o"></i></a>
 
@@ -38,7 +45,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to('sheets/' . $sheet->id ) }}" 
                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Production Sheets') }} :: ({{$sheet->id}}) {{{ $sheet->name }}}" 
+                    data-title="{{ l('Production Sheets') }} :: ({{$sheet->id}}) {{ $sheet->name }}" 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a -->
 
             </td>
@@ -55,8 +62,6 @@
 @endif
 
    </div>
-
-
 </div><!-- div class="panel-body" -->
 
 <div class="panel-footer text-right">

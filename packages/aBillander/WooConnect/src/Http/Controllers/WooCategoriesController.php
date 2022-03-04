@@ -139,7 +139,7 @@ class WooCategoriesController extends Controller
 
 		// abi_r($categories);die();
 
-		$categoryList = \App\Category::getcategoryList();
+		$categoryList = \App\Category::getcategoryList( false );
 
 		// abi_r($categoryList, true);
 

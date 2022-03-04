@@ -38,6 +38,9 @@ return [
 	'Product Reference'     => 'Referencia',
 	'Product Name'     => 'Nombre del Producto',
 	'Quantity'     => 'Cantidad',
+	'Finished Quantity'     => 'Cantidad terminada',
+	'Planned Quantity'     => 'Cantidad planificada',
+	'Real Quantity'     => 'Cantidad consumida',
 	'Total'     => 'Total',
 	'Work Center'     => 'Centro de Trabajo',
 	'Provenience'     => 'Procedencia',
@@ -90,7 +93,7 @@ return [
 
 	'Customer Shipping Slips' => 'Albaranes de Clientes',
 
-	'Finish Production Orders' => 'Terminar Ordenes de Producción',
+	'Finish Production Orders' => 'Terminar Ordenes de Fabricacón',
 
 	'Category' => 'Categoría',
 
@@ -101,4 +104,10 @@ return [
 	'Number of Days before expiry.' => 'Número de Días antes de que el Producto caduque.',
 
 	'Warehouse' => 'Almacén',
+	
+	'Customer Orders'     => 'Pedidos de Clientes',
+	'Shipping Slips'     => 'Albaranes',
+	'Customer Shipping Slips'     => 'Albaranes de Clientes',
+	'Customer Invoices'     => 'Facturas de Clientes',
+	'Customer Vouchers'     => 'Recibos de Clientes',
 ];

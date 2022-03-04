@@ -341,7 +341,8 @@ class AbsrcCustomersController extends Controller {
         $customer->update( $request->all() );
         if ( !$request->input('address.name_commercial') ) $request->merge( ['address.name_commercial' => $request->input('name_fiscal')] );
         // $data = $request->input('address');
-        $data = $request->input('address') + ['country_id' => $address->country_id];     // Gorrino fix: field is disabled in view, so cero value is got in request (although address is not modified)
+        $data = array_merge( $request->input('address'), ['country_id' => $address->country_id, 'state_id' => $address->state_id] );     // Gorrino fix: field is disabled in view, so cero value is got in request (although address is not modified)
+
         $address->update($data);
 
 

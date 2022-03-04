@@ -10,9 +10,8 @@
     <thead>
         <tr>
             <th class="text-left">{{l('ID', [], 'layouts')}}</th>
-            <th>{{l('Lot Number', 'lots')}}</th>
             <th>{{l('Warehouse', 'lots')}}</th>
-            <th>{{l('Product', 'lots')}}</th>
+            <th>{{l('Lot Number', 'lots')}}</th>
             <th class="text-right">{{l('Quantity', 'lots')}}</th>
             <th>{{l('Measure Unit', 'lots')}}</th>
 @if ( $product->procurement_type != 'purchase' )
@@ -28,19 +27,10 @@
         @foreach ($lots as $lot)
         <tr>
       <td>{{ $lot->id }}</td>
+      <td>{{ $lot->warehouse->alias_name ?? '-' }}</td>
       <td>
         <a href="{{ route( 'lot.stockmovements', $lot->id ) }}" title="{{ l('Go to', 'layouts') }}" target="_blank">{{ $lot->reference }}</a>
       </td>
-      <td>{{ $lot->warehouse->alias_name ?? '-' }}</td>
-      <td>[<a href="{{ URL::to('products/' . $lot->product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $lot->product->reference }}</a>] {{ $lot->product->name }}
-{{--
-                    @if ( $lot->combination_id > 0 )
-                        {{ $lot->combination->reference }}
-                    @else
-                        {{ $lot->product->reference }}
-                    @endif
---}}
-            </td>
       <td class="text-right">{{ $lot->as_quantity('quantity') }}</td>
       <td>{{ optional($lot->measureunit)->sign }}</td>
 @if ( $product->procurement_type != 'purchase' )

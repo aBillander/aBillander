@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Down Payment to Suppliers') }} @parent @stop
+@section('title') {{ l('Down Payment to Suppliers') }} @parent @endsection
 
 
 @section('content')
@@ -205,7 +205,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                 		href="{{ URL::to('supplierdownpayments/' . $downpayment->id ) }}" 
                 		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                		data-title="{{ l('Down Payment to Suppliers') }} :: ({{$downpayment->id}}) {{{ $downpayment->name }}} " 
+                		data-title="{{ l('Down Payment to Suppliers') }} :: ({{$downpayment->id}}) {{ $downpayment->name }} " 
                 		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
       @endif
                 @else

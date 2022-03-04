@@ -83,7 +83,7 @@ $categoryList = $tree;
     </div>
 </div>
 
-@stop
+@endsection
 @section('scripts') @parent 
 
 <script type="text/javascript">
@@ -127,4 +127,4 @@ $categoryList = $tree;
     });
 </script>
 
-@stop
+@endsection

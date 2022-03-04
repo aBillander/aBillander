@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Products') }} @parent @stop
+@section('title') {{ l('Products') }} @parent @endsection
 
 
 @section('content')
@@ -117,7 +117,7 @@
                                           ), -1, array('class' => 'form-control')) !!}
 </div>
 
-@if( \App\Configuration::isFalse('SHOW_PRODUCTS_ACTIVE_ONLY') )
+@if( 1 || \App\Configuration::isFalse('SHOW_PRODUCTS_ACTIVE_ONLY') )
   
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
@@ -129,7 +129,25 @@
 </div>
 
 <div class="row">
+
+<div class="form-group col-lg-2 col-md-2 col-sm-2">
+    {!! Form::label('stock_control', l('Stock Control')) !!}
+    {!! Form::select('stock_control', array('-1' => l('All', [], 'layouts'),
+                                          '0'  => l('No' , [], 'layouts'),
+                                          '1'  => l('Yes', [], 'layouts'),
+                                          ), null, array('class' => 'form-control')) !!}
 </div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('mrp_type', l('MRP type')) !!}
+        {!! Form::select('mrp_type', ['' => l('All', 'layouts')] + $product_mrptypeList, null, array('id' => 'mrp_type', 'class' => 'form-control')) !!}
+    </div>
+
+
+</div>
+
+<!-- div class="row">
+</div -->
 
                 {!! Form::close() !!}
             </div>
@@ -221,7 +239,7 @@
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to('products/' . $product->id ) }}" 
                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Products') }} :: ({{$product->id}}) {{{ $product->name }}}" 
+                    data-title="{{ l('Products') }} :: ({{$product->id}}) {{ $product->name }}" 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('products/' . $product->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>

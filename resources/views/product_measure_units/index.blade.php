@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Measure Units', 'layouts') }} @parent @stop
+@section('title') {{ l('Measure Units', 'layouts') }} @parent @endsection
 
 
 @section('content')
@@ -62,7 +62,7 @@ text-decoration: none;"> {{ $product->measureunit->name }} </span>
                     <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     		href="{{ URL::to('products/' . $product->id.'/measureunits/' . $line->id ) }}" 
                     		data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    		data-title="{{ l('Measure Units') }} :: ({{$line->id}}) {{{ $line->measureunit->name }}} " 
+                    		data-title="{{ l('Measure Units') }} :: ({{$line->id}}) {{ $line->measureunit->name }} " 
                     		onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                     @endif
                 @else
@@ -103,7 +103,7 @@ text-decoration: none;"> {{ $product->measureunit->name }} </span>
                     <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                             href="{{ URL::to('products/' . $product->id.'/measureunits/' . $line->id ) }}" 
                             data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                            data-title="{{ l('Measure Units') }} :: ({{$line->id}}) {{{ $line->measureunit->name }}} " 
+                            data-title="{{ l('Measure Units') }} :: ({{$line->id}}) {{ $line->measureunit->name }} " 
                             onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                     @endif
                 @else
@@ -187,6 +187,6 @@ border-color: #772953;">
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')

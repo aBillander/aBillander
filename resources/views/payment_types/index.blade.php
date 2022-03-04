@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Payment Types') }} @parent @stop
+@section('title') {{ l('Payment Types') }} @parent @endsection
 
 
 @section('content')
@@ -86,7 +86,7 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')
 

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\ProductionSheet;
 use App\ProductionOrder;
 
+use App\Product;
+
 use App\Lot;
 use App\LotItem;
 
@@ -82,6 +84,9 @@ class ProductionSheetProductionOrdersController extends Controller
         $warehouseList = \App\Warehouse::selectorList();
 
 // \DB::enableQueryLog();
+
+        // Custom colletion sort order
+        // https://stackoverflow.com/questions/40731863/sort-collection-by-custom-order-in-eloquent
 
         $sheet = $this->productionSheet
                         ->with(['productionorders' => function($query) use ($work_center_id, $category_id) {
@@ -211,8 +216,10 @@ class ProductionSheetProductionOrdersController extends Controller
      * 
      *
      */
+    // Deprecated; keep for reference
     public function finishWithLot(Request $request )
     {
+/*
         // Dates (cuen)
         $this->mergeFormDates( ['finish_date'], $request );
 
@@ -235,7 +242,7 @@ class ProductionSheetProductionOrdersController extends Controller
         if ( $lot_tracking )
         {
             $rules = $rules + [
-                'lot_reference'    => 'required|min:2|max:32',
+//                'lot_reference'    => 'required|min:2|max:32',    // <= Lot number is calculated according to finish date (manufacturing date)
                 'warehouse_id'     => 'exists:warehouses,id',
             ];
         }
@@ -243,16 +250,22 @@ class ProductionSheetProductionOrdersController extends Controller
         $this->validate($request, $rules);
 
         $finished_quantity = $request->input('quantity');
-        $lot_reference = $request->input('lot_reference');
+//        $lot_reference = $request->input('lot_reference', '');
         $finish_date = $request->input('finish_date');
-        $expiry_time = $request->input('expiry_time');
+        $expiry_time = $request->input('expiry_time', $document->product->expiry_time);
 
         $warehouse_id = $request->input('warehouse_id');
+
+        // Sorry, force lot number according to product data
+        $lot_reference = Lot::generate( $finish_date, $document->product, $document->product->expiry_time);
 
         // abi_r('OK');die();
 
         $params = [
-            'finished_quantity' => $finished_quantity, 
+            'production_sheet_id' => $production_sheet_id,
+            'production_order_id' => $production_order_id,
+            'finished_quantity'   => $finished_quantity, 
+
             'finish_date'       => $finish_date,
             'warehouse_id'      => $warehouse_id,
 
@@ -273,13 +286,14 @@ class ProductionSheetProductionOrdersController extends Controller
 //            'package_measure_unit_id' => , 
 //            'pmu_conversion_rate' => ,
             'manufactured_at' => $finish_date, 
-            'expiry_at' => \Carbon\Carbon::createFromFormat('Y-m-d', $finish_date)->addDays( $expiry_time ),
+//            'expiry_at' => \Carbon\Carbon::createFromFormat('Y-m-d', $finish_date)->addDays( $expiry_time ),
+            'expiry_at' => Lot::getExpiryDate( $finish_date, $expiry_time ),
             'notes' => 'Production Order: #'.$document->id,
 
             'warehouse_id'      => $warehouse_id,
         ];
 
-        // abi_r($lot_params);
+        // abi_r($lot_params, true);
 
         $params['lot_params'] = $lot_params;
 
@@ -313,6 +327,7 @@ class ProductionSheetProductionOrdersController extends Controller
         return redirect()
                 ->route('productionsheet.productionorders', $production_sheet_id)
                 ->with($message, $success);
+*/
     }
 
 
@@ -320,19 +335,32 @@ class ProductionSheetProductionOrdersController extends Controller
      *  Maybe this function is obsolete ????
      *
      */
-    public function finish($id, Request $request )
+    public function finish(Request $request )
     {
-        $document = $this->productionOrder->findOrFail($id);
+        // Dates (cuen)
+        $this->mergeFormDates( ['finish_date'], $request );
+
+        $production_sheet_id = $request->input('production_sheet_id');
+        $production_order_id = $request->input('finish_production_order_id');
+
+        $document = $this->productionOrder->with('product')->findOrFail($production_order_id);
 
         $document_group = [$document->id];
+
+        $finished_quantity = $request->input('quantity');
+        
+        $finish_date  = $request->input('finish_date');
+        $warehouse_id = $request->input('warehouse_id');
 
         $params = [
             'production_sheet_id' => $document->production_sheet_id, 
             'document_group' => $document_group,
-        ];
 
-        // Default date??
-        // orders_finish_date_form
+            'finished_quantity'   => $finished_quantity, 
+
+            'finish_date'  => $finish_date,
+            'warehouse_id' => $warehouse_id
+        ];
 
         // abi_r($params, true);
 
@@ -377,6 +405,8 @@ class ProductionSheetProductionOrdersController extends Controller
             'production_sheet_id' => $request->production_sheet_id, 
             'document_group' => $document_group,
 
+//            'finished_quantity' => $request->input('quantity'),   // <= finished quantity is order quantity here
+
             'finish_date'  => $finish_date,
             'warehouse_id' => $warehouse_id
         ];
@@ -407,6 +437,7 @@ class ProductionSheetProductionOrdersController extends Controller
                                 ->where('production_sheet_id', $params['production_sheet_id'])
                                 ->whereIn('id', $params['document_group'])
                                 ->where('status', '<>', 'finished')
+                                ->with('product')
                                 ->with('lines')
     //                            ->orderBy('document_date', 'asc')
     //                            ->orderBy('id', 'asc')
@@ -444,7 +475,7 @@ class ProductionSheetProductionOrdersController extends Controller
         foreach ($documents as $document) {
             # code...
             // Skip lot controlled orders
-            if ( $document->product->lot_tracking )
+            if ( 0 && $document->product->lot_tracking )
             {
                 //
                 $success[] = '<strong>ERROR:</strong> Debe dar un Número de Lote &#58&#58 ('.$document->id.')';
@@ -462,6 +493,39 @@ class ProductionSheetProductionOrdersController extends Controller
         return redirect()
                 ->route('productionsheet.productionorders', $params['production_sheet_id'])
                 ->with('success', $success);
+
+    }
+
+
+
+/* ********************************************************************************************* */  
+
+
+    /**
+     * AJAX Stuff.
+     *
+     * 
+     */
+
+    /**
+     * Get lot reference for product & manufacturing date
+     *
+     */
+    public function getLotReference( Request $request )
+    {
+        // return 'ok';
+
+        // Dates (cuen)
+        $this->mergeFormDates( ['finish_date'], $request );
+
+        $finish_date  = $request->input('finish_date');
+
+        $product = Product::find( $request->input('product_id', 0) );
+
+        $lot_reference = $product ? Lot::generate( $finish_date, $product, $product->expiry_time) : '';
+
+
+        return json_encode( [ 'lot_reference' => $lot_reference, 'request' => $request->toArray() ] );
 
     }
 

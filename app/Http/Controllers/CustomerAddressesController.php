@@ -124,7 +124,16 @@ class CustomerAddressesController extends  Controller
         $address = $this->address->findOrFail($id);
         $back_route = $request->input('back_route', '');
 
-        $address->delete();
+        try {
+
+            $address->delete();
+            
+        } catch (\Exception $e) {
+
+            return redirect()->back()
+                    ->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts').$e->getMessage());
+            
+        }
         
         return redirect( $back_route )
             ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts') );

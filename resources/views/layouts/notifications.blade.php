@@ -44,7 +44,7 @@
 </div>
 @endif
 
-@if ( ($message = Session::get('warning')) OR ($message = (isset($warning) AND count($warning)) ? $warning : '') )
+@if ( ($message = Session::get('warning')) ?? ($message = (isset($warning) AND count($warning)) ? $warning : '') )
 <div class="alert alert-warning alert-block">
 	<button type="button" class="close" data-dismiss="alert">&times;</button>
 	<strong>{!! l('Warning', [], 'layouts') !!}: </strong>

@@ -42,6 +42,8 @@ return [
 	'ENABLE_MANUFACTURING.help' => '',
 	'MRP_WITH_STOCK.name' => 'MRP_WITH_STOCK',
 	'MRP_WITH_STOCK.help' => '<p> Values: </p> <ul> <li> <p> <strong> Yes </strong> <br /> Calculate the Production Sheet taking into account the Physical Stock. </p> </li> <li> <p> <strong> No </strong> <br /> Calculate the needs of Finished and Semi-Manufactured Products without taking into account the Physical Stock. </p> </ li> </ul> ',
+	'MRP_ONORDER_WITHOUT_REORDER.name' => 'MRP_ONORDER_WITHOUT_REORDER',
+	'MRP_ONORDER_WITHOUT_REORDER.help' => '',
 	'MRP_WITH_ZERO_ORDERS.name' => 'MRP_WITH_ZERO_ORDERS',
 	'MRP_WITH_ZERO_ORDERS.help' => 'Includes Manufacturing Orders with quantity 0 (zero) in the calculation of the Production Sheets.',
 	'ENABLE_LOTS.name' => 'Activate Lots',

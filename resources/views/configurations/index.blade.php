@@ -1,11 +1,11 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Configuration Keys') }} @parent @stop
+@section('title') {{ l('Configuration Keys') }} @parent @endsection
 
 @section('content')
 <div class="page-header">
     <div class="pull-right">
-        <a href="{{{ URL::to('configurations/create') }}}" class="btn btn-success" 
+        <a href="{{ URL::to('configurations/create') }}" class="btn btn-success" 
         		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
         <a href="{{ URL::to('configurationkeys') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Configurations') }}</a>
     </div>
@@ -63,7 +63,7 @@
 			</tbody>
 		</table>
 		{{-- $configurations->links() --}}
-	</div>
+
 @else
 <div class="alert alert-warning alert-block">
     <i class="fa fa-warning"></i>
@@ -74,6 +74,6 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 @include('layouts/modal_delete')

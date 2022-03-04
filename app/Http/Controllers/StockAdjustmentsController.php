@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\StockMovement;
+use App\Product;
+use App\Configuration;
+
 use View;
 
 use App\Traits\DateFormFormatterTrait;
@@ -18,10 +21,12 @@ class StockAdjustmentsController extends Controller
    use DateFormFormatterTrait;
 
    protected $stockmovement;
+   protected $product;
 
-   public function __construct(StockMovement $stockmovement)
+   public function __construct(StockMovement $stockmovement, Product $product)
    {
         $this->stockmovement = $stockmovement;
+        $this->product = $product;
    }
 
 	/**
@@ -56,6 +61,17 @@ class StockAdjustmentsController extends Controller
 		// $this->validate($request, StockMovement::validTypeRule());
 		
 		$product_id = $request->input('product_id');
+
+		$product = $this->product->findOrFail($product_id);
+
+		if ( Configuration::isTrue('ENABLE_LOTS') && ($product->lot_tracking > 0 ) )
+		{
+			//
+			return redirect()->back()
+				->with('error', l('This Product has "Lot tracking" enabled. ').l('No action is taken &#58&#58 (:id) ', ['id' => $product->name.' - '.$request->input('quantity')], 'layouts') . 
+					' [' . $request->input('date') . ']' );
+		}
+		
 
 		// Has Combination?
 		if ($request->has('group')) {
@@ -93,7 +109,11 @@ class StockAdjustmentsController extends Controller
 					  'movement_type_id' => $movement_type_id, 
 					  'currency_id' => $currency->id,
 					  'conversion_rate' => $conversion_rate,
-					  'user_id' => \Auth::id()];
+					  'user_id' => \Auth::id(),
+
+					  'price' => $request->input('cost_average'),
+					  'price_currency' => $request->input('cost_average'),
+		];
 
 		$data = array_merge( $request->all(), $extradata );
 
@@ -104,7 +124,8 @@ class StockAdjustmentsController extends Controller
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::findOrFail(intval($product_id));
+            // Already set:
+            // $product = \App\Product::findOrFail(intval($product_id));
         }
 
         $extradata['reference']  = $product->reference;

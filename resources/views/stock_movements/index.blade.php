@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Stock Movements') }} @parent @stop
+@section('title') {{ l('Stock Movements') }} @parent @endsection
 
 
 @section('content')
@@ -172,7 +172,9 @@
 @if ( \App\Configuration::isTrue('ENABLE_LOTS') )
       @if ($stockmovement->lot)
         <td>
-          <a href="{{ route( 'stockmovements.index', ['search_status' => 1, 'lot_id' => $stockmovement->lot->id, 'lot_reference' => $stockmovement->lot->reference] ) }}" xtitle="{{ l('Stock Movements') }}">{{ optional($stockmovement->lot)->reference ?? '-'}}</a>
+          <!-- a href="{{ route( 'stockmovements.index', ['search_status' => 1, 'lot_id' => $stockmovement->lot->id, 'lot_reference' => $stockmovement->lot->reference] ) }}" xtitle="{{ l('Stock Movements') }}">{{ optional($stockmovement->lot)->reference ?? '-'}}</a --> 
+
+          <a href="{{ route( 'lot.stockmovements', [$stockmovement->lot->id] ) }}" xtitle="{{ l('Stock Movements') }}" target="lot_stockmovements">{{ optional($stockmovement->lot)->reference ?? '-'}}</a>
         </td>
       @else
         <td class="text-center">{{ '-'}}</td>

@@ -34,7 +34,7 @@
           </a></td>
       <td>{{ $line->commissionable->status_name }}</td>
 			<td>
-          <a href="{{ URL::to('customers/' . optional(optional($line->commissionable)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $line->commissionable->customer->name_regular or '' }}</a></td>
+          <a href="{{ URL::to('customers/' . optional(optional($line->commissionable)->customer)->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $line->commissionable->customer->name_regular ?? '' }}</a></td>
 			
       <td>{{ $line->as_money_amount('document_commissionable_amount') }}</td>
       <td>{{ $line->as_money_amount('commission') }}</td>

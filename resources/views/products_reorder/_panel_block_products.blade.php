@@ -17,15 +17,22 @@
     <thead>
         <tr>
 			<th>{{l('ID', [], 'layouts')}}</th>
-      <th>{{ l('Reference') }}</th>
+      <th>{{ l('Work Center') }}</th>
       <th>{{-- l('Procurement type') --}}</th>
-      <th colspan="2">{{ l('Product Name') }}</th>
+      <th>{{ l('Product Name') }}</th>
             <th>{{ l('Main Supplier') }}</th>
 			<!-- th>{{ l('Measure Unit') }}</th -->
             <th>{{ l('Stock') }}</th>
             <th>{{ l('Allocated') }}</th>
             <th>{{ l('On Order') }}</th>
-            <th>{{ l('Available') }}</th>
+            <th>{{ l('Available') }}
+
+                       <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body"data-html="true"  
+                              data-content="{{ l('Available Stock: <br />[Physical Stock] <br />+ [Orders to Suppliers] <br />- [Customer Orders] <br />+ [Not finished Production Orders] <br />- [Production Orders Reserves]') }}">
+                          <i class="fa fa-question-circle abi-help"></i>
+                       </a>
+
+            </th>
             <th>{{ l('Re-Order Point') }}</th>
             <th>{{ l('Maximum stock') }}</th>
             <!-- th>{{ l('Manufacturing Batch Size') }}</th -->
@@ -50,39 +57,30 @@
 	@foreach ($products as $product)
 		<tr>
 			<td>{{ $product->id }}</td>
-			<td title="{{ $product->id }}">@if ($product->product_type == 'combinable') <span class="label label-info">{{ l('Combinations') }}</span>
-                @else <a target="_blank" href="{{ URL::to('products/' . $product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}">{{ $product->reference }}</a>
-                @endif</td>
+			<td title="{{ $product->work_center_id }}">
+                <span class="text-success">{{ $work_centerList[ $product->work_center_id ] ?? '-' }}</span>
+            </td>
 
       <td>{{ \App\Product::getProcurementTypeName($product->procurement_type) }}<br />
         <span class="text-info">{{ \App\Product::getMrpTypeName($product->mrp_type) }}</span>
 
       </td>
 
-      <td>
-{{--
-@php
-  $img = $product->getFeaturedImage();
-@endphp
-@if ($img)
-              <a class="view-image" data-html="false" data-toggle="modal" 
-                     href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
-                     data-content="{{l('You are going to view a record. Are you sure?')}}" 
-                     data-title="{{ l('Product Images') }} :: {{ $product->name }} " 
-                     data-caption="({{$img->filename}}) {{ $img->caption }} " 
-                     onClick="return false;" title="{{l('View Image')}}">
+      <td>[<a target="_blank" href="{{ URL::to('products/' . $product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}">{{ $product->reference }}</a>] {{ $product->name }}
 
-                      <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
-              </a>
-@endif
---}}
+                <a class="btn btn-xs alert-warning  hide " target="_blank" href="{{ URL::to('products/' . $product->id . '/edit') }}" title="{{l('Go to', [], 'layouts')}}"><i class="fa fa-external-link"></i></a>
       </td>
-
-      <td>{{ $product->name }}</td>
       <td>
-        <a target="_blank" href="{{ route('suppliers.edit', optional($product->mainsupplier)->id ) }}" title="{{l('Go to', [], 'layouts')}}">
-        {{ optional($product->mainsupplier)->name_fiscal }}
+@if ( ($product->procurement_type == 'purchase') && ($product->main_supplier_id > 0) )
+        <a target="_blank" href="{{ route('suppliers.edit', $product->main_supplier_id ) }}" title="{{l('Go to', [], 'layouts')}}">
+        {{-- optional($product->mainsupplier)->name_fiscal --}}
+        {{ $supplierList[ $product->main_supplier_id ] ?? '-' }}
         </a>
+@else
+        <a>
+        -
+        </a>
+@endif
       </td>
 			<!-- td>{{ $product->measureunit->name }}</td -->
             <td>{{ $product->as_quantity('quantity_onhand') }}</td>
@@ -105,7 +103,7 @@
 
                 <a class="btn btn-sm btn-info" target="_blank" href="{{ route('chart.product.stock.monthly', ['product_id' => $product->id]) }}" title="{{l('View Chart', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i></a>
 
-                <a class="btn btn-sm btn-warning" target="_blank" href="{{ URL::to('products/' . $product->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
+                <a class="btn btn-sm btn-warning  hide " target="_blank" href="{{ URL::to('products/' . $product->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
             </td>
 		</tr>
 	@endforeach

@@ -1,6 +1,6 @@
 @extends('abcc.layouts.master')
 
-@section('title') {{ l('My Shipping Slips') }} @parent @stop
+@section('title') {{ l('My Shipping Slips') }} @parent @endsection
 
 
 @section('content')
@@ -12,9 +12,10 @@
 </div>
 
 <div id="div_documents">
-   <div class="table-responsive">
 
 @if ($documents->count())
+   <div class="table-responsive">
+
 <table id="documents" class="table table-hover">
     <thead>
         <tr>

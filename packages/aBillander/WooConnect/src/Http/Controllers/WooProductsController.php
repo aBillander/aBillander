@@ -190,27 +190,45 @@ class WooProductsController extends Controller
 
 		$abi_product_price = $abi_product->getPriceByListId( Configuration::getInt('WOOC_DEF_CUSTOMER_PRICE_LIST') );	// Returns a Price Object
 
+		$status = in_array(Configuration::get('WOOC_DEF_PRODUCT_STATUS'), WooProduct::$statuses) 
+							? Configuration::get('WOOC_DEF_PRODUCT_STATUS')
+							: 'publish';
+
+		$manage_stock = Configuration::getInt('WOOC_DEF_MANAGE_STOCK') < 0
+							? (boolean) $abi_product->stock_control
+							: (boolean) Configuration::getInt('WOOC_DEF_MANAGE_STOCK');
+
+		$stock = (int) $abi_product->quantity;
+		// ^-- Maybe select quantity or quantity_onhand from Configuration. But quantity_onhand is not compatible with select stock from a specific warehouse!!!
+
+		$stock_status = $manage_stock && ($stock <= 0.0)
+							? 'outofstock'
+							: 'instock';
+
+		$regular_price = $abi_product_price->getPrice();
+
 		$data = [
 		    'name' => $abi_product->name,
 //		    'slug' => '',
 		    'type' => 'simple', 	// Product type. Options: simple, grouped, external and variable. Default is simple.
-		    'status' => 'draft', 	// Product status (post status). Options: draft, pending, private and publish. Default is publish.
+		    'status' => $status, 	// Product status (post status). Options: draft, pending, private and publish. Default is publish.
 //		    'featured' => 			// Featured product. Default is false.
 		    'catalog_visibility' => 'visible',		// Catalog visibility. Options: visible, catalog, search and hidden. Default is visible.
 		    'description'   => $abi_product->description,
 		    'short_description'   => $abi_product->description_short,
 
 			'sku' => $abi_product->reference,
-			'regular_price' => $abi_product_price->getPrice(), // product price
+			'regular_price' => (string) $regular_price, // product price
+//			'sale_price' 	string 	Product sale price.
 
 //			'virtual',
 //			'downloadable'
 
 			'tax_status' => 'taxable',		// Tax status. Options: taxable, shipping and none. Default is taxable.
 			'tax_class' => '',				// <= Default WooShop tax  // String
-			'manage_stock' => (boolean) $abi_product->stock_control,		// Stock management at product level. Default is false.
-			'stock_quantity' => $abi_product->quantity_onhand,	// Integer
-			'stock_status' => ($abi_product->stock_control && ($abi_product->quantity_onhand <= 0.0)) ? 'outofstock' : 'instock',		// Controls the stock status of the product. Options: instock, outofstock, onbackorder. Default is instock.
+			'manage_stock' => $manage_stock,		// (boolean) $abi_product->stock_control,		// Stock management at product level. Default is false.
+			'stock_quantity' => $stock,	// Integer
+			'stock_status' => $stock_status,		// ($abi_product->stock_control && ($abi_product->quantity_onhand <= 0.0)) ? 'outofstock' : 'instock',		// Controls the stock status of the product. Options: instock, outofstock, onbackorder. Default is instock.
 
 			'weight' => $abi_product->weight,
 			'dimensions' => [
@@ -284,6 +302,8 @@ class WooProductsController extends Controller
 		// Images
 		$abi_images = $abi_product->images->sortByDesc('is_featured');
 
+if ( $abi_images->count() > 0 )
+{		
 		// Add featured image to Galery
 		$abi_featured = $abi_images->first();
 		$abi_images->push($abi_featured);
@@ -305,6 +325,7 @@ class WooProductsController extends Controller
 
 			$i++;
 		}
+}
 
 
 
@@ -361,10 +382,28 @@ class WooProductsController extends Controller
         {
         	if($request->ajax()){
 
+	            $woo_product_statusList = [];
+		        foreach (WooProduct::$statuses as $value) {
+		            // code...
+		            $woo_product_statusList[$value] = $value;
+		        }
+
+	            $woo_product_stock_statusList = [];
+		        foreach (WooProduct::$stock_statuses as $value) {
+		            // code...
+		            $woo_product_stock_statusList[$value] = $value;
+		        }
+
+	            $woo_product_catalog_visibilityList = [];
+		        foreach (WooProduct::$catalog_visibility as $value) {
+		            // code...
+		            $woo_product_catalog_visibilityList[$value] = $value;
+		        }
+
 	            return response()->json( [
 	                'success' => $product ? 'OK' : 'KO',
 	                'msg' => 'OK'." $id ".($product['name'] ?? ''),
-	                'html' => view('woo_connect::woo_products.show_embed', compact('product'))->render(),
+	                'html' => view('woo_connect::woo_products.show_embed', compact('product', 'woo_product_statusList', 'woo_product_stock_statusList', 'woo_product_catalog_visibilityList'))->render(),
 	            ] );
 
 	        }
@@ -394,7 +433,44 @@ class WooProductsController extends Controller
 	 */
 	public function update($id, Request $request)
 	{
-		//
+		$product_sku = $id;
+
+		// Get Woo Product by SKU
+		$wproduct = WooProduct::fetch( $product_sku );
+
+		// Oh! Second try:
+		if ( !$wproduct )
+			$wproduct = WooProduct::fetchById( $product_sku );
+
+		if ( !$wproduct ) return ;
+
+        $wproduct_id = $wproduct['id'];
+
+        // Get Product
+        $product = Product::where('reference', $wproduct['sku'])->first();
+
+        // Happyly update WooCommerce Product data ;)
+		$data = [
+			'status'          => $request->status,
+			'featured'        => (bool) $request->featured,
+			'manage_stock'    => (bool) $request->manage_stock,
+			'stock_status'    => $request->stock_status,
+			'reviews_allowed' => (bool) $request->reviews_allowed,
+
+			'stock_quantity'     => (int) $request->stock_quantity,
+			'catalog_visibility' => $request->catalog_visibility,
+
+			'name'              => $request->woo_name,
+			'description'       => $request->woo_description,
+			'short_description' => $request->woo_short_description,
+		];
+
+		// To do: catch errores
+		WooCommerce::put('products/'.$wproduct_id, $data);
+
+
+		return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts'));
 	}
 
 	/**
@@ -655,11 +731,14 @@ The image in position 0 is your featured image.
         $product = Product::where('reference', $product_sku)->first();
 
         $wh_id = Configuration::getInt('WOOC_DEF_WAREHOUSE');
-        $stock = $product->getStockByWarehouse( Configuration::getInt('WOOC_DEF_WAREHOUSE') );
+        if ( $wh_id > 0 )
+        	$stock = $product->getStockByWarehouse( Configuration::getInt('WOOC_DEF_WAREHOUSE') );
+	    else
+	    	$stock = $product->quantity;
 
         // Happyly update WooCommerce Stock ;)
 		$data = [
-		    'stock_quantity'   => $stock,		// Integer
+		    'stock_quantity'   => (int) $stock,		// Integer
 //		    'stock_status' => '', 	// 	string 	Controls the stock status of the product. Options: instock, outofstock, onbackorder. Default is instock.
 //		    'regular_price' => '',	// string
 		];
@@ -668,7 +747,8 @@ The image in position 0 is your featured image.
 		WooCommerce::put('products/'.$wproduct_id, $data);
 
 
-        return redirect()->to(url()->previous())
+//        return redirect()->to(url()->previous())
+        return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts') . $product->as_quantityable($stock));
 	}
 
@@ -688,13 +768,13 @@ The image in position 0 is your featured image.
 
         $wproduct_id = $wproduct['id'];
 
-        // Get Product stock
+        // Get Product Price
         $product = Product::where('reference', $product_sku)->first();
 
         $cpl_id = Configuration::getInt('WOOC_DEF_CUSTOMER_PRICE_LIST');
         $price = $product->getPriceByList( PriceList::find($cpl_id) );
 
-        // Happyly update WooCommerce Stock ;)
+        // Happyly update WooCommerce Price ;)
 		$data = [
 //		    'stock_quantity'   => $stock,		// Integer
 //		    'stock_status' => '', 	// 	string 	Controls the stock status of the product. Options: instock, outofstock, onbackorder. Default is instock.
@@ -705,8 +785,137 @@ The image in position 0 is your featured image.
 		WooCommerce::put('products/'.$wproduct_id, $data);
 
 
-        return redirect()->to(url()->previous())
+//        return redirect()->to(url()->previous())
+		return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts') . $product->as_priceable( $price->getPrice()));
+	}
+
+
+	public function updateProductKey( $sku, Request $request )
+	{
+		$product_sku = $sku;
+
+		// Get Woo Product by SKU
+		$wproduct = WooProduct::fetch( $product_sku );
+
+		// Oh! Second try:
+		if ( !$wproduct )
+			$wproduct = WooProduct::fetchById( $product_sku );
+
+		if ( !$wproduct ) return ;
+
+        $wproduct_id = $wproduct['id'];
+
+        // Get Product
+        $product = Product::where('reference', $product_sku)->first();
+
+        $key = $request->key;
+
+        // Happyly update WooCommerce Names ;)
+		$data = [ 
+			$key        => $product->{$key},
+		];
+
+		// To do: catch errores
+		WooCommerce::put('products/'.$wproduct_id, $data);
+
+
+        return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts'));
+	}
+
+
+	public function updateProductNames( $sku )
+	{
+		$product_sku = $sku;
+
+		// Get Woo Product by SKU
+		$wproduct = WooProduct::fetch( $product_sku );
+
+		// Oh! Second try:
+		if ( !$wproduct )
+			$wproduct = WooProduct::fetchById( $product_sku );
+
+		if ( !$wproduct ) return ;
+
+        $wproduct_id = $wproduct['id'];
+
+        // Get Product
+        $product = Product::where('reference', $product_sku)->first();
+
+        // Happyly update WooCommerce Names ;)
+		$data = [
+			'name'        => $product->name,
+			'description' => $product->description,
+		];
+
+		// To do: catch errores
+		WooCommerce::put('products/'.$wproduct_id, $data);
+
+
+        return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts'));
+	}
+
+
+	public function updateProductImages( $sku )
+	{
+		$product_sku = $sku;
+
+		// Get Woo Product by SKU
+		$wproduct = WooProduct::fetch( $product_sku );
+
+		// Oh! Second try:
+		if ( !$wproduct )
+			$wproduct = WooProduct::fetchById( $product_sku );
+
+		if ( !$wproduct ) return ;
+
+        $wproduct_id = $wproduct['id'];
+
+        // Get Product stock
+        $product = Product::where('reference', $product_sku)->with('images')->first();
+
+		// Images
+		$abi_images = $product->images->sortByDesc('is_featured');
+
+		$data = [];
+
+// If no images do nothing: we do not want products on the webshop without image!
+if ( $abi_images->count() > 0 )
+{		
+		// Add featured image to Galery
+		$abi_featured = $abi_images->first();
+		$abi_images->push($abi_featured);
+
+		$i=0;
+
+		foreach ($abi_images as $abi_image) {
+			# code...
+			$src = \URL::to( \App\Image::pathProducts() . $abi_image->getImageFolder() . $abi_image->id . '.' . $abi_image->extension );
+			// $src = 'http://abimfg.gmdistribuciones.es/tenants/abimfg/images_p/4/0/2/0/4020.JPG';
+			$data['images'][] = 
+				[
+					'src'      => $src,
+					// Avoid problems:
+//					'name' => str_replace(' ', '%20', trim($abi_image->caption)),
+//					'alt'  => str_replace(' ', '%20', trim($abi_image->caption)),
+					'position' => $i,	// First image is taken as "main Image" ??? < Key not documented???
+				];
+
+			$i++;
+		}
+
+        // Happyly update WooCommerce Images ;)
+
+		// To do: catch errores
+		WooCommerce::put('products/'.$wproduct_id, $data);
+}
+
+
+//        return redirect()->to(url()->previous())
+        return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts') . ' ('.$abi_images->count().')');
 	}
 
 

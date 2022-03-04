@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Documents') }} @parent @stop
+@section('title') {{ l('Documents') }} @parent @endsection
 
 
 @section('content')
@@ -52,9 +52,10 @@
 <div class="row">
 
    <div class="col-lg-9 col-md-9">
-   <div class="table-responsive">
 
 @if ($documents->count())
+   <div class="table-responsive">
+
 <table id="documents" class="table table-hover">
     <thead>
         <tr>

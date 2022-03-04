@@ -74,13 +74,11 @@
 --}}
 </div>
 
-         <div class="alert alert-dismissible alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button>No pueden cerrarse automáticamente las órdenes con control de lote !!!</div>
-
 
                   </div>
 
                   <div class="panel-footer">
 
-                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'productionsheet.productionorders.bulk.finish' )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-cubes"></i> {{l('Confirm', 'layouts')}}</a>
+                        <a class="btn btn-info" href="javascript:void(0);" title="{{l('Confirm', [], 'layouts')}}" xonclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'productionsheet.productionorders.bulk.finish' )}}');$('#form-select-documents').submit();return false;" disabled="disabled"><i class="fa fa-cubes"></i> {{l('Confirm', 'layouts')}}</a>
                   
                   </div>

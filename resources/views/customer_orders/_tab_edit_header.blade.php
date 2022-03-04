@@ -37,10 +37,16 @@
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2">
          </div>
-
+{{--
          <div class="form-group col-lg-2 col-md-2 col-sm-2">
             <strong>{{ l('Customer Reference') }}</strong>
             <div class="form-control">{{ $document->reference_customer}}</div>
+         </div>
+--}}
+         <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('reference_customer') ? 'has-error' : '' }}">
+            <strong>{{ l('Customer Reference') }}</strong>
+            {!! Form::text('reference_customer', null, array('class' => 'form-control', 'id' => 'reference_customer')) !!}
+            {!! $errors->first('reference_customer', '<span class="help-block">:message</span>') !!}
          </div>
 
       </div>

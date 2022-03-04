@@ -89,7 +89,7 @@
     </div>
 
 
-     <div class="form-group col-lg-9 col-md-9 col-sm-9 {{{ $errors->has('notes') ? 'has-error' : '' }}}">
+     <div class="form-group col-lg-9 col-md-9 col-sm-9 {{ $errors->has('notes') ? 'has-error' : '' }}">
         {{ l('Notes', [], 'layouts') }}
         {!! Form::textarea('notes', null, array('class' => 'form-control', 'id' => 'notes', 'rows' => '2')) !!}
         {{ $errors->first('notes', '<span class="help-block">:message</span>') }}

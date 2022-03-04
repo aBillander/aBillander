@@ -1,6 +1,6 @@
 @extends('absrc.layouts.master')
 
-@section('title') {{ l('My Shipping Slips') }} @parent @stop
+@section('title') {{ l('My Shipping Slips') }} @parent @endsection
 
 
 @section('content')
@@ -216,8 +216,6 @@
     </tbody>
 </table>
 
-   </div><!-- div class="table-responsive" ENDS -->
-
 {{ $documents->appends( Request::all() )->render() }}
 <ul class="pagination"><li class="active"><span style="color:#333333;">{{l('Found :nbr record(s)', [ 'nbr' => $documents->total() ], 'layouts')}} </span></li></ul>
 
@@ -227,6 +225,8 @@
     {{l('No records found', [], 'layouts')}}
 </div>
 @endif
+
+   </div><!-- div class="table-responsive" ENDS -->
 </div>
 
 @endsection

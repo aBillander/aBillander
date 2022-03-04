@@ -1,6 +1,6 @@
 @extends('abcc.layouts.master')
 
-@section('title') {{ l('My Vouchers') }} @parent @stop
+@section('title') {{ l('My Vouchers') }} @parent @endsection
 
 
 @section('content')
@@ -16,9 +16,10 @@
 </div>
 
 <div id="div_payments">
-   <div class="table-responsive">
 
 @if ($payments->count())
+   <div class="table-responsive">
+
 <table id="payments" class="table table-hover">
 	<thead>
 		<tr>
@@ -37,8 +38,8 @@
 	@foreach ($payments as $payment)
 		<tr>
 			<td>{{ $payment->id }}</td>
-			<td>{{ $payment->customerInvoice->document_reference or '' }}</td>
-			<!-- td>{{ $payment->customerInvoice->customer->name_fiscal or '' }}</td -->
+			<td>{{ $payment->customerInvoice->document_reference ?? '' }}</td>
+			<!-- td>{{ $payment->customerInvoice->customer->name_fiscal ?? '' }}</td -->
 			<td>{{ $payment->name }}</td>
 			<td @if( !$payment->payment_date AND ( $payment->due_date < \Carbon\Carbon::now() ) ) class="danger" @endif>
 				{{ abi_date_short($payment->due_date) }}</td>
@@ -87,7 +88,7 @@
 @endif
 </div>
 
-@stop
+@endsection
 
 {{--
 		@include('layouts/modal_delete')

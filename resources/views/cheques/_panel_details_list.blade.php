@@ -42,7 +42,8 @@
                         <td>{{ $detail->line_sort_order }}</td>
                         <!-- td>{{ $detail->name }}</td -->
 
-                        <td>{{ $detail->amount > 0.0 ? $detail->as_money_amount('amount') : '-' }}</td>
+                        <td>{{-- $detail->amount > 0.0 ? $detail->as_money_amount('amount') : '-' --}}
+                            {{ $detail->as_money_amount('amount') }}</td>
 
                         <td>
                             @if( $detail->customer_invoice_id > 0 )
@@ -93,7 +94,7 @@
                             <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                                     href="{{ URL::to('cheques/' . $cheque->id.'/chequedetails/' . $detail->id ) }}" 
                                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                                    data-title="{{ l('Customer Cheque Details') }} :: ({{$detail->id}}) {{{ $detail->name }}} " 
+                                    data-title="{{ l('Customer Cheque Details') }} :: ({{$detail->id}}) {{ $detail->name }} " 
                                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
 @endif
                         </td>

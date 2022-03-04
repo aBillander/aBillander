@@ -49,11 +49,12 @@
   $img = $rule->product->getFeaturedImage();
 @endphp
 
-              [<a class="view-image" data-html="false" data-toggle="modal" 
+              [<a class="view-image-multiple" data-html="false" data-toggle="modal" 
                        href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
                        data-content="{{ nl2p($rule->product->description_short) }} <br /> {{ nl2p($rule->product->description) }} " 
                        data-title="{{ l('Product Images') }} :: {{ $rule->product->name }} " 
                        data-caption="({{$img->filename}}) {{ $img->caption }} " 
+                       data-id="{{ $product->id }}" 
                        onClick="return false;" title="{{l('View Image', 'abcc/catalogue')}}">
   
                         {{ $rule->product->reference }}

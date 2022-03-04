@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Customers') }} @parent @stop
+@section('title') {{ l('Customers') }} @parent @endsection
 
 
 @section('content')
@@ -69,7 +69,7 @@
     {!! Form::text('reference_external', null, array('class' => 'form-control')) !!}
 </div>
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2">
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('identification', l('Identification')) !!}
     {!! Form::text('identification', null, array('class' => 'form-control')) !!}
 </div>
@@ -84,12 +84,13 @@
     {!! Form::select('customer_group_id', array('0' => l('All', [], 'layouts')) + $customer_groupList, null, array('class' => 'form-control')) !!}
 </div>
 
-<div class="form-group col-lg-2 col-md-2 col-sm-2" style="display: none">
+<div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('active', l('Active?', [], 'layouts'), ['class' => 'control-label']) !!}
-    {!! Form::select('active', array('-1' => l('All', [], 'layouts'),
-                                          '0'  => l('No' , [], 'layouts'),
+    {!! Form::select('active', array(
                                           '1'  => l('Yes', [], 'layouts'),
-                                          ), null, array('class' => 'form-control')) !!}
+                                          '0'  => l('No' , [], 'layouts'),
+                                          '-1' => l('All', [], 'layouts'),
+                                          ), -1, array('class' => 'form-control')) !!}
 </div>
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
@@ -176,7 +177,7 @@ line-height: 1.42857143;
                 <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                     href="{{ URL::to('customers/' . $customer->id ) }}" 
                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                    data-title="{{ l('Customers') }} :: ({{$customer->id}}) {{{ $customer->name_regular }}} " 
+                    data-title="{{ l('Customers') }} :: ({{$customer->id}}) {{ $customer->name_regular }} " 
                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
                 @else
                 <a class="btn btn-warning" href="{{ URL::to('customers/' . $customer->id. '/restore' ) }}"><i class="fa fa-reply"></i></a>

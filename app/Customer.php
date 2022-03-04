@@ -28,7 +28,7 @@ class Customer extends Model {
 	
     protected $fillable = ['name_fiscal', 'name_commercial', 'identification', 'webshop_id', 'reference_external', 
                            'accounting_id',
-                           'website', 'payment_days', 'no_payment_month', 'discount_percent', 'discount_ppd_percent',
+                           'website', 'cc_addresses', 'payment_days', 'no_payment_month', 'discount_percent', 'discount_ppd_percent',
                            'outstanding_amount_allowed', 'unresolved_amount', 'notes', 
                            'is_invoiceable', 'invoice_by_shipping_address', 'automatic_invoice', 'vat_regime', 'sales_equalization', 'accept_einvoice', 'allow_login', 'blocked', 'active', 
                            'sales_rep_id', 'currency_id', 'language_id', 'customer_group_id', 'payment_method_id', 
@@ -46,6 +46,8 @@ class Customer extends Model {
         
         'shipping_method_id' => 'sometimes|nullable|exists:shipping_methods,id',
         'price_list_id' => 'sometimes|nullable|exists:price_lists,id',
+
+//        'cc_addresses' => ['nullable', new \App\Rules\CommaSeparatedEmails()],
         );
 
 
@@ -53,7 +55,8 @@ class Customer extends Model {
     {
         parent::boot();
 
-        static::addGlobalScope(new ShowOnlyActiveScope( Configuration::isTrue('SHOW_CUSTOMERS_ACTIVE_ONLY') ));
+        // Scope not useful. If a customer is deactivated, you cannot retrieve customer from invoice...
+        // static::addGlobalScope(new ShowOnlyActiveScope( Configuration::isTrue('SHOW_CUSTOMERS_ACTIVE_ONLY') ));
 
         static::creating(function($client)
         {
@@ -120,6 +123,17 @@ class Customer extends Model {
         });
     }
 
+
+    /**
+     * Clean up email list
+     * 
+     */
+    public function setCcAddressesAttribute($value)
+    {
+        $this->attributes['cc_addresses'] = str_replace(' ', '', str_replace(';', ',', $value));
+    }
+
+
     // Get the full name of a User instance using Eloquent accessors
     
     public function getNameAttribute() 
@@ -147,7 +161,7 @@ class Customer extends Model {
 
     public function getReferenceAccountingAttribute()
     {
-        if ( $this->reference_external ) return $this->reference_external;
+        // if ( $this->reference_external ) return $this->reference_external;
 
         if ( $this->accounting_id ) return $this->accounting_id;
 
@@ -419,10 +433,34 @@ class Customer extends Model {
 
         if ( isset($params['active']) )
         {
-            if ( $params['active'] == 0 )
-                $query->where('active', '=', 0);
-            if ( $params['active'] == 1 )
-                $query->where('active', '>', 0);
+            if ( Configuration::isTrue('SHOW_CUSTOMERS_ACTIVE_ONLY') )
+            {
+                if ( $params['active'] == 1 )
+                {
+                    // Show active customers, same as global scope ShowOnlyActiveScope
+                    // Do nothing
+                    ;
+
+                } else {
+                    // Show not active customers (0) or all (-1)
+                    // Remove global scope
+                    $query->withoutGlobalScope(ShowOnlyActiveScope::class);
+
+                    // https://www.manifest.uk.com/blog/overriding-eloquent-global-scopes
+
+                    // Show not active customers (0)
+                    if ( $params['active'] == 0 )
+                        $query->where('active', '=', 0);
+                }
+
+            } else {
+
+                if ( $params['active'] == 0 )
+                    $query->where('active', '=', 0);
+                
+                if ( $params['active'] == 1 )
+                    $query->where('active', '>', 0);
+            }
         }
 
         return $query;

@@ -7,13 +7,17 @@ use Illuminate\Http\Request;
 use Excel;
 
 // Helferinnen
+use App\Http\Controllers\HelferinTraits\JenniferCustomersBalance;
 use App\Http\Controllers\HelferinTraits\JenniferModelo347Trait;
+use App\Http\Controllers\HelferinTraits\JenniferCustomerInvoicesA3;
 
 use App\Traits\DateFormFormatterTrait;
 
 class JenniferController extends Controller
 {
+    use JenniferCustomersBalance;
     use JenniferModelo347Trait;
+    use JenniferCustomerInvoicesA3;
    
    use DateFormFormatterTrait;
 
@@ -32,6 +36,7 @@ class JenniferController extends Controller
         $this->invoices_report_formatList = [
                     'compact' => 'Compacto',
                     'loose' => 'Amplio',
+                    'a3' => 'A3 Contabilidad',
         ];
 
         $this->mod347_claveList = [
@@ -79,6 +84,16 @@ class JenniferController extends Controller
         
         $invoices_report_format = $request->input('invoices_report_format');
 
+        if ( $invoices_report_format == 'a3' )
+        {
+            return $this->reportCustomerInvoicesA3( $request );
+        }
+
+        // Customer?
+        $customer_id = (int) $request->input('invoices_customer_id', 0);
+        if ( $request->input('invoices_autocustomer_name') == '' )
+            $customer_id = 0;
+
         $documents = \App\CustomerInvoice::
                               with('customer')
                             ->with('currency')
@@ -90,6 +105,10 @@ class JenniferController extends Controller
                             ->where( function($query) use ($date_to  ){
                                         if ( $date_to   )
                                         $query->where('document_date', '<=', $date_to  ->endOfDay()  );
+                                } )
+                            ->where( function($query) use ($customer_id){
+                                        if ( $customer_id > 0 )
+                                        $query->where('customer_id', $customer_id);
                                 } )
 //                            ->where('document_date', '>=', $date_from->startOfDay())
 //                            ->where('document_date', '<=', $date_to  ->endOfDay()  )
@@ -128,9 +147,13 @@ class JenniferController extends Controller
 
         }
 
+        $customer_ribbon = 'Clientes';
+        if ( $customer_id > 0 && $documents->first() )
+            $customer_ribbon = $documents->first()->customer->name_fiscal;
+
         // Sheet Header Report Data
         $data[] = [\App\Context::getContext()->company->name_fiscal];
-        $data[] = ['Facturas de Clientes, ' . $ribbon, '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Facturas de ' . $customer_ribbon . ', ' . $ribbon, '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
         // All Taxes
@@ -614,6 +637,7 @@ if ( $invoices_report_format == 'compact') {
             $stock = $arr['stock'];
             $row = [];
             $row[] = $product->reference;
+//            $row[] = $product->reference." [".$product->id."]";
             $row[] = $product->name;
             $row[] = $arr['movement'] ? (float) $arr['movement']->cost_price_after_movement : '';
             $row[] = (float) $product->cost_average;
@@ -688,7 +712,7 @@ if ( $invoices_report_format == 'compact') {
         // abi_r($data, true);
 
         // Generate and return the spreadsheet
-        Excel::create('Inventario', function($excel) use ($sheetName, $data) {
+        Excel::create('Inventario '.$date->format('Y-m-d'), function($excel) use ($sheetName, $data) {
 
             // Set the spreadsheet title, creator, and description
             // $excel->setTitle('Payments');

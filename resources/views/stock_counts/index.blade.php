@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Stock Counts') }} @parent @stop
+@section('title') {{ l('Stock Counts') }} @parent @endsection
 
 
 @section('content')
@@ -93,7 +93,7 @@
    </div>
 </div>
 
-@stop
+@endsection
 
 
 @include('stock_counts/_modal_update_warehouse_stock')

@@ -654,7 +654,14 @@ class Billable extends Model implements ShippableInterface
     {
         if ( !$this->shipping_address_id ) return false;
 
-        return $this->shipping_address_id !== $this->invoicing_address_id;
+        if ( $this->shippingaddress )
+            return $this->shipping_address_id !== $this->invoicing_address_id;
+
+        // Reach this point means non existing address for shipping_address_id
+        $this->shipping_address_id = $this->invoicing_address_id;
+        $this->save();
+
+        return false;
     }
     
 
@@ -773,7 +780,8 @@ class Billable extends Model implements ShippableInterface
         $discount = $this->document_discount_percent;
         $ppd      = $this->document_ppd_percent;
 
-        $document_products_discount = $products_final_price * (1.0 - (1.0 - $discount/100.0) * (1.0 - $ppd/100.0));
+        // $document_products_discount = $products_final_price * (1.0 - (1.0 - $discount/100.0) * (1.0 - $ppd/100.0));
+        $document_products_discount = $products_final_price * ($discount/100.0) * (1.0 + $ppd/100.0);
 
         // abi_r( $document_products_discount);
         $this->document_products_discount = $document_products_discount;
@@ -1047,6 +1055,23 @@ class Billable extends Model implements ShippableInterface
             $query->where('document_date', '<=', $params['date_to']  .' 23:59:59');
         }
 
+        if (array_key_exists('id_from', $params) && $params['id_from'])
+        {
+            $query->where('id', '>=', $params['id_from']);
+        }
+
+        if (array_key_exists('id_to', $params) && $params['id_to'])
+        {
+            $query->where('id', '<=', $params['id_to'] );
+        }
+        
+
+        if (array_key_exists('sales_rep_id', $params) && $params['sales_rep_id'])
+        {
+            $query->where('sales_rep_id', $params['sales_rep_id']);
+        }
+
+
         if (array_key_exists('status', $params) && $params['status'] && self::isStatus($params['status']))
         {
             $query->where('status', $params['status']);
@@ -1071,9 +1096,17 @@ class Billable extends Model implements ShippableInterface
         {
             $amount = $params['price_amount'];
 
+            // Consider amount maybe rounded to currency decimal position
             $query->where( function ($query) use ($amount) {
-                    $query->  where( 'total_tax_excl', $amount );
-                    $query->orWhere( 'total_tax_incl', $amount );
+                    $delta = 0.01 / 2.0;    // Assume rounded to two decimal places
+//                    $query->  where( 'total_tax_excl', function ($query) use ($amount, $delta) {
+//                            $query->  where( 'total_tax_incl', '<',  $amount + $delta );
+//                            $query->orWhere( 'total_tax_incl', '>=', $amount - $delta );
+//                    } );
+//                    $query->orWhere( 'total_tax_incl', function ($query) use ($amount, $delta) {
+                            $query->  where( 'total_tax_incl', '<',  $amount + $delta );
+                            $query->  where( 'total_tax_incl', '>=', $amount - $delta );
+//                    } );
             } );
         }
 
@@ -1085,6 +1118,11 @@ class Billable extends Model implements ShippableInterface
         if (array_key_exists('payment_method_id', $params) && $params['payment_method_id'] )
         {
             $query->where('payment_method_id', $params['payment_method_id']);
+        }
+
+        if ( isset($params['document_reference']) && $params['document_reference'] !== '' )
+        {
+            $query->where('document_reference', 'LIKE', '%' . $params['document_reference'] . '%');
         }
 
 

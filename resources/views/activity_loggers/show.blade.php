@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title')  {{ l('aBillander LOG') }} @parent @stop
+@section('title')  {{ l('aBillander LOG') }} @parent @endsection
 
 
 @section('content')

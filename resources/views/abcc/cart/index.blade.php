@@ -1,6 +1,6 @@
 @extends('abcc.layouts.master')
 
-@section('title') {{ l('Shopping Cart') }} @parent @stop
+@section('title') {{ l('Shopping Cart') }} @parent @endsection
 
 
 @section('content') 

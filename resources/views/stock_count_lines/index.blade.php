@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Stock Count Lines') }} @parent @stop
+@section('title') {{ l('Stock Count Lines') }} @parent @endsection
 
 
 @section('content')

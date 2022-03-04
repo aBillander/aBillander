@@ -1,6 +1,6 @@
 @extends('abcc.layouts.master')
 
-@section('title') {{ l('Reset Password', [], 'layouts') }} @parent @stop
+@section('title') {{ l('Reset Password', [], 'layouts') }} @parent @endsection
 
 
 @section('content')
@@ -20,7 +20,7 @@
                             <label for="email" class="col-md-4 control-label">{{ l('E-Mail Address', [], 'layouts') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ $email or old('email') }}" required autofocus>
+                                <input id="email" type="email" class="form-control" name="email" value="{{ $email ?? old('email') }}" required autofocus>
 
                                 @if ($errors->has('email'))
                                     <span class="help-block">

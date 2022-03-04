@@ -71,4 +71,7 @@ return [
 	'View Image'     => 'Ver Imagen',
 	'Product Images'     => 'Imágenes de Productos',
 
+
+	'You are going to COPY this Order to your Shopping Cart. Are you sure?' => 'Está a punto de COPIAR este Pedido a su Carrito. ¿Está seguro?',
+
 ];

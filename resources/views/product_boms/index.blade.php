@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('BOM') }} @parent @stop
+@section('title') {{ l('BOM') }} @parent @endsection
 
 
 @section('content')
@@ -106,10 +106,9 @@
 @endif
 
    </div><!-- div class="table-responsive" ENDS -->
-
 </div>
 
-@stop
+@endsection
 
 @include('product_boms._modal_help')
 

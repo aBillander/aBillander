@@ -4,8 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\ViewFormatterTrait;
+
 class LotItem extends Model
 {
+    use ViewFormatterTrait;
 
 	protected $fillable = ['lot_id', 'is_reservation', 'quantity'
     ];
@@ -44,4 +47,29 @@ class LotItem extends Model
         return $this->lotitems();
     }
 */
+
+    public function getLotableDocumentRoute()
+    {
+            // static $segment;
+
+            // if ($segment) return $segment;
+
+            $str = $this->lotable_type;
+            if ( !$str ) return $segment = '';
+
+            $segments = array_reverse(explode('\\', $str));
+
+
+            // Last segment
+            // $str = substr( $segments[0], 0, -strlen('Line') );
+            // Better approach:
+            $str = substr( $segments[0], 0, strpos($segments[0], "Line") );
+
+            if ( !$str ) 
+                $str = $segments[0];
+
+            $segment = strtolower($str);
+
+            return \Str::plural($segment);
+    }
 }

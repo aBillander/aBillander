@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Documents') }} @parent @stop
+@section('title') {{ l('Documents') }} @parent @endsection
 
 
 @section('content')
@@ -91,10 +91,10 @@
 
 <div class="form-group col-lg-1 col-md-1 col-sm-1">
     {!! Form::label('price_amount', l('Total Amount')) !!}
-                              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" xdata-container="body" 
-                                        data-content="{{ l('With or without Taxes') }}">
+                              <!-- a href="javascript:void(0);" data-toggle="popover" data-placement="top" xdata-container="body" 
+                                        data-content="{ { l('With or without Taxes') } }">
                                     <i class="fa fa-question-circle abi-help"></i>
-                              </a>
+                              </a -->
     {!! Form::text('price_amount', null, array('class' => 'form-control', 'id' => 'price_amount')) !!}
 </div>
 
@@ -107,6 +107,32 @@
 </div>
 
 <div class="row">
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('document_reference', l('Document Number')) !!}
+        {!! Form::text('document_reference', null, array('class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('id_from', l('From ID', 'layouts')) !!}
+        {!! Form::text('id_from', null, array('id' => 'id_from', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('id_to', l('To ID', 'layouts')) !!}
+        {!! Form::text('id_to', null, array('id' => 'id_to', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {{-- Poor man offset --}}
+    </div>
+
+@if( count($salesrepList) > 0 )
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('sales_rep_id', l('Sales Representative')) !!}
+        {!! Form::select('sales_rep_id', ['' => l('All', [], 'layouts')] + $salesrepList, null, array('class' => 'form-control', 'id' => 'sales_rep_id')) !!}
+    </div>
+@endif
 
 </div>
 
@@ -145,8 +171,8 @@
             <th class="text-left">{{ l('Customer') }}</th>
             <th class="text-left">{{ l('Deliver to') }}</th>
             <th class="text-left">{{ l('Created via') }}</th>
-            <th class="text-right"">{{ l('Total') }}</th>
-            <th class="text-right""> </th>
+            <th class="text-right">{{ l('Total') }}</th>
+            <th class="text-right"> </th>
             <th class="text-center">{{ l('Next Due Date') }}</th>
             <th class="text-center">{{ l('Notes', 'layouts') }}</th>
             <th> </th>

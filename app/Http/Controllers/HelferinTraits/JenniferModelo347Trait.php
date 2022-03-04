@@ -488,7 +488,7 @@ foreach ($customers as $customer) {
 */
 
 
-    public function sendemail( $mod347_year, $customer_id, Request $request )
+    public function reportModelo347Email( $mod347_year, $customer_id, Request $request )
     {
         // Wanna dance, Honey Bunny?
         $customer = Customer::findOrFail($customer_id);

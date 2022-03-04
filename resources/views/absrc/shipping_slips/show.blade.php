@@ -1,6 +1,6 @@
 @extends('abcc.layouts.master')
 
-@section('title') {{ l('Customer Invoices - Show') }} @parent @stop
+@section('title') {{ l('Customer Invoices - Show') }} @parent @endsection
 
 
 @section('content')
@@ -486,7 +486,7 @@ table.border td {
 		</div>
 	</div>
 
-@stop
+@endsection
 
 {{--
 

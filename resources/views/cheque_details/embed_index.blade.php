@@ -57,7 +57,7 @@
                             <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                                     href="{{ URL::to('cheques/' . $cheque->id.'/chequedetails/' . $detail->id ) }}" 
                                     data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                                    data-title="{{ l('Customer Cheque Details') }} :: ({{$detail->id}}) {{{ $detail->name }}} " 
+                                    data-title="{{ l('Customer Cheque Details') }} :: ({{$detail->id}}) {{ $detail->name }} " 
                                     onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
 {{-- --}}
                         </td>

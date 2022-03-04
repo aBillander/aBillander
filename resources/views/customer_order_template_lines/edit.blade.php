@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title') {{ l('Customer Order Template Lines - Edit') }} @parent @stop
+@section('title') {{ l('Customer Order Template Lines - Edit') }} @parent @endsection
 
 
 @section('content')

@@ -297,10 +297,13 @@ trait BillableShippingSlipableControllerTrait
             $i++;
 
             // Text line announces Shipping Slip
+            $your_order = '';
+            if ( $document->reference_customer )
+                $your_order = ' - '.l('Your Order: ').$document->reference_customer;
             $line_data = [
                 'line_sort_order' => $i*10, 
                 'line_type' => 'comment', 
-                'name' => l('Order: :id [:date]', ['id' => $document->document_reference, 'date' => abi_date_short($document->document_date)]),
+                'name' => l('Order: :id [:date]', ['id' => $document->document_reference, 'date' => abi_date_short($document->document_date)]).$your_order,
 //                'product_id' => , 
 //                'combination_id' => , 
                 'reference' => $document->document_reference, 

@@ -102,6 +102,7 @@ class CreateProductsTable extends Migration {
 			Dependent requirements for the superior assembly are passed directly down to the components of the phantom assembly, skipping the phantom assembly. Planned orders and purchase requisitions are also produced only for the components of the phantom assembly.
 */
 
+			// When Customer Center enabled:
 			$table->string('out_of_stock', 32)->nullable(false)->default('default');
 			$table->text('out_of_stock_text')->nullable();
 
@@ -115,7 +116,9 @@ class CreateProductsTable extends Migration {
 
 			// Lot Control
 			$table->tinyInteger('lot_tracking')->default(0);			
-			$table->integer('expiry_time')->unsigned()->nullable();				// Days
+			$table->string('expiry_time', 16)->nullable();				// 5 or 5d -> 5 days :  8m -> 8 months :  2y -> 2 years
+			$table->string('lot_number_generator', 64)->nullable(false)->default('Default');
+			$table->string('lot_policy', 32)->nullable(false)->default('FIFO');
 			
 			$table->integer('tax_id')->unsigned()->nullable(false);
 			$table->integer('ecotax_id')->unsigned()->nullable();

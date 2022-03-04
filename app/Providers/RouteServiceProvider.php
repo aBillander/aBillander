@@ -68,7 +68,7 @@ class RouteServiceProvider extends ServiceProvider
                  ->group(base_path('routes/web_crm.php'));
 
             // MFG
-            if ( \App\Configuration::isFalse('ENABLE_MANUFACTURING') )
+            if ( Configuration::isFalse('ENABLE_MANUFACTURING') )
             Route::middleware('web')
                  ->namespace($this->namespace)
                  ->group(base_path('routes/web_mfg.php'));

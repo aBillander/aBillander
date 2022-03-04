@@ -58,6 +58,11 @@ if (file_exists(__DIR__.'/gorrino_gmdis.php')) {
 }
 
 
+if (file_exists(__DIR__.'/gorrino_sandbox.php')) {
+    include __DIR__.'/gorrino_sandbox.php';
+}
+
+
 /* ********************************************************** */
 
 

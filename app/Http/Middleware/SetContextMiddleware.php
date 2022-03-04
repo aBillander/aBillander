@@ -4,18 +4,19 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-use App\Configuration;
-use App\Company;
-use App\Currency;
-use App\Context;
-use App\Language;
+use App\Models\Configuration;
+use App\Models\Company;
+use App\Models\Currency;
+use App\Models\Context;
+use App\Models\Language;
 
 use Auth;
-use App\User;
+use App\Models\User;
 use Config, App;
 use Request, Cookie;		// , DB, Session;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use aBillander\Installer\Helpers\Installer;
+
+// use aBillander\Installer\Helpers\Installer;
 
 class SetContextMiddleware {
 
@@ -28,7 +29,8 @@ class SetContextMiddleware {
 	 */
 	public function handle($request, Closure $next, $guard = null)
 	{
-		if (Installer::alreadyInstalled()) {
+//		if (Installer::alreadyInstalled()) {
+		if ( 1 ) {
 			/*
 			|--------------------------------------------------------------------------
 			| Application Configuration

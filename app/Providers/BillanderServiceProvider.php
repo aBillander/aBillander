@@ -5,7 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 use Request;
-use App\Configuration;
+
+use App\Models\Configuration;
 
 class BillanderServiceProvider extends ServiceProvider
 {

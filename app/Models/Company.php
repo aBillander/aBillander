@@ -44,37 +44,37 @@ class Company extends Model {
      */
     public function bankaccounts()
     {
-        return $this->morphMany('App\BankAccount', 'bank_accountable')->orderBy('bank_name', 'ASC');
+        return $this->morphMany(BankAccount::class, 'bank_accountable')->orderBy('bank_name', 'ASC');
     }
 
     public function bankaccount()
     {
-        return $this->hasOne('App\BankAccount', 'id', 'bank_account_id')
+        return $this->hasOne(BankAccount::class, 'id', 'bank_account_id')
                    ->where('bank_accountable_type', Company::class);
     }
     
     
     public function address()
     {
-        // return $this->morphMany('App\Address', 'addressable')->first();
+        // return $this->morphMany(Address', 'addressable')->first();
         // See: https://stackoverflow.com/questions/22012877/laravel-eloquent-polymorphic-one-to-one
         // https://laracasts.com/discuss/channels/general-discussion/one-to-one-polymorphic-inverse-relationship-with-existing-database
-        return $this->hasOne('App\Address', 'addressable_id','id')
-                   ->where('addressable_type', 'App\Company');
+        return $this->hasOne(Address::class, 'addressable_id','id')
+                   ->where('addressable_type', Company::class);
     }
     
     public function addresses()
     {
-        return $this->morphMany('App\Address', 'addressable');
+        return $this->morphMany(Address::class, 'addressable');
     }
 
     public function currency()
     {
-        return $this->belongsTo('App\Currency');
+        return $this->belongsTo(Currency::class);
     }
 
     public function language()
     {
-        return $this->belongsTo('App\Language');
+        return $this->belongsTo(Language::class);
     }
 }

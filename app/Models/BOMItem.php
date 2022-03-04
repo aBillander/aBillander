@@ -25,11 +25,11 @@ class BOMItem extends Model
 
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo(Product::class);
     }
 
     public function productbom()
     {
-        return $this->belongsTo('App\ProductBOM', 'product_bom_id');
+        return $this->belongsTo(ProductBOM::class, 'product_bom_id');
     }
 }

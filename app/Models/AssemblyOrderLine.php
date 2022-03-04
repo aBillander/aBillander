@@ -30,7 +30,7 @@ class AssemblyOrderLine extends Model
     
     public function assemblyorder()
     {
-        return $this->belongsTo('App\AssemblyOrder', 'assembly_order_id');
+        return $this->belongsTo(AssemblyOrder::class, 'assembly_order_id');
     }
     
     // Alias
@@ -41,12 +41,12 @@ class AssemblyOrderLine extends Model
 
     public function product()
     {
-       return $this->belongsTo('App\Product');
+       return $this->belongsTo(Product::class);
     }
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
 
     /**

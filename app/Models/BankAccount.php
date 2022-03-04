@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 // use Illuminate\Database\Eloquent\SoftDeletes;
 
+use aBillander\SepaSpain\SepaDirectDebit;
+
 class BankAccount extends Model {
 
 //    use SoftDeletes;
@@ -243,6 +245,6 @@ class BankAccount extends Model {
 
     public function sepadirectdebits()
     {
-        return $this->hasMany('aBillander\SepaSpain\SepaDirectDebit', 'bank_account_id');
+        return $this->hasMany(SepaDirectDebit::class, 'bank_account_id');
     }
 }

@@ -175,7 +175,7 @@ class ActivityLoggerLine extends Model
 
     public function activitylogger()
     {
-        return $this->belongsTo('App\ActivityLogger');
+        return $this->belongsTo(ActivityLogger::class);
     }
 }
 

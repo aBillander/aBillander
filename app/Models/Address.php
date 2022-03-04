@@ -119,7 +119,7 @@ class Address extends Model {
 
     public function customer()
     {
-//        return $this->belongsTo('App\Customer', 'owner_id')->where('model_name', '=', 'Customer');
+//        return $this->belongsTo(Customer::class, 'owner_id')->where('model_name', '=', 'Customer');
     }
     
     public function addressable()
@@ -129,17 +129,17 @@ class Address extends Model {
 
     public function country()
     {
-        return $this->belongsTo('App\Country');
+        return $this->belongsTo(Country::class);
     }
 
     public function state()
     {
-        return $this->belongsTo('App\State');
+        return $this->belongsTo(State::class);
     }
 
     public function shippingmethod()
     {
-        return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
+        return $this->belongsTo(ShippingMethod::class, 'shipping_method_id');
     }
 
     public function getShippingMethod()

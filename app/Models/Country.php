@@ -37,7 +37,7 @@ class Country extends Model {
     
     public function hasState( $id )
     {
-        return $this->hasMany('App\State', 'country_id')->where('id', intval($id))->first();
+        return $this->hasMany(State::class, 'country_id')->where('id', intval($id))->first();
     }
 
     
@@ -65,7 +65,7 @@ class Country extends Model {
     
     public function states()
     {
-        return $this->hasMany('App\State', 'country_id')->orderby('name', 'asc');
+        return $this->hasMany(State::class, 'country_id')->orderby('name', 'asc');
     }
 
 }

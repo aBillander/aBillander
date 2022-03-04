@@ -17,7 +17,7 @@ class CustomerInvoiceLineTax extends BillableLineTax
 /*
     public function customerinvoiceline()
     {
-       return $this->belongsTo('App\CustomerInvoiceLine', 'customer_invoice_line_id');
+       return $this->belongsTo('CustomerInvoiceLine::class, 'customer_invoice_line_id');
     }
 */
 }

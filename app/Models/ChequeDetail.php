@@ -46,21 +46,21 @@ class ChequeDetail extends Model
     
     public function cheque()
     {
-        return $this->belongsTo( 'App\Cheque' );
+        return $this->belongsTo( Cheque::class );
     }
     
     public function customerinvoice()
     {
-        return $this->hasOne( 'App\CustomerInvoice', 'id', 'customer_invoice_id' );
+        return $this->hasOne( CustomerInvoice::class, 'id', 'customer_invoice_id' );
     }
     
     public function customerpayment()
     {
-        return $this->hasOne( 'App\Payment', 'id', 'payment_id' )->where('payment_type', 'receivable');
+        return $this->hasOne( Payment::class, 'id', 'payment_id' )->where('payment_type', 'receivable');
     }
     
     public function supplierpayment()
     {
-        return $this->hasOne( 'App\Payment', 'id', 'payment_id' )->where('payment_type', 'payable');
+        return $this->hasOne( Payment::class, 'id', 'payment_id' )->where('payment_type', 'payable');
     }
 }

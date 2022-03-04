@@ -32,7 +32,7 @@ class CommissionSettlementLine extends Model
 
     public function commissionsettlement()
     {
-        return $this->belongsTo('App\CommissionSettlement', 'commission_settlement_id');
+        return $this->belongsTo(CommissionSettlement::class, 'commission_settlement_id');
     }
 
     // Alias

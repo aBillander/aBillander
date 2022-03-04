@@ -153,32 +153,32 @@ class BillableLine extends Model
 
     public function product()
     {
-       return $this->belongsTo('App\Product');
+       return $this->belongsTo(Product::class);
     }
 
     public function combination()
     {
-       return $this->belongsTo('App\Combination');
+       return $this->belongsTo(Combination::class);
     }
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
 
     public function packagemeasureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'package_measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'package_measure_unit_id');
     }
 
     public function tax()
     {
-        return $this->belongsTo('App\Tax');
+        return $this->belongsTo(Tax::class);
     }
 
     public function ecotax()
     {
-        return $this->belongsTo('App\Ecotax');
+        return $this->belongsTo(Ecotax::class);
     }
 
     /**
@@ -192,7 +192,7 @@ class BillableLine extends Model
 
     public function lotitems()
     {
-        return $this->morphMany('App\LotItem', 'lotable')->with('lot');
+        return $this->morphMany(LotItem::class, 'lotable')->with('lot');
     }
 
     public function getLotsAttribute()

@@ -166,28 +166,28 @@ class Combination extends Model {
 
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo(Product::class);
 	}
     
     public function options()
     {
-        return $this->belongsToMany('App\Option')->withTimestamps();
+        return $this->belongsToMany(Option::class)->withTimestamps();
     }
     
     public function stockmovements()
     {
-        return $this->hasMany('App\StockMovement');
+        return $this->hasMany(StockMovement::class);
     }
     
     public function warehouses()
     {
-        return $this->belongsToMany('App\Warehouse')->withPivot('quantity')->withTimestamps();
+        return $this->belongsToMany(Warehouse::class)->withPivot('quantity')->withTimestamps();
     }
 
     public function images()
     {
-        return $this->belongsToMany('App\Image')
+        return $this->belongsToMany(Image::class)
                 ->where('imageable_id', '=', $this->product_id)
-                ->andWhere('imageable_type', '=', 'App\Product');
+                ->andWhere('imageable_type', '=', Product::class);
     }
 }

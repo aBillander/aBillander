@@ -41,16 +41,16 @@ class Contact extends Model
 
     public function createdby()
     {
-        return $this->belongsTo('App\User', 'user_created_by_id');
+        return $this->belongsTo(User::class, 'user_created_by_id');
 	}
 
     public function party()
     {
-        return $this->belongsTo('App\Party');
+        return $this->belongsTo(Party::class);
 	}
     
 //    public function leads()
 //    {
-//        return $this->hasMany('App\Lead');
+//        return $this->hasMany(Lead::class);
 //    }
 }

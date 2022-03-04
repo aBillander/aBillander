@@ -159,7 +159,7 @@ class CommissionSettlement extends Model
     
     public function commissionsettlementlines()
     {
-        return $this->hasMany('App\CommissionSettlementLine', 'commission_settlement_id');
+        return $this->hasMany(CommissionSettlementLine::class, 'commission_settlement_id');
     }
     
     public function nbr_commissionsettlementlines()
@@ -170,7 +170,7 @@ class CommissionSettlement extends Model
 
     public function salesrep()
     {
-        return $this->belongsTo('App\SalesRep', 'sales_rep_id');
+        return $this->belongsTo(SalesRep::class, 'sales_rep_id');
     }
     
 }

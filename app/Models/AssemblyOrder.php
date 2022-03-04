@@ -208,27 +208,27 @@ class AssemblyOrder extends Model
     
     public function workcenter()
     {
-        return $this->belongsTo('App\WorkCenter', 'work_center_id');
+        return $this->belongsTo(WorkCenter::class, 'work_center_id');
     }
     
     public function warehouse()
     {
-        return $this->belongsTo('App\Warehouse');
+        return $this->belongsTo(Warehouse::class);
     }
     
     public function product()
     {
-        return $this->belongsTo('App\Product', 'product_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
     
     public function assemblyorderlines()
     {
-        return $this->hasMany('App\AssemblyOrderLine', 'assembly_order_id');
+        return $this->hasMany(AssemblyOrderLine::class, 'assembly_order_id');
     }
     
     // Alias

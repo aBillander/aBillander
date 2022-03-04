@@ -1044,7 +1044,7 @@ class Cart extends Model implements ShippableInterface
 
     public function customeruser()
     {
-        return $this->belongsTo('App\CustomerUser', 'customer_user_id');
+        return $this->belongsTo(CustomerUser::class, 'customer_user_id');
     }
 
     // Alias
@@ -1055,32 +1055,32 @@ class Cart extends Model implements ShippableInterface
 
     public function customer()
     {
-        return $this->belongsTo('App\Customer', 'customer_id');
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     public function shippingmethod()
     {
-        return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
+        return $this->belongsTo(ShippingMethod::class, 'shipping_method_id');
     }
 
     public function carrier()
     {
-        return $this->belongsTo('App\Carrier');
+        return $this->belongsTo(Carrier::class);
     }
 
     public function paymentmethod()
     {
-        return $this->belongsTo('App\PaymentMethod', 'payment_method_id');
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
     }
 
     public function currency()
     {
-        return $this->belongsTo('App\Currency');
+        return $this->belongsTo(Currency::class);
     }
 
     public function invoicingaddress()
     {
-        return $this->belongsTo('App\Address', 'invoicing_address_id');
+        return $this->belongsTo(Address, 'invoicing_address_id');
     }
 
     // Alias function
@@ -1091,7 +1091,7 @@ class Cart extends Model implements ShippableInterface
 
     public function shippingaddress()
     {
-        return $this->belongsTo('App\Address', 'shipping_address_id');
+        return $this->belongsTo(Address::class, 'shipping_address_id');
     }
 
     public function taxingaddress()
@@ -1104,17 +1104,17 @@ class Cart extends Model implements ShippableInterface
     
     public function cartlines()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
-        return $this->hasMany('App\CartLine')->orderBy('line_sort_order', 'ASC');
+        return $this->hasMany(CartLine::class)->orderBy('line_sort_order', 'ASC');
     }
 
     public function cartproductlines()
     {
-        return $this->hasMany('App\CartLine')->where('line_type', 'product')->orderBy('line_sort_order', 'ASC');
+        return $this->hasMany(CartLine::class)->where('line_type', 'product')->orderBy('line_sort_order', 'ASC');
     }
 
     public function cartshippingline()
     {
-        return $this->hasMany('App\CartLine')->where('line_type', 'shipping')->first();
+        return $this->hasMany(CartLine::class)->where('line_type', 'shipping')->first();
     }
 
     // Alias
@@ -1125,7 +1125,7 @@ class Cart extends Model implements ShippableInterface
 /*    
     public function customerorderlinetaxes()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
-        return $this->hasManyThrough('App\CustomerOrderLineTax', 'App\CustomerOrderLine');
+        return $this->hasManyThrough(CustomerOrderLineTax::class, CustomerOrderLine::class);
     }
 
     public function customerordertaxes()

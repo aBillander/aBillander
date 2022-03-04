@@ -676,25 +676,25 @@ class Customer extends Model {
      */
     public function bankaccounts()
     {
-        return $this->morphMany('App\BankAccount', 'bank_accountable');
+        return $this->morphMany(BankAccount::class, 'bank_accountable');
     }
 
     public function bankaccount()
     {
-        return $this->hasOne('App\BankAccount', 'id', 'bank_account_id')
+        return $this->hasOne(BankAccount::class, 'id', 'bank_account_id')
                    ->where('bank_accountable_type', Customer::class);
     }
     
 
     public function addresses()
     {
-        return $this->morphMany('App\Address', 'addressable');
+        return $this->morphMany(Address::class, 'addressable');
     }
 
 
     public function getAddressList()
     {
-        return $this->morphMany('App\Address', 'addressable')->pluck( 'alias', 'id' )->toArray();
+        return $this->morphMany(Address::class, 'addressable')->pluck( 'alias', 'id' )->toArray();
     }
 
 
@@ -707,21 +707,21 @@ class Customer extends Model {
 
     public function address()
     {
-        return $this->hasOne('App\Address', 'id', 'invoicing_address_id')
+        return $this->hasOne(Address::class, 'id', 'invoicing_address_id')
                    ->where('addressable_type', Customer::class);
 
 
         // return $this->invoicing_address();
 
         // Chainable relationship to use in customer index & more
-//        return $this->morphMany('App\Address', 'addressable')
+//        return $this->morphMany(Address::class, 'addressable')
 //                   ->where('addresses.id', $this->invoicing_address_id);
     }
     
     public function invoicing_address()
     {
         if ($this->invoicing_address_id>0)
-            return $this->morphMany('App\Address', 'addressable')
+            return $this->morphMany(Address::class, 'addressable')
                    ->where('addresses.id', $this->invoicing_address_id)->first();
         else
             return null;
@@ -730,70 +730,70 @@ class Customer extends Model {
     public function shipping_address()
     {
         if ($this->shipping_address_id>0)
-            return $this->morphMany('App\Address', 'addressable')
+            return $this->morphMany(Address::class, 'addressable')
                    ->where('addresses.id', $this->shipping_address_id)->first();
         else
             return $this->invoicing_address();
         
-//        return $this->belongsTo('App\Address', 'shipping_address_id')
-//                   ->where('addresses.addressable_type', 'App\Customer');
+//        return $this->belongsTo(Address::class, 'shipping_address_id')
+//                   ->where('addresses.addressable_type', Customer::class);
     }
 
     public function currency()
     {
-        return $this->belongsTo('App\Currency');
+        return $this->belongsTo(Currency::class);
     }
 
     public function language()
     {
-        return $this->belongsTo('App\Language');
+        return $this->belongsTo(Language::class);
     }
 
     // Use CustomerUser->cart instead!!
     public function cart()
     {
-        return $this->hasOne('App\Cart');
+        return $this->hasOne(Cart::class);
     }
 
     public function paymentmethod()
     {
-        return $this->belongsTo('App\PaymentMethod', 'payment_method_id');
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
     }
 
     public function shippingmethod()
     {
-        return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
+        return $this->belongsTo(ShippingMethod::class, 'shipping_method_id');
     }
 
     public function pricelist()
     {
-        return $this->belongsTo('App\PriceList', 'price_list_id');
+        return $this->belongsTo(PriceList::class, 'price_list_id');
     }
 
     public function salesrep()
     {
-        return $this->belongsTo('App\SalesRep', 'sales_rep_id');
+        return $this->belongsTo(SalesRep::class, 'sales_rep_id');
     }
 
     public function customergroup()
     {
-        return $this->belongsTo('App\CustomerGroup', 'customer_group_id');
+        return $this->belongsTo(CustomerGroup::class, 'customer_group_id');
     }
 
     
     public function customerquotations()
     {
-        return $this->hasMany('App\CustomerQuotation');
+        return $this->hasMany(CustomerQuotation::class);
     }
 
     public function customerorders()
     {
-        return $this->hasMany('App\CustomerOrder');
+        return $this->hasMany(CustomerOrder::class);
     }
 
     public function customerordertemplates()
     {
-        return $this->hasMany('App\CustomerOrderTemplate');
+        return $this->hasMany(CustomerOrderTemplate::class);
     }
 
     public function getCustomerordertemplateAttribute()
@@ -803,19 +803,19 @@ class Customer extends Model {
 
     public function customershippingslips()
     {
-        return $this->hasMany('App\CustomerShippingSlip');
+        return $this->hasMany(CustomerShippingSlip::class);
     }
 
     public function customerinvoices()
     {
-        return $this->hasMany('App\CustomerInvoice');
+        return $this->hasMany(CustomerInvoice::class);
     }
     
     public function payments()
     {
-        // return $this->hasMany('App\Payment', 'owner_id')->where('payment.owner_model_name', '=', 'Customer');
+        // return $this->hasMany(Payment::class, 'owner_id')->where('payment.owner_model_name', '=', 'Customer');
 
-        return $this->morphMany('App\Payment', 'paymentorable');
+        return $this->morphMany(Payment::class, 'paymentorable');
     }
     
     // Alias
@@ -826,24 +826,24 @@ class Customer extends Model {
 
     public function cheques()
     {
-        return $this->hasMany('App\Cheque');
+        return $this->hasMany(Cheque::class);
     }
 
 
     public function deliveryroutelines()
     {
-        return $this->hasMany('App\DeliveryRouteLine');
+        return $this->hasMany(DeliveryRouteLine::class);
     }
 
     public function deliverysheetlines()
     {
-        return $this->hasMany('App\DeliverySheetLine');
+        return $this->hasMany(DeliverySheetLine::class);
     }
 
 
     public function pricerules()
     {
-        return $this->hasMany('App\PriceRule');
+        return $this->hasMany(PriceRule::class);
     }
 
 
@@ -853,18 +853,18 @@ class Customer extends Model {
     public function xgetUserAttribute()
     {
         return $this->users()->where('id', Auth::user()->id)->first();
-        // return $this->hasOne('App\CustomerUser', 'customer_id');
+        // return $this->hasOne(CustomerUser::class, 'customer_id');
     }
 
     public function user()
     {
         // return $this->users()->where()->first();
-        return $this->hasOne('App\CustomerUser', 'customer_id')->where('is_principal', 1);
+        return $this->hasOne(CustomerUser::class, 'customer_id')->where('is_principal', 1);
     }
 
     public function users()
     {
-        return $this->hasMany('App\CustomerUser', 'customer_id');
+        return $this->hasMany(CustomerUser::class, 'customer_id');
     }
 
     

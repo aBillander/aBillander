@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\DocumentAscription;
+
 use App\Traits\CustomerInvoicePaymentsTrait;
 use App\Traits\BillableStockMovementsTrait;
 
@@ -356,32 +358,32 @@ class CustomerInvoice extends Billable
 
     public function leftAscriptions()
     {
- /*       $relation = $this->morphMany('App\DocumentAscription', 'rightable'); //->where('type', 'traceability');
+ /*       $relation = $this->morphMany(DocumentAscription::class, 'rightable'); //->where('type', 'traceability');
 
         if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
 
-        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
+        abi_r($this->morphMany(DocumentAscription::class, 'rightable'));;die();
 
         // abi_toSQL($relation->orderBy('id', 'ASC'));die();
 */
-        return $this->morphMany('App\DocumentAscription', 'rightable')->where('type', 'traceability')->orderBy('id', 'ASC');
+        return $this->morphMany(DocumentAscription::class, 'rightable')->where('type', 'traceability')->orderBy('id', 'ASC');
     }
 
     public function leftShippingSlipAscriptions( $model = '' )
     {
-/*        $relation = $this->morphMany('App\DocumentAscription', 'rightable'); //->where('type', 'traceability');
+/*        $relation = $this->morphMany(DocumentAscription::class, 'rightable'); //->where('type', 'traceability');
 
         if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
 
-        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
+        abi_r($this->morphMany(DocumentAscription::class, 'rightable'));;die();
 
-        // abi_toSQL($relation->orderBy('id', 'ASC'));die();\App\CustomerShippingSlip::class
+        // abi_toSQL($relation->orderBy('id', 'ASC'));die();CustomerShippingSlip::class
 */
         $ascriptions = $this->leftAscriptions;
 
         // abi_r($ascriptions);
 
-        return $ascriptions->where('leftable_type', 'App\CustomerShippingSlip');
+        return $ascriptions->where('leftable_type', CustomerShippingSlip::class);
     }
 
     public function leftShippingSlips()
@@ -390,39 +392,20 @@ class CustomerInvoice extends Billable
 
         // abi_r($ascriptions->pluck('leftable_id')->all(), true);
 
-        return \App\CustomerShippingSlip::find( $ascriptions->pluck('leftable_id') );
+        return CustomerShippingSlip::find( $ascriptions->pluck('leftable_id') );
     }
 
 
     public function payments()
     {
-        return $this->morphMany('App\Payment', 'paymentable')->orderBy('due_date', 'ASC');
+        return $this->morphMany(Payment::class, 'paymentable')->orderBy('due_date', 'ASC');
     }
 
 
     public function commissionsettlementline()
     {
-        return $this->hasOne('App\CommissionSettlementLine', 'commissionable_id', 'id')
+        return $this->hasOne(CommissionSettlementLine::class, 'commissionable_id', 'id')
                     ->where('commissionable_type', CustomerInvoice::class);
-    }
-
-
-   /**
-     * Get all of the WC Orders that are assigned this Invoice.
-     */
-    public function wc_orders()
-    {
-        return $this->belongsToMany('aBillander\WooConnect\WooOrder', 'parent_child', 'childable_id', 'parentable_id')
-                ->wherePivot('childable_type' , 'App\CustomerInvoice')
-                ->wherePivot('parentable_type', 'aBillander\WooConnect\WooOrder')
-                ->withTimestamps();
-    }
-
-    public function staple_wc_order( $document = null )
-    {
-        if (!$document) return;
-
-        $this->wc_orders()->attach($document->id, ['parentable_type' => 'aBillander\WooConnect\WooOrder', 'childable_type' => 'App\CustomerInvoice']);
     }
     
 

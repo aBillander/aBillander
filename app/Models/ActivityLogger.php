@@ -240,12 +240,12 @@ class ActivityLogger extends Model
     
     public function activityloggerlines()
     {
-        return $this->hasMany('App\ActivityLoggerLine', 'activity_logger_id');
+        return $this->hasMany(ActivityLoggerLine::class, 'activity_logger_id');
     }
 
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(User::class);
     }
 
     public function loggable()

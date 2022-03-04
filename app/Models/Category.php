@@ -144,25 +144,25 @@ class Category extends Model {
     
     public function parent() {
 
-        return $this->belongsTo('App\Category','parent_id','id');
+        return $this->belongsTo(Category::class,'parent_id','id');
 
     }
     
     public function children() {
 
-        return $this->hasMany('App\Category','parent_id','id')->orderBy('position', 'asc')->orderBy('name', 'asc');
+        return $this->hasMany(Category::class,'parent_id','id')->orderBy('position', 'asc')->orderBy('name', 'asc');
 
     }
     
     public function activechildren() {
 
-        return $this->hasMany('App\Category','parent_id','id')->where('active', '>', 0)->IsPublished()->orderBy('position', 'asc')->orderBy('name', 'asc');    // ->IsActive() ;
+        return $this->hasMany(Category::class,'parent_id','id')->where('active', '>', 0)->IsPublished()->orderBy('position', 'asc')->orderBy('name', 'asc');    // ->IsActive() ;
 
     }
 
     public function products()
     {
-        return $this->hasMany('App\Product')->orderBy('position', 'asc')->orderBy('name', 'asc');
+        return $this->hasMany(Product::class)->orderBy('position', 'asc')->orderBy('name', 'asc');
     }
 
     /**
@@ -178,7 +178,7 @@ class Category extends Model {
 
         if ( !$customer_user ) return collect([]);
 
-        return $this->hasMany('App\Product')
+        return $this->hasMany(Product::class)
                     ->IsSaleable()  // Is for sale or not
                     ->IsAvailable() // Has stock
                     // This filter would "filter" products a customer is allowed

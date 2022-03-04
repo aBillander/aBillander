@@ -187,16 +187,16 @@ class Currency extends Model {
     
     public function currencyconversionrates()
     {
-        return $this->hasMany('App\CurrencyConversionRate');
+        return $this->hasMany(CurrencyConversionRate::class);
     }
     
     public function customerinvoices()
     {
-        return $this->hasMany('App\CustomerInvoice');
+        return $this->hasMany(CustomerInvoice::class);
     }
     
     public function customerorders()
     {
-        return $this->hasMany('App\CustomerOrder');
+        return $this->hasMany(CustomerOrder::class);
     }
 }

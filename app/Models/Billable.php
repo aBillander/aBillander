@@ -288,12 +288,12 @@ class Billable extends Model implements ShippableInterface
     
     public function rightAscriptions()
     {
-        return $this->morphMany('App\DocumentAscription', 'leftable')->orderBy('id', 'ASC');
+        return $this->morphMany(DocumentAscription::class, 'leftable')->orderBy('id', 'ASC');
     }
 
     public function leftAscriptions()
     {
-        return $this->morphMany('App\DocumentAscription', 'rightable')->orderBy('id', 'ASC');
+        return $this->morphMany(DocumentAscription::class, 'rightable')->orderBy('id', 'ASC');
     }
 
 
@@ -897,22 +897,22 @@ class Billable extends Model implements ShippableInterface
     
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(User::class);
     }
 
     public function sequence()
     {
-        return $this->belongsTo('App\Sequence');
+        return $this->belongsTo(Sequence::class);
     }
 
     public function customer()
     {
-        return $this->belongsTo('App\Customer');
+        return $this->belongsTo(Customer::class);
     }
 
     public function supplier()
     {
-        return $this->belongsTo('App\Supplier');
+        return $this->belongsTo(Supplier::class);
     }
 
     public function transactor()
@@ -920,47 +920,47 @@ class Billable extends Model implements ShippableInterface
         $transactor = $this->getClassFirstSegment();
         $transactor_id = strtolower($transactor).'_id';
 
-        return $this->belongsTo('App\\'.$transactor, $transactor_id);
+        return $this->belongsTo('App\\Models\\'.$transactor, $transactor_id);
     }
 
     public function shippingmethod()
     {
-        return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
+        return $this->belongsTo(ShippingMethod::class, 'shipping_method_id');
     }
 
     public function carrier()
     {
-        return $this->belongsTo('App\Carrier');
+        return $this->belongsTo(Carrier::class);
     }
 
     public function paymentmethod()
     {
-        return $this->belongsTo('App\PaymentMethod', 'payment_method_id');
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
     }
 
     public function currency()
     {
-        return $this->belongsTo('App\Currency');
+        return $this->belongsTo(Currency::class);
     }
 
     public function warehouse()
     {
-        return $this->belongsTo('App\Warehouse');
+        return $this->belongsTo(Warehouse::class);
     }
 
     public function salesrep()
     {
-        return $this->belongsTo('App\SalesRep', 'sales_rep_id');
+        return $this->belongsTo(SalesRep::class, 'sales_rep_id');
     }
 
     public function template()
     {
-        return $this->belongsTo('App\Template');
+        return $this->belongsTo(Template::class);
     }
 
     public function invoicingaddress()
     {
-        return $this->belongsTo('App\Address', 'invoicing_address_id')->withTrashed();
+        return $this->belongsTo(Address::class, 'invoicing_address_id')->withTrashed();
     }
 
     // Alias function
@@ -971,7 +971,7 @@ class Billable extends Model implements ShippableInterface
 
     public function shippingaddress()
     {
-        return $this->belongsTo('App\Address', 'shipping_address_id')->withTrashed();
+        return $this->belongsTo(Address::class, 'shipping_address_id')->withTrashed();
     }
 
     // Badly built relation:
@@ -989,7 +989,7 @@ class Billable extends Model implements ShippableInterface
     // Attachments
     public function attachments()
     {
-        return $this->morphMany('App\ModelAttachment', 'attachmentable');
+        return $this->morphMany(ModelAttachment::class, 'attachmentable');
     }
 
     // Alias

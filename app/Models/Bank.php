@@ -21,10 +21,5 @@ class Bank extends Model
     | Relationships
     |--------------------------------------------------------------------------
     */
-/*    
-    public function shippingmethods()
-    {
-        return $this->hasMany('App\ShippingMethod');
-    }
-*/
+    
 }

@@ -29,6 +29,6 @@ class Carrier extends Model {
     
     public function shippingmethods()
     {
-        return $this->hasMany('App\ShippingMethod');
+        return $this->hasMany(ShippingMethod::class);
     }
 }

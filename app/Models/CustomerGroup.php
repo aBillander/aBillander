@@ -32,43 +32,43 @@ class CustomerGroup extends Model {
 
     public function paymentmethod()
     {
-        return $this->belongsTo('App\PaymentMethod', 'payment_method_id');
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
     }
 
     public function currency()
     {
-        return $this->belongsTo('App\Currency');
+        return $this->belongsTo(Currency::class);
     }
 
     public function template()
     {
-        return $this->belongsTo('App\Template', 'invoice_template_id');
+        return $this->belongsTo(Template::class, 'invoice_template_id');
     }
 
     public function shippingmethod()
     {
-        return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
+        return $this->belongsTo(ShippingMethod::class, 'shipping_method_id');
     }
 
     public function pricelist()
     {
-        return $this->belongsTo('App\PriceList', 'price_list_id');
+        return $this->belongsTo(PriceList::class, 'price_list_id');
     }
 
     public function sequence()
     {
-        return $this->belongsTo('App\Sequence');
+        return $this->belongsTo(Sequence::class);
     }
 
     public function carrier()
     {
-        return $this->belongsTo('App\Carrier');
+        return $this->belongsTo(Carrier::class);
     }
 
  // Cuenta remesas
  //
  //   public function directDebitAccount()
  //   {
- //       return $this->belongsTo('BankAccount');
+ //       return $this->belongsTo(BankAccount::class);
  //   }
 }

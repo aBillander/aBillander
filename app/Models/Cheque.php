@@ -151,7 +151,7 @@ class Cheque extends Model
     
     public function chequedetails()
     {
-        return $this->hasMany( 'App\ChequeDetail' )
+        return $this->hasMany( ChequeDetail::class )
                     ->orderBy('line_sort_order', 'ASC');
     }
     
@@ -163,22 +163,22 @@ class Cheque extends Model
 
     public function vouchers()
     {
-        return $this->belongsToMany('App\Payment', 'cheque_details');
+        return $this->belongsToMany(Payment::class, 'cheque_details');
     }
     
     public function currency()
     {
-    	return $this->belongsTo( 'App\Currency' );
+    	return $this->belongsTo( Currency::class );
     }
     
     public function customer()
     {
-    	return $this->belongsTo( 'App\Customer' );
+    	return $this->belongsTo( Customer::class );
     }
     
     public function drawee_bank()
     {
-    	return $this->belongsTo( 'App\Bank', 'drawee_bank_id' );
+    	return $this->belongsTo( Bank::class, 'drawee_bank_id' );
     }
     
     // Alias

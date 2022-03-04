@@ -53,33 +53,33 @@ class CartLine extends Model
     
     public function cart()
     {
-        return $this->belongsTo('App\Cart', 'cart_id', 'id');
+        return $this->belongsTo(Cart::class, 'cart_id', 'id');
         // https://laravel-news.com/laravel-model-caching
     }
 
     public function product()
     {
-       return $this->belongsTo('App\Product');
+       return $this->belongsTo(Product::class);
     }
 
     public function combination()
     {
-       return $this->belongsTo('App\Combination');
+       return $this->belongsTo(Combination::class);
     }
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
 
     public function package_measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'package_measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'package_measure_unit_id');
     }
 
     public function tax()
     {
-        return $this->belongsTo('App\Tax');
+        return $this->belongsTo(Tax::class);
     }
 
 }

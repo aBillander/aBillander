@@ -35,12 +35,12 @@ Route::get('/conf', function () {
 
 Route::get('migratethis', function()
 {
-	// 2022-02-09
-//	$date = '2022-02-09';
+	// 2022-03-04
+	$date = '2022-03-04';
 
-	//
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `users` ADD `email_verified_at` timestamp NULL DEFAULT NULL AFTER `email`;");
 
-//	die('OK - '.$date);
+	die('OK - '.$date);
 
 });
 

@@ -6,6 +6,8 @@ use App\Traits\BillableStockMovementsTrait;
 use App\Traits\CustomerShippingSlipInvoiceableTrait;
 // use App\Traits\BillableInvoiceableTrait;
 
+use App\Helpers\DocumentAscription;
+
 class CustomerShippingSlip extends Billable
 {
     
@@ -56,7 +58,7 @@ class CustomerShippingSlip extends Billable
 //                            'payment_date'  => 'date',
                             'delivery_date' => 'nullable|date|after_or_equal:document_date',
                             'customer_id' => 'exists:customers,id',
-                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Customer',
+                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Models\Customer',
                             'sequence_id' => 'exists:sequences,id',
 //                            'warehouse_id' => 'exists:warehouses,id',
 //                            'carrier_id'   => 'exists:carriers,id',
@@ -343,32 +345,32 @@ class CustomerShippingSlip extends Billable
 
     public function leftAscriptions()
     {
- /*       $relation = $this->morphMany('App\DocumentAscription', 'rightable'); //->where('type', 'traceability');
+ /*       $relation = $this->morphMany(DocumentAscription::class, 'rightable'); //->where('type', 'traceability');
 
         if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
 
-        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
+        abi_r($this->morphMany(DocumentAscription::class, 'rightable'));;die();
 
         // abi_toSQL($relation->orderBy('id', 'ASC'));die();
 */
-        return $this->morphMany('App\DocumentAscription', 'rightable')->where('type', 'traceability')->orderBy('id', 'ASC');
+        return $this->morphMany(DocumentAscription::class, 'rightable')->where('type', 'traceability')->orderBy('id', 'ASC');
     }
 
     public function leftOrderAscriptions( $model = '' )
     {
-/*        $relation = $this->morphMany('App\DocumentAscription', 'rightable'); //->where('type', 'traceability');
+/*        $relation = $this->morphMany(DocumentAscription::class, 'rightable'); //->where('type', 'traceability');
 
         if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
 
-        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
+        abi_r($this->morphMany(DocumentAscription::class, 'rightable'));;die();
 
-        // abi_toSQL($relation->orderBy('id', 'ASC'));die();\App\CustomerShippingSlip::class
+        // abi_toSQL($relation->orderBy('id', 'ASC'));die();CustomerShippingSlip::class
 */
         $ascriptions = $this->leftAscriptions;
 
         // abi_r($ascriptions);
 
-        return $ascriptions->where('leftable_type', 'App\CustomerOrder');
+        return $ascriptions->where('leftable_type', CustomerOrder::class);
     }
 
     public function leftOrders()
@@ -377,7 +379,7 @@ class CustomerShippingSlip extends Billable
 
         // abi_r($ascriptions->pluck('leftable_id')->all(), true);
 
-        return \App\CustomerOrder::find( $ascriptions->pluck('leftable_id') );
+        return CustomerOrder::find( $ascriptions->pluck('leftable_id') );
     }
 
     public function customerorder()
@@ -389,12 +391,12 @@ class CustomerShippingSlip extends Billable
 
     public function rightAscriptions()
     {
-        return $this->morphMany('App\DocumentAscription', 'leftable')->where('type', 'traceability')->orderBy('id', 'ASC');
+        return $this->morphMany(DocumentAscription::class, 'leftable')->where('type', 'traceability')->orderBy('id', 'ASC');
     }
 
     public function rightInvoiceAscriptions( $model = '' )
     {
-        return $this->rightAscriptions->where('rightable_type', 'App\CustomerInvoice');
+        return $this->rightAscriptions->where('rightable_type', CustomerInvoice::class);
     }
 
     public function rightInvoices()
@@ -403,7 +405,7 @@ class CustomerShippingSlip extends Billable
 
         // abi_r($ascriptions->pluck('rightable_id')->all(), true);
 
-        return \App\CustomerInvoice::find( $this->rightInvoiceAscriptions()->pluck('rightable_id') );
+        return CustomerInvoice::find( $this->rightInvoiceAscriptions()->pluck('rightable_id') );
     }
 
     public function customerinvoice()

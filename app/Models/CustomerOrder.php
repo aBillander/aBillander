@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\DocumentAscription;
+
 class CustomerOrder extends Billable
 {
 
@@ -38,7 +40,7 @@ class CustomerOrder extends Billable
                             'delivery_date' => 'nullable|date|after_or_equal:document_date',
                             'customer_id' => 'exists:customers,id',
                             'invoicing_address_id' => '',
-                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Customer',
+                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Models\Customer',
                             'sequence_id' => 'exists:sequences,id',
 //                            'warehouse_id' => 'exists:warehouses,id',
 //                            'carrier_id'   => 'exists:carriers,id',
@@ -263,7 +265,7 @@ class CustomerOrder extends Billable
     
     public function productionsheet()
     {
-        return $this->belongsTo('App\ProductionSheet', 'production_sheet_id');
+        return $this->belongsTo(ProductionSheet::class, 'production_sheet_id');
     }
 
     public function customerorderManufacturableLines()
@@ -303,7 +305,7 @@ class CustomerOrder extends Billable
                 $taxes[$line->tax_rule_id]->taxable_base   += $line->taxable_base;
                 $taxes[$line->tax_rule_id]->total_line_tax += $line->total_line_tax;
             } else {
-                $tax = new \App\CustomerOrderLineTax();
+                $tax = new CustomerOrderLineTax();
                 $tax->percent        = $line->percent;
                 $tax->taxable_base   = $line->taxable_base; 
                 $tax->total_line_tax = $line->total_line_tax;
@@ -331,12 +333,12 @@ class CustomerOrder extends Billable
     
     public function rightAscriptions()
     {
-        return $this->morphMany('App\DocumentAscription', 'leftable')->orderBy('id', 'ASC');
+        return $this->morphMany(DocumentAscription::class, 'leftable')->orderBy('id', 'ASC');
     }
 
     public function rightShippingSlipAscriptions( $model = '' )
     {
-        return $this->rightAscriptions->where('type', 'traceability')->where('rightable_type', 'App\CustomerShippingSlip');
+        return $this->rightAscriptions->where('type', 'traceability')->where('rightable_type', CustomerShippingSlip::class);
     }
 
     public function rightShippingSlips()
@@ -345,7 +347,7 @@ class CustomerOrder extends Billable
 
         // abi_r($ascriptions->pluck('rightable_id')->all(), true);
 
-        return \App\CustomerShippingSlip::find( $this->rightShippingSlipAscriptions()->pluck('rightable_id') );
+        return CustomerShippingSlip::find( $this->rightShippingSlipAscriptions()->pluck('rightable_id') );
     }
 
     public function customerShippingSlip()
@@ -357,7 +359,7 @@ class CustomerOrder extends Billable
 
     public function rightOrderAscriptions( $model = '' )
     {
-        return $this->rightAscriptions->where('type', 'backorder')->where('rightable_type', 'App\CustomerOrder');
+        return $this->rightAscriptions->where('type', 'backorder')->where('rightable_type', CustomerOrder::class);
     }
 
     public function rightOrders()
@@ -366,7 +368,7 @@ class CustomerOrder extends Billable
 
         // abi_r($ascriptions->pluck('rightable_id')->all(), true);
 
-        return \App\CustomerOrder::find( $this->rightOrderAscriptions()->pluck('rightable_id') );
+        return CustomerOrder::find( $this->rightOrderAscriptions()->pluck('rightable_id') );
     }
 
     public function customerbackorder()
@@ -378,19 +380,19 @@ class CustomerOrder extends Billable
 
     public function leftAscriptions()
     {
-        return $this->morphMany('App\DocumentAscription', 'rightable')->orderBy('id', 'ASC');
+        return $this->morphMany(DocumentAscription::class, 'rightable')->orderBy('id', 'ASC');
     }
 
     public function leftOrderAscriptions( $model = '' )
     {
-        return $this->leftAscriptions->where('type', 'backorder')->where('leftable_type', 'App\CustomerOrder');
+        return $this->leftAscriptions->where('type', 'backorder')->where('leftable_type', CustomerOrder::class);
     }
 
     public function leftOrders()
     {
         $ascriptions = $this->leftOrderAscriptions();
 
-        return \App\CustomerOrder::find( $ascriptions->pluck('leftable_id') );
+        return CustomerOrder::find( $ascriptions->pluck('leftable_id') );
     }
 
     public function customerorder()
@@ -402,7 +404,7 @@ class CustomerOrder extends Billable
 
     public function rightAggregateOrderAscriptions( $model = '' )
     {
-        return $this->rightAscriptions->where('type', 'aggregate')->where('rightable_type', 'App\CustomerOrder');
+        return $this->rightAscriptions->where('type', 'aggregate')->where('rightable_type', CustomerOrder::class);
     }
 
     public function rightAggregateOrders()
@@ -411,7 +413,7 @@ class CustomerOrder extends Billable
 
         // abi_r($ascriptions->pluck('rightable_id')->all(), true);
 
-        return \App\CustomerOrder::find( $this->rightAggregateOrderAscriptions()->pluck('rightable_id') );
+        return CustomerOrder::find( $this->rightAggregateOrderAscriptions()->pluck('rightable_id') );
     }
 
     public function customeraggregateorder()
@@ -423,14 +425,14 @@ class CustomerOrder extends Billable
 
     public function leftAggregateOrderAscriptions( $model = '' )
     {
-        return $this->leftAscriptions->where('type', 'aggregate')->where('leftable_type', 'App\CustomerOrder');
+        return $this->leftAscriptions->where('type', 'aggregate')->where('leftable_type', CustomerOrder::class);
     }
 
     public function leftAggregateOrders()
     {
         $ascriptions = $this->leftAggregateOrderAscriptions();
 
-        return \App\CustomerOrder::find( $ascriptions->pluck('leftable_id') );
+        return CustomerOrder::find( $ascriptions->pluck('leftable_id') );
     }
 
     public function customeraggregateorderby()
@@ -443,14 +445,14 @@ class CustomerOrder extends Billable
 
     public function leftQuotationAscriptions( $model = '' )
     {
-        return $this->leftAscriptions->where('type', 'traceability')->where('leftable_type', 'App\CustomerQuotation');
+        return $this->leftAscriptions->where('type', 'traceability')->where('leftable_type', CustomerQuotation::class);
     }
 
     public function leftQuotations()
     {
         $ascriptions = $this->leftQuotationAscriptions();
 
-        return \App\CustomerQuotation::find( $ascriptions->pluck('leftable_id') );
+        return CustomerQuotation::find( $ascriptions->pluck('leftable_id') );
     }
 
     public function customerquotation()

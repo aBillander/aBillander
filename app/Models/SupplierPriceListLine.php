@@ -115,16 +115,16 @@ class SupplierPriceListLine extends Model {
 
     public function supplier()
     {
-        return $this->belongsTo('App\Supplier');
+        return $this->belongsTo(Supplier::class);
     }
 
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo(Product::class);
     }
 
     public function currency()
     {
-        return $this->belongsTo('App\Currency');
+        return $this->belongsTo(Currency::class);
     }
 }

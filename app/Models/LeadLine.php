@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Carbon\Carbon;
+
 class LeadLine extends Model
 {
 
@@ -68,7 +70,7 @@ class LeadLine extends Model
     public function getIsOverdueAttribute()
     {
         if ( !$this->finish_date && ($this->status == 'open') )
-            return $this->due_date < \Carbon\Carbon::now();
+            return $this->due_date < Carbon::now();
 
         return false;
     }
@@ -82,16 +84,16 @@ class LeadLine extends Model
 
     public function lead()
     {
-        return $this->belongsTo('App\Lead');
+        return $this->belongsTo(Lead::class);
 	}
 
     public function createdby()
     {
-        return $this->belongsTo('App\User', 'user_created_by_id');
+        return $this->belongsTo(User::class, 'user_created_by_id');
 	}
 
     public function assignedto()
     {
-        return $this->belongsTo('App\User', 'user_assigned_to_id');
+        return $this->belongsTo(User::class, 'user_assigned_to_id');
 	}
 }

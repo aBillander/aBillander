@@ -77,46 +77,46 @@ class PaymentMethod extends Model {
 
     public function paymenttype()
     {
-        return $this->belongsTo('App\PaymentType', 'payment_type_id');
+        return $this->belongsTo(PaymentType::class, 'payment_type_id');
     }
     
     public function customers()
     {
-        return $this->hasMany('App\Customer');
+        return $this->hasMany(Customer::class);
     }
     
     public function suppliers()
     {
-        return $this->hasMany('App\Supplier');
+        return $this->hasMany(Supplier::class);
     }
 
     public function customerquotations()
     {
-        return $this->hasMany('App\CustomerQuotation');
+        return $this->hasMany(CustomerQuotation::class);
     }
 
     public function customerorders()
     {
-        return $this->hasMany('App\CustomerOrder');
+        return $this->hasMany(CustomerOrder::class);
     }
 
     public function customershippingslips()
     {
-        return $this->hasMany('App\CustomerShippingSlip');
+        return $this->hasMany(CustomerShippingSlip::class);
     }
     
     public function customerinvoices()
     {
-        return $this->hasMany('App\CustomerInvoice');
+        return $this->hasMany(CustomerInvoice::class);
     }
     
     public function payments()
     {
-        return $this->hasMany('App\Payment');
+        return $this->hasMany(Payment::class);
     }
 
     public function carts()
     {
-        return $this->hasMany('App\Cart');
+        return $this->hasMany(Cart::class);
     }
 }

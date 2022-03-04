@@ -167,7 +167,7 @@ class DownPayment extends Model
     
     public function downpaymentdetails()
     {
-        return $this->hasMany( 'App\DownPaymentDetail' )
+        return $this->hasMany( DownPaymentDetail::class )
                     ->orderBy('line_sort_order', 'ASC');
     }
     
@@ -179,32 +179,32 @@ class DownPayment extends Model
 
     public function vouchers()
     {
-        return $this->belongsToMany('App\Payment', 'down_payment_details');
+        return $this->belongsToMany(Payment::class, 'down_payment_details');
     }
     
     public function currency()
     {
-    	return $this->belongsTo( 'App\Currency' );
+    	return $this->belongsTo( Currency::class );
     }
     
     public function customer()
     {
-        return $this->belongsTo( 'App\Customer' );
+        return $this->belongsTo( Customer::class );
     }
     
     public function supplier()
     {
-        return $this->belongsTo( 'App\Supplier' );
+        return $this->belongsTo( Supplier::class );
     }
     
     public function customerorder()
     {
-        return $this->belongsTo( 'App\CustomerOrder', 'customer_order_id' );
+        return $this->belongsTo( CustomerOrder::class, 'customer_order_id' );
     }
     
     public function supplierorder()
     {
-        return $this->belongsTo( 'App\SupplierOrder', 'supplier_order_id' );
+        return $this->belongsTo( SupplierOrder::class, 'supplier_order_id' );
     }
     
     public function getSupplierinvoiceAttribute()
@@ -227,7 +227,7 @@ class DownPayment extends Model
     
     public function drawee_bank()
     {
-    	return $this->belongsTo( 'App\Bank', 'drawee_bank_id' );
+    	return $this->belongsTo( Bank::class, 'drawee_bank_id' );
     }
     
     // Alias

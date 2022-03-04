@@ -69,44 +69,44 @@ class Lot extends Model
     
     public  function product()
     {
-       return $this->belongsTo('App\Product');
+       return $this->belongsTo(Product::class);
     }
 
     public function combination()
     {
-       return $this->belongsTo('App\Combination');
+       return $this->belongsTo(Combination::class);
     }
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
 
     public function package_measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'package_measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'package_measure_unit_id');
     }
     
     public  function warehouse()
     {
-       return $this->belongsTo('App\Warehouse');
+       return $this->belongsTo(Warehouse::class);
     }
     
     public function stockmovements()
     {
-        return $this->hasMany('App\StockMovement');
+        return $this->hasMany(StockMovement::class);
     }
 
 
     
     public function lotitems()
     {
-        return $this->hasMany('App\LotItem');
+        return $this->hasMany(LotItem::class);
     }
 
     public function lotallocateditems()
     {
-        return $this->hasMany('App\LotItem')->where('is_reservation', '>', 0);
+        return $this->hasMany(LotItem::class)->where('is_reservation', '>', 0);
     }
 
     // See: https://reinink.ca/articles/dynamic-relationships-in-laravel-using-subqueries

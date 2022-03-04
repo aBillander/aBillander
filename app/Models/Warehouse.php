@@ -48,14 +48,14 @@ class Warehouse extends Model {
     {
         // See: https://stackoverflow.com/questions/22012877/laravel-eloquent-polymorphic-one-to-one
         // https://laracasts.com/discuss/channels/general-discussion/one-to-one-polymorphic-inverse-relationship-with-existing-database
-        return $this->hasOne('App\Address', 'addressable_id','id')
+        return $this->hasOne(Address::class, 'addressable_id','id')
                    ->where('addressable_type', Warehouse::class);
     }
 
     // Needed to store related address
     public function addresses()
     {
-        return $this->morphMany('App\Address', 'addressable');
+        return $this->morphMany(Address::class, 'addressable');
     }
 
     public function products()
@@ -69,7 +69,7 @@ class Warehouse extends Model {
 
 */
         // Return collection of Products. Each one has a property "pivot" with a record from table 'product_warehouse'
-        return $this->belongsToMany('App\Product')->withPivot('quantity')->withTimestamps();
+        return $this->belongsToMany(Product::class)->withPivot('quantity')->withTimestamps();
     }
 
     
@@ -82,12 +82,12 @@ class Warehouse extends Model {
     
     public function stockmovements()
     {
-        return $this->hasMany('App\StockMovement');
+        return $this->hasMany(StockMovement::class);
     }
     
     public function stockcounts()
     {
-        return $this->hasMany('App\StockCount');
+        return $this->hasMany(StockCount::class);
     }
 
 
@@ -100,10 +100,10 @@ class Warehouse extends Model {
     // Better approach than Many to Many (Simpler, easy to understand and more flexible)
     public function productline( $product_id )
     {
-        $line = $this->hasMany('App\WarehouseProductLine')->where('product_id', $product_id)->first();
+        $line = $this->hasMany(WarehouseProductLine::class)->where('product_id', $product_id)->first();
 
         if ( !$line )
-            $line = new \App\WarehouseProductLine([
+            $line = new WarehouseProductLine([
                               'product_id'   => $product_id, 
                               'quantity'     => 0.0, 
                               'warehouse_id' => $this->id,  
@@ -121,12 +121,12 @@ class Warehouse extends Model {
     
     public function productlines()
     {
-        return $this->hasMany('App\WarehouseProductLine');
+        return $this->hasMany(WarehouseProductLine::class);
     }
 
     public function combinations()
     {
-        return $this->belongsToMany('App\Combination')->withPivot('quantity')->withTimestamps();
+        return $this->belongsToMany(Combination::class)->withPivot('quantity')->withTimestamps();
     }
     
 }

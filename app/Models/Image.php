@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use App\Http\Requests;
 use Illuminate\Http\Request;
 
 use \iImage as iImage;
@@ -362,7 +361,7 @@ $file_data = file_get_contents( $img_url, false, stream_context_create( [
 
     public function combinations()
     {
-        return $this->belongsToMany('App\Combination');
+        return $this->belongsToMany(Combination::class);
     }
 
 }

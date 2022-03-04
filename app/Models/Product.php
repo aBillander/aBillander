@@ -1100,7 +1100,7 @@ class Product extends Model {
         if ($img) return $img;
 
         // If no featured image, RETURN one, anyway
-        return new \App\Image();
+        return new Image();
     }
 
     public function setFeaturedImage( Image $image )
@@ -1168,7 +1168,7 @@ class Product extends Model {
     {
             $list = [];
             foreach (self::$mrp_types as $type) {
-                $list[$type] = l('App\\Product.'.$type, [], 'appmultilang');;
+                $list[$type] = l(Product::class.'.'.$type, [], 'appmultilang');;
             }
 
             return $list;
@@ -1176,7 +1176,7 @@ class Product extends Model {
 
     public static function getMrpTypeName( $status )
     {
-            return l('App\\Product.'.$status, [], 'appmultilang');;
+            return l(Product::class.'.'.$status, [], 'appmultilang');;
     }
 
 
@@ -1198,12 +1198,12 @@ class Product extends Model {
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
 
     public function purchasemeasureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'purchase_measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'purchase_measure_unit_id');
     }
 
     // Handy method
@@ -1225,7 +1225,7 @@ class Product extends Model {
     
     public function productmeasureunits()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
-        return $this->hasMany('App\ProductMeasureUnit', 'product_id')->with('measureunit');
+        return $this->hasMany(ProductMeasureUnit::class, 'product_id')->with('measureunit');
     }
     
     
@@ -1286,7 +1286,7 @@ class Product extends Model {
     
     public function producttools()
     {
-        return $this->hasMany('App\ProductTool', 'product_id')->with('tool');
+        return $this->hasMany(ProductTool::class, 'product_id')->with('tool');
     }
     
     public function toolsGet()
@@ -1304,12 +1304,12 @@ class Product extends Model {
     
     public function bomitems()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
-        return $this->hasMany('App\BOMItem', 'product_id');
+        return $this->hasMany(BOMItem::class, 'product_id');
     }
     
     public function boms()
     {
-        return $this->hasManyThrough('App\ProductBOM', 'App\BOMItem', 'product_id', 'id', 'id', 'product_bom_id')->with('measureunit');
+        return $this->hasManyThrough(ProductBOM::class, BOMItem::class, 'product_id', 'id', 'id', 'product_bom_id')->with('measureunit');
     }
     
     public function bomitem()
@@ -1325,52 +1325,52 @@ class Product extends Model {
 
     public function productBOMlines()
     {
-        return $this->hasMany('App\ProductBOMLine', 'product_id');
+        return $this->hasMany(ProductBOMLine::class, 'product_id');
     }
     
 
     public function images()
     {
-        return $this->morphMany('App\Image', 'imageable');
+        return $this->morphMany(Image::class, 'imageable');
     }
 
     public function tax()
     {
-        return $this->belongsTo('App\Tax');
+        return $this->belongsTo(Tax::class);
     }
 
     public function ecotax()
     {
-        return $this->belongsTo('App\Ecotax');
+        return $this->belongsTo(Ecotax::class);
     }
 		
     public function category()
     {
-        return $this->belongsTo('App\Category');
+        return $this->belongsTo(Category::class);
 	}
     
     public function combinations()
     {
-        return $this->hasMany('App\Combination');
+        return $this->hasMany(Combination::class);
     }
     
     public function stockmovements()
     {
-        return $this->hasMany('App\StockMovement');
+        return $this->hasMany(StockMovement::class);
     }
 
     // Latest Stock Movement
     // https://p.softonsofa.com/tweaking-eloquent-relations-how-to-get-latest-related-model/
     public function latestStockmovement()
     {
-      return $this->hasOne('App\StockMovement')->latest();
-      // Same as: $this->hasOne('App\StockMovement')->orderBy('created_at', 'desc');
+      return $this->hasOne(StockMovement::class)->latest();
+      // Same as: $this->hasOne(StockMovement::class)->orderBy('created_at', 'desc');
     }
 
 
     public function mainsupplier()
     {
-        return $this->belongsTo('App\Supplier', 'main_supplier_id');
+        return $this->belongsTo(Supplier::class, 'main_supplier_id');
     }
 
     // Alias
@@ -1381,80 +1381,80 @@ class Product extends Model {
 
     public function manufacturer()
     {
-        return $this->belongsTo('App\Manufacturer', 'manufacturer_id');
+        return $this->belongsTo(Manufacturer::class, 'manufacturer_id');
     }
     
     public function warehouses()
     {
-        return $this->belongsToMany('App\Warehouse')    //->as('warehouseline')
+        return $this->belongsToMany(Warehouse::class)    //->as('warehouseline')
         ->withPivot('quantity')->withTimestamps();
     }
 
     public function warehouselines()
     {
-        return $this->hasMany('App\WarehouseProductLine');
+        return $this->hasMany(WarehouseProductLine::class);
     }
 
     public function stockcountlines()
     {
-        return $this->hasMany('App\StockCountLine');
+        return $this->hasMany(StockCountLine::class);
     }
 
     public function cartlines()
     {
-        return $this->hasMany('App\CartLine');
+        return $this->hasMany(CartLine::class);
     }
 
     public function pricerules()
     {
-        return $this->hasMany('App\PriceRule');
+        return $this->hasMany(PriceRule::class);
     }
 
     public function customerordertemplatelines()
     {
-        return $this->hasMany('App\CustomerOrderTemplateLine');
+        return $this->hasMany(CustomerOrderTemplateLine::class);
     }
 
     public function customerquotationlines()
     {
-        return $this->hasMany('App\CustomerQuotationLine');
+        return $this->hasMany(CustomerQuotationLine::class);
     }
 
     public function customerorderlines()
     {
-        return $this->hasMany('App\CustomerOrderLine');
+        return $this->hasMany(CustomerOrderLine::class);
     }
 
     public function customershippingsliplines()
     {
-        return $this->hasMany('App\CustomerShippingSlipLine');
+        return $this->hasMany(CustomerShippingSlipLine::class);
     }
 
     public function customerinvoicelines()
     {
-        return $this->hasMany('App\CustomerInvoiceLine');
+        return $this->hasMany(CustomerInvoiceLine::class);
     }
 
     public function warehouseshippingsliplines()
     {
-        return $this->hasMany('App\WarehouseShippingSlipLine');
+        return $this->hasMany(WarehouseShippingSlipLine::class);
     }
 
     public function productionorders()
     {
-        return $this->hasMany('App\ProductionOrder');
+        return $this->hasMany(ProductionOrder::class);
     }
 
     public function productionorderlines()
     {
-        return $this->hasMany('App\ProductionOrderLine');
+        return $this->hasMany(ProductionOrderLine::class);
     }
 
     
 
     public function lots()
     {
-        return $this->hasMany('App\Lot')->orderBy('expiry_at', 'DESC');
+        return $this->hasMany(Lot::class)->orderBy('expiry_at', 'DESC');
     }
 
     public function availableLots()
@@ -1462,7 +1462,7 @@ class Product extends Model {
         // $sort_order = ($this->lot_policy == 'FIFO' ? 'ASC' : 'DESC');
         // ^-- Will not work, since "$this" is not defined
 
-        return $this->hasMany('App\Lot')->where('quantity', '>', 0)->orderBy('expiry_at', 'ASC');   // Most common sorting, I guess (FIFO)
+        return $this->hasMany(Lot::class)->where('quantity', '>', 0)->orderBy('expiry_at', 'ASC');   // Most common sorting, I guess (FIFO)
     }
 
     public function availableLotsSorted()
@@ -1479,26 +1479,26 @@ class Product extends Model {
 
     public function pricelistlines()
     {
-        return $this->hasMany('App\PriceListLine');
+        return $this->hasMany(PriceListLine::class);
     }
 
     public function pricelists()
     {
-        return $this->belongsToMany('App\PriceList', 'price_list_lines', 'product_id', 'price_list_id')->as('pricelistline')->withPivot('price')->withTimestamps();
+        return $this->belongsToMany(PriceList::class, 'price_list_lines', 'product_id', 'price_list_id')->as('pricelistline')->withPivot('price')->withTimestamps();
 
-//        return $this->belongsToMany('App\PriceList', 'price_list_product', 'product_id', 'price_list_id')->withPivot('price')->withTimestamps();
+//        return $this->belongsToMany(PriceList::class, 'price_list_product', 'product_id', 'price_list_id')->withPivot('price')->withTimestamps();
     }
     
 /*    
     public function pricelist( $list_id = null )
     {
         if ( $list_id > 0 )
-            return $this->belongsToMany('App\PriceList')->where('price_list_id', '=', $list_id)->withPivot('price')->withTimestamps();
+            return $this->belongsToMany(PriceList::class)->where('price_list_id', '=', $list_id)->withPivot('price')->withTimestamps();
     } 
     
     public function prices()
     {
-        return $this->hasMany('App\Price');
+        return $this->hasMany(Price::class);
     }
 
 

@@ -58,7 +58,7 @@ class PriceRule extends Model
     {
             $list = [];
             foreach (static::$types as $type) {
-                // $list[$type] = l('App\\PriceRule.'.$type, [], 'appmultilang');
+                // $list[$type] = l(PriceRule::class.'.'.$type, [], 'appmultilang');
                 $list[$type] = $type;
             }
 
@@ -68,7 +68,7 @@ class PriceRule extends Model
     public static function getRuleTypeName( $type )
     {
             return $type;
-            //return l('App\\PriceRule.'.$type, [], 'appmultilang');
+            //return l(PriceRule::class.'.'.$type, [], 'appmultilang');
     }
 
 
@@ -142,37 +142,37 @@ class PriceRule extends Model
 
     public function category()
     {
-        return $this->belongsTo('App\Category');
+        return $this->belongsTo(Category::class);
     }
 
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo(Product::class);
     }
 
     public function combination()
     {
-        return $this->belongsTo('App\Combination');
+        return $this->belongsTo(Combination::class);
     }
 
     public function customer()
     {
-        return $this->belongsTo('App\Customer');
+        return $this->belongsTo(Customer::class);
     }
 
     public function customergroup()
     {
-        return $this->belongsTo('App\CustomerGroup', 'customer_group_id');
+        return $this->belongsTo(CustomerGroup::class, 'customer_group_id');
     }
 
     public function currency()
     {
-        return $this->belongsTo('App\Currency');
+        return $this->belongsTo(Currency::class);
     }
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
 
 

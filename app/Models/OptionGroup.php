@@ -25,7 +25,7 @@ class OptionGroup extends Model {
     
     public function options()
     {
-        return $this->hasMany('App\Option', 'option_group_id')->orderby('position', 'asc');
+        return $this->hasMany(Option::class, 'option_group_id')->orderby('position', 'asc');
     }
 
 }

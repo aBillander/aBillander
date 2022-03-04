@@ -24,12 +24,12 @@ class DeliveryRoute extends Model
 
     public function carrier()
     {
-        return $this->belongsTo('App\Carrier', 'carrier_id');
+        return $this->belongsTo(Carrier::class, 'carrier_id');
     }
     
     public function deliveryroutelines()
     {
-        return $this->hasMany('App\DeliveryRouteLine', 'delivery_route_id')->orderBy('line_sort_order', 'asc');
+        return $this->hasMany(DeliveryRouteLine::class, 'delivery_route_id')->orderBy('line_sort_order', 'asc');
     }
     
     // Alias

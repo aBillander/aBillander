@@ -30,12 +30,12 @@ class CustomerOrderLine extends BillableLine
     
     public function customerorder()
     {
-        return $this->belongsTo('App\CustomerOrder', 'customer_order_id');
+        return $this->belongsTo(CustomerOrder::class, 'customer_order_id');
     }
     
     // Needed by /WooConnect/src/WooOrderImporter.php
     public function customerorderlinetaxes()
     {
-        return $this->hasMany('App\CustomerOrderLineTax', 'customer_order_line_id');
+        return $this->hasMany(CustomerOrderLineTax::class, 'customer_order_line_id');
     }
 }

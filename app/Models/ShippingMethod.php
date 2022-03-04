@@ -123,25 +123,25 @@ class ShippingMethod extends Model {
 
     public function tax()
     {
-        return $this->belongsTo('App\Tax', 'tax_id');
+        return $this->belongsTo(Tax::class, 'tax_id');
     }
 
     public function carrier()
     {
-        return $this->belongsTo('App\Carrier', 'carrier_id');
+        return $this->belongsTo(Carrier::class, 'carrier_id');
     }
     
 
     public function services()
     {
-        return $this->hasMany('App\ShippingMethodService', 'shipping_method_id');
+        return $this->hasMany(ShippingMethodService::class, 'shipping_method_id');
     }
     
 
     public function servicelines()
     {
         // Only if 'type' == 'basic'
-        return $this->morphMany('App\ShippingMethodServiceLine', 'tabulable');
+        return $this->morphMany(ShippingMethodServiceLine::class, 'tabulable');
     }
 
     // Alias
@@ -154,42 +154,42 @@ class ShippingMethod extends Model {
     
     public function customers()
     {
-        return $this->hasMany('App\Customer');
+        return $this->hasMany(Customer::class);
     }
 
     public function customerquotations()
     {
-        return $this->hasMany('App\CustomerQuotation');
+        return $this->hasMany(CustomerQuotation::class);
     }
 
     public function customerorders()
     {
-        return $this->hasMany('App\CustomerOrder');
+        return $this->hasMany(CustomerOrder::class);
     }
 
     public function customershippingslips()
     {
-        return $this->hasMany('App\CustomerShippingSlip');
+        return $this->hasMany(CustomerShippingSlip::class);
     }
     
     public function customerinvoices()
     {
-        return $this->hasMany('App\CustomerInvoice');
+        return $this->hasMany(CustomerInvoice::class);
     }
 
     public function warehouseshippingslips()
     {
-        return $this->hasMany('App\WarehouseShippingSlip');
+        return $this->hasMany(WarehouseShippingSlip::class);
     }
 
     public function carts()
     {
-        return $this->hasMany('App\Cart');
+        return $this->hasMany(Cart::class);
     }
     
     public function addresses()
     {
-        return $this->hasMany('App\Address');
+        return $this->hasMany(Address::class);
     }
 
 

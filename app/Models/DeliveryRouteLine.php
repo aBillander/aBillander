@@ -29,16 +29,16 @@ class DeliveryRouteLine extends Model
 
     public function deliveryroute()
     {
-        return $this->belongsTo('App\DeliveryRoute', 'delivery_route_id');
+        return $this->belongsTo(DeliveryRoute::class, 'delivery_route_id');
 	}
 
     public function customer()
     {
-        return $this->belongsTo('App\Customer');
+        return $this->belongsTo(Customer::class);
 	}
 
     public function address()
     {
-        return $this->belongsTo('App\Address');
+        return $this->belongsTo(Address::class);
 	}
 }

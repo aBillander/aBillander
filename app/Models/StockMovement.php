@@ -483,9 +483,9 @@ class StockMovement extends Model {
 
 
         // Deal with currency (enough to append sensible default currency, if not set)
-        if ( !($currency = \App\Currency::find($this->currency_id)) )
+        if ( !($currency = Currency::find($this->currency_id)) )
         {
-            $currency = \App\Context::getContext()->company->currency;
+            $currency = Context::getContext()->company->currency;
 
             $this->currency_id     = $currency->id;
             $this->conversion_rate = $currency->conversion_rate;
@@ -493,9 +493,9 @@ class StockMovement extends Model {
             $this->price_currency = $this->price;
         }
 
-        if ( $this->currency_id == \App\Context::getContext()->company->currency->id )
+        if ( $this->currency_id == Context::getContext()->company->currency->id )
         {
-            $this->conversion_rate = \App\Context::getContext()->company->currency->conversion_rate;
+            $this->conversion_rate = Context::getContext()->company->currency->conversion_rate;
 
             $this->price_currency = $this->price;
         }
@@ -527,9 +527,9 @@ class StockMovement extends Model {
 
 
         // Deal with currency (enough to append sensible default currency, if not set)
-        if ( !($currency = \App\Currency::find($this->currency_id)) )
+        if ( !($currency = Currency::find($this->currency_id)) )
         {
-            $currency = \App\Context::getContext()->company->currency;
+            $currency = Context::getContext()->company->currency;
 
             $this->currency_id     = $currency->id;
             $this->conversion_rate = $currency->conversion_rate;
@@ -537,9 +537,9 @@ class StockMovement extends Model {
             // $this->price_currency = $this->price;
         }
 
-        if ( $this->currency_id == \App\Context::getContext()->company->currency->id )
+        if ( $this->currency_id == Context::getContext()->company->currency->id )
         {
-            $this->conversion_rate = \App\Context::getContext()->company->currency->conversion_rate;
+            $this->conversion_rate = Context::getContext()->company->currency->conversion_rate;
 
             // $this->price_currency = $this->price;
         }
@@ -724,15 +724,15 @@ class StockMovement extends Model {
     public function process_20()
     {
         // Price 4 Cost average calculations
-        if ( $this->currency_id != \App\Context::getContext()->currency->id ) {
-            $currency = \App\Currency::find($this->currency_id);
+        if ( $this->currency_id != Context::getContext()->currency->id ) {
+            $currency = Currency::find($this->currency_id);
             $conversion_rate = $currency->conversion_rate;
             $this->price_in = $this->price*$conversion_rate;
         } else
             $this->price_in = $this->price;
 
         // Update Product
-        $product = \App\Product::find($this->product_id);
+        $product = Product::find($this->product_id);
         $quantity_onhand = $product->quantity_onhand + $this->quantity;
         $this->quantity_after_movement = $quantity_onhand;
         $this->save();
@@ -751,7 +751,7 @@ class StockMovement extends Model {
 
         // Update Combination
         if ($this->combination_id > 0) {
-            $combination = \App\Combination::find($this->combination_id);
+            $combination = Combination::find($this->combination_id);
             $quantity_onhand = $combination->quantity_onhand + $this->quantity;
 
             // Average price stuff
@@ -807,15 +807,15 @@ class StockMovement extends Model {
     // PURCHASE_RETURN
     public function process_21()
     {
-        if ( $this->currency_id != \App\Context::getContext()->currency->id ) {
-            $currency = \App\Currency::find($this->currency_id);
+        if ( $this->currency_id != Context::getContext()->currency->id ) {
+            $currency = Currency::find($this->currency_id);
             $conversion_rate = $currency->conversion_rate;
             $this->price_in = $this->price*$conversion_rate;
         } else
             $this->price_in = $this->price;
 
         // Update Product
-        $product = \App\Product::find($this->product_id);
+        $product = Product::find($this->product_id);
         $quantity_onhand = $product->quantity_onhand - $this->quantity;
 
         // Average price stuff
@@ -832,7 +832,7 @@ class StockMovement extends Model {
 
         // Update Combination
         if ($this->combination_id > 0) {
-            $combination = \App\Combination::find($this->combination_id);
+            $combination = Combination::find($this->combination_id);
             $quantity_onhand = $combination->quantity_onhand - $this->quantity;
 
             // Average price stuff
@@ -912,15 +912,15 @@ class StockMovement extends Model {
     // SALE_RETURN
     public function process_31()
     {
-        if ( $this->currency_id != \App\Context::getContext()->currency->id ) {
-            $currency = \App\Currency::find($this->currency_id);
+        if ( $this->currency_id != Context::getContext()->currency->id ) {
+            $currency = Currency::find($this->currency_id);
             $conversion_rate = $currency->conversion_rate;
             $this->price_in = $this->price*$conversion_rate;
         } else
             $this->price_in = $this->price;
 
         // Update Product
-        $product = \App\Product::find($this->product_id);
+        $product = Product::find($this->product_id);
         $quantity_onhand = $product->quantity_onhand + $this->quantity;
 
         // Average price stuff
@@ -937,7 +937,7 @@ class StockMovement extends Model {
 
         // Update Combination
         if ($this->combination_id > 0) {
-            $combination = \App\Combination::find($this->combination_id);
+            $combination = Combination::find($this->combination_id);
             $quantity_onhand = $combination->quantity_onhand + $this->quantity;
 
             // Average price stuff
@@ -994,7 +994,7 @@ class StockMovement extends Model {
     public function process_40()
     {
         // Update Product
-        $product = \App\Product::find($this->product_id);
+        $product = Product::find($this->product_id);
         $quantity_onhand = $product->quantity_onhand - $this->quantity;
 
         // Average price stuff - Not needed!
@@ -1004,7 +1004,7 @@ class StockMovement extends Model {
 
         // Update Combination
         if ($this->combination_id > 0) {
-            $combination = \App\Combination::find($this->combination_id);
+            $combination = Combination::find($this->combination_id);
             $quantity_onhand = $combination->quantity_onhand - $this->quantity;
 
             // Average price stuff - Not needed!
@@ -1056,7 +1056,7 @@ class StockMovement extends Model {
     public function process_41()
     {
         // Update Product
-        $product = \App\Product::find($this->product_id);
+        $product = Product::find($this->product_id);
         $quantity_onhand = $product->quantity_onhand + $this->quantity;
 
         // Average price stuff - Not needed!
@@ -1066,7 +1066,7 @@ class StockMovement extends Model {
 
         // Update Combination
         if ($this->combination_id > 0) {
-            $combination = \App\Combination::find($this->combination_id);
+            $combination = Combination::find($this->combination_id);
             $quantity_onhand = $combination->quantity_onhand + $this->quantity;
 
             // Average price stuff - Not needed!
@@ -1123,7 +1123,7 @@ class StockMovement extends Model {
         $this->save();
 
         // Update Product
-        $product = \App\Product::find($this->product_id);
+        $product = Product::find($this->product_id);
         $quantity_onhand = $product->quantity_onhand - $this->quantity;
 
         // Average price stuff - Not needed!
@@ -1133,7 +1133,7 @@ class StockMovement extends Model {
 
         // Update Combination
         if ($this->combination_id > 0) {
-            $combination = \App\Combination::find($this->combination_id);
+            $combination = Combination::find($this->combination_id);
             $quantity_onhand = $combination->quantity_onhand - $this->quantity;
 
             // Average price stuff - Not needed!
@@ -1184,15 +1184,15 @@ class StockMovement extends Model {
     // MANUFACTURING_RETURN
     public function process_51()
     {
-        if ( $this->currency_id != \App\Context::getContext()->currency->id ) {
-            $currency = \App\Currency::find($this->currency_id);
+        if ( $this->currency_id != Context::getContext()->currency->id ) {
+            $currency = Currency::find($this->currency_id);
             $conversion_rate = $currency->conversion_rate;
             $this->price_in = $this->price*$conversion_rate;
         } else
             $this->price_in = $this->price;
 
         // Update Product
-        $product = \App\Product::find($this->product_id);
+        $product = Product::find($this->product_id);
         $quantity_onhand = $product->quantity_onhand + $this->quantity;
 
         // Average price stuff
@@ -1209,7 +1209,7 @@ class StockMovement extends Model {
 
         // Update Combination
         if ($this->combination_id > 0) {
-            $combination = \App\Combination::find($this->combination_id);
+            $combination = Combination::find($this->combination_id);
             $quantity_onhand = $combination->quantity_onhand + $this->quantity;
 
             // Average price stuff
@@ -1271,7 +1271,7 @@ class StockMovement extends Model {
         $this->save();
 
         // Update Product
-        $product = \App\Product::find($this->product_id);
+        $product = Product::find($this->product_id);
         $quantity_onhand = $product->quantity_onhand + $this->quantity;
 
         // Average price stuff - Not needed!
@@ -1281,7 +1281,7 @@ class StockMovement extends Model {
 
         // Update Combination
         if ($this->combination_id > 0) {
-            $combination = \App\Combination::find($this->combination_id);
+            $combination = Combination::find($this->combination_id);
             $quantity_onhand = $combination->quantity_onhand + $this->quantity;
 
             // Average price stuff - Not needed!
@@ -1333,7 +1333,7 @@ class StockMovement extends Model {
     public function fulfill()
     {
         // Update Product
-        $product = \App\Product::find($this->product_id);
+        $product = Product::find($this->product_id);
         $quantity_onhand = $product->quantity_onhand + $this->quantity;
 
         // Average price stuff
@@ -1350,7 +1350,7 @@ class StockMovement extends Model {
 
         // Update Combination
         if ($this->combination_id > 0) {
-            $combination = \App\Combination::find($this->combination_id);
+            $combination = Combination::find($this->combination_id);
             $quantity_onhand = $combination->quantity_onhand + $this->quantity;
 
             // Average price stuff
@@ -1420,28 +1420,28 @@ class StockMovement extends Model {
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
     
 
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo(Product::class);
     }
     
     public function combination()
     {
-        return $this->belongsTo('App\Combination');
+        return $this->belongsTo(Combination::class);
     }
     
     public function lot()
     {
-        return $this->belongsTo('App\Lot');
+        return $this->belongsTo(Lot::class);
     }
     
     public function warehouse()
     {
-        return $this->belongsTo('App\Warehouse');
+        return $this->belongsTo(Warehouse::class);
     }
     
 	public function movementtype()
@@ -1451,7 +1451,7 @@ class StockMovement extends Model {
     
 	public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(User::class);
 	}
 
 

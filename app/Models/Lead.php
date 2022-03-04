@@ -76,7 +76,7 @@ class Lead extends Model
     
     public function leadlines()
     {
-        return $this->hasMany('App\LeadLine');
+        return $this->hasMany(LeadLine::class);
     }
     
     // Alias
@@ -87,22 +87,22 @@ class Lead extends Model
 
     public function createdby()
     {
-        return $this->belongsTo('App\User', 'user_created_by_id');
+        return $this->belongsTo(User::class, 'user_created_by_id');
 	}
 
     public function assignedto()
     {
-        return $this->belongsTo('App\User', 'user_assigned_to_id');
+        return $this->belongsTo(User::class, 'user_assigned_to_id');
 	}
 
     public function party()
     {
-        return $this->belongsTo('App\Party');
+        return $this->belongsTo(Party::class);
 	}
 
     public function contact()
     {
-        return $this->belongsTo('App\Contact');
+        return $this->belongsTo(Contact::class);
 	}
 	
 }

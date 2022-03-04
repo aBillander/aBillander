@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Traits\SupplierInvoicePaymentsTrait;
 // use App\Traits\BillableStockMovementsTrait;
 
+use App\Helpers\DocumentAscription;
+
 class SupplierInvoice extends Billable
 {
     
@@ -217,7 +219,7 @@ class SupplierInvoice extends Billable
 
     public function close()
     {
-//        if ( \App\Configuration::isFalse('ENABLE_CRAZY_IVAN') )
+//        if ( Configuration::isFalse('ENABLE_CRAZY_IVAN') )
         //    if ( $this->total_tax_incl == 0.0 ) return false;     <= Should allow zero value invoice for samples, etc.
 
         if ( ! parent::close() ) return false;
@@ -323,32 +325,32 @@ class SupplierInvoice extends Billable
 
     public function leftAscriptions()
     {
- /*       $relation = $this->morphMany('App\DocumentAscription', 'rightable'); //->where('type', 'traceability');
+ /*       $relation = $this->morphMany(DocumentAscription::class, 'rightable'); //->where('type', 'traceability');
 
         if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
 
-        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
+        abi_r($this->morphMany(DocumentAscription::class, 'rightable'));;die();
 
         // abi_toSQL($relation->orderBy('id', 'ASC'));die();
 */
-        return $this->morphMany('App\DocumentAscription', 'rightable')->where('type', 'traceability')->orderBy('id', 'ASC');
+        return $this->morphMany(DocumentAscription::class, 'rightable')->where('type', 'traceability')->orderBy('id', 'ASC');
     }
 
     public function leftShippingSlipAscriptions( $model = '' )
     {
-/*        $relation = $this->morphMany('App\DocumentAscription', 'rightable'); //->where('type', 'traceability');
+/*        $relation = $this->morphMany(DocumentAscription::class, 'rightable'); //->where('type', 'traceability');
 
         if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
 
-        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
+        abi_r($this->morphMany(DocumentAscription::class, 'rightable'));;die();
 
-        // abi_toSQL($relation->orderBy('id', 'ASC'));die();\App\SupplierShippingSlip::class
+        // abi_toSQL($relation->orderBy('id', 'ASC'));die();SupplierShippingSlip::class
 */
         $ascriptions = $this->leftAscriptions;
 
         // abi_r($ascriptions);
 
-        return $ascriptions->where('leftable_type', 'App\SupplierShippingSlip');
+        return $ascriptions->where('leftable_type', SupplierShippingSlip::class);
     }
 
     public function leftShippingSlips()
@@ -357,13 +359,13 @@ class SupplierInvoice extends Billable
 
         // abi_r($ascriptions->pluck('leftable_id')->all(), true);
 
-        return \App\SupplierShippingSlip::find( $ascriptions->pluck('leftable_id') );
+        return SupplierShippingSlip::find( $ascriptions->pluck('leftable_id') );
     }
 
 
     public function payments()
     {
-        return $this->morphMany('App\Payment', 'paymentable')->orderBy('due_date', 'ASC');
+        return $this->morphMany(Payment::class, 'paymentable')->orderBy('due_date', 'ASC');
     }
     
 

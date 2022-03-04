@@ -44,6 +44,6 @@ class Tool extends Model
     // Mmmmm! Should be Many to Many, boy!
     public function products()
     {
-        return $this->hasMany('App\Product');
+        return $this->hasMany(Product::class);
     }
 }

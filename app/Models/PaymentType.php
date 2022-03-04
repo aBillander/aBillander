@@ -55,11 +55,11 @@ class PaymentType extends Model {
     
     public function paymentmethods()
     {
-        return $this->hasMany('App\PaymentMethod');
+        return $this->hasMany(PaymentMethod::class);
     }
     
     public function payments()
     {
-        return $this->hasMany('App\Payment');
+        return $this->hasMany(Payment::class);
     }
 }

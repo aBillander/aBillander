@@ -29,7 +29,7 @@ class ProductionOrderLine extends Model
     
     public function productionorder()
     {
-        return $this->belongsTo('App\ProductionOrder', 'production_order_id');
+        return $this->belongsTo(ProductionOrder::class, 'production_order_id');
     }
     
     // Alias
@@ -40,17 +40,17 @@ class ProductionOrderLine extends Model
 
     public function product()
     {
-       return $this->belongsTo('App\Product');
+       return $this->belongsTo(Product::class);
     }
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
 
     public function warehouse()
     {
-        return $this->belongsTo('App\Warehouse');
+        return $this->belongsTo(Warehouse::class);
     }
 
     /**
@@ -64,7 +64,7 @@ class ProductionOrderLine extends Model
 
     public function lotitems()
     {
-        return $this->morphMany('App\LotItem', 'lotable')->with('lot');
+        return $this->morphMany(LotItem::class, 'lotable')->with('lot');
     }
 
     public function getLotsAttribute()

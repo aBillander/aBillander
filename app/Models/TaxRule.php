@@ -63,12 +63,12 @@ class TaxRule extends Model {
 
     public function tax()
     {
-        return $this->belongsTo('App\Tax');
+        return $this->belongsTo(Tax::class);
 	}
 
     public function country()
     {
-        return $this->belongsTo('App\Country')
+        return $this->belongsTo(Country::class)
                     ->withDefault(function ($country) {
                             $country->name = '';
                         });
@@ -76,7 +76,7 @@ class TaxRule extends Model {
 
     public function state()
     {
-        return $this->belongsTo('App\State')
+        return $this->belongsTo(State::class)
                     ->withDefault(function ($state) {
                             $state->name = '';
                         });

@@ -158,12 +158,12 @@ class ProductBOM extends Model
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
     
     public function BOMlines()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
-        return $this->hasMany('App\ProductBOMLine', 'product_bom_id')->orderBy('line_sort_order', 'ASC');
+        return $this->hasMany(ProductBOMLine::class, 'product_bom_id')->orderBy('line_sort_order', 'ASC');
     }
     
     public function BOMmanufacturablelines()      // http://advancedlaravel.com/eloquent-relationships-examples
@@ -177,19 +177,19 @@ class ProductBOM extends Model
     
     public function bomitems()      // http://advancedlaravel.com/eloquent-relationships-examples
     {
-        return $this->hasMany('App\BOMItem', 'product_bom_id');
+        return $this->hasMany(BOMItem::class, 'product_bom_id');
     }
     
     public function products()
     {
         // Products that own this BOM
-        return $this->hasManyThrough('App\Product', 'App\BOMItem', 'product_bom_id', 'id', 'id', 'product_id')->with('measureunit');
+        return $this->hasManyThrough(Product::class, BOMItem::class, 'product_bom_id', 'id', 'id', 'product_id')->with('measureunit');
     }
     
     public function child_products()
     {
         // Products owned by this BOM
-        return $this->hasManyThrough('App\Product', 'App\ProductBOMLine', 'product_bom_id', 'id', 'id', 'product_id')->with('measureunit');
+        return $this->hasManyThrough(Product::class, ProductBOMLine::class, 'product_bom_id', 'id', 'id', 'product_id')->with('measureunit');
     }
 
     public function hasProduct_V0( $product_id )

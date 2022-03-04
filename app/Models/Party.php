@@ -67,27 +67,27 @@ class Party extends Model
     
     public function contacts()
     {
-        return $this->hasMany('App\Contact')->orderBy('active', 'desc');
+        return $this->hasMany(Contact::class)->orderBy('active', 'desc');
     }
     
     public function leads()
     {
-        return $this->hasMany('App\Lead');
+        return $this->hasMany(Lead::class);
     }
 
     public function createdby()
     {
-        return $this->belongsTo('App\User', 'user_created_by_id');
+        return $this->belongsTo(User::class, 'user_created_by_id');
 	}
 
     public function assignedto()
     {
-        return $this->belongsTo('App\User', 'user_assigned_to_id');
+        return $this->belongsTo(User::class, 'user_assigned_to_id');
 	}
 
     public function customer()
     {
-        return $this->belongsTo('App\Customer');
+        return $this->belongsTo(Customer::class);
 	}
 	
 }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\DocumentAscription;
+
 class SupplierOrder extends Billable
 {
 
@@ -304,12 +306,12 @@ class SupplierOrder extends Billable
     
     public function rightAscriptions()
     {
-        return $this->morphMany('App\DocumentAscription', 'leftable')->orderBy('id', 'ASC');
+        return $this->morphMany(DocumentAscription::class, 'leftable')->orderBy('id', 'ASC');
     }
 
     public function rightShippingSlipAscriptions( $model = '' )
     {
-        return $this->rightAscriptions->where('type', 'traceability')->where('rightable_type', 'App\SupplierShippingSlip');
+        return $this->rightAscriptions->where('type', 'traceability')->where('rightable_type', SupplierShippingSlip::class);
     }
 
     public function rightShippingSlips()
@@ -330,7 +332,7 @@ class SupplierOrder extends Billable
 
     public function rightOrderAscriptions( $model = '' )
     {
-        return $this->rightAscriptions->where('type', 'backorder')->where('rightable_type', 'App\SupplierOrder');
+        return $this->rightAscriptions->where('type', 'backorder')->where('rightable_type', SupplierOrder::class);
     }
 
     public function rightOrders()
@@ -351,12 +353,12 @@ class SupplierOrder extends Billable
 
     public function leftAscriptions()
     {
-        return $this->morphMany('App\DocumentAscription', 'rightable')->orderBy('id', 'ASC');
+        return $this->morphMany(DocumentAscription::class, 'rightable')->orderBy('id', 'ASC');
     }
 
     public function leftOrderAscriptions( $model = '' )
     {
-        return $this->leftAscriptions->where('type', 'backorder')->where('leftable_type', 'App\SupplierOrder');
+        return $this->leftAscriptions->where('type', 'backorder')->where('leftable_type', SupplierOrder::class);
     }
 
     public function leftOrders()
@@ -375,7 +377,7 @@ class SupplierOrder extends Billable
 
     public function rightAggregateOrderAscriptions( $model = '' )
     {
-        return $this->rightAscriptions->where('type', 'aggregate')->where('rightable_type', 'App\SupplierOrder');
+        return $this->rightAscriptions->where('type', 'aggregate')->where('rightable_type', SupplierOrder::class);
     }
 
     public function rightAggregateOrders()
@@ -396,7 +398,7 @@ class SupplierOrder extends Billable
 
     public function leftAggregateOrderAscriptions( $model = '' )
     {
-        return $this->leftAscriptions->where('type', 'aggregate')->where('leftable_type', 'App\SupplierOrder');
+        return $this->leftAscriptions->where('type', 'aggregate')->where('leftable_type', SupplierOrder::class);
     }
 
     public function leftAggregateOrders()
@@ -416,7 +418,7 @@ class SupplierOrder extends Billable
 
     public function leftQuotationAscriptions( $model = '' )
     {
-        return $this->leftAscriptions->where('type', 'traceability')->where('leftable_type', 'App\SupplierQuotation');
+        return $this->leftAscriptions->where('type', 'traceability')->where('leftable_type', SupplierQuotation::class);
     }
 
     public function leftQuotations()
@@ -437,7 +439,7 @@ class SupplierOrder extends Billable
 
     public function downpayments()
     {
-        return $this->hasMany('App\DownPayment', 'supplier_order_id')->orderBy('due_date', 'ASC');
+        return $this->hasMany(DownPayment::class, 'supplier_order_id')->orderBy('due_date', 'ASC');
     }
 
 

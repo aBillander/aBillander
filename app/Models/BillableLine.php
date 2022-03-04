@@ -301,7 +301,7 @@ class BillableLine extends Model
     {
         $price = [ $this->total_tax_excl/$this->quantity, $this->total_tax_incl/$this->quantity ];        // These prices are in Customer Order Currency
 
-        $priceObject = \App\Price::create( $price, $this->currency );
+        $priceObject = Price::create( $price, $this->currency );
 
         return $priceObject;
     }

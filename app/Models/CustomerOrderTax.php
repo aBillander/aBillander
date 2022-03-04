@@ -24,12 +24,12 @@ class CustomerOrderTax extends CustomerOrderLineTax // Model
 /* already in parent class
     public function tax()
     {
-       return $this->belongsTo('App\Tax', 'tax_id');
+       return $this->belongsTo(Tax::class, 'tax_id');
     }
 
     public function taxrule()
     {
-       return $this->belongsTo('App\TaxRule', 'tax_rule_id');
+       return $this->belongsTo(TaxRule::class, 'tax_rule_id');
     }
 */
 }

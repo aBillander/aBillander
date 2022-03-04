@@ -27,7 +27,7 @@ class LotItem extends Model
 
     public function lot()
     {
-        return $this->belongsTo('App\Lot');
+        return $this->belongsTo(Lot::class);
     }
     
     public function lotable()
@@ -38,7 +38,7 @@ class LotItem extends Model
     // Reverse relation
 //    public function lotitems()
 //    {
-//        return $this->morphMany('App\Lot', 'lotable');
+//        return $this->morphMany(Lot::class, 'lotable');
 //    }
 /*
     // Alias

@@ -106,7 +106,7 @@ class Sequence extends Model {
 
         if ( !$model ) return [];
 
-        $list = \App\Sequence::where('model_name', '=', $model)->pluck('name', 'id')->toArray();
+        $list = Sequence::where('model_name', '=', $model)->pluck('name', 'id')->toArray();
         if (!$list) $list = array();
 
         return $list;

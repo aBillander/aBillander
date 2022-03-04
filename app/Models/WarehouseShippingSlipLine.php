@@ -69,7 +69,7 @@ class WarehouseShippingSlipLine extends Model
     public function document()
     {
        // return $this->belongsTo($this->getParentClassName(), $this->getParentClassSnakeCase().'_id');
-       return $this->belongsTo('App\WarehouseShippingSlip', 'warehouse_shipping_slip_id');
+       return $this->belongsTo(WarehouseShippingSlip::class, 'warehouse_shipping_slip_id');
     }
     
     
@@ -77,22 +77,22 @@ class WarehouseShippingSlipLine extends Model
 
     public function product()
     {
-       return $this->belongsTo('App\Product');
+       return $this->belongsTo(Product::class);
     }
 
     public function combination()
     {
-       return $this->belongsTo('App\Combination');
+       return $this->belongsTo(Combination::class);
     }
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
 
     public function packagemeasureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'package_measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'package_measure_unit_id');
     }
 
     /**

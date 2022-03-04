@@ -73,7 +73,7 @@ class Currency extends Model {
             return $amount;
 
         if ($currency === null)
-            $currency = \App\Context::getContext()->currency;
+            $currency = Context::getContext()->currency;
 
         $number = number_format($amount, $currency->decimalPlaces, $currency->decimalSeparator, $currency->thousandsSeparator);
 
@@ -102,7 +102,7 @@ class Currency extends Model {
             return $amount;
 
         if ($currency === null)
-            $currency = \App\Context::getContext()->currency;
+            $currency = Context::getContext()->currency;
 
         $number = number_format($amount, $currency->decimalPlaces, $currency->decimalSeparator, $currency->thousandsSeparator);
 

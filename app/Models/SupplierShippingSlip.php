@@ -6,6 +6,8 @@ use App\Traits\BillableStockMovementsTrait;
 use App\Traits\SupplierShippingSlipInvoiceableTrait;
 // use App\Traits\BillableInvoiceableTrait;
 
+use App\Helpers\DocumentAscription;
+
 class SupplierShippingSlip extends Billable
 {
     
@@ -315,32 +317,32 @@ class SupplierShippingSlip extends Billable
 
     public function leftAscriptions()
     {
- /*       $relation = $this->morphMany('App\DocumentAscription', 'rightable'); //->where('type', 'traceability');
+ /*       $relation = $this->morphMany(DocumentAscription::class, 'rightable'); //->where('type', 'traceability');
 
         if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
 
-        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
+        abi_r($this->morphMany(DocumentAscription::class, 'rightable'));;die();
 
         // abi_toSQL($relation->orderBy('id', 'ASC'));die();
 */
-        return $this->morphMany('App\DocumentAscription', 'rightable')->where('type', 'traceability')->orderBy('id', 'ASC');
+        return $this->morphMany(DocumentAscription::class, 'rightable')->where('type', 'traceability')->orderBy('id', 'ASC');
     }
 
     public function leftOrderAscriptions( $model = '' )
     {
-/*        $relation = $this->morphMany('App\DocumentAscription', 'rightable'); //->where('type', 'traceability');
+/*        $relation = $this->morphMany(DocumentAscription::class, 'rightable'); //->where('type', 'traceability');
 
         if ($model != '' && 0) $relation = $relation->where('leftable_type', $model);
 
-        abi_r($this->morphMany('App\DocumentAscription', 'rightable'));;die();
+        abi_r($this->morphMany(DocumentAscription::class, 'rightable'));;die();
 
-        // abi_toSQL($relation->orderBy('id', 'ASC'));die();\App\SupplierShippingSlip::class
+        // abi_toSQL($relation->orderBy('id', 'ASC'));die();SupplierShippingSlip::class
 */
         $ascriptions = $this->leftAscriptions;
 
         // abi_r($ascriptions);
 
-        return $ascriptions->where('leftable_type', 'App\SupplierOrder');
+        return $ascriptions->where('leftable_type', SupplierOrder::class);
     }
 
     public function leftOrders()
@@ -349,7 +351,7 @@ class SupplierShippingSlip extends Billable
 
         // abi_r($ascriptions->pluck('leftable_id')->all(), true);
 
-        return \App\SupplierOrder::find( $ascriptions->pluck('leftable_id') );
+        return SupplierOrder::find( $ascriptions->pluck('leftable_id') );
     }
 
     public function supplierorder()
@@ -361,12 +363,12 @@ class SupplierShippingSlip extends Billable
 
     public function rightAscriptions()
     {
-        return $this->morphMany('App\DocumentAscription', 'leftable')->where('type', 'traceability')->orderBy('id', 'ASC');
+        return $this->morphMany(DocumentAscription::class, 'leftable')->where('type', 'traceability')->orderBy('id', 'ASC');
     }
 
     public function rightInvoiceAscriptions( $model = '' )
     {
-        return $this->rightAscriptions->where('rightable_type', 'App\SupplierInvoice');
+        return $this->rightAscriptions->where('rightable_type', SupplierInvoice::class);
     }
 
     public function rightInvoices()
@@ -375,7 +377,7 @@ class SupplierShippingSlip extends Billable
 
         // abi_r($ascriptions->pluck('rightable_id')->all(), true);
 
-        return \App\SupplierInvoice::find( $this->rightInvoiceAscriptions()->pluck('rightable_id') );
+        return SupplierInvoice::find( $this->rightInvoiceAscriptions()->pluck('rightable_id') );
     }
 
     public function supplierinvoice()

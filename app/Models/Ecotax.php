@@ -52,8 +52,8 @@ class Ecotax extends Model {
         // Address / Company models need fixing to retrieve country ISO code
         // $country = Context::getContext()->company->address()->country_ISO;
         
-        $country_id = \App\Configuration::get('DEF_COUNTRY');
-        // $country_id = \App\Context::getContext()->company->address()->country_id;
+        $country_id = Configuration::get('DEF_COUNTRY');
+        // $country_id = Context::getContext()->company->address()->country_id;
 
 //        $value = $this->taxrules()->where('country_id', '=', '0')->orWhere('country_id', '=', $country_id)->orderBy('position', 'asc')->first()->percent;
         $value = $this->ecotaxrules()->where(function ($query) use ($country_id) {
@@ -66,7 +66,7 @@ class Ecotax extends Model {
 
     public function getAmountAttribute()
     {
-        $country_id = \App\Configuration::get('DEF_COUNTRY');
+        $country_id = Configuration::get('DEF_COUNTRY');
         
         $value = $this->ecotaxrules()->where(function ($query) use ($country_id) {
             $query->where('country_id', '=', '0')
@@ -104,11 +104,11 @@ class Ecotax extends Model {
     
     public function ecotaxrules()
     {
-        return $this->hasMany('App\EcotaxRule')->orderBy('position', 'asc');
+        return $this->hasMany(EcotaxRule::class)->orderBy('position', 'asc');
     }
     
     public function products()
     {
-        return $this->hasMany('App\Product');
+        return $this->hasMany(Product::class);
     }
 }

@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Helpers\DocumentAscription;
+
+use App\Helpers\Calculator;
+
 use Illuminate\Database\Eloquent\Model;
 
 use Auth;
@@ -141,7 +145,7 @@ class Billable extends Model implements ShippableInterface
 
         static::creating(function($document)
         {
-//            $document->company_id = \App\Context::getContext()->company;
+//            $document->company_id = Context::getContext()->company;
 
             $document->user_id = Auth::id();
 
@@ -394,7 +398,7 @@ class Billable extends Model implements ShippableInterface
     public function getShippingMethodId() 
     {
         if (   $this->shipping_method_id
-            && \App\ShippingMethod::where('id', $this->shipping_method_id)->exists()
+            && ShippingMethod::where('id', $this->shipping_method_id)->exists()
             )
             return $this->shipping_method_id;
 
@@ -414,7 +418,7 @@ class Billable extends Model implements ShippableInterface
     public function getWarehouseId() 
     {
         if (   $this->warehouse_id
-            && \App\Warehouse::where('id', $this->warehouse_id)->exists()
+            && Warehouse::where('id', $this->warehouse_id)->exists()
             )
             return $this->warehouse_id;
 
@@ -424,7 +428,7 @@ class Billable extends Model implements ShippableInterface
     public function getPaymentMethodId() 
     {
         if (   $this->payment_method_id
-            && \App\PaymentMethod::where('id', $this->payment_method_id)->exists()
+            && PaymentMethod::where('id', $this->payment_method_id)->exists()
             )
             return $this->payment_method_id;
 
@@ -457,7 +461,7 @@ class Billable extends Model implements ShippableInterface
 
         // Sequence
         $seq_id = $this->sequence_id > 0 ? $this->sequence_id : Configuration::get('DEF_'.strtoupper( $this->getClassSnakeCase() ).'_SEQUENCE');
-        $seq = \App\Sequence::find( $seq_id );
+        $seq = Sequence::find( $seq_id );
         $doc_id = $seq->getNextDocumentId();
 
         $this->sequence_id = $seq_id;
@@ -487,7 +491,7 @@ class Billable extends Model implements ShippableInterface
 
         // Can I "undo" last number in Sequence
         $seq_id = $this->sequence_id;
-        $seq = \App\Sequence::find( $seq_id );
+        $seq = Sequence::find( $seq_id );
         $next_id = $seq->next_id;
         $doc_id = $this->document_id;
 
@@ -525,7 +529,7 @@ class Billable extends Model implements ShippableInterface
         // Not taking care of Secuence numbering, but try to save current number
         // Can I "undo" last number in Sequence
         $seq_id = $this->sequence_id;
-        $seq = \App\Sequence::find( $seq_id );
+        $seq = Sequence::find( $seq_id );
         $next_id = $seq->next_id;
         $doc_id = $this->document_id;
 
@@ -789,7 +793,7 @@ class Billable extends Model implements ShippableInterface
         // abi_r( $products_profit);
         $this->products_profit = $products_profit;
 
-        $products_margin = $this->as_percentable( \App\Calculator::margin( $products_cost, $products_final_price - $products_ecotax - $document_products_discount, $this->currency ) );
+        $products_margin = $this->as_percentable( Calculator::margin( $products_cost, $products_final_price - $products_ecotax - $document_products_discount, $this->currency ) );
 
         // Sales Rep Commission
         $this->total_commission = 0.0;
@@ -977,7 +981,7 @@ class Billable extends Model implements ShippableInterface
     // Badly built relation:
     public function taxingaddress()
     {
-        return ( \App\Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') && $this->shippingaddress )  ? 
+        return ( Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') && $this->shippingaddress )  ? 
                                         // $this->shippingaddress does not exists in a query such as:
                                         // $document = CustomerInvoice::with('customer')->with('taxingaddress')->find($id);
                                         // So the relation is evaluated as null

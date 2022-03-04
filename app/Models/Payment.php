@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use aBillander\SepaSpain\SepaDirectDebit;
+
 use Auth;
 
 use App\Traits\ViewFormatterTrait;
@@ -102,18 +104,18 @@ class Payment extends Model {
     {
         // See: https://laracasts.com/discuss/channels/general-discussion/how-to-carbonparse-in-ddmmyyyy-format
 
-        return abi_date_short( \Carbon\Carbon::parse($value), \App\Context::getContext()->language->date_format_lite );
+        return abi_date_short( \Carbon\Carbon::parse($value), Context::getContext()->language->date_format_lite );
     }
 
     public function xsetDueDateAttribute($value)
     {
-        $this->attributes['due_date'] = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $value );
+        $this->attributes['due_date'] = \Carbon\Carbon::createFromFormat( Context::getContext()->language->date_format_lite, $value );
     }
     
     public function xgetPaymentDateAttribute($value)
     {
         if ($value)
-            return abi_date_short( \Carbon\Carbon::parse($value), \App\Context::getContext()->language->date_format_lite );
+            return abi_date_short( \Carbon\Carbon::parse($value), Context::getContext()->language->date_format_lite );
         else
             return NULL;
     }
@@ -121,7 +123,7 @@ class Payment extends Model {
     public function xsetPaymentDateAttribute($value)
     {
         if ($value)
-            $this->attributes['payment_date'] = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $value );
+            $this->attributes['payment_date'] = \Carbon\Carbon::createFromFormat( Context::getContext()->language->date_format_lite, $value );
         else
             $this->attributes['payment_date'] = NULL;
     }
@@ -204,69 +206,69 @@ class Payment extends Model {
 
     public function customer()
     {
-        return $this->belongsTo('App\Customer', 'paymentorable_id');
+        return $this->belongsTo(Customer::class, 'paymentorable_id');
     }
 
     public function customerinvoice()
     {
-        return $this->belongsTo('App\CustomerInvoice', 'paymentable_id');     // ->where('paymentable_type', 'App\CustomerInvoice');        // Only if it is a Customer Invoice...
+        return $this->belongsTo(CustomerInvoice::class, 'paymentable_id');     // ->where('paymentable_type', CustomerInvoice::class);        // Only if it is a Customer Invoice...
     }
 
 
     public function supplier()
     {
-        return $this->belongsTo('App\Supplier', 'paymentorable_id');
+        return $this->belongsTo(Supplier::class, 'paymentorable_id');
     }
 
     public function supplierinvoice()
     {
-        return $this->belongsTo('App\SupplierInvoice', 'paymentable_id');     // ->where('paymentable_type', 'App\SupplierInvoice');        // Only if it is a Supplier Invoice...
+        return $this->belongsTo(SupplierInvoice::class, 'paymentable_id');     // ->where('paymentable_type', SupplierInvoice::class);        // Only if it is a Supplier Invoice...
     }
 
     public function currency()
     {
-        return $this->belongsTo('App\Currency');
+        return $this->belongsTo(Currency::class);
     }
 
     public function paymentdocument()
     {
-        return $this->belongsTo('App\PaymentDocument');
+        return $this->belongsTo(PaymentDocument::class);
     }
 
     public function paymentmethod()
     {
-        return $this->belongsTo('App\PaymentMethod');
+        return $this->belongsTo(PaymentMethod::class);
     }
 
     public function paymenttype()
     {
-        return $this->belongsTo('App\PaymentType', 'payment_type_id');
+        return $this->belongsTo(PaymentType::class, 'payment_type_id');
     }
 
     public function bankorder()
     {
-        return $this->belongsTo('aBillander\SepaSpain\SepaDirectDebit', 'bank_order_id');
+        return $this->belongsTo(SepaDirectDebit::class, 'bank_order_id');
     }
 
     public function chequedetail()
     {
-        return $this->hasOne('App\ChequeDetail');
+        return $this->hasOne(ChequeDetail::class);
     }
 
     public function getChequeAttribute()
     {
-        return $this->belongsToMany('App\Cheque', 'cheque_details')->first();
+        return $this->belongsToMany(Cheque::class, 'cheque_details')->first();
         // return $this->chequedetail->cheque;
     }
 
     public function downpaymentdetail()
     {
-        return $this->hasOne('App\DownPaymentDetail');
+        return $this->hasOne(DownPaymentDetail::class);
     }
 
     public function getDownpaymentAttribute()
     {
-        return $this->belongsToMany('App\DownPayment', 'down_payment_details')->first();
+        return $this->belongsToMany(DownPayment::class, 'down_payment_details')->first();
         // return $this->downpaymentdetail->downpayment;
     }
 

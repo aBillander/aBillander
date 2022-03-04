@@ -20,6 +20,6 @@ class Manufacturer extends \Eloquent {
     
     public function products()
     {
-        return $this->hasMany('App\Product')->orderby('name', 'asc');
+        return $this->hasMany(Product::class)->orderby('name', 'asc');
     }
 }

@@ -90,28 +90,28 @@ class CustomerUser extends Authenticatable
 /* Use "can" functions instead
     public function getCustomEnableQuotationsAttribute()
     {
-        if ( $this->enable_quotations < 0 ) return \App\Configuration::get('ABCC_ENABLE_QUOTATIONS');
+        if ( $this->enable_quotations < 0 ) return Configuration::get('ABCC_ENABLE_QUOTATIONS');
 
         return $this->enable_quotations;
     }
 
     public function getCustomEnableMinOrderAttribute()
     {
-        if ( $this->enable_min_order < 0 ) return \App\Configuration::get('ABCC_ENABLE_MIN_ORDER');
+        if ( $this->enable_min_order < 0 ) return Configuration::get('ABCC_ENABLE_MIN_ORDER');
 
         return $this->enable_min_order;
     }
 
     public function getCustomMinOrderValueAttribute()
     {
-        if ( $this->use_default_min_order_value > 0 ) return \App\Configuration::get('ABCC_MIN_ORDER_VALUE');
+        if ( $this->use_default_min_order_value > 0 ) return Configuration::get('ABCC_MIN_ORDER_VALUE');
 
         return $this->min_order_value;
     }
 
     public function getCustomDisplayPricesTaxIncAttribute()
     {
-        if ( $this->display_prices_tax_inc < 0 ) return \App\Configuration::get('ABCC_DISPLAY_PRICES_TAX_INC');
+        if ( $this->display_prices_tax_inc < 0 ) return Configuration::get('ABCC_DISPLAY_PRICES_TAX_INC');
 
         return $this->display_prices_tax_inc;
     }
@@ -270,18 +270,18 @@ class CustomerUser extends Authenticatable
 
     public function language()
     {
-        return $this->belongsTo('App\Language');
+        return $this->belongsTo(Language::class);
     }
 
     public function customer()
     {
-        return $this->belongsTo('App\Customer', 'customer_id');
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     public function address()
     {
         // Makes sense when CustomerUser is allowed to only one address
-        return $this->hasOne('App\Address', 'id', 'address_id')
+        return $this->hasOne(Address::class, 'id', 'address_id')
                    ->where('addressable_type', Customer::class);
 
 
@@ -289,7 +289,7 @@ class CustomerUser extends Authenticatable
         // When CustomerUser is allowed to only one address (address_id>0) returns Address $address
         // When CustomerUser is allowed to all addresses (address_id=0) returns null (unless Customer has nly one address!!!)
         if ( $this->address_id > 0 )
-            return $this->hasOne('App\Address', 'id', 'address_id')
+            return $this->hasOne(Address::class, 'id', 'address_id')
                    ->where('addressable_type', Customer::class);
 
         if ( $this->customer->addresses()->count() == 1 )
@@ -304,11 +304,11 @@ class CustomerUser extends Authenticatable
 
     public function emaillogs()
     {
-        return $this->morphMany('App\EmailLog', 'userable');
+        return $this->morphMany(EmailLog::class, 'userable');
     }
 
     public function cart()
     {
-        return $this->hasOne('App\Cart');
+        return $this->hasOne(Cart::class);
     }
 }

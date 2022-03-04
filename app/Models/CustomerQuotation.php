@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Helpers\DocumentAscription;
+
 class CustomerQuotation extends Billable
 {
 
@@ -35,7 +37,7 @@ class CustomerQuotation extends Billable
                             'valid_until_date' => 'nullable|date|after_or_equal:document_date',
                             'customer_id' => 'exists:customers,id',
                             'invoicing_address_id' => '',
-                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Customer',
+                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Models\Customer',
                             'sequence_id' => 'exists:sequences,id',
 //                            'warehouse_id' => 'exists:warehouses,id',
 //                            'carrier_id'   => 'exists:carriers,id',
@@ -196,7 +198,7 @@ class CustomerQuotation extends Billable
     
     public function productionsheet()
     {
-        return $this->belongsTo('App\ProductionSheet', 'production_sheet_id');
+        return $this->belongsTo(ProductionSheet::class, 'production_sheet_id');
     }
 
 
@@ -208,12 +210,12 @@ class CustomerQuotation extends Billable
     
     public function rightAscriptions()
     {
-        return $this->morphMany('App\DocumentAscription', 'leftable')->orderBy('id', 'ASC');
+        return $this->morphMany(DocumentAscription::class, 'leftable')->orderBy('id', 'ASC');
     }
 
     public function rightOrderAscriptions( $model = '' )
     {
-        return $this->rightAscriptions->where('type', 'traceability')->where('rightable_type', 'App\CustomerOrder');
+        return $this->rightAscriptions->where('type', 'traceability')->where('rightable_type', CustomerOrder::class);
     }
 
     public function rightOrders()
@@ -222,7 +224,7 @@ class CustomerQuotation extends Billable
 
         // abi_r($ascriptions->pluck('rightable_id')->all(), true);
 
-        return \App\CustomerOrder::find( $this->rightOrderAscriptions()->pluck('rightable_id') );
+        return CustomerOrder::find( $this->rightOrderAscriptions()->pluck('rightable_id') );
     }
 
     public function customerOrder()

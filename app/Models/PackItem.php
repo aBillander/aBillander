@@ -32,24 +32,24 @@ class PackItem extends Model
     // "Parent" product
     public function packable()
     {
-       return $this->belongsTo('App\Product');
+       return $this->belongsTo(Product::class);
     }
 
     // Pack item product
     public function product()
     {
-       return $this->belongsTo('App\Product', 'item_product_id');
+       return $this->belongsTo(Product::class, 'item_product_id');
     }
     
     public function combination()
     {
-        return $this->belongsTo('App\Combination');
+        return $this->belongsTo(Combination::class);
     }
 
     // Better: stock is kept in Product default Measure Unit
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
 
 }

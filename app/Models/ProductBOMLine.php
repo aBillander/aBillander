@@ -48,16 +48,16 @@ class ProductBOMLine extends Model
 
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo(Product::class);
     }
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
 
     public function productBOM()
     {
-       return $this->belongsTo('App\ProductBOM', 'product_bom_id');
+       return $this->belongsTo(ProductBOM::class, 'product_bom_id');
     }
 }

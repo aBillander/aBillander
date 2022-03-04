@@ -27,11 +27,11 @@ class StockCount extends Model
     
     public function stockcountlines()
     {
-        return $this->hasMany('App\StockCountLine', 'stock_count_id');
+        return $this->hasMany(StockCountLine::class, 'stock_count_id');
     }
 
     public function warehouse()
     {
-        return $this->belongsTo('App\Warehouse');
+        return $this->belongsTo(Warehouse::class);
 	}
 }

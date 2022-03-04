@@ -25,11 +25,11 @@ class Option extends Model {
 
     public function optiongroup()
     {
-        return $this->belongsTo('App\OptionGroup', 'option_group_id');
+        return $this->belongsTo(OptionGroup::class, 'option_group_id');
 	}
     
     public function combinations()
     {
-        return $this->belongsToMany('App\Combination')->withTimestamps();
+        return $this->belongsToMany(Combination::class)->withTimestamps();
     }
 }

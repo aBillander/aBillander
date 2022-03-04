@@ -154,7 +154,7 @@ class StockCountLine extends Model
 
     public function stockcount()
     {
-        return $this->belongsTo('App\StockCount', 'stock_count_id');
+        return $this->belongsTo(StockCount::class, 'stock_count_id');
     }
 
     // Alias
@@ -170,7 +170,7 @@ class StockCountLine extends Model
 
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo(Product::class);
     }
 
     /**
@@ -178,7 +178,7 @@ class StockCountLine extends Model
      */
     public function stockmovements()
     {
-        return $this->morphMany('App\StockMovement', 'stockmovementable');
+        return $this->morphMany(StockMovement::class, 'stockmovementable');
     }
 
     /**
@@ -187,7 +187,7 @@ class StockCountLine extends Model
      */
     public function stockmovement()
     {
-        return $this->hasOne('App\StockMovement', 'stockmovementable_id','id')
+        return $this->hasOne(StockMovement::class, 'stockmovementable_id','id')
                         ->where('stockmovementable_type', StockCountLine::class);
     }
 }

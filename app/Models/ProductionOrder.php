@@ -188,7 +188,7 @@ class ProductionOrder extends Model
                     'work_center_id', 'manufacturing_batch_size', 'machine_capacity', 'units_per_tray', 
                     'warehouse_id', 'production_sheet_id', 'notes'];
 
-        $product = \App\Product::findOrFail( $data['product_id'] );
+        $product = Product::findOrFail( $data['product_id'] );
         $bom     = $product->bom;
 
         $production_orders = collect([]);
@@ -202,7 +202,7 @@ class ProductionOrder extends Model
         $order_quantity = $data['planned_quantity'];
 //        + $order_manufacturing_batch_size = $data['manufacturing_batch_size'] ?? $product->manufacturing_batch_size;
 
-        $order = \App\ProductionOrder::create([
+        $order = ProductionOrder::create([
             'created_via' => $data['created_via'] ?? 'manual',
             'status'      => $data['status']      ?? 'planned',
 
@@ -257,7 +257,7 @@ class ProductionOrder extends Model
 */
             $quantity = $order_quantity * ( $line->quantity / $bom->quantity ) * (1.0 + $line->scrap/100.0);
 
-            $order = \App\ProductionOrder::createPlannedMultiLevel([
+            $order = ProductionOrder::createPlannedMultiLevel([
                 'created_via' => $data['created_via'] ?? 'manual',
                 'status'      => $data['status']      ?? 'planned',
 
@@ -293,7 +293,7 @@ class ProductionOrder extends Model
                     'work_center_id', 'machine_capacity', 'units_per_tray', 
                     'warehouse_id', 'production_sheet_id', 'notes'];
 
-        $product = \App\Product::with('bomitems')->with('boms')
+        $product = Product::with('bomitems')->with('boms')
                                 ->with('producttools')
                                 ->findOrFail( $data['product_id'] );
         $bomitem = $product->bomitem();
@@ -307,7 +307,7 @@ class ProductionOrder extends Model
          $order_required = $data['required_quantity'] ?? $data['planned_quantity'];
          $order_manufacturing_batch_size =  $product->manufacturing_batch_size;
 
-        $order = \App\ProductionOrder::create([
+        $order = ProductionOrder::create([
             'created_via' => $data['created_via'] ?? 'manual',
             'status'      => $data['status']      ?? 'released',
             'procurement_type' => $product->procurement_type,
@@ -342,9 +342,9 @@ class ProductionOrder extends Model
 
             foreach( $bom->BOMlines as $line ) {
                 
-                 $line_product = \App\Product::with('measureunit')->findOrFail( $line->product_id );
+                 $line_product = Product::with('measureunit')->findOrFail( $line->product_id );
 
-                 $order_line = \App\ProductionOrderLine::create([
+                 $order_line = ProductionOrderLine::create([
                     'type' => 'product',
                     'product_id' => $line_product->id,
                     'reference' => $line_product->reference,
@@ -371,7 +371,7 @@ class ProductionOrder extends Model
 
             foreach( $tools as $tool ) {
 
-                 $order_tool_line = \App\ProductionOrderToolLine::create([
+                 $order_tool_line = ProductionOrderToolLine::create([
                     'tool_id' => $tool->id,
                     'reference' => $tool->reference,
                     'name' => $tool->name, 
@@ -394,7 +394,7 @@ class ProductionOrder extends Model
     public function updateLines()
     {
 
-        $product = \App\Product::with('bomitems')->with('boms')->findOrFail( $this->product_id );
+        $product = Product::with('bomitems')->with('boms')->findOrFail( $this->product_id );
         $bomitem = $product->bomitem();
         $bom     = $product->bom;
 
@@ -431,9 +431,9 @@ if ( $bomitem )
 
         foreach( $bom->BOMlines as $line ) {
             
-             $line_product = \App\Product::with('measureunit')->findOrFail( $line->product_id );
+             $line_product = Product::with('measureunit')->findOrFail( $line->product_id );
 
-             $order_line = \App\ProductionOrderLine::create([
+             $order_line = ProductionOrderLine::create([
                 'type' => 'product',
                 'product_id' => $line_product->id,
                 'reference' => $line_product->reference,
@@ -459,7 +459,7 @@ if ( $bomitem )
 
             foreach( $tools as $tool ) {
 
-                 $order_tool_line = \App\ProductionOrderToolLine::create([
+                 $order_tool_line = ProductionOrderToolLine::create([
                     'tool_id' => $tool->id,
                     'reference' => $tool->reference,
                     'name' => $tool->name, 
@@ -614,32 +614,32 @@ if ( $bomitem )
     
     public function productionsheet()
     {
-        return $this->belongsTo('App\ProductionSheet', 'production_sheet_id');
+        return $this->belongsTo(ProductionSheet::class, 'production_sheet_id');
     }
     
     public function workcenter()
     {
-        return $this->belongsTo('App\WorkCenter', 'work_center_id');
+        return $this->belongsTo(WorkCenter::class, 'work_center_id');
     }
     
     public function warehouse()
     {
-        return $this->belongsTo('App\Warehouse');
+        return $this->belongsTo(Warehouse::class);
     }
     
     public function product()
     {
-        return $this->belongsTo('App\Product', 'product_id');
+        return $this->belongsTo(Product::class, 'product_id');
     }
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
     
     public function productionorderlines()
     {
-        return $this->hasMany('App\ProductionOrderLine', 'production_order_id')
+        return $this->hasMany(ProductionOrderLine::class, 'production_order_id')
                     ->orderBy('line_sort_order', 'ASC');
     }
     
@@ -651,7 +651,7 @@ if ( $bomitem )
     
     public function productionordertoollines()
     {
-        return $this->hasMany('App\ProductionOrderToolLine', 'production_order_id');
+        return $this->hasMany(ProductionOrderToolLine::class, 'production_order_id');
     }
     
     // Alias
@@ -675,7 +675,7 @@ if ( $bomitem )
 
     public function lotitems()
     {
-        return $this->morphMany('App\LotItem', 'lotable');
+        return $this->morphMany(LotItem::class, 'lotable');
     }
 
     public function getLotsAttribute()
@@ -690,7 +690,7 @@ if ( $bomitem )
 
     public function lotitem()
     {
-        return $this->hasOne('App\LotItem', 'lotable_id', 'id')
+        return $this->hasOne(LotItem::class, 'lotable_id', 'id')
                     ->where('lotable_type', ProductionOrder::class)->with('lot');
     }
 

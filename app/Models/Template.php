@@ -68,7 +68,7 @@ class Template extends Model {
 
         if ( !$model ) return [];
 
-        $list = \App\Template::where('model_name', '=', $model)->pluck('name', 'id')->toArray();
+        $list = Template::where('model_name', '=', $model)->pluck('name', 'id')->toArray();
         if (!$list) $list = array();
 
         return $list;
@@ -117,7 +117,7 @@ class Template extends Model {
     
     public function customerinvoices()
     {
-        return $this->hasMany('App\Customerinvoice');
+        return $this->hasMany(Customerinvoice::class);
     }
 
 }

@@ -31,26 +31,26 @@ class CustomerOrderTemplateLine extends Model
     
     public function customerordertemplate()
     {
-        return $this->belongsTo('App\CustomerOrderTemplate', 'customer_order_template_id');
+        return $this->belongsTo(CustomerOrderTemplate::class, 'customer_order_template_id');
     }
 
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo(Product::class);
 	}
 
     public function combination()
     {
-        return $this->belongsTo('App\Combination');
+        return $this->belongsTo(Combination::class);
 	}
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
 
     public function packagemeasureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'package_measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'package_measure_unit_id');
     }
 }

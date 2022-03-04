@@ -353,14 +353,14 @@ class ProductionSheet extends Model
     
     public function customershippingslips()
     {
-        return $this->hasMany('App\CustomerShippingSlip', 'production_sheet_id')->orderBy('shipping_method_id', 'asc');
+        return $this->hasMany(CustomerShippingSlip::class, 'production_sheet_id')->orderBy('shipping_method_id', 'asc');
     }
 
     /* Customer Orders */
     
     public function customerorders()
     {
-        return $this->hasMany('App\CustomerOrder', 'production_sheet_id')->orderBy('shipping_method_id', 'asc');
+        return $this->hasMany(CustomerOrder::class, 'production_sheet_id')->orderBy('shipping_method_id', 'asc');
     }
     
     public function nbr_customerorders()
@@ -370,7 +370,7 @@ class ProductionSheet extends Model
     
     public function customerorderlines()
     {
-        return $this->hasManyThrough('App\CustomerOrderLine', 'App\CustomerOrder', 'production_sheet_id', 'customer_order_id', 'id', 'id');
+        return $this->hasManyThrough(CustomerOrderLine::class, CustomerOrder::class, 'production_sheet_id', 'customer_order_id', 'id', 'id');
     }
 
 
@@ -521,7 +521,7 @@ class ProductionSheet extends Model
     
     public function productionorders()
     {
-        return $this->hasMany('App\ProductionOrder')->orderBy('work_center_id', 'asc')->orderBy('product_reference', 'asc');
+        return $this->hasMany(ProductionOrder::class)->orderBy('work_center_id', 'asc')->orderBy('product_reference', 'asc');
     }
     
     public function productionordersGrouped( $status = null )
@@ -556,7 +556,7 @@ class ProductionSheet extends Model
     
     public function productionorderlines()
     {
-        return $this->hasManyThrough('App\ProductionOrderLine', 'App\ProductionOrder', 'production_sheet_id', 'production_order_id', 'id', 'id');
+        return $this->hasManyThrough(ProductionOrderLine::class, ProductionOrder::class, 'production_sheet_id', 'production_order_id', 'id', 'id');
     }
     
     public function productionorderlinesQuantity()
@@ -588,7 +588,7 @@ class ProductionSheet extends Model
     
     public function productionordertoollines()
     {
-        return $this->hasManyThrough('App\ProductionOrderToolLine', 'App\ProductionOrder', 'production_sheet_id', 'production_order_id', 'id', 'id');
+        return $this->hasManyThrough(ProductionOrderToolLine::class, ProductionOrder::class, 'production_sheet_id', 'production_order_id', 'id', 'id');
     }
 
     public function productionordertoollinesGrouped()
@@ -612,7 +612,7 @@ class ProductionSheet extends Model
 
     public function productionrequirements()
     {
-        return $this->hasMany('App\ProductionRequirement')->orderBy('reference', 'asc');
+        return $this->hasMany(ProductionRequirement::class)->orderBy('reference', 'asc');
     }
 
     /* 

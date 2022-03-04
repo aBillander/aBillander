@@ -30,7 +30,7 @@ class CustomerShippingSlipLine extends BillableLine
     
     public function customershippingslip()
     {
-        return $this->belongsTo('App\CustomerShippingSlip', 'customer_shipping_slip_id');
+        return $this->belongsTo(CustomerShippingSlip::class, 'customer_shipping_slip_id');
     }
     
 }

@@ -37,18 +37,18 @@ class WarehouseProductLine extends Model
     
     public function warehouse()
     {
-        return $this->belongsTo('App\Warehouse');
+        return $this->belongsTo(Warehouse::class);
     }
 
     public function product()
     {
-       return $this->belongsTo('App\Product');
+       return $this->belongsTo(Product::class);
     }
 
     // Better: stock is kept in Product default Measure Unit
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
 
 }

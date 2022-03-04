@@ -101,7 +101,7 @@ class WarehouseShippingSlip extends Model
 
         static::creating(function($document)
         {
-//            $document->company_id = \App\Context::getContext()->company;
+//            $document->company_id = Context::getContext()->company;
 
             $document->user_id = Auth::id();
 
@@ -292,12 +292,12 @@ class WarehouseShippingSlip extends Model
 
     public function sequenceList()
     {
-        return Sequence::listFor( 'App\WarehouseShippingSlip' );
+        return Sequence::listFor( WarehouseShippingSlip::class );
     }
 
     public function templateList()
     {
-        return Template::listFor( 'App\WarehouseShippingSlip' );
+        return Template::listFor( WarehouseShippingSlip::class );
     }
     
 
@@ -339,7 +339,7 @@ class WarehouseShippingSlip extends Model
 
         // abi_r($this->getClassName().'Line'.' - '. $this->getClassSnakeCase().'_id');die();
 
-        return $this->hasMany( 'App\WarehouseShippingSlipLine', 'warehouse_shipping_slip_id' )
+        return $this->hasMany( WarehouseShippingSlipLine::class, 'warehouse_shipping_slip_id' )
                     ->orderBy('line_sort_order', 'ASC');
     }
     
@@ -352,37 +352,37 @@ class WarehouseShippingSlip extends Model
     
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(User::class);
     }
 
     public function sequence()
     {
-        return $this->belongsTo('App\Sequence');
+        return $this->belongsTo(Sequence::class);
     }
 
     public function warehouse()
     {
-        return $this->belongsTo('App\Warehouse');
+        return $this->belongsTo(Warehouse::class);
     }
 
     public function warehousecounterpart()
     {
-        return $this->belongsTo('App\Warehouse', 'warehouse_counterpart_id');
+        return $this->belongsTo(Warehouse::class, 'warehouse_counterpart_id');
     }
 
     public function shippingmethod()
     {
-        return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
+        return $this->belongsTo(ShippingMethod::class, 'shipping_method_id');
     }
 
     public function carrier()
     {
-        return $this->belongsTo('App\Carrier');
+        return $this->belongsTo(Carrier::class);
     }
 
     public function template()
     {
-        return $this->belongsTo('App\Template');
+        return $this->belongsTo(Template::class);
     }
 
 
@@ -718,7 +718,7 @@ class WarehouseShippingSlip extends Model
 
         // Product
         if ($document_line->combination_id>0) {
-//            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+//            $combination = Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
 //            $product = $combination->product;
 //            $product->reference = $combination->reference;
 //            $product->name = $product->name.' | '.$combination->name;
@@ -785,13 +785,13 @@ class WarehouseShippingSlip extends Model
         // Customer Final Price
         if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
+            $unit_customer_final_price = new Price( $params['unit_customer_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
 
             $unit_customer_final_price->applyTaxPercent( $tax_percent );
 
         } else {
 
-            $unit_customer_final_price = \App\Price::create([$document_line->unit_customer_final_price, $document_line->unit_customer_final_price_tax_inc, $pricetaxPolicy], $currency);
+            $unit_customer_final_price = Price::create([$document_line->unit_customer_final_price, $document_line->unit_customer_final_price_tax_inc, $pricetaxPolicy], $currency);
         }
 
         // Discount
@@ -898,7 +898,7 @@ class WarehouseShippingSlip extends Model
 
         // Sequence
         $seq_id = $this->sequence_id > 0 ? $this->sequence_id : Configuration::get('DEF_WAREHOUSE_SHIPPING_SLIP_SEQUENCE');
-        $seq = \App\Sequence::find( $seq_id );
+        $seq = Sequence::find( $seq_id );
         $doc_id = $seq->getNextDocumentId();
 
         $this->sequence_id = $seq_id;
@@ -936,7 +936,7 @@ class WarehouseShippingSlip extends Model
         // Not taking care of Secuence numbering, but try to save current number
         // Can I "undo" last number in Sequence
         $seq_id = $this->sequence_id;
-        $seq = \App\Sequence::find( $seq_id );
+        $seq = Sequence::find( $seq_id );
         $next_id = $seq->next_id;
         $doc_id = $this->document_id;
 

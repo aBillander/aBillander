@@ -36,7 +36,7 @@ class Combination extends Model {
 
         static::created(function($combination)
         {
-            if ( \App\Configuration::get('SKU_AUTOGENERATE') )
+            if ( Configuration::get('SKU_AUTOGENERATE') )
                 if ( !$combination->reference )
                     $combination->autoSKU();
         });
@@ -130,7 +130,7 @@ class Combination extends Model {
                     ? $warehouse
                     : $warehouse->id ;
 
-    //    $combination = \App\Combination::find($this->combination_id);
+    //    $combination = Combination::find($this->combination_id);
 
         $whs = $this->warehouses;
         if ($whs->contains($wh_id)) {
@@ -146,7 +146,7 @@ class Combination extends Model {
     
     public function getStock()
     { 
-        $warehouses = \App\Warehouse::get();
+        $warehouses = Warehouse::get();
         $count = 0;
 
         foreach ($warehouses as $warehouse) {

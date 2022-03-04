@@ -57,7 +57,7 @@ class SalesRep extends Model {
     {
             $list = [];
             foreach (self::$types as $type) {
-                $list[$type] = l('App\\SalesRep.'.$type, [], 'appmultilang');
+                $list[$type] = l(SalesRep::class.'.'.$type, [], 'appmultilang');
             }
 
             return $list;
@@ -65,7 +65,7 @@ class SalesRep extends Model {
 
     public static function getTypeName( $status )
     {
-            return l('App\\SalesRep.'.$status, [], 'appmultilang');
+            return l(SalesRep::class.'.'.$status, [], 'appmultilang');
     }
 
 
@@ -77,7 +77,7 @@ class SalesRep extends Model {
         return $this->firstname . ' ' . $this->lastname;
     }
     
-    public function getCommission( \App\Product $product = null, \App\Customer $customer = null ) 
+    public function getCommission( Product $product = null, Customer $customer = null ) 
     {
         // ToDo: Apply more complex rules
 
@@ -95,23 +95,23 @@ class SalesRep extends Model {
 
     public function address()
     {
-        // return $this->hasOne('App\Address', 'owner_id')->where('model_name', '=', 'SalesRep');
+        // return $this->hasOne(Address::class, 'owner_id')->where('model_name', '=', 'SalesRep');
     }
 
     public function customers()
     {
-        return $this->hasMany('App\Customer');
+        return $this->hasMany(Customer::class);
     }
 
     public function customerorders()
     {
-        return $this->hasMany('App\CustomerOrder');
+        return $this->hasMany(CustomerOrder::class);
     }
 
 
     public function commissionsettlements()
     {
-        return $this->hasMany('App\CommissionSettlement');
+        return $this->hasMany(CommissionSettlement::class);
     }
 
     /**
@@ -119,11 +119,11 @@ class SalesRep extends Model {
      */
     public function user()
     {
-        return $this->hasOne('App\SalesRepUser', 'sales_rep_id');   // ->where('is_principal', 1);
+        return $this->hasOne(SalesRepUser::class, 'sales_rep_id');   // ->where('is_principal', 1);
     }
 
     public function users()
     {
-        return $this->hasMany('App\SalesRepUser', 'sales_rep_id');
+        return $this->hasMany(SalesRepUser::class, 'sales_rep_id');
     }
 }

@@ -26,11 +26,11 @@ class ProductionOrderToolLine extends Model
     
     public function productionorder()
     {
-        return $this->belongsTo('App\ProductionOrder');
+        return $this->belongsTo(ProductionOrder::class);
     }
 
     public function tool()
     {
-       return $this->belongsTo('App\Tool');
+       return $this->belongsTo(Tool::class);
     }
 }

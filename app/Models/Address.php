@@ -77,7 +77,7 @@ class Address extends Model {
             // Documents
             foreach ($documents as $document) {
                 # code...
-                $class = '\App\\'.$document;
+                $class = '\App\\Models\\'.$document;
                 $docs = $class::
                               where('invoicing_address_id', $address->id)
                             ->orWhere('shipping_address_id', $address->id)
@@ -92,7 +92,7 @@ class Address extends Model {
             {
                 $relation = 'DeliverySheetLines';
 
-                $class = '\App\\'.$relation;
+                $class = '\App\\Models\\'.$relation;
                 $docs = $class::
                               where('address_id', $address->id)
                             ->get();
@@ -158,7 +158,7 @@ class Address extends Model {
     |--------------------------------------------------------------------------
     */
 
-    public function getTaxRules( \App\Tax $tax )
+    public function getTaxRules( Tax $tax )
     {
         $country_id = $this->country_id;
         $state_id   = $this->state_id;

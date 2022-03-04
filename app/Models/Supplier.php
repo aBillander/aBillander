@@ -302,12 +302,12 @@ class Supplier extends Model {
     
     public function products()
     {
-        return $this->hasMany('App\Product', 'main_supplier_id')->orderby('reference', 'asc');
+        return $this->hasMany(Product::class, 'main_supplier_id')->orderby('reference', 'asc');
     }
     
     public function supplierpricelistlines()
     {
-        return $this->hasMany('App\SupplierPriceListLine', 'supplier_id');
+        return $this->hasMany(SupplierPriceListLine::class, 'supplier_id');
     }
 
     /**
@@ -315,38 +315,38 @@ class Supplier extends Model {
      */
     public function bankaccounts()
     {
-        return $this->morphMany('App\BankAccount', 'bank_accountable');
+        return $this->morphMany(BankAccount::class, 'bank_accountable');
     }
 
     public function bankaccount()
     {
-        return $this->hasOne('App\BankAccount', 'id', 'bank_account_id')
+        return $this->hasOne(BankAccount::class, 'id', 'bank_account_id')
                    ->where('bank_accountable_type', Supplier::class);
     }
     
 
     public function addresses()
     {
-        return $this->morphMany('App\Address', 'addressable');
+        return $this->morphMany(Address::class, 'addressable');
     }
 
 
     public function getAddressList()
     {
-        return $this->morphMany('App\Address', 'addressable')->pluck( 'alias', 'id' )->toArray();
+        return $this->morphMany(Address::class, 'addressable')->pluck( 'alias', 'id' )->toArray();
     }
 
 
     public function address()
     {
-        return $this->hasOne('App\Address', 'id', 'invoicing_address_id')
+        return $this->hasOne(Address::class, 'id', 'invoicing_address_id')
                    ->where('addressable_type', Supplier::class);
     }
     
     public function invoicing_address()
     {
         if ($this->invoicing_address_id>0)
-            return $this->morphMany('App\Address', 'addressable')
+            return $this->morphMany(Address::class, 'addressable')
                    ->where('addresses.id', $this->invoicing_address_id)->first();
         else
             return null;
@@ -360,23 +360,23 @@ class Supplier extends Model {
 
     public function currency()
     {
-        return $this->belongsTo('App\Currency');
+        return $this->belongsTo(Currency::class);
     }
 
     public function language()
     {
-        return $this->belongsTo('App\Language');
+        return $this->belongsTo(Language::class);
     }
 
     public function paymentmethod()
     {
-        return $this->belongsTo('App\PaymentMethod', 'payment_method_id');
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
     }
 
     // To be same as Customer:
     public function shippingmethod()
     {
-        // return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
+        // return $this->belongsTo(ShippingMethod::class, 'shipping_method_id');
 
         // Return what?
         return ;
@@ -385,7 +385,7 @@ class Supplier extends Model {
     // To be same as Customer:
     public function suppliergroup()
     {
-        // return $this->belongsTo('App\SupplierGroup', 'supplier_group_id');
+        // return $this->belongsTo(SupplierGroup::class, 'supplier_group_id');
 
         // Return what?
         return ;
@@ -394,12 +394,12 @@ class Supplier extends Model {
     
     public function supplierorders()
     {
-        return $this->hasMany('App\SupplierOrder');
+        return $this->hasMany(SupplierOrder::class);
     }
 
     public function supplierordertemplates()
     {
-        return $this->hasMany('App\SupplierOrderTemplate');
+        return $this->hasMany(SupplierOrderTemplate::class);
     }
 
     public function getSupplierordertemplateAttribute()
@@ -409,19 +409,19 @@ class Supplier extends Model {
 
     public function suppliershippingslips()
     {
-        return $this->hasMany('App\SupplierShippingSlip');
+        return $this->hasMany(SupplierShippingSlip::class);
     }
 
     public function supplierinvoices()
     {
-        return $this->hasMany('App\SupplierInvoice');
+        return $this->hasMany(SupplierInvoice::class);
     }
     
     public function payments()
     {
-        // return $this->hasMany('App\Payment', 'owner_id')->where('payment.owner_model_name', '=', 'Supplier');
+        // return $this->hasMany(Payment::class, 'owner_id')->where('payment.owner_model_name', '=', 'Supplier');
 
-        return $this->morphMany('App\Payment', 'paymentorable');
+        return $this->morphMany(Payment::class, 'paymentorable');
     }
     
     // Alias

@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 // use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Helpers\Calculator;
+
 use App\Traits\ViewFormatterTrait;
 
 class PriceList extends Model {
@@ -82,7 +84,7 @@ class PriceList extends Model {
         return $features;
     }
 
-    public function calculatePrice( \App\Product $product )
+    public function calculatePrice( Product $product )
     {
         switch ($this->type) {
             // Discount percentage
@@ -94,7 +96,7 @@ class PriceList extends Model {
                 break;
             // Margin percentage
             case 'margin':
-                $bprice = \App\Calculator::price($product->cost_price, $this->amount);
+                $bprice = Calculator::price($product->cost_price, $this->amount);
                 $price = $this->price_is_tax_inc
                          ? $bprice*(1.0+($product->tax->percent/100.0))
                          : $bprice;
@@ -109,25 +111,25 @@ class PriceList extends Model {
         }
 
         // Convert to Price List Currency
-        // $currency = \App\Currency::find( $this->currency_id );
+        // $currency = Currency::find( $this->currency_id );
         $currency = $this->currency;    // Currency is eager loaded with model
 
         if ( !$currency ) // Convention: No currency is defaut currency
-            // $currency = \App\Currency::find( intval(Configuration::get('DEF_CURRENCY')) );
+            // $currency = Currency::find( intval(Configuration::get('DEF_CURRENCY')) );
             ;
         else
-            $price = $price * $currency->conversion_rate / \App\Context::getContext()->currency->conversion_rate;
+            $price = $price * $currency->conversion_rate / Context::getContext()->currency->conversion_rate;
 
         return $price;
     }
 
-    public function getPrice( \App\Product $product )
+    public function getPrice( Product $product )
     {
         $line = $this->getLine( $product );
 
         if ( !$line ) return null;
 
-        $price = new \App\Price( $line->price, $this->price_is_tax_inc, $this->currency);
+        $price = new Price( $line->price, $this->price_is_tax_inc, $this->currency);
 
         if ( $this->price_is_tax_inc )
         {
@@ -142,41 +144,41 @@ class PriceList extends Model {
         return $price;
     }
 
-    public function addLine( \App\Product $product, $price = null )
+    public function addLine( Product $product, $price = null )
     {
         return $this->addOrUpdateLine( $product, $price );
     }
 
-    public function updateLine( \App\Product $product, $price = null )
+    public function updateLine( Product $product, $price = null )
     {
         return $this->addOrUpdateLine( $product, $price );
     }
 
-    public function addOrUpdateLine( \App\Product $product, $price = null )
+    public function addOrUpdateLine( Product $product, $price = null )
     {
         if ($price === null) $price = $this->calculatePrice( $product );
 
-        $line = \App\PriceListLine::firstOrCreate( [ 'price_list_id' => $this->id, 'product_id' => $product->id ], [ 'price' => $price ] );
+        $line = PriceListLine::firstOrCreate( [ 'price_list_id' => $this->id, 'product_id' => $product->id ], [ 'price' => $price ] );
 
         return $line;
     }
 
-    public function prepareLine( \App\Product $product, $price = null )
+    public function prepareLine( Product $product, $price = null )
     {
         if ($price === null) $price = $this->calculatePrice( $product );
 
         // Not persist, please:
-        $line = new \App\PriceListLine( [ 'price_list_id' => $this->id, 'product_id' => $product->id , 'price' => $price ] );
+        $line = new PriceListLine( [ 'price_list_id' => $this->id, 'product_id' => $product->id , 'price' => $price ] );
 
         return $line;
     }
 
-    public function getLine( \App\Product $product )
+    public function getLine( Product $product )
     {
         $line = $this->pricelistlines()->where('product_id', '=', $product->id)->first();
 
         if ( !$line ) 
-            switch ( \App\Configuration::get('PRODUCT_NOT_IN_PRICELIST') ) {
+            switch ( Configuration::get('PRODUCT_NOT_IN_PRICELIST') ) {
                 case 'pricelist':
                     # calculate price according to Price list type
                     return $this->prepareLine( $product );
@@ -191,7 +193,7 @@ class PriceList extends Model {
                     // Convert to Price List Currency
                     $currency = $this->currency;    // Currency is eager loaded with model
 
-                    $price = $price * $currency->conversion_rate / \App\Context::getContext()->currency->conversion_rate;
+                    $price = $price * $currency->conversion_rate / Context::getContext()->currency->conversion_rate;
 
                     return $this->prepareLine( $product, $price );
                     break;
@@ -207,7 +209,7 @@ class PriceList extends Model {
         return $line;
     }
 
-    public function removeLine( \App\Product $product )
+    public function removeLine( Product $product )
     {
         $line = $this->pricelistlines()->where('product_id', '=', $product->id)->first();
 
@@ -223,12 +225,12 @@ class PriceList extends Model {
     
     public function pricelistlines() 
     {
-        return $this->hasMany('App\PriceListLine');
+        return $this->hasMany(PriceListLine::class);
     }
 
     public function currency()
     {
-        return $this->belongsTo('App\Currency');
+        return $this->belongsTo(Currency::class);
     }
     
 }

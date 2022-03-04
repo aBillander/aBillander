@@ -141,16 +141,16 @@ class SalesRepUser extends Authenticatable
 
     public function language()
     {
-        return $this->belongsTo('App\Language');
+        return $this->belongsTo(Language::class);
     }
 
     public function warehouse()
     {
-        return $this->belongsTo('App\Warehouse');
+        return $this->belongsTo(Warehouse::class);
     }
 
     public function salesrep()
     {
-        return $this->belongsTo('App\SalesRep', 'sales_rep_id');
+        return $this->belongsTo(SalesRep::class, 'sales_rep_id');
     }
 }

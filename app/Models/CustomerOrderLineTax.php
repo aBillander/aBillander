@@ -15,7 +15,7 @@ class CustomerOrderLineTax extends BillableLineTax
     // Needed (MayBe) by /WooConnect/src/WooOrderImporter.php
     public function customerorderline()
     {
-       return $this->belongsTo('App\CustomerOrderLine', 'customer_order_line_id');
+       return $this->belongsTo(CustomerOrderLine::class, 'customer_order_line_id');
     }
     
 }

@@ -105,11 +105,11 @@ class PriceListLine extends Model {
 
     public function pricelist()
     {
-        return $this->belongsTo('App\PriceList', 'price_list_id');
+        return $this->belongsTo(PriceList::class, 'price_list_id');
     }
 
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo(Product::class);
     }
 }

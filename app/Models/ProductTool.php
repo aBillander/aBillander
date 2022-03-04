@@ -39,11 +39,11 @@ class ProductTool extends Model {
 
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo(Product::class);
     }
 
     public function tool()
     {
-        return $this->belongsTo('App\Tool');
+        return $this->belongsTo(Tool::class);
     }
 }

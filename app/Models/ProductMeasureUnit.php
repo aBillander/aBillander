@@ -42,16 +42,16 @@ class ProductMeasureUnit extends Model {
 
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo(Product::class);
     }
 
     public function measureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'measure_unit_id');
     }
 
     public function mainmeasureunit()
     {
-        return $this->belongsTo('App\MeasureUnit', 'stock_measure_unit_id');
+        return $this->belongsTo(MeasureUnit::class, 'stock_measure_unit_id');
     }
 }

@@ -60,7 +60,7 @@ class CustomerOrderTemplate extends Model
     
     public function customerordertemplatelines()
     {
-        return $this->hasMany( 'App\CustomerOrderTemplateLine', 'customer_order_template_id' )
+        return $this->hasMany( CustomerOrderTemplateLine::class, 'customer_order_template_id' )
                     ->orderBy('line_sort_order', 'ASC');
     }
     
@@ -72,20 +72,20 @@ class CustomerOrderTemplate extends Model
     
     public function customer()
     {
-    	return $this->belongsTo( 'App\Customer' );
+    	return $this->belongsTo( Customer::class );
     }
     
     public function shippingaddress()
     {
-        // return $this->morphMany('App\Address', 'addressable')
+        // return $this->morphMany(Address::class, 'addressable')
         //       ->where('addresses.id', $this->shipping_address_id)->first();
         
-        return $this->hasOne('App\Address', 'id', 'shipping_address_id')
-                   ->where('addressable_type', \App\Customer::class);
+        return $this->hasOne(Address::class, 'id', 'shipping_address_id')
+                   ->where('addressable_type', Customer::class);
     }
 
     public function template()
     {
-        return $this->belongsTo('App\Template');
+        return $this->belongsTo(Template::class);
 	}
 }

@@ -67,12 +67,12 @@ class EcotaxRule extends Model {
 
     public function ecotax()
     {
-        return $this->belongsTo('App\Ecotax');
+        return $this->belongsTo(Ecotax::class);
 	}
 
     public function country()
     {
-        return $this->belongsTo('App\Country')
+        return $this->belongsTo(Country::class)
                     ->withDefault(function ($country) {
                             $country->name = '';
                         });
@@ -80,7 +80,7 @@ class EcotaxRule extends Model {
 
     public function state()
     {
-        return $this->belongsTo('App\State')
+        return $this->belongsTo(State::class)
                     ->withDefault(function ($state) {
                             $state->name = '';
                         });

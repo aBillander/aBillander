@@ -33,8 +33,8 @@ class ShippingMethodTable extends Model {
         // Address / Company models need fixing to retrieve country ISO code
         // $country = Context::getContext()->company->address()->country_ISO;
         
-        $country_id = \App\Configuration::get('DEF_COUNTRY');
-        // $country_id = \App\Context::getContext()->company->address()->country_id;
+        $country_id = Configuration::get('DEF_COUNTRY');
+        // $country_id = Context::getContext()->company->address()->country_id;
 
 //        $value = $this->taxrules()->where('country_id', '=', '0')->orWhere('country_id', '=', $country_id)->orderBy('position', 'asc')->first()->percent;
         $value = optional($this->taxrules()->where(function ($query) use ($country_id) {
@@ -57,9 +57,9 @@ class ShippingMethodTable extends Model {
         return TaxRule::where('tax_id', '=', $this->id)->orderBy('position', 'asc')->first();
     }
 
-    public function getTaxPercent( \App\Address $address = null, $with_sales_equalization = 0)
+    public function getTaxPercent( Address $address = null, $with_sales_equalization = 0)
     {
-        if ( !$address ) $address = \App\Context::getContext()->company->address;
+        if ( !$address ) $address = Context::getContext()->company->address;
 
         $rules = $address->getTaxRules( $this );    // Only rule_type = sales
 
@@ -81,12 +81,12 @@ class ShippingMethodTable extends Model {
 
     public function servicelines()
     {
-        return $this->morphMany('App\ShippingMethodServiceLine', 'tabulable');
+        return $this->morphMany(ShippingMethodServiceLine::class, 'tabulable');
     }
     
     public function shippingmethod()
     {
-        return $this->belongsTo('App\ShippingMethod', 'shipping_method_id');
+        return $this->belongsTo(ShippingMethod::class, 'shipping_method_id');
     }
 	
 }

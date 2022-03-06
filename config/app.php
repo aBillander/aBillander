@@ -225,6 +225,9 @@ return [
 //        'PDF'    => Barryvdh\DomPDF\Facade::class,
 //        'Excel'  => Maatwebsite\Excel\Facades\Excel::class,
 
+        'AbiConfiguration' => App\Models\Configuration::class,
+        'AbiCompany'       => AppModelsConfiguration::class,
+
     ])->toArray(),
 
 ];

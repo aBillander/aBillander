@@ -13,6 +13,20 @@
 /* ********************************************************** */
 
 
+Route::get('/home', function () {
+    // 
+    return view('home');
+});
+
+Route::get('/soon', function () {
+    // 
+    return view('soon');
+});
+
+
+/* ********************************************************** */
+
+
 Route::get('/invu', function () {
     $id=1182;
     $invu = \App\Models\CustomerInvoice::find($id);

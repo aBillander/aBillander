@@ -23,11 +23,11 @@
     <body>
         <div id="cover-spin"></div>
         <div id="app">
-            @ include('layouts/nav')
+            @include('layouts/nav')
             <div class="container-fluid" style="margin: 10px 0px 10px 0px;"> 
                 @include('layouts/notifications')
                 @yield('content')
-                @ include('layouts/modal_about')
+                @include('layouts/modal_about')
                 @yield('modals')
            </div>
             @include('layouts/footer')
@@ -45,7 +45,7 @@
             // Passing data from Eloquent to Javascript
             // See: https://github.com/laracasts/PHP-Vars-To-Js-Transformer
 
-            var PRICES_ENTERED_WITH_TAX = {{-- !! \App\Configuration::get('PRICES_ENTERED_WITH_TAX') !! --}};
+            var PRICES_ENTERED_WITH_TAX = {!! AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') !!};
 
         </script>
 

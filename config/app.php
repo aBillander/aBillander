@@ -226,7 +226,8 @@ return [
 //        'Excel'  => Maatwebsite\Excel\Facades\Excel::class,
 
         'AbiConfiguration' => App\Models\Configuration::class,
-        'AbiCompany'       => AppModelsConfiguration::class,
+        'AbiContext'       => App\Models\Context::class,
+        'AbiCompany'       => App\Models\Company::class,
 
     ])->toArray(),
 

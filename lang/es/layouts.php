@@ -105,8 +105,8 @@ return [
 	'Attachments' => 'Adjuntos',
 	'Upload an Attach Files' => 'Subir y Adjuntar Ficheros',
 
-	'The backup has been proceed successfully.' => 'La copia de seguridad se ha realizado correctamente.',
-	'Error: The backup process has been failed.' => 'Error: el proceso de copia de seguridad ha fallado.',
+	'The database backup has been proceed successfully.' => 'La copia de seguridad de la base de datos se ha realizado correctamente.',
+	'Error: The database backup process has been failed.' => 'Error: el proceso de copia de seguridad de la base de datos ha fallado.',
 
 
 

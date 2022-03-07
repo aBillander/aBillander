@@ -48,13 +48,13 @@ class BackupDatabase extends Command
 
         $date = str_replace( [' ', ':'], '_', \Carbon\Carbon::now()->toDateTimeString() );
 
-        $file = storage_path( abi_tenant_db_backups_path() ) . '/backup_'.config('database.connections.mysql.database').'_'.$date.'.sql';
+        $file = storage_path( abi_tenant_db_backups_path() ) . 'backup_'.config('database.connections.mysql.database').'_'.$date.'.sql';
 
             try {
                 // This can fail because:
                 // The Process class relies on proc_open, which is not available on your PHP installation.
 
-                $this->process new Process([
+                $this->process = new Process([
                     'mysqldump',
                     '--user='     . config('database.connections.mysql.username'),
                     '--password=' . config('database.connections.mysql.password'),

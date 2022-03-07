@@ -23,11 +23,11 @@ The **aBillander Project** is an Invoicing and Inventory System for SME's powere
 
 ## ab://ander/Status
 
-> Production ready: two Companies have used aBillander for more than 1 year now.
+> Production ready: three Companies have used aBillander for more than 1 year now.
 
-> More implementations needed (main goal for year 2021).
+> More implementations needed (main goal for year 2022).
 
-> Working on upgrade to Laravel 6.x LTS.
+> Working on upgrade to Laravel 9.x (branch **ninette**).
 
 > Contributors are welcome.
 

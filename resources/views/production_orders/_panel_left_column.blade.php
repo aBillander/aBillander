@@ -136,7 +136,7 @@
           </div>
 @endif
 
-    @if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') && ($document->production_sheet_id > 0) )
+    @if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') && ($document->production_sheet_id > 0) )
 
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">
@@ -173,7 +173,7 @@ background-color: #325d88; border-color: #772953;">
     @endif
 
 
-    @if ( \App\Configuration::isTrue('ENABLE_LOTS') && ( $document->status == 'finished' ) && $document->product->lot_tracking )
+    @if ( AbiConfiguration::isTrue('ENABLE_LOTS') && ( $document->status == 'finished' ) && $document->product->lot_tracking )
 
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">

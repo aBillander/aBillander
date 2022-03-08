@@ -3,7 +3,7 @@
                <div class="panel-body well">
 
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
 
 
 {!! Form::open(array('url' => 'configurationkeys', 'id' => 'key_group_'.intval($tab_index).'1', 'name' => 'key_group_'.intval($tab_index).'1', 'class' => 'form-horizontal')) !!}

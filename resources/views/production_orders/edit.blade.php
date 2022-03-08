@@ -33,7 +33,7 @@
           @else
                   ""
           @endif 
-                data-oworkcenter="{{ $document->work_center_id }}" data-ocategory="{{ $document->schedule_sort_order }}" data-onotes="{{ $document->notes }}" data-olottracking="{{ $document->product->lot_tracking }}" data-oexpirytime="{{ $document->product->expiry_time }}" data-oexpirydate="{{ $document->product->expiry_time }}" data-owarehouse="{{ $document->warehouse_id > 0 ? $document->warehouse_id : \App\Configuration::getInt('DEF_WAREHOUSE') }}" 
+                data-oworkcenter="{{ $document->work_center_id }}" data-ocategory="{{ $document->schedule_sort_order }}" data-onotes="{{ $document->notes }}" data-olottracking="{{ $document->product->lot_tracking }}" data-oexpirytime="{{ $document->product->expiry_time }}" data-oexpirydate="{{ $document->product->expiry_time }}" data-owarehouse="{{ $document->warehouse_id > 0 ? $document->warehouse_id : AbiConfiguration::getInt('DEF_WAREHOUSE') }}" 
                 onClick="return false;">
 
                     <i class="fa {{ $icon_class }}"></i> {{l('Finish Order')}}</a>

@@ -116,7 +116,7 @@
 <script type="text/javascript">
 
     // Initialize	
-    	var countryID = {{ \App\Configuration::get('DEF_COUNTRY') }};
+    	var countryID = {{ AbiConfiguration::get('DEF_COUNTRY') }};
     	var stateID = '0';
 
     	$('select[name="address[country_id]"]').val(countryID);
@@ -166,7 +166,7 @@
     // Select default country
     if ( !( countryID > 0) ) {
     	
-    	countryID = {{ \App\Configuration::get('DEF_COUNTRY') }};
+    	countryID = {{ AbiConfiguration::get('DEF_COUNTRY') }};
 
     	$('select[name="address[country_id]"]').val(countryID);
 

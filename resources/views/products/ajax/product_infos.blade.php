@@ -35,7 +35,7 @@
                 <td>{{ l('Base Price') }}<br />
                     {{ l('Cost Price') }}: {{ $product->as_price('cost_price') }}
                 </td>
-                <td>{{ \App\Context::getContext()->currency->name }}</td>
+                <td>{{ AbiContext::getContext()->currency->name }}</td>
                 <td>{{ $product->as_price('price') }}</td>
                 <td> - </td>
                 <td>{{ $product->as_percentable( \App\Calculator::margin( $product->cost_price, $product->price ) ) }}</td>
@@ -70,7 +70,7 @@
                 <td>{{ $product->as_percentable( \App\Calculator::discount( $product->price, $line_price, $pricelist->currency ) ) }}</td>
                 <td>{{ $product->as_percentable( \App\Calculator::margin( $product->cost_price, $line_price, $pricelist->currency ) ) }}</td>
                 <td>
-                @if ( $pricelist->currency->id == intval(\App\Configuration::get('DEF_CURRENCY')) )
+                @if ( $pricelist->currency->id == intval(AbiConfiguration::get('DEF_CURRENCY')) )
                   {{ $product->as_priceable( $line_price*(1.0+($product->tax->percent/100.0)) ) }}
                 @endif
                 </td>

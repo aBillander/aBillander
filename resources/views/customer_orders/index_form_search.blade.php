@@ -30,7 +30,7 @@
 </div>
 
 
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+@if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') )
             <div class="form-group col-lg-2 col-md-2 col-sm-2">
                 {!! Form::label('manufacturing_status', l('Manufacturing Status')) !!}
                 {!! Form::select('manufacturing_status', ['' => l('All', [], 'layouts')] + $manufacturing_statusList, null, array('class' => 'form-control')) !!}
@@ -38,7 +38,7 @@
 @endif
 
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
             <div class="form-group col-lg-2 col-md-2 col-sm-2">
                 {!! Form::label('is_wooc', l('WooCommerce'), ['class' => 'control-label']) !!}
                 {!! Form::select('is_wooc', ['' => l('All', [], 'layouts')] + $wooc_statusList, null, array('class' => 'form-control')) !!}

@@ -53,7 +53,7 @@
 
 
 
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') )
 
         <div class="row" style="margin-bottom: 15px;">
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
@@ -156,7 +156,7 @@
 
 
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
 {{--
 @php
     $out_of_stockList = [

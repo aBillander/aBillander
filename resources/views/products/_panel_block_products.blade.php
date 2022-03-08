@@ -33,7 +33,7 @@
             <!-- th>{{ l('Cost Price') }}</th -->
             <th>{{ l('Customer Price') }}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
-                        data-content="{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                        data-content="{{ AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') ?
                                     l('Prices are entered inclusive of tax', [], 'appmultilang') :
                                     l('Prices are entered exclusive of tax', [], 'appmultilang') }}">
                     <i class="fa fa-question-circle abi-help"></i>
@@ -106,7 +106,7 @@
                  </a>
                 @endif</td>
             <td class="text-center">@if ($product->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif
-                                    @if( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && $product->webshop_id )
+                                    @if( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && $product->webshop_id )
                                         <i class="fa fa-wordpress text-info" title="{{ l('Publish to web?') }}: {{l('Yes', [], 'layouts')}}"></i>
                                     @endif
             </td>

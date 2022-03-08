@@ -16,7 +16,7 @@
         {!! Form::label('price', l('Value')) !!}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" 
                                     data-content="{{ l('Price is WITHOUT Taxes.') }}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
     <br />
     {!! l('Prices are exclusive of Ecotax.') !!}
 @endif

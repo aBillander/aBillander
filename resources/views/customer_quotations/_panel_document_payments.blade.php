@@ -31,7 +31,7 @@
 		<tr>
 			<td>{{ $payment->id }}</td>
 			<td>{{ $payment->name }}</td>
-			<td @if( !$payment->payment_date AND ( \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $payment->due_date) < \Carbon\Carbon::now() ) ) class="danger" @endif>
+			<td @if( !$payment->payment_date AND ( \Carbon\Carbon::createFromFormat( AbiContext::getContext()->language->date_format_lite, $payment->due_date) < \Carbon\Carbon::now() ) ) class="danger" @endif>
 				{{ $payment->due_date }}</td>
 			<td>{{ $payment->payment_date }}</td>
 			<td>{{ abi_money_amount($payment->amount, $document->currency) }}</td>

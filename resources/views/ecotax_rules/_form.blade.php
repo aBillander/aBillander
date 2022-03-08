@@ -80,7 +80,7 @@
 
         // Select default country
         if ( !($('input[name="name"]').val().length > 0) ) {
-            var def_countryID = {{ \App\Configuration::get('DEF_COUNTRY') }};
+            var def_countryID = {{ AbiConfiguration::get('DEF_COUNTRY') }};
 
             $('select[name="country_id"]').val(def_countryID).change();
         }

@@ -9,7 +9,6 @@ use App\Models\Context;
 use App\Models\Currency;
 use App\Models\Customer;
 use App\Models\MeasureUnit;
-use App\Models\Configuration;
 use App\Models\Product;
 use App\Models\SalesRep;
 use App\Models\Sequence;

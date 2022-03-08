@@ -203,7 +203,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
           @else
                   ""
           @endif 
-                data-oworkcenter="{{ $order->work_center_id }}" data-ocategory="{{ $order->schedule_sort_order }}" data-onotes="{{ $order->notes }}" data-olottracking="{{ $order->product->lot_tracking }}" data-oexpirytime="{{ $order->product->expiry_time }}" data-oexpirydate="{{ $order->product->expiry_time }}" data-owarehouse="{{ $order->warehouse_id > 0 ? $order->warehouse_id : \App\Configuration::getInt('DEF_WAREHOUSE') }}" onClick="return false;">
+                data-oworkcenter="{{ $order->work_center_id }}" data-ocategory="{{ $order->schedule_sort_order }}" data-onotes="{{ $order->notes }}" data-olottracking="{{ $order->product->lot_tracking }}" data-oexpirytime="{{ $order->product->expiry_time }}" data-oexpirydate="{{ $order->product->expiry_time }}" data-owarehouse="{{ $order->warehouse_id > 0 ? $order->warehouse_id : AbiConfiguration::getInt('DEF_WAREHOUSE') }}" onClick="return false;">
           @if ( $order->product->lot_tracking )
                   <i class="fa fa-window-restore"></i>
           @else
@@ -217,7 +217,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
 
 @if ( $order->status != 'finished' )
 {{--
-                <a class="btn btn-sm btn-warning edit-production-order" href="{{ URL::to('productionorders/' . $order->id . '/productionsheetedit') }}" title="{{l('Edit', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oproduct="{{ $order->product_id }}" data-oreference="{{ $order->product_reference }}" data-oname="{{ $order->product_name }}" data-oquantity="{{ $order->planned_quantity }}" data-oworkcenter="{{ $order->work_center_id }}" data-ocategory="{{ $order->schedule_sort_order }}" data-onotes="{{ $order->notes }}" data-owarehouse="{{ $order->warehouse_id > 0 ? $order->warehouse_id : \App\Configuration::getInt('DEF_WAREHOUSE') }}" onClick="return false;"><i class="fa fa-pencil"></i></a>
+                <a class="btn btn-sm btn-warning edit-production-order" href="{{ URL::to('productionorders/' . $order->id . '/productionsheetedit') }}" title="{{l('Edit', [], 'layouts')}}" data-oid="{{ $order->id }}" data-oproduct="{{ $order->product_id }}" data-oreference="{{ $order->product_reference }}" data-oname="{{ $order->product_name }}" data-oquantity="{{ $order->planned_quantity }}" data-oworkcenter="{{ $order->work_center_id }}" data-ocategory="{{ $order->schedule_sort_order }}" data-onotes="{{ $order->notes }}" data-owarehouse="{{ $order->warehouse_id > 0 ? $order->warehouse_id : AbiConfiguration::getInt('DEF_WAREHOUSE') }}" onClick="return false;"><i class="fa fa-pencil"></i></a>
 --}}
 
                        
@@ -407,7 +407,7 @@ $(document).ready(function() {
 //    $('#template_id').val('{ { $customer->getInvoiceTemplateId() }}');
 
     $('#orders_finish_date_form').val('{{ abi_date_short( \Carbon\Carbon::now() ) }}');
-    $('#orders_warehouse_id').val('{{ \App\Configuration::getInt('DEF_WAREHOUSE') }}');
+    $('#orders_warehouse_id').val('{{ AbiConfiguration::getInt('DEF_WAREHOUSE') }}');
 
 });
 
@@ -424,7 +424,7 @@ $(document).ready(function() {
 {{-- Date Picker --}}
 
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
 
@@ -432,7 +432,7 @@ $(document).ready(function() {
     $( "#document_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -440,7 +440,7 @@ $(document).ready(function() {
     $( "#delivery_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -448,7 +448,7 @@ $(document).ready(function() {
     $( "#order_document_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -457,7 +457,7 @@ $(document).ready(function() {
     $( "#finish_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}",
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}",
 
         onSelect: function(dateText) {
           // alert("Selected date: " + dateText + ", Current Selected Value= " + this.value);
@@ -478,7 +478,7 @@ $(document).ready(function() {
     $( "#orders_finish_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -487,7 +487,7 @@ $(document).ready(function() {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -495,7 +495,7 @@ $(document).ready(function() {
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 */  

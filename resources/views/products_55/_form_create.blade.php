@@ -93,11 +93,11 @@
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3">
                      {{ l('Margin calculation method') }}
-                     <br /><strong>{{ \App\Configuration::get('MARGIN_METHOD') }}</strong> : {{ l(\App\Configuration::get('MARGIN_METHOD'), [], 'appmultilang') }}
+                     <br /><strong>{{ AbiConfiguration::get('MARGIN_METHOD') }}</strong> : {{ l(AbiConfiguration::get('MARGIN_METHOD'), [], 'appmultilang') }}
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3">
                      {{ l('Price input method') }}
-                     <br />{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                     <br />{{ AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') ?
                                                         l('Prices are entered inclusive of tax', [], 'appmultilang') :
                                                         l('Prices are entered exclusive of tax', [], 'appmultilang') }}
                   </div>
@@ -192,21 +192,21 @@
 
         // Select default tax
         if ( !($('select[name="tax_id"]').val() > 0) ) {
-          var def_taxID = {{ \App\Configuration::get('DEF_TAX') }};
+          var def_taxID = {{ AbiConfiguration::get('DEF_TAX') }};
 
           $('select[name="tax_id"]').val(def_taxID);
         }
 
         // Select default warehouse
         if ( !($('select[name="warehouse_id"]').val() > 0) ) {
-          var def_warehouseID = {{ \App\Configuration::get('DEF_WAREHOUSE') }};
+          var def_warehouseID = {{ AbiConfiguration::get('DEF_WAREHOUSE') }};
 
           $('select[name="warehouse_id"]').val(def_warehouseID);
         }
 
         // Select default decimals
         if ( {{ intval( !isset($product->quantity_decimal_places) ) }} ) {
-          var def_decimalsID = {{ \App\Configuration::get('DEF_QUANTITY_DECIMALS') }};
+          var def_decimalsID = {{ AbiConfiguration::get('DEF_QUANTITY_DECIMALS') }};
 
           $('select[name="quantity_decimal_places"]').val(def_decimalsID);
         }

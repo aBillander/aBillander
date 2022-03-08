@@ -15,7 +15,7 @@
                <th> </th>
                <th class="text-left">
 
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+                    @if( AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') )
                     {{ l('Total Lines with Tax') }}
                     @else
                     {{ l('Total Lines') }}
@@ -41,7 +41,7 @@
                 </td>
                 <td style="vertical-align: middle;">
 
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+                    @if( AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') )
                     {{ $document->as_price('total_lines_tax_incl') }}
                     @else
                     {{ $document->as_price('total_lines_tax_excl') }}
@@ -84,11 +84,11 @@
 @if ( $document->currency_conversion_rate != 1.0 )
             <tr>
                 <td class="text-center">
-                    <span class="badge" style="background-color: #3a87ad;">{{ \App\Context::getContext()->currency->iso_code }}</span>
+                    <span class="badge" style="background-color: #3a87ad;">{{ AbiContext::getContext()->currency->iso_code }}</span>
                 </td>
                 <td style="vertical-align: middle;">
 <!--
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+                    @if( AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') )
                     {{ $document->as_price('total_lines_tax_incl') }}
                     @else
                     {{ $document->as_price('total_lines_tax_excl') }}

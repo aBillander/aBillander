@@ -24,7 +24,7 @@
                &nbsp; {{ l('Main Data') }}
             </a>
 
-@if (\App\Configuration::isTrue('ENABLE_SALESREP_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_SALESREP_CENTER') )
 
             <a id="b_salesrepuser" href="#salesrepuser" class="list-group-item">
                <i class="fa fa-bolt"></i>
@@ -47,7 +47,7 @@
                 {!! Form::close() !!}
             </div>
 
-@if (\App\Configuration::isTrue('ENABLE_SALESREP_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_SALESREP_CENTER') )
 
           @include('sales_reps._panel_salesrepuser')
 

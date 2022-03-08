@@ -155,8 +155,8 @@ table.border td {
 			<div class="col-md-6">
 				<h1 class="uppercase">
 				<!-- 
-				@ if ($img = \App\Context::getContext()->company->company_logo)
-					<img src="{ { URL::to( \App\Company::imagesPath() . $img ) } }" class="img-responsive thumbnail">
+				@ if ($img = AbiContext::getContext()->company->company_logo)
+					<img src="{ { URL::to( AbiCompany::imagesPath() . $img ) } }" class="img-responsive thumbnail">
 				@ endif 
 				-->
 				<img src="http://localhost/aBillander55/public/uploads/company/1510135936.png" class="img-responsive thumbnail">

@@ -30,7 +30,7 @@
 //                    $('#line_type').val('');
                     $('#line_sort_order').val(next);
                     $('#line_quantity').val(1);
-                    $('#line_measure_unit_id').val( {{ \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS') }} );
+                    $('#line_measure_unit_id').val( {{ AbiConfiguration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS') }} );
                     $('#line_quantity_decimal_places').val(0);
 
                     $('#line_cost_price').val(0.0);
@@ -55,10 +55,10 @@
         				    });
         				    $("#line_tax_id").append(cb);
 
-        				    $('#line_tax_id').val({{ \App\Configuration::get('DEF_TAX') }});
+        				    $('#line_tax_id').val({{ AbiConfiguration::get('DEF_TAX') }});
 
                     // set labels
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+                    @if( AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') )
                         $('#line_is_prices_entered_with_tax').val(1);
                         $(".label_tax_exc").hide();
                         $(".label_tax_inc").show();
@@ -109,18 +109,18 @@
                               product_id : '',
                               combination_id : '',
                               reference : '',
-                              name : '{{ \App\Configuration::get('ABCC_SHIPPING_LABEL') }}',
+                              name : '{{ AbiConfiguration::get('ABCC_SHIPPING_LABEL') }}',
                               quantity : '1',
                               quantity_decimal_places : '0',
                               is_shipping : '1',
                               use_shipping_method : '1',
-                              measure_unit_id : '{{ \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS') }}',
+                              measure_unit_id : '{{ AbiConfiguration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS') }}',
                               cost_price : '0.0',
                               unit_price : '0.0',
                               unit_customer_price : '0.0',
                               unit_customer_final_price : '0.0',
-                              prices_entered_with_tax : 0,  // Shipping Cost Rules are tax excluded!!! '{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') }}',
-                              tax_id : '{{ \App\Configuration::get('DEF_TAX') }}',
+                              prices_entered_with_tax : 0,  // Shipping Cost Rules are tax excluded!!! '{{ AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') }}',
+                              tax_id : '{{ AbiConfiguration::get('DEF_TAX') }}',
 //                              tax_percent : $('#line_tax_percent').val(),
                               sales_equalization : '{{ $document->customer->sales_equalization }}',
                               currency_id : $("#currency_id").val(),

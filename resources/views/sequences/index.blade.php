@@ -47,7 +47,7 @@
 					<td>@if (  is_null($sequence->last_date_used))
 							-
 						@else
-							{{ abi_date_short( $sequence->last_date_used, \App\Context::getContext()->language->date_format_lite ) }}
+							{{ abi_date_short( $sequence->last_date_used, AbiContext::getContext()->language->date_format_lite ) }}
 						@endif
 					</td>
 					<td class="text-center">

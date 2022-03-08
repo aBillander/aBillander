@@ -36,14 +36,14 @@
             <td>{{ $category->name }}</td>
 
       <td class="text-right">
-                @if (  \App\Configuration::isFalse('ALLOW_PRODUCT_SUBCATEGORIES') )
+                @if (  AbiConfiguration::isFalse('ALLOW_PRODUCT_SUBCATEGORIES') )
                 <a class="btn btn-sm btn-success" href="{{ URL::to('categories/' . $category->parent_id . '/subcategories/' . $category->id . '/edit') }}" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
                 @endif
 
       </td>
     </tr>
 
-    @if ( \App\Configuration::isTrue('ALLOW_PRODUCT_SUBCATEGORIES') && $category->children->count())
+    @if ( AbiConfiguration::isTrue('ALLOW_PRODUCT_SUBCATEGORIES') && $category->children->count())
     @foreach ($category->children as $child)
 
     <tr class="child xwarning {{ $child->id == $category_id ? 'warning' : '' }}">

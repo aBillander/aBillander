@@ -5,7 +5,7 @@
 	    <h4 class="modal-title">{{ l('Show Special Prices') }} :: <label class="label label-default">{{ optional($product)->reference }}</label> {{ optional($product)->name }} - <label class="label alert-success">{{ l('Regular Price (per unit)') }}: {{ rtrim($customer_price->getPrice(), '0') }}{{ $currency->sign }}</label>
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="bottom" data-html="true" data-container="body" 
                           data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
     <br />
     {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
 @endif

@@ -84,7 +84,7 @@
     {!! Form::text('document_reference', null, array('class' => 'form-control')) !!}
 </div>
 
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') )
 
 <div class="form-group col-lg-1 col-md-1 col-sm-1">
     {{-- Poor ma offset --}}
@@ -128,7 +128,7 @@
             </th>
             <th class="text-right">{{l('Stock after')}}</th>
 
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') )
       <th>{{l('Lot')}}</th>
 @endif
 
@@ -169,7 +169,7 @@
             <td class="text-right">{{ $stockmovement->as_quantityable( $stockmovement->quantity_after_movement - $stockmovement->quantity_before_movement ) }}</td>
             <td class="text-right">{{ $stockmovement->as_quantity( 'quantity_after_movement' ) }}</td>
 
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') )
       @if ($stockmovement->lot)
         <td>
           <!-- a href="{{ route( 'stockmovements.index', ['search_status' => 1, 'lot_id' => $stockmovement->lot->id, 'lot_reference' => $stockmovement->lot->reference] ) }}" xtitle="{{ l('Stock Movements') }}">{{ optional($stockmovement->lot)->reference ?? '-'}}</a --> 
@@ -258,14 +258,14 @@ $(document).ready(function() {
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(function() {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -273,7 +273,7 @@ $(document).ready(function() {
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 </script>

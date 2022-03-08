@@ -34,7 +34,7 @@
 //                    $('#line_type').val('');
                     $('#line_sort_order').val(next);
                     $('#line_quantity').val(1);
-                    $('#line_measure_unit_id').val( {{ \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS') }} );
+                    $('#line_measure_unit_id').val( {{ AbiConfiguration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS') }} );
                     $('#line_quantity_decimal_places').val(0);
 
                     $('#line_cost_price').val(0.0);
@@ -59,10 +59,10 @@
         				    });
         				    $("#line_tax_id").append(cb);
 
-        				    $('#line_tax_id').val({{ \App\Configuration::get('DEF_TAX') }});
+        				    $('#line_tax_id').val({{ AbiConfiguration::get('DEF_TAX') }});
 
                     // set labels
-                    @if( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+                    @if( AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') )
                         $('#line_is_prices_entered_with_tax').val(1);
                         $(".label_tax_exc").hide();
                         $(".label_tax_inc").show();

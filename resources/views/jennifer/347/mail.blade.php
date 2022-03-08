@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ \App\Context::getContext()->language->iso_code }}">
+<html lang="{{ AbiContext::getContext()->language->iso_code }}">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <style type="text/css" nonce="">

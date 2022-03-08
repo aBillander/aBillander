@@ -175,7 +175,7 @@
    <br><br>
    
    <b>{{ l('Margin') }}</b>: 
-   @if ( \App\Configuration::get('MARGIN_METHOD') == 'CST' )  
+   @if ( AbiConfiguration::get('MARGIN_METHOD') == 'CST' )  
       {{ l('Margin calculation is based on Cost Price', [], 'layouts') }}.
    @else
       {{ l('Margin calculation is based on Sales Price', [], 'layouts') }}.

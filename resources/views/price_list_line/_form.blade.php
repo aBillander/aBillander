@@ -32,7 +32,7 @@
           <div class="form-group col-lg-4 col-md-4 col-sm-4">
              {!! Form::label('margin', l('Margin (%)')) !!}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ \App\Configuration::get('MARGIN_METHOD') == 'CST' ?
+                                    data-content="{{ AbiConfiguration::get('MARGIN_METHOD') == 'CST' ?
                                 l('Margin calculation is based on Cost Price', [], 'layouts') :
                                 l('Margin calculation is based on Sales Price', [], 'layouts') }}">
                         <i class="fa fa-question-circle abi-help"></i>

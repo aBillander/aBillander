@@ -54,19 +54,19 @@
 
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('outstanding_amount_allowed') ? 'has-error' : '' }}">
                      {{ l('Outstanding Amount Allowed') }}
-                     {!! Form::text('outstanding_amount_allowed', $customer->as_money('outstanding_amount_allowed', \App\Context::getContext()->language->currency), array('class' => 'form-control', 'id' => 'outstanding_amount_allowed', 'disabled' => "disabled")) !!}
+                     {!! Form::text('outstanding_amount_allowed', $customer->as_money('outstanding_amount_allowed', AbiContext::getContext()->language->currency), array('class' => 'form-control', 'id' => 'outstanding_amount_allowed', 'disabled' => "disabled")) !!}
                     {!! $errors->first('outstanding_amount_allowed', '<span class="help-block">:message</span>') !!}
                   </div>
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('outstanding_amount') ? 'has-error' : '' }}">
                      {{ l('Outstanding Amount') }}
-                     {!! Form::text('outstanding_amount', $customer->as_money('outstanding_amount', \App\Context::getContext()->language->currency), array('class' => 'form-control', 'id' => 'outstanding_amount', 'disabled' => "disabled")) !!}
+                     {!! Form::text('outstanding_amount', $customer->as_money('outstanding_amount', AbiContext::getContext()->language->currency), array('class' => 'form-control', 'id' => 'outstanding_amount', 'disabled' => "disabled")) !!}
                     {!! $errors->first('outstanding_amount', '<span class="help-block">:message</span>') !!}
                   </div>
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('unresolved_amount') ? 'has-error' : '' }}">
                      {{ l('Unresolved Amount') }}
-                     {!! Form::text('unresolved_amount', $customer->as_money('unresolved_amount', \App\Context::getContext()->language->currency), array('class' => 'form-control', 'id' => 'unresolved_amount', 'disabled' => "disabled")) !!}
+                     {!! Form::text('unresolved_amount', $customer->as_money('unresolved_amount', AbiContext::getContext()->language->currency), array('class' => 'form-control', 'id' => 'unresolved_amount', 'disabled' => "disabled")) !!}
                     {!! $errors->first('unresolved_amount', '<span class="help-block">:message</span>') !!}
                   </div>
         </div>

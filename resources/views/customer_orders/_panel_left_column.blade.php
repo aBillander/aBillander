@@ -1,4 +1,4 @@
-    @if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && ($document->webshop_id > 0) )
+    @if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && ($document->webshop_id > 0) )
 
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">
@@ -308,7 +308,7 @@ color: #ffffff; background-color: #772953; border-color: #772953;">
           </div>
 @endif
 
-    @if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') && ($document->production_sheet_id > 0) )
+    @if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') && ($document->production_sheet_id > 0) )
 
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">

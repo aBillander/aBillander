@@ -12,7 +12,7 @@
 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
 <input type="hidden" name="product_id" value="{{ $product->id }}">
-<input type="hidden" name="measure_unit_id" value="{{ intval( \App\Configuration::get('DEF_MEASURE_UNIT_FOR_BOMS') ) }}">
+<input type="hidden" name="measure_unit_id" value="{{ intval( AbiConfiguration::get('DEF_MEASURE_UNIT_FOR_BOMS') ) }}">
 
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

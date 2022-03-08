@@ -67,7 +67,7 @@
             <td>{{ $line->as_quantity('quantity') }}</td>
             <td class="button-pad">
 
-@if( \App\Configuration::isTrue('ENABLE_LOTS') && $product->lot_tracking )
+@if( AbiConfiguration::isTrue('ENABLE_LOTS') && $product->lot_tracking )
 
                 <a class="btn btn-sm btn-grey show-stock-availability" data-id="{ {$document->id} }" title="{{l('Allocate Lots')}}" onclick="alert('You naughty, naughty!'); return false;"><i class="fa fa-window-restore"></i></a>
 

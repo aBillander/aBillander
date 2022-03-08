@@ -94,7 +94,7 @@
                 {{ $line->name }}
 
 @if ( $document->status == 'finished' )
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )
 
     @include('production_orders._chunck_line_lots')
 
@@ -117,7 +117,7 @@
                       @if ( 0 && $document->editable )
                     <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadcustomerdocumentlines();"><i class="fa fa-pencil"></i></a -->
 
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )
 @php
   $color = $line->pending > 0 ? 'alert-danger' : 'btn-grey';
   $msg   = $line->pending > 0 ? ' ('.$line->measureunit->quantityable( $line->pending ).')' : '';

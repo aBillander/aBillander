@@ -144,7 +144,7 @@
           </div>
 @endif
 
-    @if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') && ($document->production_sheet_id > 0) )
+    @if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') && ($document->production_sheet_id > 0) )
 
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">

@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Models\Traits\BillableIntrospectorTrait;
+use App\Traits\BillableIntrospectorTrait;
 
 use App\Models\Configuration;
 

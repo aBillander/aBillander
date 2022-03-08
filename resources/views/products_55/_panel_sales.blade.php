@@ -22,7 +22,7 @@
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('margin') ? 'has-error' : '' }}">
                      {{ l('Margin (%)') }} 
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ \App\Configuration::get('MARGIN_METHOD') == 'CST' ?
+                                    data-content="{{ AbiConfiguration::get('MARGIN_METHOD') == 'CST' ?
                                         l('Margin calculation is based on Cost Price', [], 'layouts') :
                                         l('Margin calculation is based on Sales Price', [], 'layouts') }}">
                                 <i class="fa fa-question-circle abi-help"></i>
@@ -53,7 +53,7 @@
 
         <div class="row">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                      {{ l('Price input method') }} : {{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                      {{ l('Price input method') }} : {{ AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') ?
                                                         l('Prices are entered inclusive of tax', [], 'appmultilang') :
                                                         l('Prices are entered exclusive of tax', [], 'appmultilang') }}
                   </div>
@@ -112,7 +112,7 @@
             <tr style="color: #3a87ad; background-color: #d9edf7;">
                 <td> </td>
                 <td>{{ l('Base Price') }}</td>
-                <td>{{ \App\Context::getContext()->currency->name }}</td>
+                <td>{{ AbiContext::getContext()->currency->name }}</td>
                 <td>{{ $product->as_price('price') }}</td>
                 <td> - </td>
                 <td>{{ $product->as_percentable( \App\Calculator::margin( $product->cost_price, $product->price ) ) }}</td>
@@ -146,7 +146,7 @@
                 <td>{{ $product->as_percentable( \App\Calculator::discount( $product->price, $line_price, $pricelist->currency ) ) }}</td>
                 <td>{{ $product->as_percentable( \App\Calculator::margin( $product->cost_price, $line_price, $pricelist->currency ) ) }}</td>
                 <td>
-                @if ( $pricelist->currency->id == intval(\App\Configuration::get('DEF_CURRENCY')) )
+                @if ( $pricelist->currency->id == intval(AbiConfiguration::get('DEF_CURRENCY')) )
                   {{ $product->as_priceable( $line_price*(1.0+($product->tax->percent/100.0)) ) }}
                 @endif
                 </td>

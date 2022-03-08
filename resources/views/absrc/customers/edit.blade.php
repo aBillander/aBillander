@@ -100,7 +100,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
             </a -->
 --}}
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
             <a id="b_customerusers" href="#customeruser" class="list-group-item">
                <i class="fa fa-bolt"></i>
                &nbsp; {{ l('ABCC Access') }}
@@ -135,7 +135,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
 --}}
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
 
           @include('absrc.customers._panel_customer_users')
 

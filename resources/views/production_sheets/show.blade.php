@@ -48,7 +48,7 @@
 <div class="page-header">
     <div class="pull-right" xstyle="padding-top: 4px;">
 
-@if( \App\Configuration::isTrue('ENABLE_LOTS') && ($sheet->nbr_customerorders() > 0) )
+@if( AbiConfiguration::isTrue('ENABLE_LOTS') && ($sheet->nbr_customerorders() > 0) )
         <a href="{{ URL::to('productionsheets/'.$sheet->id.'/assign/lots') }}" class="btn btn-grey" onclick="loadingpage();"><i class="fa fa-window-restore"></i> {{ l('Assign Lots to Orders') }}</a>
 @endif
 
@@ -250,7 +250,7 @@
       </div>
    </div>
 
-@for ($i = 0; $i < \App\Configuration::get('ASSEMBLY_GROUPS'); $i++)
+@for ($i = 0; $i < AbiConfiguration::get('ASSEMBLY_GROUPS'); $i++)
    <div class="row">
       <div class="col-lg-1 col-md-1 col-sm-1">
          <div class="list-group">
@@ -264,9 +264,9 @@
       <div class="col-lg-10 col-md-10 col-sm-10">
             <div class="panel panel-success" id="panel_production_orders_assemblies">
                <div class="panel-heading">
-                  <h3 class="panel-title"><i class="fa fa-cube"></i> &nbsp; {!! l('Production Orders &#58&#58 Assemblies') !!} - <strong>{{ \App\Configuration::get('ASSEMBLY_GROUP_'.$i.'_TAG') }}</strong></h3>
+                  <h3 class="panel-title"><i class="fa fa-cube"></i> &nbsp; {!! l('Production Orders &#58&#58 Assemblies') !!} - <strong>{{ AbiConfiguration::get('ASSEMBLY_GROUP_'.$i.'_TAG') }}</strong></h3>
                </div>
-                    @include('production_sheets._panel_production_orders_assemblies', ['schedule_sort_order' => \App\Configuration::get('ASSEMBLY_GROUP_'.$i)])
+                    @include('production_sheets._panel_production_orders_assemblies', ['schedule_sort_order' => AbiConfiguration::get('ASSEMBLY_GROUP_'.$i)])
             </div>
       </div>
    </div>

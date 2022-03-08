@@ -68,7 +68,7 @@
 @endif
 --}}
 
-@if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
+@if ( AbiConfiguration::isTrue('ENABLE_CRAZY_IVAN') )
                       <li class="divider"></li>
                       <li><a href="{{ route($model_path.'.change.customer', [$document->id]) }}"><i class="fa fa-exclamation-triangle text-danger"></i> {{l('Change Customer', 'customerdocuments')}}</a></li>
 @endif

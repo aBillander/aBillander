@@ -6,12 +6,12 @@
 @section('content')
 
 
-@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_FSOL_CONNECTOR') )
 
 <div class="alert alert-block alert-info" style="display:none">
     <button type="button" class="close" data-dismiss="alert">×</button>
     <strong>Info: </strong>
-            {{ \App\Configuration::get('FSOL_CBDCFG') }} 
+            {{ AbiConfiguration::get('FSOL_CBDCFG') }} 
 </div>
 
 @if ( $anyClient > 0 )
@@ -67,7 +67,7 @@
         <a href="{{ route('chart.customerorders.monthly') }}" class="btn btn-sm btn-warning" 
                 title="{{l('Reports', [], 'layouts')}}"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'layouts')}}</a>
 
-@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_FSOL_CONNECTOR') )
         <a class="btn btn-sm btn-grey" xstyle="margin-right: 152px" href="{{ route('fsxconfigurationkeys.index') }}" title="{{l('Configuration', [], 'layouts')}} {{l('Enlace FactuSOL', 'layouts')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> {{l('Configuration', [], 'layouts')}}</a>
 @endif
 
@@ -221,7 +221,7 @@
                 @endif
 @endif
 
-@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_FSOL_CONNECTOR') )
                 @if ($document->export_date)
                 <a class="btn btn-sm btn-default" style="display:none;" href="javascript:void(0);" title="{{$document->export_date}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i></a>
                 @else
@@ -315,7 +315,7 @@ $(document).ready(function () {
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(document).ready(function() {
@@ -344,14 +344,14 @@ $(document).ready(function () {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
 
 
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -378,7 +378,7 @@ $(document).ready(function () {
 {{-- Date Picker --}}
 
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
 
@@ -386,7 +386,7 @@ $(document).ready(function () {
     $( "#due_date" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
   

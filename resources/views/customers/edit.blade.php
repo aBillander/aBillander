@@ -109,7 +109,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                &nbsp; {{ l('Statistics') }}
             </a -->
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
 
             <a id="b_customerusers" href="#customerusers" class="list-group-item">
                <i class="fa fa-bolt"></i>
@@ -118,7 +118,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
 @endif
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
 
             <a id="b_webshop" href="#webshop" class="list-group-item">
                <!-- i class="fa fa-cloud"></i -->
@@ -155,14 +155,14 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
           @include('customers._panel_statistics')
 --}}
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
 
           @include('customers._panel_customer_users')
 
 @endif
 
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
 
           @include('customers._panel_webshop')
 

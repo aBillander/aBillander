@@ -49,7 +49,7 @@ if ( isset( $downpayment ) )
 }
 else 
 {
-    $form_currency_id              = \App\Configuration::get('DEF_CURRENCY');
+    $form_currency_id              = AbiConfiguration::get('DEF_CURRENCY');
     $form_currency_conversion_rate = 1.0;
     $form_amount                   = '';
 }
@@ -69,7 +69,7 @@ else
          </div>
 
 
-    @if( 1 || $form_currency_id != \App\Configuration::get('DEF_CURRENCY') )
+    @if( 1 || $form_currency_id != AbiConfiguration::get('DEF_CURRENCY') )
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_conversion_rate') ? 'has-error' : '' }}">
             {!! Form::label('currency_conversion_rate', l('Conversion Rate'), ['class' => 'control-label']) !!}
             {!! Form::text('currency_conversion_rate', old('currency_conversion_rate', $form_currency_conversion_rate), array('class' => 'form-control', 'id' => 'currency_conversion_rate', 'onclick' => 'this.select()')) !!}
@@ -152,7 +152,7 @@ else
 {{-- Date Picker :: http://api.jqueryui.com/datepicker/ --}}
 
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script type="text/javascript">
 
@@ -162,7 +162,7 @@ else
     $( "#due_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
 
 

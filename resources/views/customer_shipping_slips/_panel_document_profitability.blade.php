@@ -11,7 +11,7 @@
                       
                       <span class="label alert-warning" style="font-size: 55%;">
 
-                    {{ \App\Configuration::get('MARGIN_METHOD') == 'CST' ?
+                    {{ AbiConfiguration::get('MARGIN_METHOD') == 'CST' ?
                           l('Margin calculation is based on Cost Price', [], 'layouts') :
                           l('Margin calculation is based on Sales Price', [], 'layouts') }}
 
@@ -19,7 +19,7 @@
                       &nbsp; 
                       <span class="label alert-warning" style="font-size: 55%;">
 
-                    {{ \App\Configuration::get('MARGIN_PRICE') == 'AVERAGE' ?
+                    {{ AbiConfiguration::get('MARGIN_PRICE') == 'AVERAGE' ?
                           l('Cost for margin calculation is Product Average Cost Price', [], 'layouts') :
                           l('Cost for margin calculation is Product Cost Price', [], 'layouts') }}
 
@@ -105,7 +105,7 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                 <td>
                 {{ $line->name }}</td>
 
-@if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') && ($line->line_type == 'product') && $line->product->ecotax )
+@if ( AbiConfiguration::isTrue('ENABLE_ECOTAXES') && ($line->line_type == 'product') && $line->product->ecotax )
 
                 <td class="text-right button-pad" title="{{ l('Ecotax', 'customerdocuments') }}: {{ $line->as_priceable( $line->ecotax_amount ) }} {{ $document->currency->sign }}">
 
@@ -178,7 +178,7 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                   <h3>
                       <span style="color: #dd4814;">{{l('Cost-Benefit Analysis')}}</span> 
 
-                    @if ( \App\Configuration::get('INCLUDE_SHIPPING_COST_IN_PROFIT') > 0 )
+                    @if ( AbiConfiguration::get('INCLUDE_SHIPPING_COST_IN_PROFIT') > 0 )
                       <span class="label alert-danger" style="font-size: 55%;">{{ l('Shipping Cost included', [], 'layouts') }}</span>
                     @else
                       <span class="label alert-warning" style="font-size: 55%;">{{ l('Shipping Cost excluded', [], 'layouts') }}</span>
@@ -288,8 +288,8 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                     <ul>
                       <li>{{ l('Product Lines.', 'layouts') }}</li>
                       <li>{{ l('Discount Lines.', 'layouts') }}</li>
-                      <li>{{ l('Sevice Lines.', 'layouts') }} {{ l('Depending on Configurations (:yn).', ['yn' => \App\Configuration::isTrue('INCLUDE_SERVICE_LINES_IN_PROFIT') ? l('Yes', 'layouts') : l('No', 'layouts')], 'layouts') }}</li>
-                      <li>{{ l('Shipping Lines.', 'layouts') }} {{ l('Depending on Configurations (:yn).', ['yn' => \App\Configuration::isTrue('INCLUDE_SHIPPING_COST_IN_PROFIT') ? l('Yes', 'layouts') : l('No', 'layouts')], 'layouts') }}</li>
+                      <li>{{ l('Sevice Lines.', 'layouts') }} {{ l('Depending on Configurations (:yn).', ['yn' => AbiConfiguration::isTrue('INCLUDE_SERVICE_LINES_IN_PROFIT') ? l('Yes', 'layouts') : l('No', 'layouts')], 'layouts') }}</li>
+                      <li>{{ l('Shipping Lines.', 'layouts') }} {{ l('Depending on Configurations (:yn).', ['yn' => AbiConfiguration::isTrue('INCLUDE_SHIPPING_COST_IN_PROFIT') ? l('Yes', 'layouts') : l('No', 'layouts')], 'layouts') }}</li>
                     </ul>
 
                <br>

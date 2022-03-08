@@ -27,7 +27,7 @@
                <div class="panel-body well">
 
 
-@if (\App\Configuration::get('SKU_AUTOGENERATE') )
+@if (AbiConfiguration::get('SKU_AUTOGENERATE') )
 
 
 {!! Form::open(array('url' => 'configurationkeys', 'id' => 'key_group_'.intval($tab_index), 'name' => 'key_group_'.intval($tab_index), 'class' => 'form-horizontal')) !!}

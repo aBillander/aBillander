@@ -10,7 +10,7 @@
         @if ( $parentId>0 )
         <a href="{{ URL::to('categories') }}" class="btn btn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Product Categories') }}</a>
         @else
-            @if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $categories->count() )
+            @if ( AbiConfiguration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $categories->count() )
                 <a xhref="{{ URL::to('categories') }}" class="btn btn-sm btn-success toggle-children"><i class="fa fa-sitemap"></i> {{ l('Expand / Collapse') }}</a>
             @endif
         @endif
@@ -66,7 +66,7 @@
 
             <td class="text-right">
                 @if (  is_null($category->deleted_at) )
-                @if (  \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $parentId==0 )
+                @if (  AbiConfiguration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $parentId==0 )
                 <a class="btn btn-sm btn-blue" href="{{ URL::to('categories/' . $category->id . '/subcategories') }}" title="{{l('Show Sub-Categories')}}"><i class="fa fa-folder-open-o"></i></a>
                 @endif
                 <a class="btn btn-sm btn-warning" href="{{ URL::to('categories/' . $parentId . '/subcategories/' . $category->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a>
@@ -83,7 +83,7 @@
             </td>
         </tr>
 
-@if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $category->parent_id==0 )
+@if ( AbiConfiguration::get('ALLOW_PRODUCT_SUBCATEGORIES') && $category->parent_id==0 )
         @foreach ($category->children as $child)
 
         <tr class="child warning" style="display: none;">

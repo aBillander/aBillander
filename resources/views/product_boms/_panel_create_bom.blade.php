@@ -38,7 +38,7 @@
 
                  <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('measure_unit_id') ? 'has-error' : '' }}">
                     {{ l('Measure Unit') }}
-                    {!! Form::select('measure_unit_id', $measure_unitList, old('measure_unit_id', \App\Configuration::getInt('DEF_MEASURE_UNIT_FOR_PRODUCTS')), array('class' => 'form-control')) !!}
+                    {!! Form::select('measure_unit_id', $measure_unitList, old('measure_unit_id', AbiConfiguration::getInt('DEF_MEASURE_UNIT_FOR_PRODUCTS')), array('class' => 'form-control')) !!}
                     {!! $errors->first('measure_unit_id', '<span class="help-block">:message</span>') !!}
                  </div>
 

@@ -12,28 +12,28 @@
             
             <!-- Branding Image -->
             <a class="navbar-brand" href="{{ url('/absrc') }}">
-                @if ( \App\Configuration::isEmpty('ABSRC_HEADER_TITLE') )
-                    <?php $img = \App\Context::getContext()->company->company_logo ?? ''; ?>
+                @if ( AbiConfiguration::isEmpty('ABSRC_HEADER_TITLE') )
+                    <?php $img = AbiContext::getContext()->company->company_logo ?? ''; ?>
                     @if ( $img )
 
-                        <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
+                        <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( AbiCompany::imagesPath() . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
 
                         <!-- img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ asset('assets/theme/images/company_logo.png') }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;" -->
                     @else
                         <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>
                     @endif
                 @else
-                    {!! \App\Configuration::get('ABSRC_HEADER_TITLE') !!}
+                    {!! AbiConfiguration::get('ABSRC_HEADER_TITLE') !!}
                     {{-- <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span> --}}
                 @endif
             </a>
 {{--
                 <a href="{{ URL::to('/absrc') }}" class="navbar-brand">
 
-                    @if ( \App\Configuration::isEmpty('ABSRC_HEADER_TITLE') )
+                    @if ( AbiConfiguration::isEmpty('ABSRC_HEADER_TITLE') )
                         <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> Sales Representative Center</span>
                     @else
-                        {!! \App\Configuration::get('ABSRC_HEADER_TITLE') !!}
+                        {!! AbiConfiguration::get('ABSRC_HEADER_TITLE') !!}
                     @endif
 
                 </a>
@@ -184,7 +184,7 @@
                     @if( isset($languages) )
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    <i class="fa fa-language"></i> {{ \App\Context::getContext()->language->name }} <span class="caret"></span>
+                                    <i class="fa fa-language"></i> {{ AbiContext::getContext()->language->name }} <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
                                 @foreach ($languages as $language)

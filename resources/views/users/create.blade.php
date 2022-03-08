@@ -31,7 +31,7 @@
     <script type="text/javascript">
 
         // Set default language
-        $('select[name="language_id"]').val( {{ intval(\App\Configuration::get('DEF_LANGUAGE')) }} );
+        $('select[name="language_id"]').val( {{ intval(AbiConfiguration::get('DEF_LANGUAGE')) }} );
 
     </script>
 

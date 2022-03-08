@@ -74,7 +74,7 @@
     {!! l('Amount must be greater than 0 and not greater than :value', ['value' => $payment->amount]) !!}
 </div>
 
-<div class="row" @if( $payment->currency_id == \App\Context::getContext()->currency->id ) style="display: none;" @endif>
+<div class="row" @if( $payment->currency_id == AbiContext::getContext()->currency->id ) style="display: none;" @endif>
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {{ l('Currency') }}
     {!! Form::text('currency[name]', null, array('class' => 'form-control', 'onfocus' => 'this.blur()')) !!}

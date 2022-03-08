@@ -193,7 +193,7 @@
             $('#reference').val('');
             $('#product_id').val('');
             $('#rule_price').val('');
-            $('#rule_currency_id').val("{{ \App\Configuration::getInt('DEF_CURRENCY')}}");
+            $('#rule_currency_id').val("{{ AbiConfiguration::getInt('DEF_CURRENCY')}}");
             $('#from_quantity').val('1');
             $('#date_from_form').val('');
             $('#date_to_form').val('');
@@ -238,7 +238,7 @@
 
              // alert('OK');
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
 
     CKEDITOR.replace( 'woo_description' );
     CKEDITOR.replace( 'woo_short_description' );

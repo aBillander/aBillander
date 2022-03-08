@@ -34,7 +34,7 @@
       <th colspan="2">{{ l('Product Name') }}</th>
       <th>{{ l('Manufacturer') }}</th>
       <th>
-@if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
+@if( AbiConfiguration::get( 'ABCC_STOCK_SHOW' ) != 'none')
       {{ l('Stock') }}
 @endif
       </th>
@@ -86,15 +86,15 @@
       </td>
 
       <td>{{ $product->name }}
-          @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $product->ecotax )
+          @if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') && $product->ecotax )
               <br />
               {{ l('Ecotax: ') }} {{ $product->ecotax->name }} ({{ abi_money( $product->ecotax->amount ) }})
           @endif
       </td>
       <td>{{ optional($product->manufacturer)->name }} {{-- optional($product->category)->name --}}</td>
       <td>
-@if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
-            @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) == 'amount')
+@if( AbiConfiguration::get( 'ABCC_STOCK_SHOW' ) != 'none')
+            @if( AbiConfiguration::get( 'ABCC_STOCK_SHOW' ) == 'amount')
               <div class="progress progress-striped">
                 <div class="progress-bar progress-bar-{{ $product->stock_badge }}" title="{{ l('stock.badge.'.$product->stock_badge, 'abcc/layouts') }}" style="width: 100%">
                         <span class="badge" style="color: #333333; background-color: #ffffff;">{{ $product->as_quantity('quantity_onhand') }}</span>
@@ -148,7 +148,7 @@ https://stackoverflow.com/questions/25424163/bootstrap-button-dropdown-with-cust
 https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-group-with-an-html-form
 --}}
 
-@if (\App\Configuration::isFalse('ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY') || $product->quantity_onhand > 0)
+@if (AbiConfiguration::isFalse('ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY') || $product->quantity_onhand > 0)
             <div xclass="form-group">
               <div class="input-group" style="width: 72px;">
 

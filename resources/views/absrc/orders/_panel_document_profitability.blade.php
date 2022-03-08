@@ -90,7 +90,7 @@
                   <h3>
                       <span style="color: #dd4814;">{{l('Cost-Benefit Analysis')}}</span> 
 
-                    @if ( \App\Configuration::get('INCLUDE_SHIPPING_COST_IN_PROFIT') > 0 )
+                    @if ( AbiConfiguration::get('INCLUDE_SHIPPING_COST_IN_PROFIT') > 0 )
                       <span class="label label-danger" style="font-size: 55%;">{{ l('Shipping Cost included', [], 'layouts') }}</span>
                     @else
                       <span class="label label-warning" style="font-size: 55%;">{{ l('Shipping Cost excluded', [], 'layouts') }}</span>
@@ -153,7 +153,7 @@
                <br>
 
                <b>{{l('Margin')}}</b>: 
-                    {{ \App\Configuration::get('MARGIN_METHOD') == 'CST' ?
+                    {{ AbiConfiguration::get('MARGIN_METHOD') == 'CST' ?
                           l('Margin calculation is based on Cost Price', [], 'layouts') :
                           l('Margin calculation is based on Sales Price', [], 'layouts') }}
                <br>

@@ -15,7 +15,7 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') && 0)
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') && 0)
                 
         <a class="btn btn-sm btn-navy invite-customer" data-html="false" data-toggle="modal" 
                 href="{{ route('customers.invite') }}" 

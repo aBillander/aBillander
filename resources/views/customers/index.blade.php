@@ -21,7 +21,7 @@
         <a href="{{ route('customers.export') }}" class="btn btn-sm btn-grey" 
                 title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
                 
         <a class="btn btn-sm btn-navy invite-customer" data-html="false" data-toggle="modal" 
                 href="{{ route('customers.invite') }}" 

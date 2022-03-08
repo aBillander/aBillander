@@ -24,7 +24,7 @@
     </div>
     <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('price') ? 'has-error' : '' }}">
         {!! Form::label('price', l('Price')) !!}
-             <span class="badge" style="background-color: #3a87ad;" title="{{ \App\Context::getContext()->currency->name }}">{{ \App\Context::getContext()->currency->iso_code }}</span>
+             <span class="badge" style="background-color: #3a87ad;" title="{{ AbiContext::getContext()->currency->name }}">{{ AbiContext::getContext()->currency->iso_code }}</span>
         {!! Form::text('price', null, array('class' => 'form-control')) !!}
         {!! $errors->first('price', '<span class="help-block">:message</span>') !!}
     </div>

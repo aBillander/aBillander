@@ -30,7 +30,7 @@
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('warehouse_id', l('Warehouse')) !!}
-        {!! Form::select('warehouse_id', $warehouseList, \App\Configuration::get('DEF_WAREHOUSE'), array('class' => 'form-control')) !!}
+        {!! Form::select('warehouse_id', $warehouseList, AbiConfiguration::get('DEF_WAREHOUSE'), array('class' => 'form-control')) !!}
     </div>
     <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('movement_type_id', l('Movement type')) !!}
@@ -140,14 +140,14 @@
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(function() {
     $( "#date" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 </script>

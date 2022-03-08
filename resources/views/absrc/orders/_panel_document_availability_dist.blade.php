@@ -142,13 +142,13 @@
            <div>
              <div class="radio-inline">
                <label>
-                 {!! Form::radio('backorder', '1', \App\Configuration::isTrue('ALLOW_CUSTOMER_BACKORDERS'), ['id' => 'backorder_on']) !!}
+                 {!! Form::radio('backorder', '1', AbiConfiguration::isTrue('ALLOW_CUSTOMER_BACKORDERS'), ['id' => 'backorder_on']) !!}
                  {!! l('Yes', [], 'layouts') !!}
                </label>
              </div>
              <div class="radio-inline">
                <label>
-                 {!! Form::radio('backorder', '0', \App\Configuration::isFalse('ALLOW_CUSTOMER_BACKORDERS'), ['id' => 'backorder_off']) !!}
+                 {!! Form::radio('backorder', '0', AbiConfiguration::isFalse('ALLOW_CUSTOMER_BACKORDERS'), ['id' => 'backorder_off']) !!}
                  {!! l('No', [], 'layouts') !!}
                </label>
              </div>

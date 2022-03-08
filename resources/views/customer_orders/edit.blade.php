@@ -64,14 +64,14 @@
                       <li class="divider"></li>
                       <li><a href="{{ route('customerordertemplates.create.afterorder', [$document->id]) }}"><i class="fa fa-magic text-info"></i> {{l('Order to Template', 'customerordertemplates')}}</a></li>
 
-@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_FSOL_CONNECTOR') )
 
                       <li class="divider"></li>
                       <li><a xclass="btn btn-sm btn-grey" href="{{ URL::route('fsxorders.export', [$document->id] ) }}" title="{{l('Exportar a FactuSOL')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> {{l('Exportar a FactuSOL')}}</a></li>
 
 @endif
 
-@if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
+@if ( AbiConfiguration::isTrue('ENABLE_CRAZY_IVAN') )
                       <li class="divider"></li>
                       <li><a href="{{ route($model_path.'.change.customer', [$document->id]) }}"><i class="fa fa-exclamation-triangle text-danger"></i> {{l('Change Customer', 'customerdocuments')}}</a></li>
 @endif

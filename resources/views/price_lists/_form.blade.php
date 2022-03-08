@@ -61,7 +61,7 @@
 
         // Select default currency
         if ( !($('select[name="currency_id"]').val() > 0) ) {
-          var def_currencyID = {{ \App\Configuration::get('DEF_CURRENCY') }};
+          var def_currencyID = {{ AbiConfiguration::get('DEF_CURRENCY') }};
 
           $('select[name="currency_id"]').val(def_currencyID);
         }

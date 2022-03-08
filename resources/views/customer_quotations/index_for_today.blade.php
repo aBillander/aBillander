@@ -160,7 +160,7 @@
 
 
 
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+@if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') )
 
 @if ($model_path=='customerorders')
 

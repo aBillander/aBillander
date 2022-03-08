@@ -127,7 +127,7 @@
 </div>
 
 
-@if( \App\Configuration::isTrue('ENABLE_LOTS') && $product->lot_tracking )
+@if( AbiConfiguration::isTrue('ENABLE_LOTS') && $product->lot_tracking )
 
 <div id="div_productlots">
 <span class="label label-success pull-right" id="product_lot_policy">{{ $product->lot_policy }}</span>

@@ -151,7 +151,7 @@
                 @endif</td>
                 <td class="text-right button-pad">
                     
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->line_type == 'product') && ($line->product->lot_tracking > 0) )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') && ($line->line_type == 'product') && ($line->product->lot_tracking > 0) )
 @php
   $color = $line->pending > 0 ? 'alert-danger' : 'btn-grey';
   $msg   = $line->pending > 0 ? ' ('.$line->measureunit->quantityable( $line->pending ).')' : '';

@@ -55,9 +55,9 @@
             $('#customeruser_firstname').val('');
             $('#customeruser_lastname').val('');
             $('#customeruser_email').val('');
-            $('#password').val('{{ \App\Configuration::get('ABCC_DEFAULT_PASSWORD') }}');
+            $('#password').val('{{ AbiConfiguration::get('ABCC_DEFAULT_PASSWORD') }}');
             $('#location_id').val('');
-            $('#min_order_value').val('{{ \App\Configuration::get('ABCC_MIN_ORDER_VALUE') }}');
+            $('#min_order_value').val('{{ AbiConfiguration::get('ABCC_MIN_ORDER_VALUE') }}');
 
             $("input[name='customeruser_active'][value='1']").prop('checked', true);
             $("input[name='enable_quotations'][value='-1']").prop('checked', true);

@@ -9,7 +9,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="outOfStockModalLabel"></h4>
             </div>
-            <div class="modal-body">{{ \App\Configuration::get('ABCC_OUT_OF_STOCK_TEXT') }}</div>
+            <div class="modal-body">{{ AbiConfiguration::get('ABCC_OUT_OF_STOCK_TEXT') }}</div>
             <div class="modal-body modal-body-text"></div>
 
             <div class="modal-body alert-warning" id="allow-add-to-cart">

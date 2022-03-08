@@ -2,15 +2,15 @@
 
 <div class="jumbotron">
 
-@if (\App\Configuration::get('ABCC_BB_ACTIVE') != 'none')
+@if (AbiConfiguration::get('ABCC_BB_ACTIVE') != 'none')
 
-      @if (\App\Configuration::get('ABCC_BB_ACTIVE') != 'text')
-            <img src="{{ URL::to( abi_tenant_local_path( 'images_bb/' ) . \App\Configuration::get('ABCC_BB_IMAGE') ) }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
+      @if (AbiConfiguration::get('ABCC_BB_ACTIVE') != 'text')
+            <img src="{{ URL::to( abi_tenant_local_path( 'images_bb/' ) . AbiConfiguration::get('ABCC_BB_IMAGE') ) }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
       @endif
 
-      @if (\App\Configuration::get('ABCC_BB_ACTIVE') != 'image')
+      @if (AbiConfiguration::get('ABCC_BB_ACTIVE') != 'image')
             <div class="text-center" style="margin-top: 12px;">
-                {!! \App\Configuration::get('ABCC_BB_CAPTION') !!}
+                {!! AbiConfiguration::get('ABCC_BB_CAPTION') !!}
             </div>
       @endif
 

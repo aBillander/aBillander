@@ -44,7 +44,7 @@
 
       <td>{{ optional($payment->paymenttype)->name }} 
 
-@if( ($payment->payment_type_id == \App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) && $payment->chequedetail )
+@if( ($payment->payment_type_id == AbiConfiguration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) && $payment->chequedetail )
 
               <a class="btn btn-xs btn-warning" href="{{ URL::to('cheques/' . $payment->chequedetail->cheque_id . '/edit' ) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
 
@@ -64,7 +64,7 @@
                 {{\App\Payment::getStatusName($payment->status)}}</span>
 
               @if ( $payment->status == 'paid' )
-{{--                @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') ) --}}
+{{--                @if ( AbiConfiguration::isTrue('ENABLE_CRAZY_IVAN') ) --}}
 
                     <a href="{{ route('customervoucher.unpay', [$payment->id]) }}" class="btn btn-xs btn-danger" 
                     title="{{l('Undo Payment')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
@@ -166,7 +166,7 @@ $(document).ready(function() {
 
             });
 
-            $('#group_balance').html(currencyFormat{{ \App\Context::getContext()->currency->iso_code }}(total));
+            $('#group_balance').html(currencyFormat{{ AbiContext::getContext()->currency->iso_code }}(total));
         }
 
 
@@ -197,14 +197,14 @@ $(document).ready(function() {
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(function() {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -212,7 +212,7 @@ $(document).ready(function() {
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -220,7 +220,7 @@ $(document).ready(function() {
     $( "#bulk_payment_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 </script>

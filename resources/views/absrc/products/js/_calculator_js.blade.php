@@ -1,5 +1,5 @@
 
-{!! \App\Calculator::marginJSCode( \App\Context::getContext()->currency, true ) !!}
+{!! \App\Calculator::marginJSCode( AbiContext::getContext()->currency, true ) !!}
 
 <script type="text/javascript">
 
@@ -103,7 +103,7 @@ function new_price()
 
 function new_tax()
 {
-  var tax_inc = {{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') }};
+  var tax_inc = {{ AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') }};
   var cost_price = parseFloat( $("#cost_price").val() );
   var price = parseFloat( $("#price").val() );
   var price_tax_inc = parseFloat( $("#price_tax_inc").val() );

@@ -186,9 +186,9 @@
 
           $('#document_date_form').val('{{ abi_date_form_short( 'now' ) }}');
 
-          $('#template_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE'))}});
+          $('#template_id').val({{ intval(AbiConfiguration::get('DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE'))}});
 
-          $('#sequence_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE_SHIPPING_SLIP_SEQUENCE'))}});
+          $('#sequence_id').val({{ intval(AbiConfiguration::get('DEF_WAREHOUSE_SHIPPING_SLIP_SEQUENCE'))}});
 
         });
 
@@ -198,7 +198,7 @@
 {{-- Date Picker --}}
 
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
 
@@ -206,7 +206,7 @@
     $( "#document_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -214,7 +214,7 @@
     $( "#delivery_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
   

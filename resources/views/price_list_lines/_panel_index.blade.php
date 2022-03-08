@@ -89,7 +89,7 @@
             <th class="text-left">{{l('Cost Price', 'pricelistlines')}}</th>
             <th class="text-left">{{l('Margin (%)', 'pricelistlines')}}
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ \App\Configuration::get('MARGIN_METHOD') == 'CST' ?
+                                    data-content="{{ AbiConfiguration::get('MARGIN_METHOD') == 'CST' ?
                                         l('Margin calculation is based on Cost Price', [], 'layouts') :
                                         l('Margin calculation is based on Sales Price', [], 'layouts') }}">
                                 <i class="fa fa-question-circle abi-help"></i>

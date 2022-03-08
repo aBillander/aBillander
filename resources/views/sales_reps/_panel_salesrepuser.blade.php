@@ -49,10 +49,10 @@
             $('#salesrepuser_firstname').val('{{ $salesrep->firstname }}');
             $('#salesrepuser_lastname').val('{{ $salesrep->lastname }}');
             $('#salesrepuser_email').val('{{ $salesrep->email }}');
-            $('#password').val('{{ \App\Configuration::get('ABSRC_DEFAULT_PASSWORD') }}');
+            $('#password').val('{{ AbiConfiguration::get('ABSRC_DEFAULT_PASSWORD') }}');
 
-            $('#salesrepuser_language_id').val('{{ \App\Configuration::get('DEF_LANGUAGE') }}');
-            // $('select[name="salesrepuser_language_id"]').val( {{ intval(\App\Configuration::get('DEF_LANGUAGE')) }} );
+            $('#salesrepuser_language_id').val('{{ AbiConfiguration::get('DEF_LANGUAGE') }}');
+            // $('select[name="salesrepuser_language_id"]').val( {{ intval(AbiConfiguration::get('DEF_LANGUAGE')) }} );
 
             $("input[name='salesrepuser_active'][value='1']").prop('checked', true);
             $("input[name='allow_abcc_access'][value='-1']").prop('checked', true);

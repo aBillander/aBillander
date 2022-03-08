@@ -109,7 +109,7 @@ class StockCountLinesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function show($stockcountId, $id)
@@ -120,7 +120,7 @@ class StockCountLinesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function edit($stockcountId, $id)
@@ -135,7 +135,7 @@ class StockCountLinesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function update($stockcountId, $id, Request $request)
@@ -158,7 +158,7 @@ class StockCountLinesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function destroy($stockcountId, $id)

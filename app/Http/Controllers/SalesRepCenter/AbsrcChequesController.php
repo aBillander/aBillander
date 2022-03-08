@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\SalesRepCenter;
 
-use App\Http\Requests;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
@@ -103,7 +103,7 @@ class AbsrcChequesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Cheque  $cheque
+     * @param  \App\Models\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
     public function show(Cheque $cheque)
@@ -114,7 +114,7 @@ class AbsrcChequesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Cheque  $cheque
+     * @param  \App\Models\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
     public function edit(Cheque $cheque)
@@ -137,7 +137,7 @@ class AbsrcChequesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Cheque  $cheque
+     * @param  \App\Models\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Cheque $cheque)
@@ -158,7 +158,7 @@ class AbsrcChequesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Cheque  $cheque
+     * @param  \App\Models\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
     public function destroy(Cheque $cheque)

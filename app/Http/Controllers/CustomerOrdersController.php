@@ -2,30 +2,28 @@
 
 namespace App\Http\Controllers;
 
-// use App\Http\Requests;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-use App\Customer;
-use App\CustomerOrder as Document;
-use App\CustomerOrderLine as DocumentLine;
-use App\CustomerOrderLineTax as DocumentLineTax;
+use App\Models\Customer;
+use App\Models\CustomerOrder as Document;
+use App\Models\CustomerOrderLine as DocumentLine;
+use App\Models\CustomerOrderLineTax as DocumentLineTax;
 
-use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-use App\CustomerInvoiceLineTax;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerInvoiceLineTax;
 
-use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
-use App\CustomerShippingSlipLineTax;
-use App\DocumentAscription;
+use App\Models\CustomerShippingSlip;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\CustomerShippingSlipLineTax;
+use App\Helpers\DocumentAscription;
 
-use App\Configuration;
-use App\Sequence;
-use App\Template;
-use App\MeasureUnit;
+use App\Models\Configuration;
+use App\Models\Sequence;
+use App\Models\Template;
+use App\Models\MeasureUnit;
 
 use App\Events\CustomerOrderConfirmed;
 
@@ -368,7 +366,7 @@ class CustomerOrdersController extends BillableController
     /**
      * Display the specified resource.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -379,7 +377,7 @@ class CustomerOrdersController extends BillableController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function edit($id, Request $request)
@@ -432,7 +430,7 @@ class CustomerOrdersController extends BillableController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Document $customerorder)
@@ -515,7 +513,7 @@ class CustomerOrdersController extends BillableController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

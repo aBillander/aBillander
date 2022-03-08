@@ -2,28 +2,30 @@
 
 namespace App\Http\Controllers;
 
-// use App\Http\Requests;
-
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use App\Customer;
-use App\CustomerShippingSlip as Document;
-use App\CustomerShippingSlipLine as DocumentLine;
-
-use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-use App\CustomerInvoiceLineTax;
-use App\DocumentAscription;
-
-use App\ShippingMethod;
-
-use App\Configuration;
-use App\Sequence;
-use App\Template;
-use App\MeasureUnit;
-
 use App\Events\CustomerShippingSlipConfirmed;
+use App\Helpers\DocumentAscription;
+use App\Helpers\Price;
+use App\Models\ActivityLogger;
+use App\Models\Combination;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerInvoiceLineTax;
+use App\Models\CustomerShippingSlip as Document;
+use App\Models\CustomerShippingSlipLine as DocumentLine;
+use App\Models\MeasureUnit;
+use App\Models\PaymentMethod;
+use App\Models\Product;
+use App\Models\SalesRep;
+use App\Models\Sequence;
+use App\Models\ShippingMethod;
+use App\Models\Tax;
+use App\Models\Template;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class CustomerShippingSlipsController extends BillableController
 {
@@ -247,7 +249,7 @@ class CustomerShippingSlipsController extends BillableController
     /**
      * Display the specified resource.
      *
-     * @param  \App\CustomerShippingSlip  $customershippingslip
+     * @param  \App\Models\CustomerShippingSlip  $customershippingslip
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -258,7 +260,7 @@ class CustomerShippingSlipsController extends BillableController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CustomerShippingSlip  $customershippingslip
+     * @param  \App\Models\CustomerShippingSlip  $customershippingslip
      * @return \Illuminate\Http\Response
      */
     public function edit($id, Request $request)
@@ -312,7 +314,7 @@ class CustomerShippingSlipsController extends BillableController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CustomerShippingSlip  $customershippingslip
+     * @param  \App\Models\CustomerShippingSlip  $customershippingslip
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Document $customershippingslip)
@@ -434,7 +436,7 @@ class CustomerShippingSlipsController extends BillableController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CustomerShippingSlip  $customershippingslip
+     * @param  \App\Models\CustomerShippingSlip  $customershippingslip
      * @return \Illuminate\Http\Response
      */
     public function destroy($id, Request $request)

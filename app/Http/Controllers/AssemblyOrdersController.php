@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\AssemblyOrder;
+use App\Models\AssemblyOrder;
+use App\Models\Configuration;
 
 class AssemblyOrdersController extends Controller
 {
@@ -33,7 +34,7 @@ class AssemblyOrdersController extends Controller
 // See: https://stackoverflow.com/questions/18861186/eloquent-eager-load-order-by
                       
 
-        $orders = $orders->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $orders = $orders->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $orders->setPath('assemblyorders');     // Customize the URI used by the paginator
 
@@ -64,7 +65,7 @@ class AssemblyOrdersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\AssemblyOrder  $assemblyorder
+     * @param  \App\Models\AssemblyOrder  $assemblyorder
      * @return \Illuminate\Http\Response
      */
     public function show(AssemblyOrder $assemblyorder)
@@ -75,7 +76,7 @@ class AssemblyOrdersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\AssemblyOrder  $assemblyorder
+     * @param  \App\Models\AssemblyOrder  $assemblyorder
      * @return \Illuminate\Http\Response
      */
     public function edit(AssemblyOrder $assemblyorder)
@@ -87,7 +88,7 @@ class AssemblyOrdersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\AssemblyOrder  $assemblyorder
+     * @param  \App\Models\AssemblyOrder  $assemblyorder
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, AssemblyOrder $assemblyorder)
@@ -98,7 +99,7 @@ class AssemblyOrdersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\AssemblyOrder  $assemblyorder
+     * @param  \App\Models\AssemblyOrder  $assemblyorder
      * @return \Illuminate\Http\Response
      */
     public function destroy(AssemblyOrder $assemblyorder)

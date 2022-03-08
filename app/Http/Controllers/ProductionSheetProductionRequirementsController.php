@@ -56,7 +56,7 @@ class ProductionSheetProductionRequirementsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ProductionRequirement  $productionrequirement
+     * @param  \App\Models\ProductionRequirement  $productionrequirement
      * @return \Illuminate\Http\Response
      */
     public function show(ProductionRequirement $productionrequirement)
@@ -67,7 +67,7 @@ class ProductionSheetProductionRequirementsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ProductionRequirement  $productionrequirement
+     * @param  \App\Models\ProductionRequirement  $productionrequirement
      * @return \Illuminate\Http\Response
      */
     public function edit($sheet, ProductionRequirement $productionrequirement)
@@ -82,7 +82,7 @@ class ProductionSheetProductionRequirementsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ProductionRequirement  $productionrequirement
+     * @param  \App\Models\ProductionRequirement  $productionrequirement
      * @return \Illuminate\Http\Response
      */
     public function update($sheet, Request $request, ProductionRequirement $productionrequirement)
@@ -93,7 +93,7 @@ class ProductionSheetProductionRequirementsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ProductionRequirement  $productionrequirement
+     * @param  \App\Models\ProductionRequirement  $productionrequirement
      * @return \Illuminate\Http\Response
      */
     public function destroy($sheet, ProductionRequirement $productionrequirement)

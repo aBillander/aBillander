@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Product;
-use App\CustomerOrderTemplate;
-use App\CustomerOrderTemplateLine;
+use App\Models\Product;
+use App\Models\CustomerOrderTemplate;
+use App\Models\CustomerOrderTemplateLine;
 
 class CustomerOrderTemplateLinesController extends Controller
 {
@@ -71,7 +71,7 @@ class CustomerOrderTemplateLinesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\CustomerOrderTemplateLine  $customerOrderTemplateLine
+     * @param  \App\Models\CustomerOrderTemplateLine  $customerOrderTemplateLine
      * @return \Illuminate\Http\Response
      */
     public function show($customerordertemplateId, CustomerOrderTemplateLine $customerordertemplateline)
@@ -82,7 +82,7 @@ class CustomerOrderTemplateLinesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CustomerOrderTemplateLine  $customerOrderTemplateLine
+     * @param  \App\Models\CustomerOrderTemplateLine  $customerOrderTemplateLine
      * @return \Illuminate\Http\Response
      */
     public function edit($customerordertemplateId, CustomerOrderTemplateLine $customerordertemplateline)
@@ -98,7 +98,7 @@ class CustomerOrderTemplateLinesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CustomerOrderTemplateLine  $customerOrderTemplateLine
+     * @param  \App\Models\CustomerOrderTemplateLine  $customerOrderTemplateLine
      * @return \Illuminate\Http\Response
      */
     public function update($customerordertemplateId, Request $request, CustomerOrderTemplateLine $customerordertemplateline)
@@ -128,7 +128,7 @@ class CustomerOrderTemplateLinesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CustomerOrderTemplateLine  $customerOrderTemplateLine
+     * @param  \App\Models\CustomerOrderTemplateLine  $customerOrderTemplateLine
      * @return \Illuminate\Http\Response
      */
     public function destroy($customerordertemplateId, CustomerOrderTemplateLine $customerordertemplateline)

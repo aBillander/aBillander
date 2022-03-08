@@ -91,7 +91,7 @@ class ProductionOrdersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ProductionOrder  $productionorder
+     * @param  \App\Models\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
     public function show(ProductionOrder $productionorder)
@@ -102,7 +102,7 @@ class ProductionOrdersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ProductionOrder  $productionorder
+     * @param  \App\Models\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
     public function edit(ProductionOrder $productionorder, Request $request)
@@ -129,7 +129,7 @@ class ProductionOrdersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ProductionOrder  $productionorder
+     * @param  \App\Models\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, ProductionOrder $productionorder)
@@ -194,7 +194,7 @@ class ProductionOrdersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ProductionOrder  $productionorder
+     * @param  \App\Models\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
     public function destroy(ProductionOrder $productionorder)

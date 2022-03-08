@@ -176,7 +176,7 @@ class WarehouseShippingSlipsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Document  $warehouseShippingSlip
+     * @param  \App\Models\Document  $warehouseShippingSlip
      * @return \Illuminate\Http\Response
      */
     public function show(Document $warehouseshippingslip)
@@ -187,7 +187,7 @@ class WarehouseShippingSlipsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Document  $warehouseShippingSlip
+     * @param  \App\Models\Document  $warehouseShippingSlip
      * @return \Illuminate\Http\Response
      */
     // public function edit(Document $warehouseShippingSlip)
@@ -221,7 +221,7 @@ class WarehouseShippingSlipsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Document  $warehouseShippingSlip
+     * @param  \App\Models\Document  $warehouseShippingSlip
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Document $warehouseshippingslip)
@@ -341,7 +341,7 @@ class WarehouseShippingSlipsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Document  $warehouseShippingSlip
+     * @param  \App\Models\Document  $warehouseShippingSlip
      * @return \Illuminate\Http\Response
      */
     // public function destroy($id, Request $request)

@@ -2,25 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Customer;
-
-use App\Payment;
-use App\PaymentType;
-use App\Configuration;
-
-use Excel;
-
-use aBillander\SepaSpain\SepaDirectDebit;
-
-use App\Traits\DateFormFormatterTrait;
-
-use App\Events\CustomerPaymentReceived;
 use App\Events\CustomerPaymentBounced;
+use App\Events\CustomerPaymentReceived;
+use App\Http\Controllers\Controller;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\Payment;
+use App\Models\PaymentType;
+use App\Traits\DateFormFormatterTrait;
+use Excel;
+use Illuminate\Http\Request;
+use aBillander\SepaSpain\SepaDirectDebit;
 
 class CustomerVouchersController extends Controller
 {
@@ -813,7 +806,7 @@ class CustomerVouchersController extends Controller
         if ( $auto_direct_debit < 0 ) $ribbon1 = 'Todos';
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Recibos de Clientes -::- '.date('d M Y H:i:s'), '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];		//, date('d M Y H:i:s')];
         $data[] = ['Fecha de Vencimiento: ' . $ribbon];
         $data[] = ['Estado: ' . $request->input('status')];

@@ -147,7 +147,7 @@ class SalesRepUsersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function show(SalesRepUser $customeruser)
@@ -158,7 +158,7 @@ class SalesRepUsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function edit(SalesRepUser $customeruser)
@@ -170,7 +170,7 @@ class SalesRepUsersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, SalesRepUser $salesrepuser)
@@ -212,7 +212,7 @@ class SalesRepUsersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function destroy(SalesRepUser $salesrepuser)

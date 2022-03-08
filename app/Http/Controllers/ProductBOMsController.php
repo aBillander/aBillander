@@ -69,7 +69,7 @@ class ProductBOMsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ProductBOM  $productBOM
+     * @param  \App\Models\ProductBOM  $productBOM
      * @return \Illuminate\Http\Response
      */
     public function show(ProductBOM $productBOM)
@@ -80,7 +80,7 @@ class ProductBOMsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ProductBOM  $productBOM
+     * @param  \App\Models\ProductBOM  $productBOM
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -99,7 +99,7 @@ class ProductBOMsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ProductBOM  $productBOM
+     * @param  \App\Models\ProductBOM  $productBOM
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -121,7 +121,7 @@ class ProductBOMsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ProductBOM  $productBOM
+     * @param  \App\Models\ProductBOM  $productBOM
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

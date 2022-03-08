@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\ActivityLogger;
 use Illuminate\Http\Request;
+
+use App\Models\ActivityLogger;
+use App\Models\Configuration;
 
 use Excel;
 
@@ -31,7 +33,7 @@ class ActivityLoggersController extends Controller
 
 
 
-        $loggers = $loggers->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $loggers = $loggers->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         // abi_r($loggers, true);
 
@@ -45,7 +47,7 @@ class ActivityLoggersController extends Controller
         $loggers = $this->logger->filter( $request->all() )->orderBy('id', 'desc');
 
 
-        $loggers = $loggers->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $loggers = $loggers->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         // abi_r($loggers, true);
 
@@ -88,7 +90,7 @@ class ActivityLoggersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ActivityLogger  $activitylogger
+     * @param  \App\Models\ActivityLogger  $activitylogger
      * @return \Illuminate\Http\Response
      */
     public function show(ActivityLogger $activitylogger, Request $request)
@@ -111,7 +113,7 @@ class ActivityLoggersController extends Controller
         $logger_warnings = $activitylogger->activityloggerlines()->where('level_name', 'WARNING')->count();
 
 
-        $loggers = $loggers->paginate( \App\Configuration::get('DEF_LOGS_PERPAGE') );
+        $loggers = $loggers->paginate( Configuration::get('DEF_LOGS_PERPAGE') );
 
         // abi_r($loggers, true);
 
@@ -124,7 +126,7 @@ class ActivityLoggersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ActivityLogger  $activitylogger
+     * @param  \App\Models\ActivityLogger  $activitylogger
      * @return \Illuminate\Http\Response
      */
     public function edit(ActivityLogger $activitylogger)
@@ -136,7 +138,7 @@ class ActivityLoggersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ActivityLogger  $activitylogger
+     * @param  \App\Models\ActivityLogger  $activitylogger
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, ActivityLogger $activitylogger)
@@ -147,7 +149,7 @@ class ActivityLoggersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ActivityLogger  $activitylogger
+     * @param  \App\Models\ActivityLogger  $activitylogger
      * @return \Illuminate\Http\Response
      */
     public function destroy(ActivityLogger $activitylogger)

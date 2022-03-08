@@ -223,7 +223,7 @@ class SupplierDownPaymentDetailsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ChequeDetail  $chequeDetail
+     * @param  \App\Models\ChequeDetail  $chequeDetail
      * @return \Illuminate\Http\Response
      */
     public function show($chequeId, ChequeDetail $chequeDetail)
@@ -234,7 +234,7 @@ class SupplierDownPaymentDetailsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ChequeDetail  $chequeDetail
+     * @param  \App\Models\ChequeDetail  $chequeDetail
      * @return \Illuminate\Http\Response
      */
     public function edit($chequeId, ChequeDetail $chequedetail)
@@ -249,7 +249,7 @@ class SupplierDownPaymentDetailsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ChequeDetail  $chequeDetail
+     * @param  \App\Models\ChequeDetail  $chequeDetail
      * @return \Illuminate\Http\Response
      */
     public function update($chequeId, Request $request, ChequeDetail $chequedetail)
@@ -292,7 +292,7 @@ class SupplierDownPaymentDetailsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ChequeDetail  $chequeDetail
+     * @param  \App\Models\ChequeDetail  $chequeDetail
      * @return \Illuminate\Http\Response
      */
     public function destroy($chequeId, ChequeDetail $chequedetail)

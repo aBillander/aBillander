@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Configuration as Configuration;
-use App\MeasureUnit;
+use App\Models\Configuration;
+use App\Models\MeasureUnit;
 use View;
 
 class ConfigurationKeysController extends Controller {
@@ -298,7 +298,7 @@ class ConfigurationKeysController extends Controller {
                 // Prevent NULL values
                 $value = is_null( $request->input($key) ) ? '' : $request->input($key);
 
-                \App\Configuration::updateValue($key, $value);
+                Configuration::updateValue($key, $value);
             }
         }
 

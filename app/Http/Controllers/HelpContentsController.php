@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
@@ -54,7 +54,7 @@ class HelpContentsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\HelpContent  $helpContent
+     * @param  \App\Models\HelpContent  $helpContent
      * @return \Illuminate\Http\Response
      */
     public function show(HelpContent $helpContent)
@@ -65,7 +65,7 @@ class HelpContentsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\HelpContent  $helpContent
+     * @param  \App\Models\HelpContent  $helpContent
      * @return \Illuminate\Http\Response
      */
     public function edit(HelpContent $helpContent)
@@ -77,7 +77,7 @@ class HelpContentsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\HelpContent  $helpContent
+     * @param  \App\Models\HelpContent  $helpContent
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, HelpContent $helpContent)
@@ -88,7 +88,7 @@ class HelpContentsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\HelpContent  $helpContent
+     * @param  \App\Models\HelpContent  $helpContent
      * @return \Illuminate\Http\Response
      */
     public function destroy(HelpContent $helpContent)

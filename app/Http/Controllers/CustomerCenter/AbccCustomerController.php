@@ -62,7 +62,7 @@ class AbccCustomerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Customer  $customer
+     * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
     public function show(Customer $customer)
@@ -73,7 +73,7 @@ class AbccCustomerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Customer  $customer
+     * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
     public function edit()
@@ -91,7 +91,7 @@ class AbccCustomerController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Customer  $customer
+     * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -121,7 +121,7 @@ class AbccCustomerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Customer  $customer
+     * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
     public function destroy(Customer $customer)

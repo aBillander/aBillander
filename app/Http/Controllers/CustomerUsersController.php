@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Address;
+use App\Models\Combination;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerUser;
+use App\Models\Language;
+use App\Models\Product;
 use Illuminate\Http\Request;
-use Validator;
-
-use App\Customer;
-use App\CustomerUser;
-use App\Configuration;
-use App\Language;
-
 use Mail;
+use Validator;
 
 class CustomerUsersController extends Controller
 {
@@ -124,12 +127,12 @@ class CustomerUsersController extends Controller
                 'fromName' => config('mail.from.name'   ),    // Configuration::get('ABCC_EMAIL_NAME'),
                 'to'       => $customeruser->email,         // $cinvoice->customer->address->email,
                 'toName'   => $customeruser->full_name,    // $cinvoice->customer->name_fiscal,
-                'subject'  => l(' :_> Confirmación de acceso al Centro de Clientes de :company', ['company' => \App\Context::getcontext()->company->name_fiscal]),
+                'subject'  => l(' :_> Confirmación de acceso al Centro de Clientes de :company', ['company' => Context::getcontext()->company->name_fiscal]),
                 );
 
             
 
-            $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.invitation_confirmation', $template_vars, function($message) use ($data)
+            $send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.invitation_confirmation', $template_vars, function($message) use ($data)
             {
                 $message->from($data['from'], $data['fromName']);
 
@@ -169,7 +172,7 @@ class CustomerUsersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function show(CustomerUser $customeruser)
@@ -180,7 +183,7 @@ class CustomerUsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function edit(CustomerUser $customeruser)
@@ -192,7 +195,7 @@ class CustomerUsersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, CustomerUser $customeruser)
@@ -258,7 +261,7 @@ class CustomerUsersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function destroy(CustomerUser $customeruser)
@@ -316,7 +319,7 @@ class CustomerUsersController extends Controller
         $product_id      = $request->input('product_id');
         $combination_id  = $request->input('combination_id');
         $customer_id     = $request->input('customer_id');
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 //        $currency_conversion_rate = $request->input('currency_conversion_rate', $currency->conversion_rate);
 
  //       return response()->json( [ $product_id, $combination_id, $customer_id, $currency_id ] );
@@ -324,24 +327,24 @@ class CustomerUsersController extends Controller
         // Do the Mambo!
         // Product
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $combination = Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
+            $product = Product::with('tax')->findOrFail(intval($product_id));
         }
 
         // Customer
-        $customer = \App\Customer::findOrFail(intval($customer_id));
+        $customer = Customer::findOrFail(intval($customer_id));
         
         // Currency
-        $currency = \App\Currency::findOrFail(intval($currency_id));
+        $currency = Currency::findOrFail(intval($currency_id));
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
         // Tax
         $tax = $product->tax;
-        $taxing_address = \App\Address::findOrFail($request->input('taxing_address_id'));
+        $taxing_address = Address::findOrFail($request->input('taxing_address_id'));
         $tax_percent = $tax->getTaxPercent( $taxing_address );
 
         $price = $product->getPrice();

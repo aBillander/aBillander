@@ -179,7 +179,7 @@ class AbsrcCustomerUsersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function show(CustomerUser $customeruser)
@@ -190,7 +190,7 @@ class AbsrcCustomerUsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function edit(CustomerUser $customeruser)
@@ -202,7 +202,7 @@ class AbsrcCustomerUsersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, CustomerUser $customeruser)
@@ -270,7 +270,7 @@ class AbsrcCustomerUsersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function destroy(CustomerUser $customeruser)

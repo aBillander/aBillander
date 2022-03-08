@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\CustomerOrderTemplate;
-use App\CustomerOrderTemplateLine;
+use App\Models\CustomerOrderTemplate;
+use App\Models\CustomerOrderTemplateLine;
 
-use App\Configuration;
-use App\Customer;
-use App\Template;
-use App\CustomerOrder;
-use App\ShippingMethod;
+use App\Models\Configuration;
+use App\Models\Customer;
+use App\Models\Template;
+use App\Models\CustomerOrder;
+use App\Models\ShippingMethod;
 
 class CustomerOrderTemplatesController extends Controller
 {
@@ -146,7 +146,7 @@ class CustomerOrderTemplatesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\CustomerOrderTemplate  $customerordertemplate
+     * @param  \App\Models\CustomerOrderTemplate  $customerordertemplate
      * @return \Illuminate\Http\Response
      */
     public function show(CustomerOrderTemplate $customerordertemplate)
@@ -157,7 +157,7 @@ class CustomerOrderTemplatesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CustomerOrderTemplate  $customerordertemplate
+     * @param  \App\Models\CustomerOrderTemplate  $customerordertemplate
      * @return \Illuminate\Http\Response
      */
     public function edit(CustomerOrderTemplate $customerordertemplate)
@@ -171,7 +171,7 @@ class CustomerOrderTemplatesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CustomerOrderTemplate  $customerordertemplate
+     * @param  \App\Models\CustomerOrderTemplate  $customerordertemplate
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, CustomerOrderTemplate $customerordertemplate)
@@ -187,7 +187,7 @@ class CustomerOrderTemplatesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CustomerOrderTemplate  $customerordertemplate
+     * @param  \App\Models\CustomerOrderTemplate  $customerordertemplate
      * @return \Illuminate\Http\Response
      */
     public function destroy(CustomerOrderTemplate $customerordertemplate)

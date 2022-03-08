@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-// use App\Http\Requests;
+// 
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -258,7 +258,7 @@ class SupplierOrdersController extends BillableController
     /**
      * Display the specified resource.
      *
-     * @param  \App\SupplierOrder  $supplierOrder
+     * @param  \App\Models\SupplierOrder  $supplierOrder
      * @return \Illuminate\Http\Response
      */
     public function show(Document $supplierOrder)
@@ -269,7 +269,7 @@ class SupplierOrdersController extends BillableController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Document  $supplierOrder
+     * @param  \App\Models\Document  $supplierOrder
      * @return \Illuminate\Http\Response
      */
     public function edit($id, Request $request)
@@ -313,7 +313,7 @@ class SupplierOrdersController extends BillableController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Document  $supplierOrder
+     * @param  \App\Models\Document  $supplierOrder
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Document $supplierorder)
@@ -397,7 +397,7 @@ class SupplierOrdersController extends BillableController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Document  $supplierOrder
+     * @param  \App\Models\Document  $supplierOrder
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

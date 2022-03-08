@@ -87,7 +87,7 @@ class ProductionSheetsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ProductionSheet  $productionSheet
+     * @param  \App\Models\ProductionSheet  $productionSheet
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -112,7 +112,7 @@ class ProductionSheetsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ProductionSheet  $productionSheet
+     * @param  \App\Models\ProductionSheet  $productionSheet
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -133,7 +133,7 @@ class ProductionSheetsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ProductionSheet  $productionSheet
+     * @param  \App\Models\ProductionSheet  $productionSheet
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -154,7 +154,7 @@ class ProductionSheetsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ProductionSheet  $productionSheet
+     * @param  \App\Models\ProductionSheet  $productionSheet
      * @return \Illuminate\Http\Response
      */
     public function destroy(ProductionSheet $productionSheet)
@@ -260,7 +260,7 @@ class ProductionSheetsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ProductionSheet  $productionSheet
+     * @param  \App\Models\ProductionSheet  $productionSheet
      * @return \Illuminate\Http\Response
      */
     public function pickinglist($id)
@@ -276,7 +276,7 @@ class ProductionSheetsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ProductionSheet  $productionSheet
+     * @param  \App\Models\ProductionSheet  $productionSheet
      * @return \Illuminate\Http\Response
      */
     public function getProducts($id)
@@ -289,7 +289,7 @@ class ProductionSheetsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ProductionSheet  $productionSheet
+     * @param  \App\Models\ProductionSheet  $productionSheet
      * @return \Illuminate\Http\Response
      */
     public function getSummary(Request $request, $id)

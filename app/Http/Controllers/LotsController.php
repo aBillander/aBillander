@@ -246,7 +246,7 @@ class LotsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Lot  $lot
+     * @param  \App\Models\Lot  $lot
      * @return \Illuminate\Http\Response
      */
     public function show(Lot $lot)
@@ -257,7 +257,7 @@ class LotsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Lot  $lot
+     * @param  \App\Models\Lot  $lot
      * @return \Illuminate\Http\Response
      */
     public function edit(Lot $lot)
@@ -278,7 +278,7 @@ class LotsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Lot  $lot
+     * @param  \App\Models\Lot  $lot
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Lot $lot)
@@ -304,7 +304,7 @@ class LotsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Lot  $lot
+     * @param  \App\Models\Lot  $lot
      * @return \Illuminate\Http\Response
      */
     public function updateQuantity(Request $request, Lot $lot)
@@ -576,7 +576,7 @@ class LotsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Lot  $lot
+     * @param  \App\Models\Lot  $lot
      * @return \Illuminate\Http\Response
      */
     public function destroy(Lot $lot)

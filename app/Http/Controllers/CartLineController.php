@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\CartLine;
+use App\Models\CartLine;
 use Illuminate\Http\Request;
 
 class CartLineController extends Controller
@@ -41,7 +41,7 @@ class CartLineController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\CartLine  $cartLine
+     * @param  \App\Models\CartLine  $cartLine
      * @return \Illuminate\Http\Response
      */
     public function show(CartLine $cartLine)
@@ -52,7 +52,7 @@ class CartLineController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CartLine  $cartLine
+     * @param  \App\Models\CartLine  $cartLine
      * @return \Illuminate\Http\Response
      */
     public function edit(CartLine $cartLine)
@@ -64,7 +64,7 @@ class CartLineController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CartLine  $cartLine
+     * @param  \App\Models\CartLine  $cartLine
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, CartLine $cartLine)
@@ -75,7 +75,7 @@ class CartLineController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CartLine  $cartLine
+     * @param  \App\Models\CartLine  $cartLine
      * @return \Illuminate\Http\Response
      */
     public function destroy(CartLine $cartLine)

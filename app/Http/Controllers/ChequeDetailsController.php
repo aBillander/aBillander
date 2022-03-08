@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cheque;
+use App\Models\ChequeDetail;
+use App\Models\Configuration;
+use App\Models\CustomerInvoice;
+use App\Models\Configuration;
+use App\Models\Payment;
+use App\Models\PaymentType;
 use Illuminate\Http\Request;
-
-use App\Cheque;
-use App\ChequeDetail;
-use App\Payment;
-use App\CustomerInvoice;
-
-use App\Configuration;
-use App\PaymentType;
 
 // use App\Events\CustomerPaymentReceived;
 
@@ -245,7 +244,7 @@ class ChequeDetailsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ChequeDetail  $chequeDetail
+     * @param  \App\Models\ChequeDetail  $chequeDetail
      * @return \Illuminate\Http\Response
      */
     public function show($chequeId, ChequeDetail $chequeDetail)
@@ -256,7 +255,7 @@ class ChequeDetailsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ChequeDetail  $chequeDetail
+     * @param  \App\Models\ChequeDetail  $chequeDetail
      * @return \Illuminate\Http\Response
      */
     public function edit($chequeId, ChequeDetail $chequedetail)
@@ -271,7 +270,7 @@ class ChequeDetailsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ChequeDetail  $chequeDetail
+     * @param  \App\Models\ChequeDetail  $chequeDetail
      * @return \Illuminate\Http\Response
      */
     public function update($chequeId, Request $request, ChequeDetail $chequedetail)
@@ -314,7 +313,7 @@ class ChequeDetailsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ChequeDetail  $chequeDetail
+     * @param  \App\Models\ChequeDetail  $chequeDetail
      * @return \Illuminate\Http\Response
      */
     public function destroy($chequeId, ChequeDetail $chequedetail)
@@ -350,7 +349,7 @@ class ChequeDetailsController extends Controller
                                 ->where('status', 'closed')
                                 ->where('total_tax_incl', '>', 0.0)
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 

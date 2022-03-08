@@ -56,7 +56,7 @@ class ToolsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Tool  $tool
+     * @param  \App\Models\Tool  $tool
      * @return \Illuminate\Http\Response
      */
     public function show(Tool $tool)
@@ -67,7 +67,7 @@ class ToolsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Tool  $tool
+     * @param  \App\Models\Tool  $tool
      * @return \Illuminate\Http\Response
      */
     public function edit(Tool $tool)
@@ -79,7 +79,7 @@ class ToolsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Tool  $tool
+     * @param  \App\Models\Tool  $tool
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Tool $tool)
@@ -95,7 +95,7 @@ class ToolsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Tool  $tool
+     * @param  \App\Models\Tool  $tool
      * @return \Illuminate\Http\Response
      */
     public function destroy(Tool $tool)

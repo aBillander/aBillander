@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Cart;
+use App\Models\Cart;
+use App\Models\Configuration;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
 class CartsController extends Controller
@@ -32,7 +34,7 @@ class CartsController extends Controller
 //                            ->orderBy('document_date', 'desc')
                             ->orderBy('updated_at', 'desc');        // ->get();
 
-        $carts = $carts->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $carts = $carts->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $carts->setPath('carts');
         
@@ -63,7 +65,7 @@ class CartsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Cart  $cart
+     * @param  \App\Models\Cart  $cart
      * @return \Illuminate\Http\Response
      */
     public function show(Cart $cart)
@@ -77,7 +79,7 @@ class CartsController extends Controller
 
         $order = $customerorder;
 
-        $customer = \App\Customer::find( $order->customer_id );
+        $customer = Customer::find( $order->customer_id );
 
         $addressBook       = $customer->addresses;
 
@@ -100,7 +102,7 @@ class CartsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Cart  $cart
+     * @param  \App\Models\Cart  $cart
      * @return \Illuminate\Http\Response
      */
     public function edit(Cart $cart)
@@ -112,7 +114,7 @@ class CartsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Cart  $cart
+     * @param  \App\Models\Cart  $cart
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Cart $cart)
@@ -123,7 +125,7 @@ class CartsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Cart  $cart
+     * @param  \App\Models\Cart  $cart
      * @return \Illuminate\Http\Response
      */
     public function destroy(Cart $cart)

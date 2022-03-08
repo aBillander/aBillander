@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Configuration;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerOrder;
+use App\Models\CustomerShippingSlip;
+use App\Models\Lead;
+use App\Models\LeadLine;
+use App\Models\Product;
+use App\Traits\DateFormFormatterTrait;
+use Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\Lead;
-use App\LeadLine;
-
-use Excel;
-
-use App\Traits\DateFormFormatterTrait;
 
 class CRMHomeController extends Controller
 {
@@ -88,13 +91,13 @@ class CRMHomeController extends Controller
         {
             $search = $request->term;
 
-            $customers = \App\Customer::where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
+            $customers = Customer::where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'name_commercial',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'identification', 'LIKE', '%'.$search.'%' )
 //                                    ->with('currency')
 //                                    ->with('addresses')
                                     ->isNotBlocked()
-                                    ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                     ->get();
 
 //            return $customers;
@@ -115,7 +118,7 @@ class CRMHomeController extends Controller
     {
         $search = $request->term;
 
-        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
+        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
 //                                ->IsSaleable()
@@ -124,7 +127,7 @@ class CRMHomeController extends Controller
                                 ->Isblocked( false )
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 
@@ -138,7 +141,7 @@ class CRMHomeController extends Controller
     {
         $search = $request->term;
 
-        $documents = \App\CustomerOrder::select('id', 'document_reference', 'document_date', 'reference_external')
+        $documents = CustomerOrder::select('id', 'document_reference', 'document_date', 'reference_external')
                                 ->where(   'id',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference_external', 'LIKE', '%'.$search.'%' )
@@ -146,7 +149,7 @@ class CRMHomeController extends Controller
                                 ->orderBy('document_date', 'DESC')
                                 ->orderBy('id', 'ASC')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 
@@ -160,7 +163,7 @@ class CRMHomeController extends Controller
     {
         $search = $request->term;
 
-        $documents = \App\CustomerShippingSlip::select('id', 'document_reference', 'document_date', 'reference_external')
+        $documents = CustomerShippingSlip::select('id', 'document_reference', 'document_date', 'reference_external')
                                 ->where(   'id',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference_external', 'LIKE', '%'.$search.'%' )
@@ -168,7 +171,7 @@ class CRMHomeController extends Controller
                                 ->orderBy('document_date', 'DESC')
                                 ->orderBy('id', 'ASC')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 
@@ -182,7 +185,7 @@ class CRMHomeController extends Controller
     {
         $search = $request->term;
 
-        $documents = \App\CustomerInvoice::select('id', 'document_reference', 'document_date', 'reference_external')
+        $documents = CustomerInvoice::select('id', 'document_reference', 'document_date', 'reference_external')
                                 ->where(   'id',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference_external', 'LIKE', '%'.$search.'%' )
@@ -190,7 +193,7 @@ class CRMHomeController extends Controller
                                 ->orderBy('document_date', 'DESC')
                                 ->orderBy('id', 'ASC')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 

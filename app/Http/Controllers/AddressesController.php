@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
 use Illuminate\Http\Request;
 
-use App\Address as Address;
+use App\Models\Configuration;
+use App\Models\Address;
+
 use View;
 
 class AddressesController extends Controller {
@@ -61,13 +60,13 @@ class AddressesController extends Controller {
 		$back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
 		// Check that the class exists before trying to use it
-		if( !class_exists('\App\\'.$model_name) ) {
+		if( !class_exists('\App\\Models\\'.$model_name) ) {
 		    // Do stuff for when class does not exist
 		    echo $model_name.' NO existe'; die();
 		}
 
 	    $model_var = strtolower($model_name);
-	    $model_name_full = '\App\\'.$model_name;
+	    $model_name_full = '\App\\Models\\'.$model_name;
 	    $$model_var = $model_name_full::findOrFail($owner_id);
 
 		// $customer = Customer::find($owner_id);
@@ -88,18 +87,18 @@ class AddressesController extends Controller {
 		$back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
 		// Check that the class exists before trying to use it
-		if( !class_exists('\App\\'.$model_name) ) {
+		if( !class_exists('\App\\Models\\'.$model_name) ) {
 		    // Do stuff for when class does not exist
 		    echo $model_name.' NO existe'; die();
 		}
 
 	    $model_var = strtolower($model_name);
-	    $model_name_full = '\App\\'.$model_name;
+	    $model_name_full = '\App\\Models\\'.$model_name;
 	    $$model_var = $model_name_full::with('addresses', 'address')->findOrFail($owner_id);
 
         $customer = $$model_var;
 
-        if ( !$request->input('country') ) $request->merge( ['country' => \App\Configuration::get('DEF_COUNTRY_NAME')] );
+        if ( !$request->input('country') ) $request->merge( ['country' => Configuration::get('DEF_COUNTRY_NAME')] );
         // $this->validate($request, Address::$rules);
             $request->merge( ['model_name' => 'Customer'] );
         $address = $this->address->create($request->all());

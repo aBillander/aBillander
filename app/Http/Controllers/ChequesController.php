@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Cheque;
-use App\ChequeDetail;
-use App\Currency;
-use App\Bank;
-use App\Configuration;
-
-use App\Events\CustomerPaymentReceived;
+use App\Models\Bank;
+use App\Models\Cheque;
+use App\Models\ChequeDetail;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
 use App\Events\CustomerPaymentBounced;
-
-use Excel;
-
+use App\Events\CustomerPaymentReceived;
 use App\Traits\DateFormFormatterTrait;
 use App\Traits\ModelAttachmentControllerTrait;
+use Excel;
+use Illuminate\Http\Request;
 
 class ChequesController extends Controller
 {
@@ -105,7 +102,7 @@ class ChequesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Cheque  $cheque
+     * @param  \App\Models\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
     public function show(Cheque $cheque)
@@ -120,7 +117,7 @@ class ChequesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Cheque  $cheque
+     * @param  \App\Models\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -149,7 +146,7 @@ class ChequesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Cheque  $cheque
+     * @param  \App\Models\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Cheque $cheque)
@@ -176,7 +173,7 @@ class ChequesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Cheque  $cheque
+     * @param  \App\Models\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
     public function destroy(Cheque $cheque)
@@ -452,7 +449,7 @@ class ChequesController extends Controller
         }
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Cheques de Clientes', '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = ['Fecha de Emisión: ' . $ribbon];
         $data[] = ['Fecha de Vencimiento: ' . $ribbon1];

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-// use App\Http\Requests;
+// 
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -242,7 +242,7 @@ class SupplierShippingSlipsController extends BillableController
     /**
      * Display the specified resource.
      *
-     * @param  \App\SupplierShippingSlip  $suppliershippingslip
+     * @param  \App\Models\SupplierShippingSlip  $suppliershippingslip
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -253,7 +253,7 @@ class SupplierShippingSlipsController extends BillableController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\SupplierShippingSlip  $suppliershippingslip
+     * @param  \App\Models\SupplierShippingSlip  $suppliershippingslip
      * @return \Illuminate\Http\Response
      */
     public function edit($id, Request $request)
@@ -307,7 +307,7 @@ class SupplierShippingSlipsController extends BillableController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\SupplierShippingSlip  $suppliershippingslip
+     * @param  \App\Models\SupplierShippingSlip  $suppliershippingslip
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Document $suppliershippingslip)
@@ -390,7 +390,7 @@ class SupplierShippingSlipsController extends BillableController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\SupplierShippingSlip  $suppliershippingslip
+     * @param  \App\Models\SupplierShippingSlip  $suppliershippingslip
      * @return \Illuminate\Http\Response
      */
     public function destroy($id, Request $request)

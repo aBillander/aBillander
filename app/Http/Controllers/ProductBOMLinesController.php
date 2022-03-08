@@ -53,7 +53,7 @@ class ProductBOMLinesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ProductBOMLine  $productBOMLine
+     * @param  \App\Models\ProductBOMLine  $productBOMLine
      * @return \Illuminate\Http\Response
      */
     public function show(ProductBOMLine $productBOMLine)
@@ -64,7 +64,7 @@ class ProductBOMLinesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ProductBOMLine  $productBOMLine
+     * @param  \App\Models\ProductBOMLine  $productBOMLine
      * @return \Illuminate\Http\Response
      */
     public function edit(ProductBOMLine $productBOMLine)
@@ -76,7 +76,7 @@ class ProductBOMLinesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ProductBOMLine  $productBOMLine
+     * @param  \App\Models\ProductBOMLine  $productBOMLine
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, ProductBOMLine $productBOMLine)
@@ -87,7 +87,7 @@ class ProductBOMLinesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ProductBOMLine  $productBOMLine
+     * @param  \App\Models\ProductBOMLine  $productBOMLine
      * @return \Illuminate\Http\Response
      */
     public function destroy(ProductBOMLine $productBOMLine)

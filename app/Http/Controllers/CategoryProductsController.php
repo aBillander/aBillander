@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Configuration;
-use App\Category;
-use App\Product;
+use App\Models\Configuration;
+use App\Models\Category;
+use App\Models\Product;
 
 // php artisan make:controller CategoryProductsController --resource
 

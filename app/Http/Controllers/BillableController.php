@@ -2,29 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Customer;
-use App\SalesRep;
-use App\Product;
-use App\MeasureUnit;
-use App\Combination;
-use App\Currency;
-use App\Address;
-use App\Tax;
-
-use App\StockMovement;
-
-use App\Configuration;
-use App\Context;
-use App\Sequence;
-
-use App\Traits\BillableIntrospectorTrait;
+use App\Models\Address;
+use App\Models\Combination;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\MeasureUnit;
+use App\Models\Configuration;
+use App\Models\Product;
+use App\Models\SalesRep;
+use App\Models\Sequence;
+use App\Models\StockMovement;
+use App\Models\Tax;
 use App\Traits\BillableControllerTrait;
-use App\Traits\BillableFormsControllerTrait;
 use App\Traits\BillableDocumentControllerTrait;
-
+use App\Traits\BillableFormsControllerTrait;
+use App\Traits\BillableIntrospectorTrait;
 use App\Traits\SupplierBillableControllerTrait;
+use Illuminate\Http\Request;
 
 class BillableController extends Controller
 {
@@ -101,7 +97,7 @@ class BillableController extends Controller
                                     ->isNotBlocked()
                                     ->with('currency')
                                     ->with('addresses')
-                                    ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                     ->get();
 
 //            return $customers;
@@ -277,7 +273,7 @@ class BillableController extends Controller
                                 ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 
@@ -298,7 +294,7 @@ class BillableController extends Controller
                                 ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 
@@ -518,7 +514,7 @@ class BillableController extends Controller
 */
         // Recent Sales
         $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
-        $class = '\App\\'.$model.'Line';
+        $class = '\App\\Models\\'.$model.'Line';
         $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
         $tableLines = \Str::snake($model).'_lines';

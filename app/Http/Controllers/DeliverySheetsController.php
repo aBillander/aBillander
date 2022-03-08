@@ -41,7 +41,7 @@ class DeliverySheetsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\DeliverySheet  $deliverysheet
+     * @param  \App\Models\DeliverySheet  $deliverysheet
      * @return \Illuminate\Http\Response
      */
     public function show(DeliverySheet $deliverysheet)
@@ -52,7 +52,7 @@ class DeliverySheetsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\DeliverySheet  $deliverysheet
+     * @param  \App\Models\DeliverySheet  $deliverysheet
      * @return \Illuminate\Http\Response
      */
     public function edit(DeliverySheet $deliverysheet)
@@ -64,7 +64,7 @@ class DeliverySheetsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\DeliverySheet  $deliverysheet
+     * @param  \App\Models\DeliverySheet  $deliverysheet
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, DeliverySheet $deliverysheet)
@@ -75,7 +75,7 @@ class DeliverySheetsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\DeliverySheet  $deliverysheet
+     * @param  \App\Models\DeliverySheet  $deliverysheet
      * @return \Illuminate\Http\Response
      */
     public function destroy(DeliverySheet $deliverysheet)

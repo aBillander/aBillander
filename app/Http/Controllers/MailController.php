@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 // See: https://mattstauffer.co/blog/introducing-mailables-in-laravel-5-3/
 
-use App\Http\Requests;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;

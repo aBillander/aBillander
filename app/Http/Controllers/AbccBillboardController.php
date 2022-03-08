@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Configuration; 
+use App\Models\Configuration; 
 use \iImage;
 
 class AbccBillboardController extends Controller
@@ -132,7 +132,7 @@ class AbccBillboardController extends Controller
 
             // Upload Image
             // $path = $request->file('data_file')->store($bbfolder, $fileNameToStore);            
-			// iImage::make($file)->resize(300,300)->save( public_path( \App\Company::imagesPath() . $filename ) );
+			// iImage::make($file)->resize(300,300)->save( public_path( \App\Models\Company::imagesPath() . $filename ) );
 			iImage::make( $request->file('data_file') )->save( $bbfolder . $fileNameToStore );
 
             // Delete previous File

@@ -869,31 +869,30 @@ foreach ($pairs as $pair) {
 
         // Charts routes
 
-        Route::group(['prefix' => 'chart', 'namespace' => '\Chart'], function ()
-        {
+        Route::prefix('chart')->namespace('Chart')->name('chart.')->group( function () {
 
-            Route::get('/get-monthly-sales',      'ChartCustomerSalesController@getMonthlySales')->name('chart.customerorders.monthly');
-            Route::get('/get-monthly-sales-data', 'ChartCustomerSalesController@getMonthlySalesData')->name('chart.customerorders.monthly.data');
+            Route::get('/get-monthly-sales',      'ChartCustomerSalesController@getMonthlySales')->name('customerorders.monthly');
+            Route::get('/get-monthly-sales-data', 'ChartCustomerSalesController@getMonthlySalesData')->name('customerorders.monthly.data');
 
-            Route::get('/get-daily-sales',      'ChartDailyCustomerSalesController@getDailySales')->name('chart.customerorders.daily');
-            Route::get('/get-daily-sales-data', 'ChartDailyCustomerSalesController@getDailySalesData')->name('chart.customerorders.daily.data');
+            Route::get('/get-daily-sales',      'ChartDailyCustomerSalesController@getDailySales')->name('customerorders.daily');
+            Route::get('/get-daily-sales-data', 'ChartDailyCustomerSalesController@getDailySalesData')->name('customerorders.daily.data');
 
-            Route::get('/get-customer-monthly-vouchers',      'ChartCustomerVouchersController@getMonthlyVouchers')->name('chart.customervouchers.monthly');
-            Route::get('/get-customer-monthly-vouchers-data', 'ChartCustomerVouchersController@getMonthlyVouchersData')->name('chart.customervouchers.monthly.data');
+            Route::get('/get-customer-monthly-vouchers',      'ChartCustomerVouchersController@getMonthlyVouchers')->name('customervouchers.monthly');
+            Route::get('/get-customer-monthly-vouchers-data', 'ChartCustomerVouchersController@getMonthlyVouchersData')->name('customervouchers.monthly.data');
 
-            Route::get('/get-supplier-monthly-vouchers',      'ChartSupplierVouchersController@getMonthlyVouchers')->name('chart.suppliervouchers.monthly');
-            Route::get('/get-supplier-monthly-vouchers-data', 'ChartSupplierVouchersController@getMonthlyVouchersData')->name('chart.suppliervouchers.monthly.data');
+            Route::get('/get-supplier-monthly-vouchers',      'ChartSupplierVouchersController@getMonthlyVouchers')->name('suppliervouchers.monthly');
+            Route::get('/get-supplier-monthly-vouchers-data', 'ChartSupplierVouchersController@getMonthlyVouchersData')->name('suppliervouchers.monthly.data');
 
-            Route::get('/get-all-monthly-vouchers',      'ChartAllVouchersController@getMonthlyVouchers')->name('chart.allvouchers.monthly');
-            Route::get('/get-all-monthly-vouchers-data', 'ChartAllVouchersController@getMonthlyVouchersData')->name('chart.allvouchers.monthly.data');
+            Route::get('/get-all-monthly-vouchers',      'ChartAllVouchersController@getMonthlyVouchers')->name('allvouchers.monthly');
+            Route::get('/get-all-monthly-vouchers-data', 'ChartAllVouchersController@getMonthlyVouchersData')->name('allvouchers.monthly.data');
 
-            Route::get('/get-monthly-product-stock',      'ChartProductStockController@getMonthlyProductStock')->name('chart.product.stock.monthly');
-            Route::get('/get-monthly-product-stock-data', 'ChartProductStockController@getMonthlyProductStockData')->name('chart.product.stock.monthly.data');
+            Route::get('/get-monthly-product-stock',      'ChartProductStockController@getMonthlyProductStock')->name('product.stock.monthly');
+            Route::get('/get-monthly-product-stock-data', 'ChartProductStockController@getMonthlyProductStockData')->name('product.stock.monthly.data');
 
-            Route::get('/get-monthly-product-sales',      'ChartProductSalesController@getMonthlyProductSales')->name('chart.product.sales.monthly');
-            Route::get('/get-monthly-product-sales-data', 'ChartProductSalesController@getMonthlyProductSalesData')->name('chart.product.sales.monthly.data');
+            Route::get('/get-monthly-product-sales',      'ChartProductSalesController@getMonthlyProductSales')->name('product.sales.monthly');
+            Route::get('/get-monthly-product-sales-data', 'ChartProductSalesController@getMonthlyProductSalesData')->name('product.sales.monthly.data');
 
-        });
+        } );
 
                 
         /* ********************************************************** */

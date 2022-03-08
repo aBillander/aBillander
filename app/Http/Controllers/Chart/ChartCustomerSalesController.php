@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
+use App\Models\CustomerInvoice;
 use App\Models\CustomerShippingSlip;
+use App\Models\CustomerOrder;
 
 class ChartCustomerSalesController extends Controller
 {
@@ -48,7 +50,8 @@ class ChartCustomerSalesController extends Controller
 		// abi_r($orders_dates[0]);abi_r('*********************');die();
 		if ( ! empty( $orders_dates ) ) {
 			foreach ( $orders_dates as $unformatted_date ) {
-				$date = new \DateTime( $unformatted_date->date );
+//				$date = new \DateTime( $unformatted_date->date );
+				$date = new \DateTime( $unformatted_date );
 				$month_no = $date->format( 'm' );
 				$month_name = l('month.'.$month_no);	//$date->format( 'M' );
 				$month_array[ $month_no ] = $month_name." ".$date->format( 'Y' );

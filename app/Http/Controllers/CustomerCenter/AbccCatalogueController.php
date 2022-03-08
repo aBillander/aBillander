@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\CustomerCenter;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\Category;
+use App\Models\Configuration;
+use App\Models\Customer;
+use App\Models\Image;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\Configuration;
-use App\Customer;
-use App\Category;
-use App\Product;
 
 class AbccCatalogueController extends Controller
 {
@@ -362,7 +361,7 @@ class AbccCatalogueController extends Controller
         		$active = true;
         		$flaf = 'active';
         	}
-        	$src = \URL::to( \App\Image::pathProducts() . $image->getImageFolder() . $image->filename . '-large_default' . '.' . $image->extension );
+        	$src = \URL::to( Image::pathProducts() . $image->getImageFolder() . $image->filename . '-large_default' . '.' . $image->extension );
         	$alt = "(".$image->filename.") ".$image->caption;
         	$caption = "(".$image->filename.") ".$image->caption;
 
@@ -376,7 +375,7 @@ class AbccCatalogueController extends Controller
         	$data = [
         		'title' => $product->name,
         		'content' => nl2p($product->description_short) . '<br />' . nl2p($product->description),
-        		'href' => \URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ),
+        		'href' => \URL::to( Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ),
         		'caption' => "(".$img->filename.") ".$img->caption,
 
         		'carousel' => $carousel,

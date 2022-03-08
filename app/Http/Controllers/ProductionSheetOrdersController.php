@@ -2,33 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\ProductionSheet;
-
-use App\Customer;
-use App\CustomerOrder as Document;
-use App\CustomerOrderLine as DocumentLine;
-use App\CustomerOrderLineTax as DocumentLineTax;
-
-use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-use App\CustomerInvoiceLineTax;
-
-use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
-use App\CustomerShippingSlipLineTax;
-use App\DocumentAscription;
-
-use App\Configuration;
-use App\Sequence;
-use App\Template;
-
 use App\Events\CustomerOrderConfirmed;
-
+use App\Models\Configuration;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerInvoiceLineTax;
+use App\Models\CustomerOrder as Document;
+use App\Models\CustomerOrder;
+use App\Models\CustomerOrderLine as DocumentLine;
+use App\Models\CustomerOrderLineTax as DocumentLineTax;
+use App\Models\CustomerShippingSlip;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\CustomerShippingSlipLineTax;
+use App\Models\DocumentAscription;
+use App\Models\ProductionSheet;
+use App\Models\Sequence;
+use App\Models\Template;
 use App\Traits\BillableGroupableControllerTrait;
-use App\Traits\BillableShippingSlipableControllerTrait;
 use App\Traits\BillableProductionSheetableControllerTrait;
+use App\Traits\BillableShippingSlipableControllerTrait;
+use Illuminate\Http\Request;
 
     // php artisan make:controller ProductionSheetOrdersController --resource
     // php artisan make:controller ProductionSheetShippingSlipsController --resource
@@ -637,7 +631,7 @@ class ProductionSheetOrdersController extends BillableController
             //     rightable is Customer Invoice Document
             $link_data = [
                 'leftable_id'    => $document->id,
-                'leftable_type'  => \App\CustomerOrder::class,  // Document::class,   // CustomerOrder::class,
+                'leftable_type'  => CustomerOrder::class,  // Document::class,   // CustomerOrder::class,
 
                 'rightable_id'   => $shippingslip->id,
                 'rightable_type' => CustomerShippingSlip::class,

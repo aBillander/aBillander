@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Customer;
-use App\Address;
-use App\Country;
-use App\State;
-
+use App\Models\ActivityLogger;
+use App\Models\Address;
+use App\Models\Configuration;
+use App\Models\Country;
+use App\Models\Customer;
+use App\Models\CustomerGroup;
+use App\Models\PaymentMethod;
+use App\Models\PriceList;
+use App\Models\ShippingMethod;
+use App\Models\State;
 use Excel;
+use Illuminate\Http\Request;
 
 class ImportCustomersController extends Controller
 {
@@ -135,7 +138,7 @@ class ImportCustomersController extends Controller
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Customers', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Import Customers', __METHOD__ )
                     ->backTo( route('customers.import') );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -346,28 +349,28 @@ class ImportCustomersController extends Controller
                     if ( isset( $data['customer_group_id'] ) )
                     // if ( $data['customer_group_id'] )
                     {
-                        if ( !\App\CustomerGroup::where('id', $data['customer_group_id'])->exists() )
+                        if ( !CustomerGroup::where('id', $data['customer_group_id'])->exists() )
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'customer_group_id' no existe. ".$data['customer_group_id']);
                     }
 
                     if ( isset( $data['price_list_id'] ) )
                     // if ( $data['price_list_id'] )
                     {
-                        if ( !\App\PriceList::where('id', $data['price_list_id'])->exists() )
+                        if ( !PriceList::where('id', $data['price_list_id'])->exists() )
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'price_list_id' no existe. ".$data['price_list_id']);
                     }
 
                     if ( isset( $data['payment_method_id'] ) )
                     // if ( $data['payment_method_id'] )
                     {
-                        if ( !\App\PaymentMethod::where('id', $data['payment_method_id'])->exists() )
+                        if ( !PaymentMethod::where('id', $data['payment_method_id'])->exists() )
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'payment_method_id' no existe. ".$data['payment_method_id']);
                     }
 
                     if ( isset( $data['shipping_method_id'] ) )
                     // if ( $data['shipping_method_id'] )
                     {
-                        if ( !\App\ShippingMethod::where('id', $data['shipping_method_id'])->exists() )
+                        if ( !ShippingMethod::where('id', $data['shipping_method_id'])->exists() )
                             $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'shipping_method_id' no existe. ".$data['shipping_method_id']);
                     }
 
@@ -472,7 +475,7 @@ class ImportCustomersController extends Controller
                     // Country
                     if ( !array_key_exists('country_id', $data) || intval($data['country_id']) == 0 ) 
                     {
-                        $data['country_id'] = \App\Configuration::get('DEF_COUNTRY');
+                        $data['country_id'] = Configuration::get('DEF_COUNTRY');
                     }
                     $country = Country::find($data['country_id']);
 
@@ -516,7 +519,7 @@ if ($country) {
 
                     $data['alias'] = l('Main Address', [],'addresses');
 
-                    $data['outstanding_amount_allowed'] = $data['outstanding_amount_allowed'] ?? \App\Configuration::get('DEF_OUTSTANDING_AMOUNT');
+                    $data['outstanding_amount_allowed'] = $data['outstanding_amount_allowed'] ?? Configuration::get('DEF_OUTSTANDING_AMOUNT');
 
 
                     if ( $data['notes'] )

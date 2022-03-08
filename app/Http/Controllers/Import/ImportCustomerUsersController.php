@@ -3,17 +3,15 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Configuration;
-use App\Customer;
-use App\CustomerUser;
-use App\Address;
-use App\Country;
-use App\State;
-
+use App\Models\ActivityLogger;
+use App\Models\Address;
+use App\Models\Configuration;
+use App\Models\Country;
+use App\Models\Customer;
+use App\Models\CustomerUser;
+use App\Models\State;
 use Excel;
+use Illuminate\Http\Request;
 
 class ImportCustomerUsersController extends Controller
 {
@@ -139,7 +137,7 @@ class ImportCustomerUsersController extends Controller
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Customer Users', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Import Customer Users', __METHOD__ )
                     ->backTo( route('customerusers.import') );        // 'Import Customer Users :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 

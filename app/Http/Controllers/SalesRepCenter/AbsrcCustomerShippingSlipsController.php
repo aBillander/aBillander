@@ -3,25 +3,21 @@
 namespace App\Http\Controllers\SalesRepCenter;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-// use Illuminate\Support\Facades\Auth;
-use App\SalesRepUser;
-use App\SalesRep;
-
-use App\Configuration;
-use App\Currency;
-
-use App\Customer;
-use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
-use App\Carrier;
-
-use Mail;
-
+use App\Models\Carrier;
+use App\Models\Company;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerShippingSlip;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\SalesRep;
+use App\Models\SalesRepUser;
+use App\Models\Template;
 use App\Traits\DateFormFormatterTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Mail;
 
 class AbsrcCustomerShippingSlipsController extends Controller
 {
@@ -108,7 +104,7 @@ class AbsrcCustomerShippingSlipsController extends Controller
                             ->firstOrFail();
 
         // $company = \App\Context::getContext()->company;
-        $company = \App\Company::with('currency')->findOrFail( intval(Configuration::get('DEF_COMPANY')) );
+        $company = Company::with('currency')->findOrFail( intval(Configuration::get('DEF_COMPANY')) );
 
         return view('absrc.invoices.show', compact('cinvoice', 'company'));
     }
@@ -130,11 +126,11 @@ class AbsrcCustomerShippingSlipsController extends Controller
                     ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         
 
-        $company = \App\Context::getContext()->company;
+        $company = Context::getContext()->company;
 
         // Get Template
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE') );
+             Template::find( Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE') );
 
         if ( !$t )
             return redirect()->route('absrc.shippingslips.index', $id)

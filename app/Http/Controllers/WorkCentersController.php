@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\WorkCenter as WorkCenter;
+use App\Models\WorkCenter;
 use View;
 
 class WorkCentersController extends Controller {

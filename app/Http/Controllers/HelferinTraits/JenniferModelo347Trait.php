@@ -2,20 +2,15 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
-use Illuminate\Http\Request;
-
-use App\Configuration;
-
-use App\Product;
-use App\Customer;
-
-use App\Modelo347;
-
-use App\Tools;
-
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\Modelo347;
+use App\Models\Product;
+use App\Models\Tools;
 use Carbon\Carbon;
-
 use Excel;
+use Illuminate\Http\Request;
 
 trait JenniferModelo347Trait
 {
@@ -149,7 +144,7 @@ foreach ($customers as $customer) {
         $data = [];
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Comprobación Acumulados 347', '', '', '', date('d M Y H:i:s')];
         $data[] = ['Ejercicio: '. $mod347_year];
         $data[] = [''];
@@ -511,7 +506,7 @@ foreach ($customers as $customer) {
 
             $subject = l('Informacion 347 de :year', [ 'year' => $mod347_year ]);
 
-            $company = \App\Context::getContext()->company;
+            $company = Context::getContext()->company;
 
             $template_vars = array(
                 'customer'   => $customer,

@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 function extractor($a, $b = NULL, $c = NULL){
 
@@ -24,8 +26,8 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request as Request;
 
-use App\Context as Context;
-use App\Language as Language;
+use App\Models\Context;
+use App\Models\Language;
 
 class TranslationsController extends Controller {
 

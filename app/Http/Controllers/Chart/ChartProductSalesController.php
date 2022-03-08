@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Configuration;
+use App\Models\Configuration;
 
 use Carbon\Carbon;
 
-use App\Product;
-use App\StockMovement;
+use App\Models\Product;
+use App\Models\StockMovement;
 
 class ChartProductSalesController extends Controller
 {
@@ -87,7 +87,7 @@ class ChartProductSalesController extends Controller
         $model = $this->model;
         if ( !in_array($model, $models) )
             $model = Configuration::get('RECENT_SALES_CLASS');
-        $class = '\App\\'.$model.'Line';
+        $class = '\\App\\Models\\'.$model.'Line';
         $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
 

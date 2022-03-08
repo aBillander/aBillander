@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\ProductionSheet;
-use App\Configuration;
-
-use WooCommerce;
-use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
-
+use App\Models\Configuration;
+use App\Models\CustomerOrder;
+use App\Models\ProductionSheet;
+use App\Models\WorkCenter;
 use App\Traits\ProductionRequirementableControllerTrait;
+use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
+use Illuminate\Http\Request;
+use WooCommerce;
 
 class ProductionSheetsController extends Controller
 {
@@ -35,7 +34,7 @@ class ProductionSheetsController extends Controller
     {
         $sheets = $this->productionSheet->orderBy('due_date', 'desc');
 
-        $sheets = $sheets->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $sheets = $sheets->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $sheets->setPath('productionsheets');
 
@@ -247,7 +246,7 @@ class ProductionSheetsController extends Controller
         foreach ( $request->input('corders', []) as $oID ) {
 
             // Retrieve order
-            $order = \App\CustomerOrder::findOrFail( $oID );
+            $order = CustomerOrder::findOrFail( $oID );
 
             $order->update(['production_sheet_id' => $sheet->id]);
 
@@ -295,8 +294,8 @@ class ProductionSheetsController extends Controller
     public function getSummary(Request $request, $id)
     {
         $sheet = $this->productionSheet->findOrFail($id);
-        $work_center = \App\WorkCenter::find($request->input('work_center_id', 0));
-        if ( !$work_center ) $work_center = new \App\WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
+        $work_center = WorkCenter::find($request->input('work_center_id', 0));
+        if ( !$work_center ) $work_center = new WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
 
 
         $sheet->load(['customerorders', 'customerorders.customer', 'customerorders.customerorderlines']);
@@ -323,14 +322,14 @@ class ProductionSheetsController extends Controller
 
     public function getCustomerOrdersSummary($id)
     {
-        $sheet = \App\ProductionSheet::findOrFail($id);
+        $sheet = ProductionSheet::findOrFail($id);
 
         return view('production_sheets.ajax._panel_customer_order_summary', compact('sheet'));
     }
     
     public function getCustomerOrderOrderLines($id)
     {
-        $order = \App\CustomerOrder::with('CustomerOrderLines')
+        $order = CustomerOrder::with('CustomerOrderLines')
                         ->with('CustomerOrderLines.product')
                         ->findOrFail($id);
 

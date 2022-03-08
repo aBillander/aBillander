@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Configuration;
-
-use App\Product;
-use App\Category;
-use App\Supplier;
-
-use Excel;
-
+use App\Models\Category;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Product;
+use App\Models\Supplier;
 use App\Traits\DateFormFormatterTrait;
+use Excel;
+use Illuminate\Http\Request;
 
 class ProductsStockController extends Controller
 {
@@ -142,7 +139,7 @@ class ProductsStockController extends Controller
         $ribbon4 = $stock_control < 0 ? 'todos' : ($stock_control == 1 ? 'Sí' : 'No');
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Productos sin Stock :: ', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = ['Categorías: '.$ribbon1];
         $data[] = ['Aprovisionamiento: '.$ribbon2];

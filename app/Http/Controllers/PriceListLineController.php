@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\PriceList as PriceList;
-use App\PriceListLine as PriceListLine;
+use App\Models\PriceList;
+use App\Models\PriceListLine;
 
 class PriceListLineController extends Controller {
 

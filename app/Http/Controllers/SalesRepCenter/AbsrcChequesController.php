@@ -2,21 +2,17 @@
 
 namespace App\Http\Controllers\SalesRepCenter;
 
-
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use App\Cheque;
-use App\ChequeDetail;
-use App\Currency;
-use App\Bank;
-use App\Configuration;
-
-use Excel;
-
+use App\Models\Bank;
+use App\Models\Cheque;
+use App\Models\ChequeDetail;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
 use App\Traits\DateFormFormatterTrait;
+use Excel;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class AbsrcChequesController extends Controller
 {
@@ -296,7 +292,7 @@ class AbsrcChequesController extends Controller
         }
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Cheques de Clientes', '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = ['Fecha de Emisión: ' . $ribbon];
         $data[] = ['Fecha de Vencimiento: ' . $ribbon1];

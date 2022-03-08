@@ -2,26 +2,30 @@
 
 namespace App\Http\Controllers;
 
-// 
-
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use App\Supplier;
-use App\SupplierShippingSlip as Document;
-use App\SupplierShippingSlipLine as DocumentLine;
-
-use App\SupplierInvoice;
-use App\SupplierInvoiceLine;
-use App\SupplierInvoiceLineTax;
-use App\DocumentAscription;
-
-use App\Configuration;
-use App\Sequence;
-use App\Template;
-use App\MeasureUnit;
-
 use App\Events\SupplierShippingSlipConfirmed;
+use App\Helpers\DocumentAscription;
+use App\Helpers\Price;
+use App\Models\ActivityLogger;
+use App\Models\Combination;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\MeasureUnit;
+use App\Models\PaymentMethod;
+use App\Models\Product;
+use App\Models\SalesRep;
+use App\Models\Sequence;
+use App\Models\Supplier;
+use App\Models\SupplierInvoice;
+use App\Models\SupplierInvoiceLine;
+use App\Models\SupplierInvoiceLineTax;
+use App\Models\SupplierShippingSlip as Document;
+use App\Models\SupplierShippingSlip;
+use App\Models\SupplierShippingSlipLine as DocumentLine;
+use App\Models\Tax;
+use App\Models\Template;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class SupplierShippingSlipsController extends BillableController
 {
@@ -198,7 +202,7 @@ class SupplierShippingSlipsController extends BillableController
 //        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
 //        $doc_id = $seq->getNextDocumentId();
 
-        $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+        $extradata = [  'user_id'              => Context::getContext()->user->id,
 
                         'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
 
@@ -620,11 +624,11 @@ class SupplierShippingSlipsController extends BillableController
         if ( !($items_per_page >= 0) ) 
             $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
 
-        $sequenceList = Sequence::listFor( 'App\\SupplierInvoice' );
+        $sequenceList = Sequence::listFor( 'App\\Models\\SupplierInvoice' );
 
-        $templateList = Template::listFor( 'App\\SupplierInvoice' );
+        $templateList = Template::listFor( 'App\\Models\\SupplierInvoice' );
 
-        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $payment_methodList = PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
         $statusList = SupplierInvoice::getStatusList();
 
@@ -678,7 +682,7 @@ class SupplierShippingSlipsController extends BillableController
 
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Invoice Supplier Shipping Slips', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Invoice Supplier Shipping Slips', __METHOD__ )
                     ->backTo( route('supplier.invoiceable.shippingslips', $params['supplier_id']) );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -702,7 +706,7 @@ class SupplierShippingSlipsController extends BillableController
         $params['logger'] = $logger;
 
 
-        $result = \App\SupplierShippingSlip::invoiceDocumentList( $document_list, $params );
+        $result = SupplierShippingSlip::invoiceDocumentList( $document_list, $params );
         if ( is_array($result) && array_key_exists('error', $result))
         {
             return redirect()->back()
@@ -746,7 +750,7 @@ class SupplierShippingSlipsController extends BillableController
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Invoice Supplier Shipping Slips', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Invoice Supplier Shipping Slips', __METHOD__ )
                     ->backTo( route('supplier.invoiceable.shippingslips', $params['supplier_id']) );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -770,7 +774,7 @@ class SupplierShippingSlipsController extends BillableController
         $params['logger'] = $logger;
 
 
-        $result = \App\SupplierShippingSlip::invoiceDocumentList( $document_list, $params );
+        $result = SupplierShippingSlip::invoiceDocumentList( $document_list, $params );
         if ( is_array($result) && array_key_exists('error', $result))
         {
             return redirect()->back()
@@ -1133,30 +1137,30 @@ class SupplierShippingSlipsController extends BillableController
         $combination_id  = $request->input('combination_id', 0);
         $supplier_id     = $request->input('supplier_id');
         $sales_rep_id    = $request->input('sales_rep_id', 0);
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 
 //        return "$product_id, $combination_id, $supplier_id, $currency_id";
 
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->find(intval($combination_id));
+            $combination = Combination::with('product')->with('product.tax')->find(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::with('tax')->find(intval($product_id));
+            $product = Product::with('tax')->find(intval($product_id));
         }
 
-        $supplier = \App\Supplier::find(intval($supplier_id));
+        $supplier = Supplier::find(intval($supplier_id));
 
         $sales_rep = null;
         if ($sales_rep_id>0)
-            $sales_rep = \App\SalesRep::find(intval($sales_rep_id));
+            $sales_rep = SalesRep::find(intval($sales_rep_id));
         if (!$sales_rep)
             $sales_rep = (object) ['id' => 0, 'commission_percent' => 0.0]; 
         
-        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
-                    \App\Context::getContext()->currency :
-                    \App\Currency::find(intval($currency_id));
+        $currency = ($currency_id == Context::getContext()->currency->id) ?
+                    Context::getContext()->currency :
+                    Currency::find(intval($currency_id));
 
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
@@ -1220,7 +1224,7 @@ class SupplierShippingSlipsController extends BillableController
         $other_json      = $request->input('other_json');
         $supplier_id     = $request->input('supplier_id');
         $sales_rep_id    = $request->input('sales_rep_id', 0);
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 
 //        return "$product_id, $combination_id, $supplier_id, $currency_id";
 
@@ -1230,17 +1234,17 @@ class SupplierShippingSlipsController extends BillableController
             $product = $other_json;
         }
 
-        $supplier = \App\Supplier::find(intval($supplier_id));
+        $supplier = Supplier::find(intval($supplier_id));
 
         $sales_rep = null;
         if ($sales_rep_id>0)
-            $sales_rep = \App\SalesRep::find(intval($sales_rep_id));
+            $sales_rep = SalesRep::find(intval($sales_rep_id));
         if (!$sales_rep)
             $sales_rep = (object) ['id' => 0, 'commission_percent' => 0.0]; 
         
-        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
-                    \App\Context::getContext()->currency :
-                    \App\Currency::find(intval($currency_id));
+        $currency = ($currency_id == Context::getContext()->currency->id) ?
+                    Context::getContext()->currency :
+                    Currency::find(intval($currency_id));
 
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
@@ -1249,12 +1253,12 @@ class SupplierShippingSlipsController extends BillableController
             return '';
         }
 
-        $tax = \App\Tax::find($product->tax_id);
+        $tax = Tax::find($product->tax_id);
 
         // Calculate price per $supplier_id now!
         $amount_is_tax_inc = Configuration::get('PRICES_ENTERED_WITH_TAX');
         $amount = $amount_is_tax_inc ? $product->price_tax_inc : $product->price;
-        $price = new \App\Price( $amount, $amount_is_tax_inc, $currency );
+        $price = new Price( $amount, $amount_is_tax_inc, $currency );
         $tax_percent = $tax->getFirstRule()->percent;
         $price->applyTaxPercent( $tax_percent );
 

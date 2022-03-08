@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use App\Configuration;
-
-use App\EmailLog;
-
+use App\Models\Configuration;
+use App\Models\EmailLog;
 use App\Traits\DateFormFormatterTrait;
 
 class EmailLogsController extends Controller

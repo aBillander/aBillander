@@ -1,11 +1,12 @@
-<?php namespace App\Http\Controllers;
+<?php
 
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Sequence as Sequence;
+use App\Models\Sequence;
 use View;
 
 class SequencesController extends Controller {

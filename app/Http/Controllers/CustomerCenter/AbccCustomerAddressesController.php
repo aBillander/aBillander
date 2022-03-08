@@ -8,12 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
-use App\Customer;
-use App\Address;
+use App\Models\Customer;
+use App\Models\Address;
 
 class AbccCustomerAddressesController extends Controller
 {
-
 
    protected $customer;
    protected $address;

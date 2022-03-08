@@ -2,26 +2,21 @@
 
 namespace App\Http\Controllers\SalesRepCenter;
 
-
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-// use Illuminate\Support\Facades\Auth;
-use App\SalesRepUser;
-use App\SalesRep;
+use App\Models\SalesRepUser;
+use App\Models\SalesRep;
 
-use App\Customer;
+use App\Models\Customer;
 
-use App\Payment;
-use App\PaymentType;
-use App\Configuration;
+use App\Models\Payment;
+use App\Models\PaymentType;
+use App\Models\Configuration;
 
 use App\Traits\DateFormFormatterTrait;
-
-// use App\Events\CustomerPaymentReceived;
-// use App\Events\CustomerPaymentBounced;
 
 class AbsrcCustomerVouchersController extends Controller
 {

@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Controllers\Controller;
-
+use App\Models\Configuration;
+use App\Models\Product;
+use App\Models\ProductMeasureUnit;
 use Illuminate\Http\Request;
-
-use App\Product;
-use App\ProductMeasureUnit;
 
 class ProductMeasureUnitsController extends Controller {
 
@@ -54,7 +52,7 @@ class ProductMeasureUnitsController extends Controller {
 
         $product  = $this->product->findOrFail($productId);
 
-        $measure_unitList = \App\MeasureUnit::pluck('name', 'id')->toArray();
+        $measure_unitList = MeasureUnit::pluck('name', 'id')->toArray();
 
         return view('product_measure_units.create', compact('product', 'measure_unitList'));
 	}
@@ -176,14 +174,14 @@ class ProductMeasureUnitsController extends Controller {
     {
         $search = $request->term;
 
-        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
+        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
                                 ->IsSaleable()
                                 ->qualifyForPriceList( $id )
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 

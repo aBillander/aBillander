@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Product as Product;
-
+use App\Models\ActivityLogger;
+use App\Models\Product;
+use App\Models\Tax;
 use Excel;
+use Illuminate\Http\Request;
 
 class ImportProductPricesController extends Controller
 {
@@ -140,7 +139,7 @@ https://phpspreadsheet.readthedocs.io/en/develop/topics/migration-from-PHPExcel/
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Product Prices', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Import Product Prices', __METHOD__ )
                     ->backTo( route('products.prices.import') );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -278,7 +277,7 @@ https://phpspreadsheet.readthedocs.io/en/develop/topics/migration-from-PHPExcel/
                     $data['tax_id'] = intval( $data['tax_id'] ?? 0 );
                     if ($data['tax_id']>0)
                     {
-                        if ( ! \App\Tax::where('id', $data['tax_id'])->exists() )
+                        if ( ! Tax::where('id', $data['tax_id'])->exists() )
                         {
                             $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'tax_id' es inválido: " . ($data['tax_id'] ?? ''));
     

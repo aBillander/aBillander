@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Controllers\Controller;
-
+use App\Models\Configuration;
+use App\Models\MeasureUnit;
+use App\Models\Product;
+use App\Models\ProductBOMLine;
 use Illuminate\Http\Request;
-
-use App\MeasureUnit;
 use View;
 
 class MeasureUnitsController extends Controller {
@@ -134,7 +134,7 @@ class MeasureUnitsController extends Controller {
         $msg = '';
 
         // Products
-        if ( \App\Product::where('measure_unit_id', $id)->first() ) {
+        if ( Product::where('measure_unit_id', $id)->first() ) {
 
         	$in_use = true;
         	$msg = 'Prod';
@@ -142,7 +142,7 @@ class MeasureUnitsController extends Controller {
         } else 
 
         // ProductBOMLines
-        if ( \App\ProductBOMLine::where('measure_unit_id', $id)->first() ) {
+        if ( ProductBOMLine::where('measure_unit_id', $id)->first() ) {
 
         	$in_use = true;
         	$msg = 'BOM';
@@ -152,8 +152,8 @@ class MeasureUnitsController extends Controller {
         } else 
 
         // Default measure unit
-        if (   (\App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS') == $id) 
-        	|| (\App\Configuration::get('DEF_MEASURE_UNIT_FOR_BOMS'    ) == $id) ) {
+        if (   (Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS') == $id) 
+        	|| (Configuration::get('DEF_MEASURE_UNIT_FOR_BOMS'    ) == $id) ) {
 
         	$in_use = true;
         	$msg = 'def';

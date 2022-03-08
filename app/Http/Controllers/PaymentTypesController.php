@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\PaymentType;
+use App\Models\PaymentType;
 use View;
 
 class PaymentTypesController extends Controller {

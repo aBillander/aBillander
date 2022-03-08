@@ -77,7 +77,7 @@ class Address extends Model {
             // Documents
             foreach ($documents as $document) {
                 # code...
-                $class = '\App\\Models\\'.$document;
+                $class = '\\App\\Models\\'.$document;
                 $docs = $class::
                               where('invoicing_address_id', $address->id)
                             ->orWhere('shipping_address_id', $address->id)
@@ -92,7 +92,7 @@ class Address extends Model {
             {
                 $relation = 'DeliverySheetLines';
 
-                $class = '\App\\Models\\'.$relation;
+                $class = '\\App\\Models\\'.$relation;
                 $docs = $class::
                               where('address_id', $address->id)
                             ->get();

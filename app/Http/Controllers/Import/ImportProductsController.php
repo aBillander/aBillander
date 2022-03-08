@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Product as Product;
-
+use App\Models\ActivityLogger;
+use App\Models\Category;
+use App\Models\Configuration;
+use App\Models\Ecotax;
+use App\Models\Product;
+use App\Models\Tax;
 use Excel;
+use Illuminate\Http\Request;
 
 class ImportProductsController extends Controller
 {
@@ -130,7 +132,7 @@ class ImportProductsController extends Controller
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Products', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Import Products', __METHOD__ )
                     ->backTo( route('products.import') );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -288,7 +290,7 @@ class ImportProductsController extends Controller
                     if ( $data['manufacturing_batch_size'] <= 0 ) $data['manufacturing_batch_size'] = 1;
 
                     $data['measure_unit_id'] = intval( $data['measure_unit_id'] );
-                    if ( $data['measure_unit_id'] <= 0 ) $data['measure_unit_id'] = \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS');
+                    if ( $data['measure_unit_id'] <= 0 ) $data['measure_unit_id'] = Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS');
 
                     $data['work_center_id'] = intval( $data['work_center_id'] );
                     if ( $data['work_center_id'] <= 0 ) $data['work_center_id'] = NULL;
@@ -297,18 +299,18 @@ class ImportProductsController extends Controller
                     if ( $data['main_supplier_id'] <= 0 ) $data['main_supplier_id'] = NULL;
 
                     // Category
-                    if ( ! \App\Category::where('id', $data['category_id'])->exists() )
+                    if ( ! Category::where('id', $data['category_id'])->exists() )
                         $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'category_id' es inválido: " . ($data['category_id'] ?? ''));
 
                     // Tax
                     $data['tax_id'] = intval( $data['tax_id'] );
-                    if ( ! \App\Tax::where('id', $data['tax_id'])->exists() )
+                    if ( ! Tax::where('id', $data['tax_id'])->exists() )
                         $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'tax_id' es inválido: " . ($data['tax_id'] ?? ''));
 
                     // Ecotax
                     $data['ecotax_id'] = intval( $data['ecotax_id'] );
                     if ( $data['ecotax_id'] > 0 )
-                        if ( ! \App\Ecotax::where('id', $data['ecotax_id'])->exists() )
+                        if ( ! Ecotax::where('id', $data['ecotax_id'])->exists() )
                             $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'ecotax_id' es inválido: " . ($data['ecotax_id'] ?? ''));
                     else
                         unset($data['ecotax_id']);
@@ -316,7 +318,7 @@ class ImportProductsController extends Controller
                     // Check E13
                     $data['ean13'] = trim( $data['ean13'] );
                     // Should be unique? => check your spreadsheet
-                    if ( $data['ean13'] && \App\Product::where('ean13', $data['ean13'])->exists() )
+                    if ( $data['ean13'] && Product::where('ean13', $data['ean13'])->exists() )
                         $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'ean13' ya existe: " . ($data['ean13'] ?? ''));
 
                     // Prices

@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Configuration;
-
-use App\Product;
-use App\Category;
-use App\Supplier;
-use App\WorkCenter;
-
-use Excel;
-
+use App\Models\Category;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Product;
+use App\Models\Supplier;
+use App\Models\WorkCenter;
 use App\Traits\DateFormFormatterTrait;
+use Excel;
+use Illuminate\Http\Request;
 
 class ProductsReorderController extends Controller
 {
@@ -148,7 +145,7 @@ class ProductsReorderController extends Controller
         // $ribbon6 = $work_center_id < 0 ? '' : ' :: ' . $work_centerList[ $work_center_id ];
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Re-Aprovisionamiento de Productos', '', '', '', '', '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = ['Centro de Trabajo: '.$ribbon5];
         $data[] = ['Categorías: '.$ribbon1];

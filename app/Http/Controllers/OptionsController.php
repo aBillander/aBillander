@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\OptionGroup as OptionGroup;
-use App\Option as Option;
+use App\Models\OptionGroup;
+use App\Models\Option;
 use View;
 
 class OptionsController extends Controller {

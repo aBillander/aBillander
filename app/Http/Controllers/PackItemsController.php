@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use Validator;
-use App\Product;
-use App\PackItem;
+use App\Models\Product;
+use App\Models\PackItem;
 
 class PackItemsController extends Controller {
 

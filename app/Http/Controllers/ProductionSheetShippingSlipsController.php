@@ -2,34 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\ProductionSheet;
-
-use App\Customer;
-use App\CustomerOrder;
-use App\CustomerOrderLine;
-use App\CustomerOrderLineTax;
-
-use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-use App\CustomerInvoiceLineTax;
-
-use App\CustomerShippingSlip as Document;
-use App\CustomerShippingSlipLine as DocumentLine;
-use App\CustomerShippingSlipLineTax as DocumentLineTax;
-use App\DocumentAscription;
-
-use App\Configuration;
-use App\Sequence;
-use App\Template;
-use App\ShippingMethod;
-
-// use App\Events\CustomerOrderConfirmed;
-
+use App\Models\ActivityLogger;
+use App\Models\Configuration;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerInvoiceLineTax;
+use App\Models\CustomerOrder;
+use App\Models\CustomerOrderLine;
+use App\Models\CustomerOrderLineTax;
+use App\Models\CustomerShippingSlip as Document;
+use App\Models\CustomerShippingSlipLine as DocumentLine;
+use App\Models\CustomerShippingSlipLineTax as DocumentLineTax;
+use App\Models\DocumentAscription;
+use App\Models\ProductionSheet;
+use App\Models\Sequence;
+use App\Models\ShippingMethod;
+use App\Models\Template;
 use App\Traits\BillableGroupableControllerTrait;
-use App\Traits\BillableShippingSlipableControllerTrait;
 use App\Traits\BillableProductionSheetableControllerTrait;
+use App\Traits\BillableShippingSlipableControllerTrait;
+use Illuminate\Http\Request;
 
     // php artisan make:controller ProductionSheetOrdersController --resource
     // php artisan make:controller ProductionSheetShippingSlipsController --resource
@@ -313,7 +306,7 @@ class ProductionSheetShippingSlipsController extends BillableController
 
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Invoice Production Sheet Shipping Slips', __METHOD__ )
+        $logger = use App\Models\ActivityLogger::setup( 'Invoice Production Sheet Shipping Slips', __METHOD__ )
                     ->backTo( route('productionsheet.shippingslips', $params['production_sheet_id']) );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 

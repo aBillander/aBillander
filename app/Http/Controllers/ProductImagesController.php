@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use Validator;
-use App\Product;
-use App\Image;
+use App\Models\Product;
+use App\Models\Image;
 
 class ProductImagesController extends Controller {
 

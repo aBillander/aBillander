@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Accounting;
 
+use App\Events\CustomerInvoicePosted;
+use App\Helpers\FilenameSanitizer;
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use App\Configuration;
-use App\Customer;
-use App\CustomerInvoice;
-
-use App\Traits\ViewFormatterTrait;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\Template;
 use App\Traits\DateFormFormatterTrait;
+use App\Traits\ViewFormatterTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class AccountingCustomerInvoicesController extends Controller
 {
@@ -177,11 +178,11 @@ class AccountingCustomerInvoicesController extends Controller
         // abi_r($document->hasManyThrough('App\CustomerInvoiceLineTax', 'App\CustomerInvoiceLine'), true);
 
         // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-        $company = \App\Context::getContext()->company;
+        $company = Context::getContext()->company;
 
         // Template
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE') );
+             Template::find( Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE') );
 
         if ( !$t )
             return redirect()->back()
@@ -215,7 +216,7 @@ class AccountingCustomerInvoicesController extends Controller
         // Lets try another strategy
         if ( $document->document_reference ) {
             //
-            $sanitizer = new \App\FilenameSanitizer( $document->document_reference );
+            $sanitizer = new FilenameSanitizer( $document->document_reference );
 
             $sanitizer->stripPhp()
                 ->stripRiskyCharacters()
@@ -240,7 +241,7 @@ class AccountingCustomerInvoicesController extends Controller
 //            $event_class = '\\App\\Events\\CustomerInvoicePosted';
 //            event( new $event_class( $document ) );
 
-            event( new \App\Events\CustomerInvoicePosted( $document ) );
+            event( new CustomerInvoicePosted( $document ) );
         }
     
 
@@ -275,7 +276,7 @@ class AccountingCustomerInvoicesController extends Controller
 //                                ->where('status', 'closed')
 //                                ->where('total_tax_incl', '>', 0.0)
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 

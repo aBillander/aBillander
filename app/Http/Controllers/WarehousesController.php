@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Warehouse as Warehouse;
-use App\Address as Address;
-use App\Country as Country;
-
+use App\Models\Address;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Country;
+use App\Models\Warehouse;
 use Excel;
-
+use Illuminate\Http\Request;
 use View;
 
 class WarehousesController extends Controller {
@@ -70,7 +67,7 @@ class WarehousesController extends Controller {
 		$warehouse = $this->warehouse->create( $request->all() );
 
 		// First record
-		if ( Warehouse::count() == 1 ) \App\Configuration::updateValue('DEF_WAREHOUSE', $warehouse->id);
+		if ( Warehouse::count() == 1 ) Configuration::updateValue('DEF_WAREHOUSE', $warehouse->id);
 
 		$data = $request->input('address');
 //		$data['notes'] = '';
@@ -170,7 +167,7 @@ class WarehousesController extends Controller {
         } else 
 
         // Default Warehouse
-        if ( \App\Configuration::get('DEF_WAREHOUSE') == $id ) {
+        if ( Configuration::get('DEF_WAREHOUSE') == $id ) {
 
         	$in_use = true;
         }
@@ -203,7 +200,7 @@ class WarehousesController extends Controller {
         				->where('name', 'LIKE', '%'.$request->input('name', '').'%')
                         ->orderBy('products.name', 'asc');
 
-        $products = $products->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $products = $products->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $products->setPath('inventory');
 
@@ -231,7 +228,7 @@ class WarehousesController extends Controller {
         $data = []; 
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Productos en Almacén -::- '.$warehouse->address->alias, '', '', date('d M Y H:i:s')];
         $data[] = ['Filtro Referencia: ' . $request->input('reference', '')];
         $data[] = ['Filtro Nombre de Producto: ' . $request->input('name', '')];

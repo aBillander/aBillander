@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\ShippingMethod;
-use App\ShippingMethodTableLine;
+use App\Models\ShippingMethod;
+use App\Models\ShippingMethodTableLine;
 
 class ShippingMethodTableLinesController extends Controller
 {

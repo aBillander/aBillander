@@ -1,11 +1,12 @@
-<?php namespace App\Http\Controllers;
+<?php
 
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Tax as Tax;
+use App\Models\Tax;
 use View;
 
 class TaxesController extends Controller {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Language;
 use Request, Cookie;
 
 class WelcomeController extends Controller {
@@ -47,7 +48,7 @@ class WelcomeController extends Controller {
 	 */
 	public function setLanguage($id)
 	{
-		$language = \App\Language::findOrFail( $id );
+		$language = Language::findOrFail( $id );
 
 		Cookie::queue('user_language', $language->id, 30*24*60);
 		

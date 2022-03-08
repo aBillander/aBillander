@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Helpers\eggTimer;
 use App\Http\Controllers\Controller;
-
-use App\Configuration;
-
-use App\StockCount;
-use App\StockCountLine;
-use App\StockMovement;
+use App\Models\ActivityLogger;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Product;
+use App\Models\StockCount;
+use App\Models\StockCountLine;
+use App\Models\StockMovement;
+use Illuminate\Http\Request;
 
 class StockCountsController extends Controller
 {
-
 
    protected $stockcount;
    protected $stockcountline;
@@ -63,7 +64,7 @@ class StockCountsController extends Controller
     public function store(Request $request)
     {
         $date_raw = $request->input('document_date');
-        $date = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $date_raw )->toDateString();
+        $date = \Carbon\Carbon::createFromFormat( Context::getContext()->language->date_format_lite, $date_raw )->toDateString();
 
 /*
         $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
@@ -120,7 +121,7 @@ class StockCountsController extends Controller
     public function update(Request $request, StockCount $stockcount)
     {
         $date_raw = $request->input('document_date');
-        $date = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $date_raw )->toDateString();
+        $date = \Carbon\Carbon::createFromFormat( Context::getContext()->language->date_format_lite, $date_raw )->toDateString();
 
         $request->merge( ['document_date' => $date] );
 
@@ -223,7 +224,7 @@ class StockCountsController extends Controller
         $wsname = '['.$stockcount->warehouse->id.'] '.$stockcount->warehouse->name;
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Process Inventory Count', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Process Inventory Count', __METHOD__ )
                     ->backTo( route('stockcounts.stockcountlines.index', [$stockcount->id]) );
 
         if ($roundCycle==1)
@@ -231,7 +232,7 @@ class StockCountsController extends Controller
         $logger->start();
 
 
-        $abiTimer = new \App\eggTimer( Configuration::getInt('ABI_IMPERSONATE_TIMEOUT'), Configuration::getInt('ABI_TIMEOUT_OFFSET') );
+        $abiTimer = new eggTimer( Configuration::getInt('ABI_IMPERSONATE_TIMEOUT'), Configuration::getInt('ABI_TIMEOUT_OFFSET') );
         $logger->log("TIMER", 'Control de tiempo Iniciado. Ronda: '.$roundCycle.' :: [Tiempo concedido: '.$abiTimer->getAllowedTime().' segundos].');
 
         if ($roundCycle==1)
@@ -320,7 +321,7 @@ class StockCountsController extends Controller
             // Alternative:
             if ( !$product )
             {
-                $product = \App\Product::where('reference', $line->reference)->first();
+                $product = Product::where('reference', $line->reference)->first();
 
                 if ( !$product )
                 {
@@ -356,8 +357,8 @@ class StockCountsController extends Controller
                     'measure_unit_id' => $product->measure_unit_id,
 
                     'price' => $line->getPriceForStockValuation(),
-                    'currency_id' => \App\Context::getContext()->company->currency->id,
-                    'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+                    'currency_id' => Context::getContext()->company->currency->id,
+                    'conversion_rate' => Context::getContext()->company->currency->conversion_rate,
 
                     'notes' => '',
 

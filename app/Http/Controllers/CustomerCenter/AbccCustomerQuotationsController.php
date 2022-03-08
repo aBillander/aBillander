@@ -3,25 +3,23 @@
 namespace App\Http\Controllers\CustomerCenter;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerOrder;
+use App\Models\CustomerOrderLine;
+use App\Models\CustomerQuotation;
+use App\Models\CustomerQuotationLine;
+use App\Models\CustomerUser;
+use App\Models\Template;
+use App\Models\Todo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\Configuration;
-use App\Currency;
-use App\Todo;
-
-use App\CustomerUser;
-use App\Customer;
-use App\CustomerOrder;
-use App\CustomerOrderLine;
-use App\CustomerQuotation;
-use App\CustomerQuotationLine;
-
 use Mail;
 
-class AbccCustomerQuotationsController extends Controller {
-
+class AbccCustomerQuotationsController extends Controller
+{
 
    protected $customer, $customer_user, $customerOrder, $customerOrderLine;
 
@@ -61,7 +59,7 @@ class AbccCustomerQuotationsController extends Controller {
                             ->orderBy('document_date', 'desc')
                             ->orderBy('id', 'desc');        // ->get();
 
-        $customer_orders = $customer_orders->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
+        $customer_orders = $customer_orders->paginate( Configuration::get('ABCC_ITEMS_PERPAGE') );
 
         $customer_orders->setPath('quotations');
 
@@ -88,7 +86,7 @@ class AbccCustomerQuotationsController extends Controller {
 	{
         $customer_user = Auth::user();
         $customer      = Auth::user()->customer;
-        $cart = \App\Context::getcontext()->cart;
+        $cart = Context::getcontext()->cart;
 
         if ( $cart->cartlines->count() == 0 )
         	return redirect()->back()
@@ -223,7 +221,7 @@ class AbccCustomerQuotationsController extends Controller {
             'url' => route('customerorders.edit', [$customerOrder->id]), 
             'due_date' => null, 
             'completed' => 0, 
-            'user_id' => \App\Context::getContext()->user->id,
+            'user_id' => Context::getContext()->user->id,
         ];
 
 //        $todo = Todo::create($data);
@@ -252,7 +250,7 @@ class AbccCustomerQuotationsController extends Controller {
 
 			
 
-			$send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.abcc.new_customer_quotation', $template_vars, function($message) use ($data)
+			$send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.abcc.new_customer_quotation', $template_vars, function($message) use ($data)
 			{
 				$message->from($data['from'], $data['fromName']);
 
@@ -287,7 +285,7 @@ class AbccCustomerQuotationsController extends Controller {
 	{
         $customer_user = Auth::user();
         $customer      = Auth::user()->customer;
-        $cart = \App\Context::getcontext()->cart;
+        $cart = Context::getcontext()->cart;
 
         if ( $cart->cartlines->count() == 0 )
         	return redirect()->back()
@@ -403,7 +401,7 @@ class AbccCustomerQuotationsController extends Controller {
             'url' => route('customerquotations.edit', [$customerOrder->id]), 
             'due_date' => null, 
             'completed' => 0, 
-            'user_id' => \App\Context::getContext()->user->id,
+            'user_id' => Context::getContext()->user->id,
         ];
 
         $todo = Todo::create($data);
@@ -430,7 +428,7 @@ class AbccCustomerQuotationsController extends Controller {
 
 			
 
-			$send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.abcc.new_customer_quotation', $template_vars, function($message) use ($data)
+			$send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.abcc.new_customer_quotation', $template_vars, function($message) use ($data)
 			{
 				$message->from($data['from'], $data['fromName']);
 
@@ -535,7 +533,7 @@ class AbccCustomerQuotationsController extends Controller {
         	return redirect()->route('abcc.quotations.index')
                 	->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         
-        $cart = \App\Context::getContext()->cart;
+        $cart = Context::getContext()->cart;
 
         foreach ($order->lines as $orderline) {
         	# code...
@@ -559,11 +557,11 @@ class AbccCustomerQuotationsController extends Controller {
                 	->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         
 
-        $company = \App\Context::getContext()->company;
+        $company = Context::getContext()->company;
 
         // Get Template
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_CUSTOMER_QUOTATION_TEMPLATE') );
+             Template::find( Configuration::getInt('DEF_CUSTOMER_QUOTATION_TEMPLATE') );
 
         if ( !$t )
         	return redirect()->route('abcc.quotations.index', $id)

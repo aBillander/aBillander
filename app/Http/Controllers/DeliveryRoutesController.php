@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\DeliveryRoute;
-use App\DeliveryRouteLine;
+use App\Models\DeliveryRoute;
+use App\Models\DeliveryRouteLine;
 
-use App\Carrier;
+use App\Models\Carrier;
 
 class DeliveryRoutesController extends Controller
 {

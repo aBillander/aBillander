@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Tool;
+use App\Models\Tool;
 
 class ToolsController extends Controller
 {

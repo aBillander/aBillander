@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Party;
-use App\Lead;
-use App\User;
+use App\Models\Party;
+use App\Models\Lead;
+use App\Models\User;
 
 use Auth;
 

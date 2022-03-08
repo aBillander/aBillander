@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Warehouse;
-use App\WarehouseShippingSlip as Document;
-use App\WarehouseShippingSlipLine as DocumentLine;
-
-use App\ShippingMethod;
-use App\Carrier;
-
-use App\Configuration;
-use App\Sequence;
-use App\Template;
-
-use App\Product;
-
+use App\Events\WarehouseShippingSlipPrinted;
+use App\Helpers\FilenameSanitizer;
+use App\Models\Carrier;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Product;
+use App\Models\Sequence;
+use App\Models\ShippingMethod;
+use App\Models\Template;
+use App\Models\Warehouse;
+use App\Models\WarehouseShippingSlip as Document;
+use App\Models\WarehouseShippingSlipLine as DocumentLine;
 use App\Traits\DateFormFormatterTrait;
+use Illuminate\Http\Request;
 
 class WarehouseShippingSlipsController extends Controller
 {
@@ -132,7 +130,7 @@ class WarehouseShippingSlipsController extends Controller
         }
 
 
-        $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+        $extradata = [  'user_id'              => Context::getContext()->user->id,
 
                         'sequence_id'          => $request->input('sequence_id'), //  ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
 
@@ -1008,7 +1006,7 @@ class WarehouseShippingSlipsController extends Controller
 */
         // Recent Sales
         $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
-        $class = '\App\\'.$model.'Line';
+        $class = '\\App\\Models\\'.$model.'Line';
         $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
         $tableLines = \Str::snake($model).'_lines';
@@ -1315,11 +1313,11 @@ class WarehouseShippingSlipsController extends Controller
         // abi_r($document->hasManyThrough('App\CustomerInvoiceLineTax', 'App\CustomerInvoiceLine'), true);
 
         // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-        $company = \App\Context::getContext()->company;
+        $company = Context::getContext()->company;
 
         // Template
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE') );
+             Template::find( Configuration::getInt('DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE') );
 
         if ( !$t )
             return redirect()->route('warehouseshippingslips.edit', $id)
@@ -1355,7 +1353,7 @@ class WarehouseShippingSlipsController extends Controller
         // Lets try another strategy
         if ( $document->document_reference ) {
             //
-            $sanitizer = new \App\FilenameSanitizer( $document->document_reference );
+            $sanitizer = new FilenameSanitizer( $document->document_reference );
 
             $sanitizer->stripPhp()
                 ->stripRiskyCharacters()
@@ -1376,7 +1374,7 @@ class WarehouseShippingSlipsController extends Controller
             //
         } else {
             // Dispatch event
-            event( new \App\Events\WarehouseShippingSlipPrinted( $document ) );
+            event( new WarehouseShippingSlipPrinted( $document ) );
         }
     
 
@@ -1417,12 +1415,12 @@ class WarehouseShippingSlipsController extends Controller
 
 
         // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-        $company = \App\Context::getContext()->company;
+        $company = Context::getContext()->company;
 
         // Template
         // $seq_id = $this->sequence_id > 0 ? $this->sequence_id : Configuration::get('DEF_'.strtoupper( $this->getClassSnakeCase() ).'_SEQUENCE');
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_'.strtoupper( 'WarehouseShippingSlip' ).'_TEMPLATE') );
+             Template::find( Configuration::getInt('DEF_'.strtoupper( 'WarehouseShippingSlip' ).'_TEMPLATE') );
 
         if ( !$t )
             return redirect()->back()

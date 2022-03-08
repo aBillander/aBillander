@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\DeliveryRoute;
-use App\DeliveryRouteLine;
+use App\Models\DeliveryRoute;
+use App\Models\DeliveryRouteLine;
 use Illuminate\Http\Request;
 
 class DeliveryRouteLinesController extends Controller

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\SalesRepCenter;
 
-
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -11,12 +10,11 @@ use Illuminate\Support\Facades\Auth;
 
 use Mail;
 
-use App\Customer;
-use App\Address;
+use App\Models\Customer;
+use App\Models\Address;
 
 class AbsrcCustomerAddressesController extends  Controller
 {
-
 
    protected $customer;
    protected $address;

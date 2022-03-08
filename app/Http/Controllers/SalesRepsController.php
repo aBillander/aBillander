@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Controllers\Controller;
-
+use App\Models\Address;
+use App\Models\Language;
+use App\Models\SalesRep;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
-
-use App\SalesRep as SalesRep;
-use App\Address as Address;
 use View;
 
 class SalesRepsController extends Controller {
@@ -58,7 +57,7 @@ class SalesRepsController extends Controller {
 	{
 		// $request->merge( $request->input('address') );
 
-		$this->validate($request, \App\SalesRep::$rules);
+		$this->validate($request, SalesRep::$rules);
 
 		$salesrep = $this->salesrep->create($request->all());
 //			$request->merge( ['model_name' => 'SalesRep', 'notes' => ''] );
@@ -93,8 +92,8 @@ class SalesRepsController extends Controller {
 		// $salesrep = $this->salesrep->with('address')->findOrFail($id);
 		$salesrep = $this->salesrep->findOrFail($id);
 
-		$languageList =  \App\Language::pluck('name', 'id')->toArray();
-		$warehouseList =  \App\Warehouse::select('id', \DB::raw("concat('[', alias, '] ', name) as full_name"))->pluck('full_name', 'id')->toArray();
+		$languageList =  Language::pluck('name', 'id')->toArray();
+		$warehouseList =  Warehouse::select('id', \DB::raw("concat('[', alias, '] ', name) as full_name"))->pluck('full_name', 'id')->toArray();
 
 		// abi_r($languageList);die();
 		
@@ -114,7 +113,7 @@ class SalesRepsController extends Controller {
 //		$address = $salesrep->address;
 
 		// $this->validate($request, Address::related_rules());
-		$this->validate($request, \App\SalesRep::$rules);
+		$this->validate($request, SalesRep::$rules);
 
 		// http://stackoverflow.com/questions/17950118/laravel-eloquent-how-to-update-a-model-and-related-models-in-one-go
 		$salesrep->update( $request->all() );

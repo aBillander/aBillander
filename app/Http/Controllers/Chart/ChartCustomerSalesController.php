@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\CustomerShippingSlip;
+use App\Models\CustomerShippingSlip;
 
 class ChartCustomerSalesController extends Controller
 {
@@ -26,7 +26,7 @@ class ChartCustomerSalesController extends Controller
 
 
 	function getAllMonths( $model = 'CustomerOrder' ){
-		$class = 'App\\'.$model;
+		$class = '\\App\\Models\\'.$model;
 		// 12 months (maximum) range
 		$last = $class::
 							  orderBy( 'document_date', 'DESC' )
@@ -60,7 +60,7 @@ class ChartCustomerSalesController extends Controller
 
 	function getMonthlyPostCount( $month, $model = 'CustomerOrder' ) {
 //		$monthly_order_count = CustomerShippingSlip::whereMonth( 'created_at', $month )->get()->count();
-		$class = 'App\\'.$model;
+		$class = '\\App\\Models\\'.$model;
 		$monthly_order_count = $class::
 									  select('total_tax_excl')
 									->whereMonth( 'document_date', $month )

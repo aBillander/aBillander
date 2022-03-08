@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\StockCount;
-use App\StockCountLine;
-use App\Product;
-
+use App\Models\ActivityLogger;
+use App\Models\Configuration;
+use App\Models\Product;
+use App\Models\StockCount;
+use App\Models\StockCountLine;
 use Excel;
+use Illuminate\Http\Request;
 
 class ImportStockCountsController extends Controller
 {
@@ -162,7 +161,7 @@ class ImportStockCountsController extends Controller
         $name = '['.$stockcount->id.'] '.$stockcount->name;
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Stock Count', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Import Stock Count', __METHOD__ )
                     ->backTo( route('stockcounts.stockcountlines.index', [$stockcount->id]) );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -472,7 +471,7 @@ class ImportStockCountsController extends Controller
      */
     public function export($id)
     {
-        \App\Configuration::updateValue('EXPORT_DECIMAL_SEPARATOR', ',');
+        Configuration::updateValue('EXPORT_DECIMAL_SEPARATOR', ',');
         
 /*        $stockcount = $this->stockcount
                     ->with('stockcountlines')

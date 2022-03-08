@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\ProductBOMLine;
+use App\Models\ProductBOMLine;
 use View;
 
 class ProductBOMLinesController extends Controller

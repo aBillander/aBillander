@@ -2,31 +2,25 @@
 
 namespace App\Http\Controllers;
 
-// 
-
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use App\Supplier;
-use App\SupplierOrder as Document;
-use App\SupplierOrderLine as DocumentLine;
-use App\SupplierOrderLineTax as DocumentLineTax;
-
-use App\SupplierInvoice;
-use App\SupplierInvoiceLine;
-use App\SupplierInvoiceLineTax;
-
-use App\SupplierShippingSlip;
-use App\SupplierShippingSlipLine;
-use App\SupplierShippingSlipLineTax;
-use App\DocumentAscription;
-
-use App\Configuration;
-use App\Sequence;
-use App\Template;
-use App\MeasureUnit;
-
 use App\Events\SupplierOrderConfirmed;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\DocumentAscription;
+use App\Models\MeasureUnit;
+use App\Models\Sequence;
+use App\Models\Supplier;
+use App\Models\SupplierInvoice;
+use App\Models\SupplierInvoiceLine;
+use App\Models\SupplierInvoiceLineTax;
+use App\Models\SupplierOrder as Document;
+use App\Models\SupplierOrderLine as DocumentLine;
+use App\Models\SupplierOrderLineTax as DocumentLineTax;
+use App\Models\SupplierShippingSlip;
+use App\Models\SupplierShippingSlipLine;
+use App\Models\SupplierShippingSlipLineTax;
+use App\Models\Template;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 // use App\Traits\BillableGroupableControllerTrait;
 // use App\Traits\BillableShippingSlipableControllerTrait;
@@ -210,7 +204,7 @@ class SupplierOrdersController extends BillableController
 //        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
 //        $doc_id = $seq->getNextDocumentId();
 
-        $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+        $extradata = [  'user_id'              => Context::getContext()->user->id,
 
                         'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
                         
@@ -870,7 +864,7 @@ class SupplierOrdersController extends BillableController
         // Extra data
         $seq = Sequence::findOrFail( $document->sequence_id );
 
-        $clone->user_id              = \App\Context::getContext()->user->id;
+        $clone->user_id              = Context::getContext()->user->id;
 
         $clone->document_reference = null;
         $clone->reference = '';

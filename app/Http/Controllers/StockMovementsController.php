@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Exceptions\StockMovementException;
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\StockMovement;
-use App\Product;
-use App\Configuration;
-
-use View, Cookie;
-
-use Excel;
-
+use App\Models\Combination;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Product;
+use App\Models\StockMovement;
 use App\Traits\DateFormFormatterTrait;
+use Excel;
+use Illuminate\Http\Request;
+use View, Cookie;
 
 class StockMovementsController extends Controller 
 {
@@ -55,7 +53,7 @@ class StockMovementsController extends Controller
 
 //         abi_r($mvts->toSql(), true);
 
-        $mvts = $mvts->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $mvts = $mvts->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
         // $mvts = $mvts->paginate( 1 );
 
         $mvts->setPath('stockmovements');     // Customize the URI used by the paginator
@@ -75,7 +73,7 @@ class StockMovementsController extends Controller
 		$time = Cookie::get('time') ? Cookie::get('time') : 'now';
 		$document_reference = Cookie::get('document_reference') ? Cookie::get('document_reference') : '';
 		$movement_type_id   = Cookie::get('movement_type_id')   ? Cookie::get('movement_type_id')   : '0';
-		$currency_id        = Cookie::get('currency_id')        ? Cookie::get('currency_id')        : \App\Context::getContext()->currency->id;
+		$currency_id        = Cookie::get('currency_id')        ? Cookie::get('currency_id')        : Context::getContext()->currency->id;
 
 		return View::make('stock_movements.create', compact('date', 'time', 'document_reference', 'movement_type_id', 'currency_id'));
 	}
@@ -117,20 +115,20 @@ class StockMovementsController extends Controller
 
 		// Has Combination?
 		if ($request->has('group')) {
-			$combination_id = \App\Combination::getCombinationByOptions( $request->input('product_id'), $request->input('group') );
+			$combination_id = Combination::getCombinationByOptions( $request->input('product_id'), $request->input('group') );
 			$request->merge(array('combination_id' => $combination_id));
 		} else {
 			$combination_id = null;
 		}
 
 		$conversion_rate = $request->input('conversion_rate', 0.0);
-		$conversion_rate = $conversion_rate ?: \App\Currency::find($request->input('currency_id'))->conversion_rate;
+		$conversion_rate = $conversion_rate ?: Currency::find($request->input('currency_id'))->conversion_rate;
 
 		$date_raw = $request->input('date');
 		$time = $request->input('time');
 		// https://styde.net/componente-carbon-fechas-laravel-5/
 		// https://es.stackoverflow.com/questions/57020/validaci%C3%B3n-de-formato-de-fecha-no-funciona-laravel-5-3
-		$date_view = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $request->input('date') );
+		$date_view = \Carbon\Carbon::createFromFormat( Context::getContext()->language->date_format_lite, $request->input('date') );
 
 //		abi_r($date_view->toDateTimeString());
 //		abi_r($date_view->toDateString(), true);
@@ -156,7 +154,7 @@ class StockMovementsController extends Controller
 
         // Product
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->find(intval($combination_id));
+            $combination = Combination::with('product')->find(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
@@ -176,7 +174,7 @@ class StockMovementsController extends Controller
 
         try {
             $stockmovement = StockMovement::createAndProcess( $request->merge( $extradata )->all() );
-        } catch (\App\Exceptions\StockMovementException $exception) {
+        } catch (StockMovementException $exception) {
             return back()->with('error', $exception->getMessage())->withInput();
         }
 

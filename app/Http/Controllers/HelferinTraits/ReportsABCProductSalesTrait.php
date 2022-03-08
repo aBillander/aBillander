@@ -2,20 +2,15 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
-use Illuminate\Http\Request;
-
-use App\Configuration;
-
-use App\Product;
-use App\Customer;
-
-use App\CustomerShippingSlipLine;
-
-use App\Tools;
-
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\Product;
+use App\Models\Tools;
 use Carbon\Carbon;
-
 use Excel;
+use Illuminate\Http\Request;
 
 trait ReportsABCProductSalesTrait
 {
@@ -70,7 +65,7 @@ trait ReportsABCProductSalesTrait
         $models = $this->models;
         if ( !in_array($model, $models) )
             $model = Configuration::get('RECENT_SALES_CLASS');
-        $class = '\App\\'.$model.'Line';
+        $class = '\\App\\Models\\'.$model.'Line';
         $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
 
@@ -157,7 +152,7 @@ foreach ($products as $product) {
         $customer_label = 'todos';
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
 
         $row = [];
         $row[] = 'Análisis ABC de Productos ('.l($model).') ';

@@ -343,7 +343,7 @@ trait SupplierBillableControllerTrait
 */
         // Recent Sales
         $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
-        $class = '\App\\Models\\'.$model.'Line';
+        $class = '\\App\\Models\\'.$model.'Line';
         $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
         $tableLines = \Str::snake($model).'_lines';

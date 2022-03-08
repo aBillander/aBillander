@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Supplier;
-use App\SupplierPriceListLine;
-use App\Product;
-
+use App\Models\ActivityLogger;
+use App\Models\Currency;
+use App\Models\Product;
+use App\Models\Supplier;
+use App\Models\SupplierPriceListLine;
 use Excel;
+use Illuminate\Http\Request;
 
 class ImportSupplierPriceListLinesController extends Controller
 {
@@ -162,7 +161,7 @@ class ImportSupplierPriceListLinesController extends Controller
         $name = '['.$supplier->id.'] '.$supplier->name_fiscal;
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Supplier Price List', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Import Supplier Price List', __METHOD__ )
                     ->backTo( route('suppliers.import', [$supplier->id]) );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -363,7 +362,7 @@ class ImportSupplierPriceListLinesController extends Controller
                     }
 
                     // Currency
-                    if ( intval($data['currency_id']) && ( ! \App\Currency::where('id', intval($data['currency_id']))->exists() ) ) {
+                    if ( intval($data['currency_id']) && ( ! Currency::where('id', intval($data['currency_id']))->exists() ) ) {
                         
                         $logger->log("ERROR", "La fila (".$item.") no tiene una Divisa válida.");
 

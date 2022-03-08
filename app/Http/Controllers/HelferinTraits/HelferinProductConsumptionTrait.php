@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
-use Illuminate\Http\Request;
-
-use App\Product;
-use App\Customer;
-
-use App\CustomerShippingSlipLine;
-
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\Product;
 use Excel;
+use Illuminate\Http\Request;
 
 trait HelferinProductConsumptionTrait
 {
@@ -100,7 +98,7 @@ trait HelferinProductConsumptionTrait
         				: '';
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Consumo de Productos ' . $ribbon, '', '', date('d M Y H:i:s')];
         $data[] = [''];
         $data[] = ['Cliente:', $customer_label];

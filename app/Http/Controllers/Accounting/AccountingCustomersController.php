@@ -3,15 +3,23 @@
 namespace App\Http\Controllers\Accounting;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
+use App\Models\Address;
+use App\Models\BankAccount;
+use App\Models\Configuration;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerGroup;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerOrder;
+use App\Models\CustomerShippingSlip;
+use App\Models\PaymentMethod;
+use App\Models\PriceList;
+use App\Models\SalesRep;
+use App\Models\Sequence;
+use App\Models\ShippingMethod;
+use App\Models\Template;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use App\Configuration;
-use App\Customer;
-use App\Address;
-use App\BankAccount;
-use App\CustomerInvoice;
+use Illuminate\Http\Request;
 
 class AccountingCustomersController extends Controller
 {
@@ -97,7 +105,7 @@ class AccountingCustomersController extends Controller
      */
     public function edit($id)
     {
-        $sequenceList = \App\Sequence::listFor( \App\CustomerInvoice::class );
+        $sequenceList = Sequence::listFor( CustomerInvoice::class );
 
         $customer = $this->customer->with('addresses', 'address', 'address.country', 'address.state')->findOrFail($id); 
 
@@ -189,15 +197,15 @@ class AccountingCustomersController extends Controller
 
 //        abi_r($sequenceList1, true);
 
-        $invoices_templateList = \App\Template::listFor( \App\CustomerInvoice::class );
-        $payment_methodList    = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
-        $currencyList          = \App\Currency::pluck('name', 'id')->toArray();
-        $customer_groupList    = \App\CustomerGroup::pluck('name', 'id')->toArray();
-        $price_listList = \App\PriceList::pluck('name', 'id')->toArray();
-        $salesrepList = \App\SalesRep::pluck('alias', 'id')->toArray();
-        $shipping_methodList = \App\ShippingMethod::pluck('name', 'id')->toArray();
-        $orders_templateList = \App\Template::listFor( \App\CustomerOrder::class );
-        $shipping_slips_templateList = \App\Template::listFor( \App\CustomerShippingSlip::class );
+        $invoices_templateList = Template::listFor( CustomerInvoice::class );
+        $payment_methodList    = PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $currencyList          = Currency::pluck('name', 'id')->toArray();
+        $customer_groupList    = CustomerGroup::pluck('name', 'id')->toArray();
+        $price_listList = PriceList::pluck('name', 'id')->toArray();
+        $salesrepList = SalesRep::pluck('alias', 'id')->toArray();
+        $shipping_methodList = ShippingMethod::pluck('name', 'id')->toArray();
+        $orders_templateList = Template::listFor( CustomerOrder::class );
+        $shipping_slips_templateList = Template::listFor( CustomerShippingSlip::class );
 
             $a=l('monthNames', [], 'appmultilang');
 

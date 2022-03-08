@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Configuration;
-use App\Lot;
-use App\Product;
-use App\StockMovement;
-use App\MeasureUnit;
-use App\Warehouse;
-
-use Excel;
-
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Lot;
+use App\Models\MeasureUnit;
+use App\Models\Product;
+use App\Models\StockMovement;
+use App\Models\Warehouse;
 use App\Traits\DateFormFormatterTrait;
 use App\Traits\ModelAttachmentControllerTrait;
+use Excel;
+use Illuminate\Http\Request;
 
 class LotsController extends Controller
 {
@@ -53,12 +51,12 @@ class LotsController extends Controller
 
 //         abi_r($lots->toSql(), true);
 
-        $lots = $lots->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $lots = $lots->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
         // $lots = $lots->paginate( 1 );
 
         $lots->setPath('lots');     // Customize the URI used by the paginator
 
-        $warehouseList = \App\Warehouse::selectorList();
+        $warehouseList = Warehouse::selectorList();
 
         $weight_unit = MeasureUnit::where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
 
@@ -149,8 +147,8 @@ class LotsController extends Controller
 //                    'quantity_after_movement' => $line->,
 
                     'price' => $product->getPriceForStockValuation(),
-                    'currency_id' => \App\Context::getContext()->company->currency->id,
-                    'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+                    'currency_id' => Context::getContext()->company->currency->id,
+                    'conversion_rate' => Context::getContext()->company->currency->conversion_rate,
 
                     'notes' => '',
 
@@ -215,8 +213,8 @@ class LotsController extends Controller
     //                   'quantity_after_movement' => ,
 
                     'price' => $product->getPriceForStockValuation(),
-                    'currency_id' => \App\Context::getContext()->company->currency->id,
-                    'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+                    'currency_id' => Context::getContext()->company->currency->id,
+                    'conversion_rate' => Context::getContext()->company->currency->conversion_rate,
 
                     'notes' => '',
 
@@ -543,8 +541,8 @@ class LotsController extends Controller
 //                   'quantity_after_movement' => ,
 
                 'price' => $product->getPriceForStockValuation(),
-                'currency_id' => \App\Context::getContext()->company->currency->id,
-                'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+                'currency_id' => Context::getContext()->company->currency->id,
+                'conversion_rate' => Context::getContext()->company->currency->conversion_rate,
 
                 'notes' => '',
 
@@ -627,7 +625,7 @@ class LotsController extends Controller
 
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = [l('Lot Stock Movements', 'lots') . $ribbon, '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [$ribbon1];
         $data[] = [''];

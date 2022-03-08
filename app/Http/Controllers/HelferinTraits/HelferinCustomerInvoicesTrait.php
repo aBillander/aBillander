@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
-use Illuminate\Http\Request;
-
-use App\Invoice;
-use App\Payment;
-use App\Customer;
-use App\CustomerInvoice;
-
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\Invoice;
+use App\Models\Payment;
 use Excel;
+use Illuminate\Http\Request;
 
 trait HelferinCustomerInvoicesTrait
 {
@@ -95,7 +94,7 @@ trait HelferinCustomerInvoicesTrait
         				: '';
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Facturas de Clientes ' . $ribbon, '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 //        $data[] = ['Cliente:', $customer_label];

@@ -3,16 +3,19 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Supplier;
-use App\Address;
-use App\Country;
-use App\State;
-use App\Product;
-
+use App\Models\ActivityLogger;
+use App\Models\Address;
+use App\Models\Configuration;
+use App\Models\Country;
+use App\Models\Currency;
+use App\Models\Language;
+use App\Models\PaymentMethod;
+use App\Models\Product;
+use App\Models\Sequence;
+use App\Models\State;
+use App\Models\Supplier;
 use Excel;
+use Illuminate\Http\Request;
 
 class ImportSuppliersController extends Controller
 {
@@ -138,7 +141,7 @@ class ImportSuppliersController extends Controller
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Suppliers', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Import Suppliers', __METHOD__ )
                     ->backTo( route('suppliers.import') );        // 'Import Suppliers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -334,25 +337,25 @@ class ImportSuppliersController extends Controller
 
                     if ( $data['payment_method_id'] )
                     {
-                        if ( !\App\PaymentMethod::where('id', $data['payment_method_id'])->exists() )
+                        if ( !PaymentMethod::where('id', $data['payment_method_id'])->exists() )
                             $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'payment_method_id' no existe. ".$data['payment_method_id']);
                     }
 
                     if ( $data['language_id'] )
                     {
-                        if ( !\App\Language::where('id', $data['language_id'])->exists() )
+                        if ( !Language::where('id', $data['language_id'])->exists() )
                             $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'language_id' no existe. ".$data['language_id']);
                     }
 
                     if ( $data['currency_id'] )
                     {
-                        if ( !\App\Currency::where('id', $data['currency_id'])->exists() )
+                        if ( !Currency::where('id', $data['currency_id'])->exists() )
                             $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'currency_id' no existe. ".$data['currency_id']);
                     }
 
                     if ( $data['invoice_sequence_id'] )
                     {
-                        if ( !\App\Sequence::where('id', $data['invoice_sequence_id'])->exists() )
+                        if ( !Sequence::where('id', $data['invoice_sequence_id'])->exists() )
                             $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'invoice_sequence_id' no existe. ".$data['invoice_sequence_id']);
                     }
 
@@ -443,7 +446,7 @@ class ImportSuppliersController extends Controller
                     // Country
                     if ( !array_key_exists('country_id', $data) || intval($data['country_id']) == 0 ) 
                     {
-                        $data['country_id'] = \App\Configuration::get('DEF_COUNTRY');
+                        $data['country_id'] = Configuration::get('DEF_COUNTRY');
                     }
                     $country = Country::find($data['country_id']);
 

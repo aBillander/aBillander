@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
-use Illuminate\Http\Request;
-
-use App\Configuration;
-
-use App\Payment;
-use App\Customer;
-
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\Payment;
+use App\Models\Tax;
+use App\Models\TaxRule;
 use Carbon\Carbon;
-
 use Excel;
+use Illuminate\Http\Request;
 
 trait JenniferCustomerInvoicesA3
 {
@@ -49,7 +49,7 @@ trait JenniferCustomerInvoicesA3
         if ( $request->input('invoices_autocustomer_name') == '' )
             $customer_id = 0;
 
-        $documents = \App\CustomerInvoice::
+        $documents = CustomerInvoice::
                               with('customer')
                             ->with('currency')
                             ->with('paymentmethod')
@@ -107,13 +107,13 @@ trait JenniferCustomerInvoicesA3
             $customer_ribbon = $documents->first()->customer->name_fiscal;
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['A3 Contabilidad :: Facturas de ' . $customer_ribbon . ', ' . $ribbon, '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
         // All Taxes
-        $alltaxes = \App\Tax::get()->sortByDesc('percent');
-        $alltax_rules = \App\TaxRule::get();
+        $alltaxes = Tax::get()->sortByDesc('percent');
+        $alltax_rules = TaxRule::get();
 
 
         // Define the Excel spreadsheet headers

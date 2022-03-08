@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\Configuration;
+use App\Models\Product;
+use App\Models\ProductBOM;
+use App\Models\ProductBOMLine;
 use Illuminate\Http\Request;
-
-use App\ProductBOM;
-use App\ProductBOMLine;
 use View;
 
 class ProductBOMsController extends Controller
@@ -33,7 +33,7 @@ class ProductBOMsController extends Controller
                         ->filter( $request->all() )
                         ->orderBy('alias', 'asc');     // ->get();
 
-        $productboms = $productboms->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $productboms = $productboms->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $productboms->setPath('productboms');
 
@@ -215,7 +215,7 @@ class ProductBOMsController extends Controller
     {
         $search = $request->term;
 
-        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
+        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where( function ($query) use ($search) {
                                         $query->where(  'name',      'LIKE', '%'.$search.'%' )
                                               ->OrWhere('reference', 'LIKE', '%'.$search.'%' );
@@ -227,7 +227,7 @@ class ProductBOMsController extends Controller
                                 } )
 //                                ->isPurchased()
 //                                ->with('measureunit')
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 /*
         $data = [];
@@ -250,7 +250,7 @@ class ProductBOMsController extends Controller
 
         // Check to avoid infinite loops in BOM
         // Products that owns this BOM:
-        $bomable = \App\Product::findOrFail( $request->input('product_id') );
+        $bomable = Product::findOrFail( $request->input('product_id') );
         $bomable_bom = $bomable->bom;
         $products = $bom->products;   // Products that own this BOM
 
@@ -323,7 +323,7 @@ class ProductBOMsController extends Controller
 
     public function getproductBOMs($id)
     {
-        $product = \App\Product
+        $product = Product
                         ::with('productBOMlines')
                         ->with('productBOMlines.productBOM')
                         ->findOrFail($id);

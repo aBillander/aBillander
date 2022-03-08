@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\StockMovement;
-use App\Product;
-use App\Configuration;
-
-use View;
-
+use App\Models\Combination;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Product;
+use App\Models\StockMovement;
 use App\Traits\DateFormFormatterTrait;
+use Illuminate\Http\Request;
+use View;
 
 class StockAdjustmentsController extends Controller
 {
@@ -75,7 +73,7 @@ class StockAdjustmentsController extends Controller
 
 		// Has Combination?
 		if ($request->has('group')) {
-			$combination_id = \App\Combination::getCombinationByOptions( $request->input('product_id'), $request->input('group') );
+			$combination_id = Combination::getCombinationByOptions( $request->input('product_id'), $request->input('group') );
 			$request->merge(array('combination_id' => $combination_id));
 		} else {
 			$combination_id = null;
@@ -98,10 +96,10 @@ class StockAdjustmentsController extends Controller
 
 		$new_stock = $request->input('quantity');
 */ 
-		$currency = \App\Currency::find( \App\Configuration::get('DEF_CURRENCY') );
+		$currency = Currency::find( Configuration::get('DEF_CURRENCY') );
 		$conversion_rate = $currency->conversion_rate;
 
-		$extradata = ['date' =>  \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $request->input('date') ), 
+		$extradata = ['date' =>  \Carbon\Carbon::createFromFormat( Context::getContext()->language->date_format_lite, $request->input('date') ), 
 					  'model_name' => '', 
 					  'document_id' => 0, 
 					  'document_line_id' => 0, 
@@ -119,7 +117,7 @@ class StockAdjustmentsController extends Controller
 
         // Product
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->find(intval($combination_id));
+            $combination = Combination::with('product')->find(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;

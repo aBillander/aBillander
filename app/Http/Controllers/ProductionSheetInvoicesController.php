@@ -4,25 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\ProductionSheet;
+use App\Models\ProductionSheet;
 
-use App\Customer;
-use App\CustomerOrder;
-use App\CustomerOrderLine;
-use App\CustomerOrderLineTax;
+use App\Models\Customer;
+use App\Models\CustomerOrder;
+use App\Models\CustomerOrderLine;
+use App\Models\CustomerOrderLineTax;
 
-use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
-use App\CustomerShippingSlipLineTax;
+use App\Models\CustomerShippingSlip;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\CustomerShippingSlipLineTax;
 
-use App\CustomerInvoice as Document;
-use App\CustomerInvoiceLine as DocumentLine;
-use App\CustomerInvoiceLineTax as DocumentLineTax;
-use App\DocumentAscription;
+use App\Models\CustomerInvoice as Document;
+use App\Models\CustomerInvoiceLine as DocumentLine;
+use App\Models\CustomerInvoiceLineTax as DocumentLineTax;
+use App\Models\DocumentAscription;
 
-use App\Configuration;
-use App\Sequence;
-use App\Template;
+use App\Models\Configuration;
+use App\Models\Sequence;
+use App\Models\Template;
 
 // use App\Events\CustomerOrderConfirmed;
 

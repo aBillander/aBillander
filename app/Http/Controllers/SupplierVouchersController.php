@@ -2,21 +2,15 @@
 
 namespace App\Http\Controllers;
 
-// 
-
-use Illuminate\Http\Request;
-
-use App\Supplier;
-
-use App\Payment;
-use App\Configuration;
-
-use Excel;
-
-use App\Traits\DateFormFormatterTrait;
-
+use App\Events\SupplierPaymentBounced;
 use App\Events\SupplierPaymentPaid;
-use App\Events\SupplierPaymentBounced;      // <= Just to be the same as CustomerVouchersController, and maybe future use
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Payment;
+use App\Models\Supplier;
+use App\Traits\DateFormFormatterTrait;
+use Excel;
+use Illuminate\Http\Request;      // <= Just to be the same as CustomerVouchersController, and maybe future use
 
 class SupplierVouchersController extends Controller
 {
@@ -723,7 +717,7 @@ class SupplierVouchersController extends Controller
         if ( $auto_direct_debit < 0 ) $ribbon1 = 'Todos';
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Recibos de Proveedores -::- '.date('d M Y H:i:s'), '', '', '', '', '', '', '', '', '', '', '', '', ''];        //, date('d M Y H:i:s')];
         $data[] = ['Fecha de Vencimiento: ' . $ribbon];
         $data[] = ['Estado: ' . $request->input('status')];

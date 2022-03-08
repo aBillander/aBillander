@@ -1,12 +1,13 @@
-<?php namespace App\Http\Controllers;
+<?php
 
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\User as User;
-use App\Language as Language;
+use App\Models\User;
+use App\Models\Language;
 use View;
 
 class UsersController extends Controller {

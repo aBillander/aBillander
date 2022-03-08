@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Category;
-
+use App\Models\ActivityLogger;
+use App\Models\Category;
+use App\Models\Configuration;
 use Excel;
+use Illuminate\Http\Request;
 
 class ImportCategoriesController extends Controller
 {
@@ -130,7 +129,7 @@ class ImportCategoriesController extends Controller
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Categories', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Import Categories', __METHOD__ )
                     ->backTo( route('categories.import') );        // 'Import Categories :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -280,13 +279,13 @@ class ImportCategoriesController extends Controller
                     {
                         if (  array_key_exists('parent_REFERENCE_EXTERNAL', $data) ) 
                         {
-                            if ( $category = \App\Category::where('reference_external', $data['parent_REFERENCE_EXTERNAL'])->first())
+                            if ( $category = Category::where('reference_external', $data['parent_REFERENCE_EXTERNAL'])->first())
                                 $data['parent_id'] = $category_id;
                             else
                                 $logger->log("ERROR", "Categoría ".$item.":<br />" . "El campo 'parent_REFERENCE_EXTERNAL' es inválido: " . ($data['parent_REFERENCE_EXTERNAL'] ?? ''));
                         }
                     } else {
-                        if ( $category = \App\Category::find($data['parent_id']))
+                        if ( $category = Category::find($data['parent_id']))
                                 ;
                             else{
                                 $logger->log("ERROR", "Categoría ".$item.":<br />" . "El campo 'parent_id' es inválido: " . ($data['parent_id'] ?? ''));
@@ -295,7 +294,7 @@ class ImportCategoriesController extends Controller
                     }
 
 
-                    if ( \App\Configuration::isFalse('ALLOW_PRODUCT_SUBCATEGORIES') && ( $data['parent_id'] > 0 ) )
+                    if ( Configuration::isFalse('ALLOW_PRODUCT_SUBCATEGORIES') && ( $data['parent_id'] > 0 ) )
                     {
 
                             $logger->log("ERROR", "La Categoría ".$item." no se cargará porque no está permitido el uso de Subcategorías.");

@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Controllers\Controller;
-
+use App\Models\Configuration;
+use App\Models\PaymentMethod;
 use Illuminate\Http\Request;
-
-use App\PaymentMethod as PaymentMethod;
 use View;
 
 class PaymentMethodsController extends Controller {
@@ -83,7 +81,7 @@ class PaymentMethodsController extends Controller {
 		$paymentmethod = $this->paymentmethod->create($request->all());
 
 		if ( PaymentMethod::count() == 1 )
-			\App\Configuration::updateValue('DEF_CUSTOMER_PAYMENT_METHOD', $paymentmethod->id);
+			Configuration::updateValue('DEF_CUSTOMER_PAYMENT_METHOD', $paymentmethod->id);
 
 		return redirect('paymentmethods')
 				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $paymentmethod->id], 'layouts') . $request->input('name'));

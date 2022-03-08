@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\DeliverySheet;
+use App\Models\DeliverySheet;
 use Illuminate\Http\Request;
 
 class DeliverySheetsController extends Controller

@@ -7,13 +7,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-use App\Configuration;
+use App\Models\Configuration;
 use Illuminate\Support\Facades\Auth;
-use App\SalesRepUser;
-use App\SalesRep;
+use App\Models\SalesRepUser;
+use App\Models\SalesRep;
 
-use App\Category;
-use App\Product;
+use App\Models\Category;
+use App\Models\Product;
 
 class AbsrcCatalogueController extends Controller
 {
@@ -96,7 +96,7 @@ class AbsrcCatalogueController extends Controller
 
                                     //  abi_r($products->get());
 
-                $products = $products->paginate( \App\Configuration::get('ABSRC_ITEMS_PERPAGE') );
+                $products = $products->paginate( Configuration::get('ABSRC_ITEMS_PERPAGE') );
 
                 $products->setPath('catalogue');     // Customize the URI used by the paginator
         }
@@ -184,7 +184,7 @@ class AbsrcCatalogueController extends Controller
 	 */
 	public function newProducts(Request $request)
 	{
-    	if( \App\Configuration::isFalse('ABCC_ENABLE_NEW_PRODUCTS') )
+    	if( Configuration::isFalse('ABCC_ENABLE_NEW_PRODUCTS') )
     		return $this->index($request);
 
 
@@ -244,7 +244,7 @@ class AbsrcCatalogueController extends Controller
                                       ->IsNew()
                                       ->orderBy('reference', 'asc');
 
-                $products = $products->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
+                $products = $products->paginate( Configuration::get('ABCC_ITEMS_PERPAGE') );
 
                 $products->setPath('new');     // Customize the URI used by the paginator
         }        

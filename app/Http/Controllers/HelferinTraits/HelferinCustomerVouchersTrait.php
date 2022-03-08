@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
-use Illuminate\Http\Request;
-
-use App\Payment;
-use App\Customer;
-
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\Payment;
 use Excel;
+use Illuminate\Http\Request;
 
 trait HelferinCustomerVouchersTrait
 {
@@ -86,7 +85,7 @@ trait HelferinCustomerVouchersTrait
         				: '';
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Recibos de Clientes ' . $ribbon, '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 //        $data[] = ['Cliente:', $customer_label];

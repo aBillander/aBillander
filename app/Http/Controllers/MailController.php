@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 // See: https://mattstauffer.co/blog/introducing-mailables-in-laravel-5-3/
 
-
 use App\Http\Controllers\Controller;
-
+use App\Models\Context;
 use Illuminate\Http\Request;
 use Validator;
-
 use View, Mail;
 
 class MailController extends Controller {
@@ -68,7 +66,7 @@ class MailController extends Controller {
 
 		// See ContactMessagesController
 		try{
-			$send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.basic',
+			$send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.basic',
 		        array(
 		            'user_email'   => $request->input('from_email'),
 		            'user_name'    => $request->input('from_name'),
@@ -130,7 +128,7 @@ class MailController extends Controller {
 
 		// See ContactMessagesController
 		try{
-			$send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.feedback',
+			$send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.feedback',
 		        array(
 		            'user_email'   => $request->input('email_feedback'),
 		            'user_name'    => $request->input('name_feedback'),

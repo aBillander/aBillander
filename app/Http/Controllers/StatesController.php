@@ -1,12 +1,13 @@
-<?php namespace App\Http\Controllers;
+<?php
 
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Country as Country;
-use App\State as State;
+use App\Models\Country as Country;
+use App\Models\State as State;
 
 class StatesController extends Controller {
 

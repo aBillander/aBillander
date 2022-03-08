@@ -3,19 +3,16 @@
 namespace App\Http\Controllers\SalesRepCenter;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-use Validator;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use App\Customer;
-use App\CustomerUser;
-use App\Configuration;
-use App\Language;
-
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\CustomerUser;
+use App\Models\Language;
 use Auth;
-
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Mail;
+use Validator;
 
 class AbsrcCustomerUsersController extends Controller
 {
@@ -134,12 +131,12 @@ class AbsrcCustomerUsersController extends Controller
                 'fromName' => config('mail.from.name'   ),    // Configuration::get('ABCC_EMAIL_NAME'),
                 'to'       => $customeruser->email,         // $cinvoice->customer->address->email,
                 'toName'   => $customeruser->full_name,    // $cinvoice->customer->name_fiscal,
-                'subject'  => l(' :_> Confirmación de acceso al Centro de Clientes de :company', ['company' => \App\Context::getcontext()->company->name_fiscal]),
+                'subject'  => l(' :_> Confirmación de acceso al Centro de Clientes de :company', ['company' => use App\Models\Context::getcontext()->company->name_fiscal]),
                 );
 
             
 
-            $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.invitation_confirmation', $template_vars, function($message) use ($data)
+            $send = Mail::send('emails.'.use App\Models\Context::getContext()->language->iso_code.'.invitation_confirmation', $template_vars, function($message) use ($data)
             {
                 $message->from($data['from'], $data['fromName']);
 

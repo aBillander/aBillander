@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Product;
-use App\StockMovement;
+use App\Models\Product;
+use App\Models\StockMovement;
 
 class ChartProductStockController extends Controller
 {

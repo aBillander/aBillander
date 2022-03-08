@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Country;
+use App\Models\ShippingMethod;
+use App\Models\ShippingMethodServiceLine as ShippingMethodRule;
 use Illuminate\Http\Request;
-
-use App\ShippingMethod;
-use App\ShippingMethodServiceLine as ShippingMethodRule;
 
 class ShippingMethodRulesController extends Controller
 {
@@ -44,7 +44,7 @@ class ShippingMethodRulesController extends Controller
     {
         $shippingmethod = $this->shippingmethod->findOrFail($shippingmethodId);
 
-        $countryList =  \App\Country::orderby('name', 'asc')->pluck('name', 'id')->toArray();
+        $countryList =  Country::orderby('name', 'asc')->pluck('name', 'id')->toArray();
         $stateList = [];
 
         return view('shipping_method_rules.create', compact('shippingmethod', 'countryList', 'stateList'));

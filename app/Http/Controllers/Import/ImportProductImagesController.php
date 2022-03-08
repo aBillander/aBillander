@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\ActivityLogger;
+use App\Models\Image;
+use App\Models\Product;
+use Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-
-use App\Product;
-
-use Excel;
 
 class ImportProductImagesController extends Controller
 {
@@ -117,7 +116,7 @@ class ImportProductImagesController extends Controller
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Product Images', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Import Product Images', __METHOD__ )
                     ->backTo( route('products.images.import') );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -235,7 +234,7 @@ class ImportProductImagesController extends Controller
                             else
                             $is_featured = 0;
 
-                            $image = \App\Image::createForProductFromPath($img_path, ['caption' => $product->name, 'is_featured'=> $is_featured]);
+                            $image = Image::createForProductFromPath($img_path, ['caption' => $product->name, 'is_featured'=> $is_featured]);
                             
                             if ( $image )
                             {

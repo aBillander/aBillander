@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use Excel;
-
-// Helferinnen
+use App\Http\Controllers\HelferinTraits\JenniferCustomerInvoicesA3;
 use App\Http\Controllers\HelferinTraits\JenniferCustomersBalance;
 use App\Http\Controllers\HelferinTraits\JenniferModelo347Trait;
-use App\Http\Controllers\HelferinTraits\JenniferCustomerInvoicesA3;
-
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerOrder;
+use App\Models\CustomerShippingSlip;
+use App\Models\Product;
+use App\Models\Tax;
+use App\Models\TaxRule;
 use App\Traits\DateFormFormatterTrait;
+use Excel;
+use Illuminate\Http\Request;
 
 class JenniferController extends Controller
 {
@@ -94,7 +99,7 @@ class JenniferController extends Controller
         if ( $request->input('invoices_autocustomer_name') == '' )
             $customer_id = 0;
 
-        $documents = \App\CustomerInvoice::
+        $documents = CustomerInvoice::
                               with('customer')
                             ->with('currency')
                             ->with('paymentmethod')
@@ -152,13 +157,13 @@ class JenniferController extends Controller
             $customer_ribbon = $documents->first()->customer->name_fiscal;
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Facturas de ' . $customer_ribbon . ', ' . $ribbon, '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
         // All Taxes
-        $alltaxes = \App\Tax::get()->sortByDesc('percent');
-        $alltax_rules = \App\TaxRule::get();
+        $alltaxes = Tax::get()->sortByDesc('percent');
+        $alltax_rules = TaxRule::get();
 
 
         // Define the Excel spreadsheet headers
@@ -471,7 +476,7 @@ if ( $invoices_report_format == 'compact') {
         $ribbon1 .= ( $bank_order_to   ? ' hasta ' . $bank_order_from : '' );
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Remesas de Clientes' . $ribbon1 . ', y ' . $ribbon, '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
@@ -594,7 +599,7 @@ if ( $invoices_report_format == 'compact') {
             $valuation_method = array_keys($valuation_methodList)[0];     // count($arr) ? array_keys($arr)[0] : null;
 
 
-        $products = \App\Product::
+        $products = Product::
                             with('measureunit')
 //                          ->with('combinations')                                  
                           ->with('category')
@@ -613,7 +618,7 @@ if ( $invoices_report_format == 'compact') {
         $data = [];
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Inventario histórico, hasta el ' . abi_date_short( $date ), '', '', '', '', date('d M Y H:i:s')];
         $data[] = ['Método de Valoración: '.$valuation_methodList[$valuation_method]];
         $data[] = [''];
@@ -796,12 +801,12 @@ if ( $invoices_report_format == 'compact') {
         {
             $search = $request->term;
 
-            $customers = \App\Customer::where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
+            $customers = Customer::where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'name_commercial',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'identification', 'LIKE', '%'.$search.'%' )
 //                                    ->with('currency')
 //                                    ->with('addresses')
-                                    ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                     ->get();
 
 //            return $customers;
@@ -822,7 +827,7 @@ if ( $invoices_report_format == 'compact') {
     {
         $search = $request->term;
 
-        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
+        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
 //                                ->IsSaleable()
@@ -830,7 +835,7 @@ if ( $invoices_report_format == 'compact') {
 //                                ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 
@@ -844,7 +849,7 @@ if ( $invoices_report_format == 'compact') {
     {
         $search = $request->term;
 
-        $documents = \App\CustomerOrder::select('id', 'document_reference', 'document_date', 'reference_external')
+        $documents = CustomerOrder::select('id', 'document_reference', 'document_date', 'reference_external')
                                 ->where(   'id',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference_external', 'LIKE', '%'.$search.'%' )
@@ -852,7 +857,7 @@ if ( $invoices_report_format == 'compact') {
                                 ->orderBy('document_date', 'DESC')
                                 ->orderBy('id', 'ASC')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 
@@ -866,7 +871,7 @@ if ( $invoices_report_format == 'compact') {
     {
         $search = $request->term;
 
-        $documents = \App\CustomerShippingSlip::select('id', 'document_reference', 'document_date', 'reference_external')
+        $documents = CustomerShippingSlip::select('id', 'document_reference', 'document_date', 'reference_external')
                                 ->where(   'id',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference_external', 'LIKE', '%'.$search.'%' )
@@ -874,7 +879,7 @@ if ( $invoices_report_format == 'compact') {
                                 ->orderBy('document_date', 'DESC')
                                 ->orderBy('id', 'ASC')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 
@@ -888,7 +893,7 @@ if ( $invoices_report_format == 'compact') {
     {
         $search = $request->term;
 
-        $documents = \App\CustomerInvoice::select('id', 'document_reference', 'document_date', 'reference_external')
+        $documents = CustomerInvoice::select('id', 'document_reference', 'document_date', 'reference_external')
                                 ->where(   'id',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference_external', 'LIKE', '%'.$search.'%' )
@@ -896,7 +901,7 @@ if ( $invoices_report_format == 'compact') {
                                 ->orderBy('document_date', 'DESC')
                                 ->orderBy('id', 'ASC')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 

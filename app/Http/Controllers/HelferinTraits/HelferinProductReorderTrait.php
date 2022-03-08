@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
-use Illuminate\Http\Request;
-
-use App\Product;
-use App\Customer;
-
-use App\CustomerShippingSlipLine;
-
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\Product;
 use Excel;
+use Illuminate\Http\Request;
 
 trait HelferinProductReorderTrait
 {
@@ -18,7 +17,7 @@ trait HelferinProductReorderTrait
     {
         $product_mrptypeList = ['' => l('-- All --', 'layouts')] + Product::getMrpTypeList();
 
-        $default_model = \App\Configuration::get('RECENT_SALES_CLASS');
+        $default_model = Configuration::get('RECENT_SALES_CLASS');
 
         return view('helferin.home_mfg', compact('product_mrptypeList', 'default_model'));
     }
@@ -45,7 +44,7 @@ trait HelferinProductReorderTrait
         $ribbon = 'Planificación: ' . ($mrp_type == '' ? 'todos' : $mrp_type);
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Re-Aprovisionamiento de Productos :: ' . $ribbon, '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 

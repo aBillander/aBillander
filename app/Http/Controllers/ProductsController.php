@@ -2,36 +2,36 @@
 
 namespace App\Http\Controllers;
 
-
-use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;
-
-use App\Product;
-use App\StockMovement;
-use App\Lot;
-use App\PriceRule;
-use App\MeasureUnit;
-use App\Warehouse;
-
-use App\Configuration;
-
-use App\Scopes\ShowOnlyActiveScope;
-
-use Form, DB;
-
-// use App\CustomerOrder;
-use App\CustomerOrderLine;
-// use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-// use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
-
 use App\Events\ProductCreated;
-
+use App\Http\Controllers\Controller;
+use App\Models\BOMItem;
+use App\Models\Category;
+use App\Models\Combination;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerOrderLine;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\Lot;
+use App\Models\MeasureUnit;
+use App\Models\Option;
+use App\Models\OptionGroup;
+use App\Models\PriceRule;
+use App\Models\Product;
+use App\Models\ProductBOM;
+use App\Models\ProductMeasureUnit;
+use App\Models\ProductTool;
+use App\Models\StockMovement;
+use App\Models\Tax;
+use App\Models\Warehouse;
+use App\Scopes\ShowOnlyActiveScope;
 use App\Traits\DateFormFormatterTrait;
 use App\Traits\ModelAttachmentControllerTrait;
+use Form, DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 class ProductsController extends Controller
 {
@@ -90,7 +90,7 @@ class ProductsController extends Controller
         $parentId=0;
         $breadcrumb = [];
 
-        $categories = \App\Category::with('children')
+        $categories = Category::with('children')
 //          ->withCount('products')
             ->where('parent_id', '=', intval($parentId))
             ->orderBy('position', 'asc')
@@ -156,7 +156,7 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        $categories = \App\Category::exists();
+        $categories = Category::exists();
 
         if ( !$categories )
         {
@@ -164,7 +164,7 @@ class ProductsController extends Controller
                     ->with('error', l('You have to create a Category first'));
         }
 
-        $sub_categories = \App\Category::where('parent_id', '>', 0)->exists();
+        $sub_categories = Category::where('parent_id', '>', 0)->exists();
 
         if ( Configuration::isTrue('ALLOW_PRODUCT_SUBCATEGORIES') && !$sub_categories )
         {
@@ -208,7 +208,7 @@ class ProductsController extends Controller
 
         $this->validate($request, $rules);
 
-        $tax = \App\Tax::find( $request->input('tax_id') );
+        $tax = Tax::find( $request->input('tax_id') );
         if ( Configuration::get('PRICES_ENTERED_WITH_TAX') ){
             $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
             $request->merge( ['price' => $price] );
@@ -245,8 +245,8 @@ class ProductsController extends Controller
                         'document_reference' => '', 
                         'quantity' => $request->input('quantity_onhand'),  
                         'price' => null,        // Use default
-                        'currency_id' => \App\Context::getContext()->company->currency->id,
-                        'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+                        'currency_id' => Context::getContext()->company->currency->id,
+                        'conversion_rate' => Context::getContext()->company->currency->conversion_rate,
 
                         'notes' => '',
 
@@ -288,7 +288,7 @@ class ProductsController extends Controller
             'active' => 1,
         ];
 
-        $line = \App\ProductMeasureUnit::create( $data );
+        $line = ProductMeasureUnit::create( $data );
 
         $product->productmeasureunits()->save($line);
 
@@ -369,7 +369,7 @@ class ProductsController extends Controller
                 }
             }
         } else {
-            $groups = \App\OptionGroup::has('options')->orderby('position', 'asc')->pluck('name', 'id');
+            $groups = OptionGroup::has('options')->orderby('position', 'asc')->pluck('name', 'id');
         }
 
 
@@ -471,10 +471,10 @@ class ProductsController extends Controller
         if (  $rules_tab == 'bom_selector' ) {
             //
 //            abi_r($request->all(), true);
-            $this->validate($request, \App\BOMItem::$rules);
+            $this->validate($request, BOMItem::$rules);
 
             // Check to avoid infinite loops in BOM
-            $bom = \App\ProductBOM::find( $request->input('product_bom_id') );
+            $bom = ProductBOM::find( $request->input('product_bom_id') );
 
             if ( $bom->hasProduct( $id ) )
             {
@@ -482,7 +482,7 @@ class ProductsController extends Controller
                         ->with('error', l('No se puede asociar esta Lista de materiales porque contiene al Producto &#58&#58 (:id) ', ['id' => $id], 'layouts') . $product->name);
             }
 
-            \App\BOMItem::create($request->all() + ['product_id' => $id]);
+            BOMItem::create($request->all() + ['product_id' => $id]);
 
             return redirect('products/'.$id.'/edit'.'#'.'manufacturing')
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $product->name);
@@ -491,13 +491,13 @@ class ProductsController extends Controller
         if (  $rules_tab == 'bom_create' ) {
             //
 //            abi_r($request->all(), true);
-//            $this->validate($request, \App\BOMItem::$rules);
+//            $this->validate($request, BOMItem::$rules);
 
-            $this->validate($request, \App\ProductBOM::$rules);
+            $this->validate($request, ProductBOM::$rules);
 
-            $bom = \App\ProductBOM::create($request->all());
+            $bom = ProductBOM::create($request->all());
 
-            \App\BOMItem::create($request->all() + ['product_bom_id' => $bom->id]);
+            BOMItem::create($request->all() + ['product_bom_id' => $bom->id]);
 
             return redirect('productboms/'.$bom->id.'/edit')
                     ->with('success', l('Complete la Lista de Materiales para el Producto &#58&#58 (:id) ', ['id' => $product->id], 'layouts') . $product->name);
@@ -540,7 +540,7 @@ class ProductsController extends Controller
             // Dates (cuen)
             $this->mergeFormDates( ['available_for_sale_date', 'new_since_date'], $request );
             
-            $tax = \App\Tax::find( $product->tax_id > 0 ? $product->tax_id : $request->input('tax_id') );
+            $tax = Tax::find( $product->tax_id > 0 ? $product->tax_id : $request->input('tax_id') );
             if ( Configuration::get('PRICES_ENTERED_WITH_TAX') ){
                 $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
                 $request->merge( ['price' => $price] );
@@ -570,7 +570,7 @@ class ProductsController extends Controller
                                         });
 
             if ( $tool_id > 0 )
-                \App\ProductTool::create( ['product_id' => $id, 'tool_id' => $tool_id] );
+                ProductTool::create( ['product_id' => $id, 'tool_id' => $tool_id] );
         }
 
         // ToDo: update combination fields, such as measure_unit, quantity_decimal_places, etc.
@@ -648,7 +648,7 @@ class ProductsController extends Controller
             'active' => 1,
         ];
 
-        $line = \App\ProductMeasureUnit::create( $data );
+        $line = ProductMeasureUnit::create( $data );
 
         $clone->productmeasureunits()->save($line);
 
@@ -762,8 +762,8 @@ class ProductsController extends Controller
 //                   'quantity_after_movement' => ,
 
                 'price' => $product->getPriceForStockValuation(),
-                'currency_id' => \App\Context::getContext()->company->currency->id,
-                'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+                'currency_id' => Context::getContext()->company->currency->id,
+                'conversion_rate' => Context::getContext()->company->currency->conversion_rate,
 
                 'notes' => l('New Adjustment by Lot (:id) ', ['id' => $lot->id], 'lots').$lot->reference,
 
@@ -831,8 +831,8 @@ class ProductsController extends Controller
     //                   'quantity_after_movement' => ,
 
                     'price' => $product->getPriceForStockValuation(),
-                    'currency_id' => \App\Context::getContext()->company->currency->id,
-                    'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+                    'currency_id' => Context::getContext()->company->currency->id,
+                    'conversion_rate' => Context::getContext()->company->currency->conversion_rate,
 
                     'notes' => l('New Adjustment. Lot tracking deactivated. ', 'lots'),
 
@@ -890,7 +890,7 @@ class ProductsController extends Controller
 
         foreach ( $groups as $group ) 
         {
-            $data[] = \App\Option::where('option_group_id', '=', $group)->orderby('position', 'asc')->pluck('id');
+            $data[] = Option::where('option_group_id', '=', $group)->orderby('position', 'asc')->pluck('id');
         }
 
         $combos = combos($data);
@@ -900,7 +900,7 @@ class ProductsController extends Controller
         {
             $i++;
 
-            $combination = \App\Combination::create(
+            $combination = Combination::create(
                 array(
 //                    'reference'        => $product->reference.'-'.$i,
                     'reference'        => '',
@@ -949,11 +949,11 @@ class ProductsController extends Controller
     {
         $search = $request->term;
 
-        $boms = \App\ProductBOM::select('id', 'alias', 'name')
+        $boms = ProductBOM::select('id', 'alias', 'name')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'alias', 'LIKE', '%'.$search.'%' )
 //                                ->with('measureunit')
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 /*
         $data = [];
@@ -1060,10 +1060,10 @@ LIMIT 1
     public function ajaxProductCombinationSearch(Request $request)
     {
         if ($request->has('group')) {
-            $combination_id = \App\Combination::getCombinationByOptions( $request->input('product_id'), $request->input('group') );
+            $combination_id = Combination::getCombinationByOptions( $request->input('product_id'), $request->input('group') );
 
             // ToDo: what happens if $combination_id=0 -> Failed to load resource: the server responded with a status of 500 (Internal Server Error)  http://localhost/aBillander5/public/products/ajax/combination_lookup
-            $combination = \App\Combination::select('id', 'product_id', 'reference')
+            $combination = Combination::select('id', 'product_id', 'reference')
                             ->where('id', '=', $combination_id)
                             ->Where('product_id', '=', $request->input('product_id'))
                             ->take(1)->get();
@@ -1134,7 +1134,7 @@ LIMIT 1
         // Request data
         $product_id      = $request->input('product_id');
         $customer_id     = $request->input('customer_id');
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 //        $conversion_rate = $request->input('conversion_rate');
 //        $product_string  = $request->input('product_string');   // <- Esto es la salida de ajaxProductSearch
 
@@ -1147,11 +1147,11 @@ LIMIT 1
                         ->with('combinations.options.optiongroup')
                         ->find(intval($product_id));
 
-        $customer = \App\Customer::find(intval($customer_id));
+        $customer = Customer::find(intval($customer_id));
         
-        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
-                    \App\Context::getContext()->currency :
-                    \App\Currency::find(intval($currency_id));
+        $currency = ($currency_id == Context::getContext()->currency->id) ?
+                    Context::getContext()->currency :
+                    Currency::find(intval($currency_id));
 
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 

@@ -4,15 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Cheque;
-use App\ChequeDetail;
-use App\Payment;
-use App\CustomerInvoice;
+use App\Models\Cheque;
+use App\Models\ChequeDetail;
+use App\Models\Payment;
+use App\Models\CustomerInvoice;
 
-use App\Configuration;
-use App\PaymentType;
-
-// use App\Events\CustomerPaymentReceived;
+use App\Models\Configuration;
+use App\Models\PaymentType;
 
 class SupplierDownPaymentDetailsController extends Controller
 {
@@ -328,7 +326,7 @@ class SupplierDownPaymentDetailsController extends Controller
                                 ->where('status', 'closed')
                                 ->where('total_tax_incl', '>', 0.0)
 //                                ->toSql();
-                                ->get( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) );
+                                ->get( intval(Configuration::get('DEF_ITEMS_PERAJAX')) );
 
 
 //                                dd($products);

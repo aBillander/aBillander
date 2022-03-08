@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\WarehouseShippingSlipLine;
+use App\Models\WarehouseShippingSlipLine;
 use Illuminate\Http\Request;
 
 class WarehouseShippingSlipLineController extends Controller

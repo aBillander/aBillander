@@ -2,23 +2,18 @@
 
 namespace App\Http\Controllers\SalesRepCenter;
 
-
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Warehouse;
-use App\Address;
-use App\Country;
-use App\StockMovement;
-
-use Auth;
-
-use Excel;
-
-use View;
-
+use App\Models\Address;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Country;
+use App\Models\StockMovement;
+use App\Models\Warehouse;
 use App\Traits\DateFormFormatterTrait;
+use Auth;
+use Excel;
+use Illuminate\Http\Request;
+use View;
 
 class AbsrcWarehousesController extends Controller
 {
@@ -79,7 +74,7 @@ class AbsrcWarehousesController extends Controller
 		$warehouse = $this->warehouse->create( $request->all() );
 
 		// First record
-		if ( Warehouse::count() == 1 ) \App\Configuration::updateValue('DEF_WAREHOUSE', $warehouse->id);
+		if ( Warehouse::count() == 1 ) Configuration::updateValue('DEF_WAREHOUSE', $warehouse->id);
 
 		$data = $request->input('address');
 //		$data['notes'] = '';
@@ -179,7 +174,7 @@ class AbsrcWarehousesController extends Controller
         } else 
 
         // Default Warehouse
-        if ( \App\Configuration::get('DEF_WAREHOUSE') == $id ) {
+        if ( Configuration::get('DEF_WAREHOUSE') == $id ) {
 
         	$in_use = true;
         }
@@ -217,7 +212,7 @@ class AbsrcWarehousesController extends Controller
         				->where('name', 'LIKE', '%'.$request->input('name', '').'%')
                         ->orderBy('products.name', 'asc');
 
-        $products = $products->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $products = $products->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $products->setPath('inventory');
 
@@ -245,7 +240,7 @@ class AbsrcWarehousesController extends Controller
         $data = []; 
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Productos en Almacén -::- '.$warehouse->address->alias, '', '', date('d M Y H:i:s')];
         $data[] = ['Filtro Referencia: ' . $request->input('reference', '')];
         $data[] = ['Filtro Nombre de Producto: ' . $request->input('name', '')];
@@ -362,7 +357,7 @@ class AbsrcWarehousesController extends Controller
 
 //         abi_r($stockmovements->toSql(), true);
 
-        $stockmovements = $stockmovements->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $stockmovements = $stockmovements->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
         // $stockmovements = $stockmovements->paginate( 1 );
 
         $stockmovements->setPath('stockmovements');

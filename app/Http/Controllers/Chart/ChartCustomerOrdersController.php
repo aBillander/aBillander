@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\CustomerOrder;
+use App\Models\CustomerOrder;
 
 class ChartCustomerOrdersController extends Controller
 {

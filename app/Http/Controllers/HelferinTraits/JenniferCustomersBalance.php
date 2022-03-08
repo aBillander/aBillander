@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
-use Illuminate\Http\Request;
-
-use App\Configuration;
-
-use App\Payment;
-use App\Customer;
-
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\Payment;
 use Carbon\Carbon;
-
 use Excel;
+use Illuminate\Http\Request;
 
 trait JenniferCustomersBalance
 {
@@ -111,7 +108,7 @@ trait JenniferCustomersBalance
         $data = [];
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Saldo de Clientes a fecha: ' . $balance_date_to,  '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 

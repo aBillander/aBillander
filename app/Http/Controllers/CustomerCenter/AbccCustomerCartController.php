@@ -7,17 +7,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-use App\CustomerUser;
-use App\Customer;
-use App\Address;
-use App\Currency;
-use App\Product;
-use App\Combination;
-use App\Cart;
-use App\CartLine;
+use App\Models\CustomerUser;
+use App\Models\Customer;
+use App\Models\Address;
+use App\Models\Currency;
+use App\Models\Product;
+use App\Models\Combination;
+use App\Models\Cart;
+use App\Models\CartLine;
 
-use App\Configuration;
-use App\Context;
+use App\Models\Configuration;
+use App\Models\Context;
 
 use App\Traits\BillableControllerTrait;
 
@@ -275,7 +275,7 @@ class AbccCustomerCartController extends Controller
                                 ->IsPublished()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 

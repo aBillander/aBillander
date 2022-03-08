@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\PriceList;
-use App\PriceListLine;
-use App\Product;
-
+use App\Models\ActivityLogger;
+use App\Models\PriceList;
+use App\Models\PriceListLine;
+use App\Models\Product;
 use Excel;
+use Illuminate\Http\Request;
 
 class ImportPriceListsController extends Controller
 {
@@ -162,7 +160,7 @@ class ImportPriceListsController extends Controller
         $name = '['.$pricelist->id.'] '.$pricelist->name;
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Price List', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Import Price List', __METHOD__ )
                     ->backTo( route('pricelists.import', [$pricelist->id]) );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 

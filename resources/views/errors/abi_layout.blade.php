@@ -7,7 +7,8 @@
 
 <div class="page-header">
     <h2>
-        Error @yield('code') | @yield('message')
+        Error @yield('code') | @yield('message') 
+        {{ $exception->getMessage() ? ' :: ' . $exception->getMessage() : ''}}
     </h2>        
 </div>
 

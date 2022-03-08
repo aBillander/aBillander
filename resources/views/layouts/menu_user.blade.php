@@ -9,7 +9,7 @@
                     <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                          <li>
-                            <a href="{{ App\Configuration::get('URL_ABILLANDER_DOCS') }}" target="_blank">
+                            <a href="{{ AbiConfiguration::get('URL_ABILLANDER_DOCS') }}" target="_blank">
                                  {{l('Documentation', [], 'layouts')}}
                             </a>
                         </li>
@@ -17,7 +17,7 @@
 {{--
                             <a data-target="#feedbackForm" data-toggle="modal" onclick="return false;" href="">
 --}}
-                            <a href="{{ App\Configuration::get('URL_ABILLANDER_SUPPORT') }}" target="_blank">
+                            <a href="{{ AbiConfiguration::get('URL_ABILLANDER_SUPPORT') }}" target="_blank">
                                  {{l('Support & feed-back', [], 'layouts')}}
                             </a>
                         </li>

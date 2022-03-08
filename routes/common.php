@@ -1,5 +1,11 @@
 <?php
 
+use App\Models\ActivityLogger;
+use App\Models\Configuration;
+use App\Models\Context;
+
+use App\Events\DatabaseBackup;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -33,7 +39,7 @@ Route::get('dbbackup', function()
 {
     $security_token = request('security_token'); 
 
-    if ( $security_token != \App\Configuration::isNotEmpty('DB_BACKUP_SECURITY_TOKEN') )
+    if ( $security_token != Configuration::isNotEmpty('DB_BACKUP_SECURITY_TOKEN') )
         die($security_token);
 
 
@@ -59,7 +65,7 @@ Route::get('dbbackup', function()
             
             }
 
-    \App\Context::getContext()->tenant = $subdomain; 
+    Context::getContext()->tenant = $subdomain; 
 
     Artisan::call('db:backup');
     // save it to the storage/backups/backup.sql file
@@ -67,7 +73,7 @@ Route::get('dbbackup', function()
     abi_r( Artisan::output() );
 
         // The backup has been proceed successfully.
-        event(new \App\Events\DatabaseBackup());
+        event(new DatabaseBackup());
 
     // return '<h1>Proceso terminado</h1>';    // <a class="navbar-brand" href="' .url('/'). '">Volver</a>';
     return ;
@@ -81,7 +87,7 @@ Route::get('eggtimer', function()
     $limit = max((int) ini_get('max_execution_time'), 60) + 10;
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Egg Timmer', 'Guess max_execution_time' );        // 'Import Categories :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        $logger = ActivityLogger::setup( 'Egg Timmer', 'Guess max_execution_time' );        // 'Import Categories :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
         $logger->empty();

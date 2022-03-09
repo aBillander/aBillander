@@ -1,0 +1,7 @@
+vendor/
+composer.lock
+
+.idea/
+tests/output/
+
+readme.txt

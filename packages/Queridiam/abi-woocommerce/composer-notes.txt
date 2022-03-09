@@ -1,0 +1,53 @@
+
+composer remove vendor/package
+
+// https://stackoverflow.com/questions/46722110/remove-a-package-using-composer-without-updating-other-packages
+"composer update" since it will update other packages which I don't want.
+
+composer remove --no-update illuminate/mail
+composer update illuminate/mail
+
+--no-update: Disables the automatic update of the dependencies (implies --no-install).
+--no-install: Does not run the install step after updating the composer.lock file.
+
+
+composer remove --no-update mindsize/laravel5-woocommerce
+composer update mindsize/laravel5-woocommerce
+
+composer install
+
+
+Hack way:
+
+Remove the entry from composer.json then run
+
+composer update watson/sitemap
+
+This will remove a package totally from composer.lock and /vendor
+
+
+** install / i#
+
+The install command reads the composer.json file from the current directory, resolves the dependencies, and installs them into vendor.
+
+php composer.phar install
+
+If there is a composer.lock file in the current directory, it will use the exact versions from there instead of resolving them. This ensures that everyone using the library will get the same versions of the dependencies.
+
+If there is no composer.lock file, Composer will create one after dependency resolution.
+
+** update / u#
+
+In order to get the latest versions of the dependencies and to update the composer.lock file, you should use the update command. This command is also aliased as upgrade as it does the same as upgrade does if you are thinking of apt-get or similar package managers.
+
+php composer.phar update
+
+This will resolve all dependencies of the project and write the exact versions into composer.lock.
+
+If you only want to update a few packages and not all, you can list them as such:
+
+php composer.phar update vendor/package vendor/package2
+
+You can also use wildcards to update a bunch of packages at once:
+
+php composer.phar update "vendor/*"

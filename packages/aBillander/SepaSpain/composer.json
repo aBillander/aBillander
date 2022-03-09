@@ -1,0 +1,22 @@
+{
+    "name": "aBillander/SepaSpain",
+    "description": "SEPA Direct Debits",
+    "homepage": "https://github.com/aBillander/SEPA",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lara Billander",
+            "email": "wasp@abillander.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "illuminate/support": "5.1.x|5.2.x|5.3.x|5.4.x|5.5.x"
+    },
+    "autoload": {
+        "psr-4": {
+            "aBillander\\SepaSpain\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}

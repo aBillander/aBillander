@@ -1,5 +1,8 @@
 <?php
 
+use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
+// use Queridiam\WooCommerce\Facades\WooCommerce;
+
 /*
 |--------------------------------------------------------------------------
 | Gorrino Web Routes "sandbox"
@@ -11,6 +14,33 @@
 
 
 /* ********************************************************** */
+
+
+Route::get('/woo', function () {
+        $settings = [];
+
+        // Get Configurations from WooCommerce Shop
+        try {
+
+            $groups = WooCommerce::get('settings'); // Array
+        }
+
+        catch( WooHttpClientException $e ) {
+
+            /*
+            $e->getMessage(); // Error message.
+
+            $e->getRequest(); // Last request data.
+
+            $e->getResponse(); // Last response data.
+            */
+
+            abi_r( $e->getMessage() );
+
+        }
+
+        abi_r($groups);
+});
 
 
 Route::get('/home', function () {

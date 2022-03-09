@@ -196,12 +196,13 @@ return [
         /*
          * aBillander Package Service Providers...
          */
-/*        aBillander\Installer\InstallerServiceProvider::class,
-        aBillander\SepaSpain\SepaSpainServiceProvider::class,
-        aBillander\WooConnect\WooConnectServiceProvider::class,
-        Queridiam\FSxConnector\FSxConnectorServiceProvider::class,
-        Queridiam\FSxConnector\FSxViewComposerServiceProvider::class,
-*/
+//        aBillander\Installer\InstallerServiceProvider::class,
+//        aBillander\SepaSpain\SepaSpainServiceProvider::class,
+//        aBillander\WooConnect\WooConnectServiceProvider::class,
+        Queridiam\WooCommerce\ServiceProvider::class,
+//        Queridiam\FSxConnector\FSxConnectorServiceProvider::class,
+//        Queridiam\FSxConnector\FSxViewComposerServiceProvider::class,
+
         // composer dump-autoload -o
 
     ],
@@ -228,6 +229,8 @@ return [
         'AbiConfiguration' => App\Models\Configuration::class,
         'AbiContext'       => App\Models\Context::class,
         'AbiCompany'       => App\Models\Company::class,
+
+        'WooCommerce'      => Queridiam\WooCommerce\Facades\WooCommerce::class,
 
     ])->toArray(),
 

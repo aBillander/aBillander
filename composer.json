@@ -11,7 +11,8 @@
         "laravel/framework": "^9.0",
         "laravel/sanctum": "^2.14",
         "laravel/tinker": "^2.7",
-        "laravelcollective/html": "^6.3"
+        "laravelcollective/html": "^6.3",
+        "automattic/woocommerce": "^3.0.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -29,10 +30,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "aBillander\\Installer\\": "packages/aBillander/hello-abi/src",
-            "aBillander\\SepaSpain\\": "packages/aBillander/SepaSpain/src",
-            "aBillander\\WooConnect\\": "packages/aBillander/WooConnect/src",
-            "Queridiam\\WooCommerce\\": "packages/Queridiam/abi-woocommerce/src"
+            "aBillander\\Installer\\": "packages/aBillander/hello-abi/src/",
+            "aBillander\\SepaSpain\\": "packages/aBillander/SepaSpain/src/",
+            "aBillander\\WooConnect\\": "packages/aBillander/WooConnect/src/",
+            "Queridiam\\WooCommerce\\": "packages/Queridiam/abi-woocommerce/src/"
         },
         "files": [
             "app/Helpers/HelperFunctions.php"

@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Configuration;
+use App\Models\Configuration;
 
 use Carbon\Carbon;
 
-use App\Product;
-use App\StockMovement;
+use App\Models\Product;
+use App\Models\StockMovement;
 
 class ChartProductWebSalesController extends Controller
 {
@@ -85,7 +85,7 @@ class ChartProductWebSalesController extends Controller
         $model = $this->model;
         if ( !in_array($model, $models) )
             $model = 'CustomerOrder';
-        $class = '\App\\'.$model.'Line';
+        $class = '\\App\\Models\\'.$model.'Line';
         $table = snake_case(str_plural($model));
         $route = str_replace('_', '', $table);
 

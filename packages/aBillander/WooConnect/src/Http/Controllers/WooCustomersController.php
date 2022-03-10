@@ -3,26 +3,20 @@
 namespace aBillander\WooConnect\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\LengthAwarePaginator;
-
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use Illuminate\Http\Request;
-
-use WooCommerce;
+use App\Models\Configuration;
+use App\Models\Customer;
+use App\Models\Image;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
-
-use App\Customer;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use WooCommerce;
 use aBillander\WooConnect\WooCustomer;
-
-use \aBillander\WooConnect\WooCustomerImporter;
-
-use \App\Configuration;
+use aBillander\WooConnect\WooCustomerImporter;
 
 class WooCustomersController extends Controller 
 {
-
 
    protected $customer;
    protected $abi_customer;
@@ -80,7 +74,7 @@ class WooCustomersController extends Controller
 
 
 		// 
-		$perPage = request('perPage', intval(\App\Configuration::get('WOOC_ORDERS_PER_PAGE')));
+		$perPage = request('perPage', intval(Configuration::get('WOOC_ORDERS_PER_PAGE')));
 
 		// abi_r($perPage);die();
 
@@ -97,7 +91,7 @@ class WooCustomersController extends Controller
 		$query = array_merge($request->query(), $queries);
 
 		$page = Paginator::resolveCurrentPage();  // $request->input('page', 1); // Get the current page or default to 1
-		$perPage = $perPage > 0 ? $perPage : intval(\App\Configuration::get('WOOC_ORDERS_PER_PAGE'));	// Waiting for Configuration::get('WOOC_PRODUCTS_PER_PAGE') if needed
+		$perPage = $perPage > 0 ? $perPage : intval(Configuration::get('WOOC_ORDERS_PER_PAGE'));	// Waiting for Configuration::get('WOOC_PRODUCTS_PER_PAGE') if needed
 		if ($perPage<1) $perPage=10;
 		$offset = ($page * $perPage) - $perPage;
 
@@ -498,7 +492,7 @@ class WooCustomersController extends Controller
 				if( $img_src )
 				{
 
-			        $image = \App\Image::createForProductFromUrl($img_src, ['caption' => $p->name]);
+			        $image = Image::createForProductFromUrl($img_src, ['caption' => $p->name]);
 					
 			        $p->images()->save($image);
 

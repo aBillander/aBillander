@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\WarehouseShippingSlipLine;
 use Illuminate\Http\Request;
 
-class WarehouseShippingSlipLineController extends Controller
+class WarehouseShippingSlipLinesController extends Controller
 {
     /**
      * Display a listing of the resource.

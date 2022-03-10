@@ -196,9 +196,9 @@ return [
         /*
          * aBillander Package Service Providers...
          */
-//        aBillander\Installer\InstallerServiceProvider::class,
-//        aBillander\SepaSpain\SepaSpainServiceProvider::class,
-//        aBillander\WooConnect\WooConnectServiceProvider::class,
+        aBillander\Installer\InstallerServiceProvider::class,
+        aBillander\SepaSpain\SepaSpainServiceProvider::class,
+        aBillander\WooConnect\WooConnectServiceProvider::class,
         Queridiam\WooCommerce\ServiceProvider::class,
 //        Queridiam\FSxConnector\FSxConnectorServiceProvider::class,
 //        Queridiam\FSxConnector\FSxViewComposerServiceProvider::class,

@@ -5,24 +5,22 @@ namespace aBillander\WooConnect;
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
-use App\Context;
-use App\Configuration;
-use App\Customer;
-use App\Address;
-use App\Country;
-use App\State;
-use App\Currency;
-use App\Sequence;
-use App\CustomerOrder as Order;
-use App\CustomerOrderLine as OrderLine;
-use App\CustomerOrderLineTax as OrderLineTax;
-use App\Product;
-use App\Combination;
-use App\Tax;
-use App\Price;
-use App\ActivityLogger;
-
-// use \aBillander\WooConnect\WooOrder;
+use App\Models\Context;
+use App\Models\Configuration;
+use App\Models\Customer;
+use App\Models\Address;
+use App\Models\Country;
+use App\Models\State;
+use App\Models\Currency;
+use App\Models\Sequence;
+use App\Models\CustomerOrder as Order;
+use App\Models\CustomerOrderLine as OrderLine;
+use App\Models\CustomerOrderLineTax as OrderLineTax;
+use App\Models\Product;
+use App\Models\Combination;
+use App\Models\Tax;
+use App\Models\Price;
+use App\Models\ActivityLogger;
 
 class WooOrderImporter {
 
@@ -58,7 +56,7 @@ class WooOrderImporter {
 
 
         // Start Logger
-//        $this->logger = \App\ActivityLogger::setup( 
+//        $this->logger = ActivityLogger::setup( 
 //            'Import WooCommerce Orders', self::loggerSignature() );			//  :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
         $this->logger = self::loggerSetup();

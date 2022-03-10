@@ -2,14 +2,15 @@
 
 namespace aBillander\SepaSpain;
 
-use Illuminate\Database\Eloquent\Model;
-
-use App\Sequence;
-
 use AbcAeffchen\SepaUtilities\SepaUtilities;
 use AbcAeffchen\Sephpa\SephpaDirectDebit;
-
+use App\Models\BankAccount;
+use App\Models\Company;
+use App\Models\Context;
+use App\Models\Payment;
+use App\Models\Sequence;
 use App\Traits\ViewFormatterTrait;
+use Illuminate\Database\Eloquent\Model;
 
 // Direct Debit Bank Order or Remittance
 class SepaDirectDebit extends Model
@@ -176,13 +177,13 @@ class SepaDirectDebit extends Model
 
     public function bankaccount()
     {
-        return $this->hasOne('App\BankAccount', 'id', 'bank_account_id')
-                   ->where('bank_accountable_type', \App\Company::class);
+        return $this->hasOne(BankAccount::class, 'id', 'bank_account_id')
+                   ->where('bank_accountable_type', Company::class);
     }
 
     public function vouchers()
     {
-        return $this->hasMany('App\Payment', 'bank_order_id');
+        return $this->hasMany(Payment::class, 'bank_order_id');
     }
     
 
@@ -222,7 +223,7 @@ class SepaDirectDebit extends Model
         $checkAndSanitize = FALSE;
 
         // generate a SepaDirectDebit object (pain.008.001.02).
-        $paymentInfoId = \App\Context::getContext()->company->identification . '_' . $this->document_reference;
+        $paymentInfoId = Context::getContext()->company->identification . '_' . $this->document_reference;
 
         if ( $this->discount_dd > 0 )
             $paymentInfoId = 'FSDD' . $paymentInfoId;
@@ -279,7 +280,7 @@ class SepaDirectDebit extends Model
 
         // Lets rock
         $directDebitFile = new SephpaDirectDebit(
-                                         $this->sanitize_name(\App\Context::getContext()->company->name_fiscal),
+                                         $this->sanitize_name(Context::getContext()->company->name_fiscal),
                                          $paymentInfoId,        // Download file is named afther this value
                                          SephpaDirectDebit::SEPA_PAIN_008_001_02,
                                          $checkAndSanitize
@@ -291,10 +292,10 @@ class SepaDirectDebit extends Model
                 'pmtInfId'      => $paymentInfoId,          // ID of the payment collection
                 'lclInstrm'     => $localInstrument,
                 'seqTp'         => $sequenceType,
-                'cdtr'          => $this->sanitize_name(\App\Context::getContext()->company->name_fiscal),      // (max 70 characters)
+                'cdtr'          => $this->sanitize_name(Context::getContext()->company->name_fiscal),      // (max 70 characters)
                 'iban'          => $this->sanitize_iban( $this->iban ),            // IBAN of the Creditor
                 'bic'           => $this->swift,           // BIC of the Creditor
-                'ci'            => $this->calculateCreditorID( \App\Context::getContext()->company, $this->bankaccount ),    // Creditor-Identifier
+                'ci'            => $this->calculateCreditorID( Context::getContext()->company, $this->bankaccount ),    // Creditor-Identifier
             // optional
                 'ccy'           => $this->currency_iso_code ?: 'EUR',                   // Currency. Default is 'EUR'
 //                'btchBookg'     => 'true',                  // BatchBooking, only 'true' or 'false'
@@ -416,7 +417,7 @@ class SepaDirectDebit extends Model
  
  /* Old (not so good) stuff       
         $directDebitFile = new SephpaDirectDebit(
-                                         $this->sanitize_name(\App\Context::getContext()->company->name_fiscal),
+                                         $this->sanitize_name(Context::getContext()->company->name_fiscal),
                                          $paymentInfoId,        // Download file is named afther this value
                                          SephpaDirectDebit::SEPA_PAIN_008_001_02,
                                          $collectionData,
@@ -497,15 +498,15 @@ class SepaDirectDebit extends Model
         return substr(str_replace($from, $to, $name), 0, 70);
     }
 
-    public function calculateCreditorID( \App\Company $company = null, $bankaccount = null )
+    public function calculateCreditorID( Company $company = null, $bankaccount = null )
     {
         // https://inza.wordpress.com/2013/10/25/como-preparar-los-mandatos-sepa-identificador-del-acreedor/
 
         if ($company == null)
-            $company = \App\Context::getContext()->company;
+            $company = Context::getContext()->company;
 
         if ($bankaccount == null)
-            $bankaccount = \App\Context::getContext()->company->bankaccount;
+            $bankaccount = Context::getContext()->company->bankaccount;
 
         if ( $bankaccount->creditorid )
             return $bankaccount->creditorid;

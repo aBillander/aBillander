@@ -2,22 +2,19 @@
 
 namespace aBillander\SepaSpain\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Configuration;
-use App\Sequence;
-use App\Currency;
-use App\Payment;
-
-use App\Traits\ViewFormatterTrait;
-use App\Traits\DateFormFormatterTrait;
-
-use aBillander\SepaSpain\SepaDirectDebit;
-
 use AbcAeffchen\SepaUtilities\SepaUtilities;
 use AbcAeffchen\Sephpa\SephpaDirectDebit;
+use App\Http\Controllers\Controller;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Payment;
+use App\Models\PaymentType;
+use App\Models\Sequence;
+use App\Traits\DateFormFormatterTrait;
+use App\Traits\ViewFormatterTrait;
+use Illuminate\Http\Request;
+use aBillander\SepaSpain\SepaDirectDebit;
 
 class SepaDirectDebitsController extends Controller
 {
@@ -46,7 +43,7 @@ class SepaDirectDebitsController extends Controller
     {
         $sdds = $this->directdebit->with('bankaccount')->orderBy('document_date', 'desc')->orderBy('id', 'desc');
 
-        $sdds = $sdds->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $sdds = $sdds->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $sdds->setPath('directdebits');
 
@@ -70,7 +67,7 @@ class SepaDirectDebitsController extends Controller
 
 		$sepa_sp_schemeList = SepaDirectDebit::getSchemeList();
 
-		$bank_accountList = \App\Context::getContext()->company->bankaccounts->pluck('bank_name', 'id')->toArray();
+		$bank_accountList = Context::getContext()->company->bankaccounts->pluck('bank_name', 'id')->toArray();
 
         // $document_date = abi_date_short( \Carbon\Carbon::now() );
 
@@ -92,7 +89,7 @@ class SepaDirectDebitsController extends Controller
 
         $this->validate($request, $rules);
 
-        $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+        $extradata = [  'user_id'              => Context::getContext()->user->id,
 
  //                       'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
 
@@ -151,7 +148,7 @@ class SepaDirectDebitsController extends Controller
 
         // Sequence
         $seq_id = $sdds->sequence_id;
-        $seq = \App\Sequence::find( $seq_id );
+        $seq = Sequence::find( $seq_id );
         $doc_id = $seq->getNextDocumentId();
 
 //        $sdds->sequence_id = $seq_id;
@@ -218,7 +215,7 @@ class SepaDirectDebitsController extends Controller
 	{
         $directdebit = $this->directdebit->findOrFail($id);
 
-        $payment_typeList = \App\PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $payment_typeList = PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
         return view('sepa_es::direct_debits.show', compact('directdebit', 'payment_typeList'));
 	}
@@ -239,7 +236,7 @@ class SepaDirectDebitsController extends Controller
 
         $sepa_sp_schemeList = SepaDirectDebit::getSchemeList();
 
-        $bank_accountList = \App\Context::getContext()->company->bankaccounts->pluck('bank_name', 'id')->toArray();
+        $bank_accountList = Context::getContext()->company->bankaccounts->pluck('bank_name', 'id')->toArray();
 
         // $document_date = abi_date_short( \Carbon\Carbon::now() );
 
@@ -322,7 +319,7 @@ class SepaDirectDebitsController extends Controller
         // return $directDebitFile->download();
         $creDtTm  = $directdebit->document_date->format('Y-m-d\TH:i:s');
         $filename = 'Remesa_' . $directdebit->document_reference . '_' . $creDtTm . '_SEPA_' .$directdebit->scheme . '' . '.xml';
-        $creId    = $directdebit->calculateCreditorID( \App\Context::getContext()->company, $directdebit->bankaccount );
+        $creId    = $directdebit->calculateCreditorID( Context::getContext()->company, $directdebit->bankaccount );
 
         // Play nice with barryvdh/laravel-DebugBar
         // https://github.com/barryvdh/laravel-debugbar/issues/621

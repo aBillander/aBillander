@@ -2,7 +2,7 @@
 
 namespace aBillander\WooConnect;
 
-use \App\Configuration;
+use App\Configuration;
 
 class FSxTools
 {
@@ -146,7 +146,7 @@ class FSxTools
 
         // Dictionary
         if ( !isset(self::$gates) )
-            self::$gates = json_decode(\App\Configuration::get('FSX_FORMAS_DE_PAGO_DICTIONARY_CACHE'), true);
+            self::$gates = json_decode(Configuration::get('FSX_FORMAS_DE_PAGO_DICTIONARY_CACHE'), true);
 
         $gates = self::$gates;
 
@@ -204,7 +204,7 @@ class FSxTools
 Route::get('fpago', function()
 {
     // aBillander Methods
-    $pgatesList = \App\PaymentMethod::select('id', 'name')->orderby('name', 'desc')->get()->toArray();
+    $pgatesList = \App\Models\PaymentMethod::select('id', 'name')->orderby('name', 'desc')->get()->toArray();
 
     $l= [];
 
@@ -219,11 +219,11 @@ Route::get('fpago', function()
 
     $ll =collect($l)->pluck('name', 'id')->toArray();
 
-    \App\Configuration::updateValue('FSX_FORMAS_DE_PAGO_CACHE', json_encode($ll));
+    Configuration::updateValue('FSX_FORMAS_DE_PAGO_CACHE', json_encode($ll));
 
 
 
-    abi_r(  \App\Configuration::get('FSX_FORMAS_DE_PAGO_CACHE') );
+    abi_r(  Configuration::get('FSX_FORMAS_DE_PAGO_CACHE') );
 
     $fsolpaymethods = \Queridiam\FSxConnector\FSxTools::getFormasDePagoList();
     abi_r( ($fsolpaymethods ) );

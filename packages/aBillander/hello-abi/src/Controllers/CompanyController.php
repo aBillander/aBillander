@@ -2,17 +2,17 @@
 
 namespace aBillander\Installer\Controllers;
 
-use Illuminate\Routing\Controller;
+use App\Models\Address;
+use App\Models\Company;
+use App\Models\Configuration;
+use App\Models\Country;
+use App\Models\Currency;
+use App\Models\Language;
+use App\Models\User;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
-
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Hash;
-
-use App\Http\Requests;
-use App\Company;
-use App\Warehouse;
-use App\Address;
-use App\User;
-use App\Configuration;
 
 class CompanyController extends Controller
 {
@@ -35,9 +35,9 @@ class CompanyController extends Controller
      */
     public function show()
     {
-        $currencyList = \App\Currency::pluck('name', 'id')->toArray();
-        $languageList = \App\Language::pluck('name', 'id')->toArray();
-        $countryList  = \App\Country::orderby('name', 'asc')->pluck('name', 'id')->toArray();
+        $currencyList = Currency::pluck('name', 'id')->toArray();
+        $languageList = Language::pluck('name', 'id')->toArray();
+        $countryList  = Country::orderby('name', 'asc')->pluck('name', 'id')->toArray();
 
         return view('installer::company', compact('currencyList', 'languageList', 'countryList'));
     }

@@ -4,14 +4,14 @@ namespace aBillander\WooConnect;
 
 // use Illuminate\Database\Eloquent\Model;
 
-use WooCommerce;
+use App\Models\Configuration;
+use App\Models\Country;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\State;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
-
+use WooCommerce;
 use aBillander\WooConnect\FSxTools;
-
-use App\Configuration;
-use App\Country;
-use App\State;
 
 class WooOrder // extends Model
 {
@@ -120,7 +120,7 @@ class WooOrder // extends Model
 
     public function customer()
     {
-        return $this->hasOne('App\Customer', 'webshop_id', 'customer_id');
+        return $this->hasOne(Customer::class, 'webshop_id', 'customer_id');
     }
 
     /**
@@ -128,9 +128,9 @@ class WooOrder // extends Model
      */
     public function invoices()
     {
-        return $this->belongsToMany('App\CustomerInvoice', 'parent_child', 'parentable_id', 'childable_id')
+        return $this->belongsToMany(CustomerInvoice::class, 'parent_child', 'parentable_id', 'childable_id')
                 ->wherePivot('parentable_type', 'aBillander\WooConnect\WooOrder')
-                ->wherePivot('childable_type', 'App\CustomerInvoice')
+                ->wherePivot('childable_type', CustomerInvoice::class)
                 ->withTimestamps();
     }
 
@@ -138,7 +138,7 @@ class WooOrder // extends Model
     {
         if (!$document) return;
 
-        $this->invoices()->attach($document->id, ['parentable_type' => 'aBillander\WooConnect\WooOrder', 'childable_type' => 'App\CustomerInvoice']);
+        $this->invoices()->attach($document->id, ['parentable_type' => 'aBillander\WooConnect\WooOrder', 'childable_type' => CustomerInvoice::class]);
     }
     
     /*

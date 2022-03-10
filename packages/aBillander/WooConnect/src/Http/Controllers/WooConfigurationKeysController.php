@@ -3,16 +3,22 @@
 namespace aBillander\WooConnect\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use WooCommerce;
+use App\Models\Configuration;
+use App\Models\Currency;
+use App\Models\CustomerGroup;
+use App\Models\CustomerOrder;
+use App\Models\Language;
+use App\Models\PaymentMethod;
+use App\Models\PriceList;
+use App\Models\Sequence;
+use App\Models\ShippingMethod;
+use App\Models\Tax;
+use App\Models\Warehouse;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
-
-use \aBillander\WooConnect\WooConnector;
-use \aBillander\WooConnect\WooOrderImporter;
-
-use \App\Configuration as Configuration;
+use Illuminate\Http\Request;
+use WooCommerce;
+use aBillander\WooConnect\WooConnector;
+use aBillander\WooConnect\WooOrderImporter;
 
 
 class WooConfigurationKeysController extends Controller {
@@ -87,16 +93,16 @@ class WooConfigurationKeysController extends Controller {
         foreach ($this->conf_keys[$tab_index] as $key)
             $key_group[$key]= Configuration::get($key);
 
-        $currencyList = \App\Currency::pluck('name', 'id')->toArray();
-        $customer_groupList = \App\CustomerGroup::pluck('name', 'id')->toArray();
-        $price_listList = \App\PriceList::pluck('name', 'id')->toArray();
-        $warehouseList = \App\Warehouse::pluck('name', 'id')->toArray();
+        $currencyList = Currency::pluck('name', 'id')->toArray();
+        $customer_groupList = CustomerGroup::pluck('name', 'id')->toArray();
+        $price_listList = PriceList::pluck('name', 'id')->toArray();
+        $warehouseList = Warehouse::pluck('name', 'id')->toArray();
         if(count($warehouseList) != 1)
             $warehouseList = ['0' => l('-- All --', [], 'layouts')] + $warehouseList;
 
-        $languageList = \App\Language::pluck('name', 'id')->toArray();
-        $orders_sequenceList = \App\Sequence::listFor( \App\CustomerOrder::class );
-        $taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $languageList = Language::pluck('name', 'id')->toArray();
+        $orders_sequenceList = Sequence::listFor( CustomerOrder::class );
+        $taxList = Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
         return view( $tab_view, compact('tab_index', 'key_group', 'currencyList', 'customer_groupList', 'price_listList', 'warehouseList', 'languageList', 'orders_sequenceList', 'taxList') );
 
@@ -146,7 +152,7 @@ class WooConfigurationKeysController extends Controller {
                 // Prevent NULL values
                 $value = is_null( $request->input($key) ) ? '' : $request->input($key);
 
-                \App\Configuration::updateValue($key, $value);
+                Configuration::updateValue($key, $value);
             }
         }
 
@@ -317,7 +323,7 @@ class WooConfigurationKeysController extends Controller {
 */
 
 
-        $currency = \App\Currency::findByIsoCode( Configuration::get('WOOC_CURRENCY') );
+        $currency = Currency::findByIsoCode( Configuration::get('WOOC_CURRENCY') );
         if ( $currency ) {
 
             Configuration::updateValue('WOOC_DEF_CURRENCY', $currency->id);
@@ -349,7 +355,7 @@ class WooConfigurationKeysController extends Controller {
 
 
 
-        $tax = \App\Tax::find( \aBillander\WooConnect\WooOrder::getTaxId( Configuration::get('WOOC_SHIPPING_TAX_CLASS') ) );
+        $tax = Tax::find( \aBillander\WooConnect\WooOrder::getTaxId( Configuration::get('WOOC_SHIPPING_TAX_CLASS') ) );
         if ( $tax ) {
 
             Configuration::updateValue('WOOC_DEF_SHIPPING_TAX', $tax->id);
@@ -398,7 +404,7 @@ class WooConfigurationKeysController extends Controller {
             $dic_val[$wootax['slug']] = Configuration::get($dic[$wootax['slug']]);
         }
 
-        $taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $taxList = Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
         return view('woo_connect::woo_configuration_keys.'.'key_group_'.$tab_index, compact('tab_index', 'wootaxes', 'dic', 'dic_val', 'taxList'));
     }
@@ -476,7 +482,7 @@ class WooConfigurationKeysController extends Controller {
             $dic_val[$woopgate['id']] = Configuration::get($dic[$woopgate['id']]);
         }
 
-        $pgatesList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $pgatesList = PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
         return view('woo_connect::woo_configuration_keys.'.'key_group_'.$tab_index, compact('tab_index', 'woopgates', 'dic', 'dic_val', 'pgatesList'));
     }
@@ -554,7 +560,7 @@ class WooConfigurationKeysController extends Controller {
             $dic_val[$woosmethod['id']] = Configuration::get($dic[$woosmethod['id']]);
         }
 
-        $smethodsList = \App\ShippingMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $smethodsList = ShippingMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
         return view('woo_connect::woo_configuration_keys.'.'key_group_'.$tab_index, compact('tab_index', 'woosmethods', 'dic', 'dic_val', 'smethodsList'));
     }

@@ -17,14 +17,14 @@ class SepaSpainServiceProvider extends ServiceProvider
     public function boot()
     {
         // Loading routes file
-        $this->loadRoutesFrom(__DIR__ . '/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
 
         // Load Views
-        $this->loadViewsFrom(__DIR__ . '/../../views', 'sepa_es');
+        $this->loadViewsFrom(__DIR__ . '/../views', 'sepa_es');
 
         // Migrations
         // Will be loaded when executing: php artisan migrate
-        $this->loadMigrationsFrom(__DIR__ . '/../migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/migrations');
 
 /*
         $this->publishes([
@@ -50,10 +50,10 @@ class SepaSpainServiceProvider extends ServiceProvider
                     'SepaUtilities/src/SepaUtilities.php'
                 ] as $filename){
             
-            require_once(__DIR__ . '/../../vendor/'.$filename);
+            require_once(__DIR__ . '/../vendor/'.$filename);
         }
 
-//        foreach (glob(__DIR__ . '/../../vendor/Sephpa/src/payment-collections/*.php') as $filename){
+//        foreach (glob(__DIR__ . '/../vendor/Sephpa/src/payment-collections/*.php') as $filename){
 
             // require_once($filename);
 //        }

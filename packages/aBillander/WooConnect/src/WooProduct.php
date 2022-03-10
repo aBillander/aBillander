@@ -138,7 +138,7 @@ class WooProduct // extends Model
 
     public function cosito()
     {
-        // return $this->hasOne('App\Customer', 'webshop_id', 'customer_id');
+        // return $this->hasOne('App\Models\Customer', 'webshop_id', 'customer_id');
     }
     
     /*

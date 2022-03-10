@@ -3,27 +3,21 @@
 namespace aBillander\WooConnect\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\LengthAwarePaginator;
-
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use Illuminate\Http\Request;
-
-use WooCommerce;
+use App\Models\Configuration;
+use App\Models\Image;
+use App\Models\PriceList;
+use App\Models\Product;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
-
-use \App\Product;
-use \aBillander\WooConnect\WooProduct;
-
-use \aBillander\WooConnect\WooProductImporter;
-
-use \App\Configuration;
-use \App\PriceList;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use WooCommerce;
+use aBillander\WooConnect\WooProduct;
+use aBillander\WooConnect\WooProductImporter;
 
 class WooProductsController extends Controller 
 {
-
 
    protected $product;
    protected $abi_product;
@@ -56,7 +50,7 @@ class WooProductsController extends Controller
 		$query = array_merge($request->query(), $queries);
 
 		$page = Paginator::resolveCurrentPage();  // $request->input('page', 1); // Get the current page or default to 1
-		$perPage = intval(\App\Configuration::get('WOOC_ORDERS_PER_PAGE'));	// Waiting for Configuration::get('WOOC_PRODUCTS_PER_PAGE') if needed
+		$perPage = intval(Configuration::get('WOOC_ORDERS_PER_PAGE'));	// Waiting for Configuration::get('WOOC_PRODUCTS_PER_PAGE') if needed
 		if ($perPage<1) $perPage=10;
 		$offset = ($page * $perPage) - $perPage;
 
@@ -292,7 +286,7 @@ class WooProductsController extends Controller
 
 		foreach ($abi_images as $abi_image) {
 			# code...
-			$src = \URL::to( \App\Image::pathProducts() . $abi_image->getImageFolder() . $abi_image->id . '.' . $abi_image->extension );
+			$src = \URL::to( Image::pathProducts() . $abi_image->getImageFolder() . $abi_image->id . '.' . $abi_image->extension );
 			// $src = 'http://abimfg.gmdistribuciones.es/tenants/abimfg/images_p/4/0/2/0/4020.JPG';
 			$data['images'][] = 
 				[
@@ -534,7 +528,7 @@ class WooProductsController extends Controller
 					if( $img_src )
 					{
 
-				        $image = \App\Image::createForProductFromUrl($img_src, ['caption' => $caption]);
+				        $image = Image::createForProductFromUrl($img_src, ['caption' => $caption]);
 						
 				        $p->images()->save($image);
 

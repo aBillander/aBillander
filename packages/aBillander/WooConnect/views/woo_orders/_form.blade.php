@@ -78,7 +78,7 @@
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {!! Form::label('conversion_rate', l('Exchange rate')) !!} 
              <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                        data-content="{{ l('Monetary units per :name', ['name' => \App\Context::getContext()->currency->name]) }}">
+                        data-content="{{ l('Monetary units per :name', ['name' => AbiContext::getContext()->currency->name]) }}">
                     <i class="fa fa-question-circle abi-help"></i>
              </a>
     {!! Form::text('conversion_rate', null, array('class' => 'form-control')) !!}

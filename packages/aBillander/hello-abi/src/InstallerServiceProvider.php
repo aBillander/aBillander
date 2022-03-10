@@ -25,20 +25,20 @@ class InstallerServiceProvider extends ServiceProvider
     {
         // Config
         $this->publishes([
-            __DIR__.'/../../config/installer.php' => config_path('installer.php'),
+            __DIR__.'/../config/installer.php' => config_path('installer.php'),
         ], 'config');
 
         // Routes
-        $this->loadRoutesFrom(__DIR__ . '/../routes/routes.php');
+        $this->loadRoutesFrom(__DIR__ . '/routes/routes.php');
 
         // Translations
-        $this->loadTranslationsFrom(__DIR__.'/../../resources/lang', 'installer');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'installer');
         $this->publishes([
-            __DIR__.'/../../resources/lang' => resource_path('lang/vendor/aBillander/installer'),
+            __DIR__.'/../resources/lang' => resource_path('lang/vendor/aBillander/installer'),
         ]);
 
         // Load Views
-        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'installer');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'installer');
         // Not publish
         // $this->publishes([
         //     __DIR__.'/../resources/views' => base_path('resources/views/vendor/abillander/installer'),
@@ -46,7 +46,7 @@ class InstallerServiceProvider extends ServiceProvider
 
         // Assets
         $this->publishes([
-            __DIR__.'/../../resources/views/assets' => public_path('assets/installer'),
+            __DIR__.'/../resources/views/assets' => public_path('assets/installer'),
         ], 'public');
 
         // Middleware
@@ -62,7 +62,7 @@ class InstallerServiceProvider extends ServiceProvider
     public function register()
     {
         // Config
-        $this->mergeConfigFrom(__DIR__.'/../../config/installer.php', 'installer');
+        $this->mergeConfigFrom(__DIR__.'/../config/installer.php', 'installer');
 
         // Middleware
         $kernel = $this->app->make('Illuminate\Contracts\Http\Kernel');

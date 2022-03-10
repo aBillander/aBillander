@@ -109,6 +109,13 @@ class WooOrdersController extends Controller
 
         try {
 
+/*
+			$objects = WooCommerce::get('orders', $params);
+
+			$results = json_decode(json_encode($objects), true);
+*/
+
+			// API.php (public function get) was "gorrino fixed". So:
 			$results = WooCommerce::get('orders', $params);
 
 		}

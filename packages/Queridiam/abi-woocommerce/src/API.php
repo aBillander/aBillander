@@ -53,7 +53,9 @@ class API
      */
     public function get($endpoint, $parameters = [])
     {
-        return $this->client->get($endpoint, $parameters);
+        $objects = $this->client->get($endpoint, $parameters);
+
+        return json_decode(json_encode($objects), true);
     }
 
     /**

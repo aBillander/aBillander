@@ -43,7 +43,7 @@ Route::get('/woo', function () {
 });
 
 
-Route::get('/home', function () {
+Route::get('/home0', function () {
     // 
     return view('home');
 });

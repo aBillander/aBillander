@@ -46,6 +46,8 @@
 
                     @include('layouts/menu_sales')
 
+                    @include('layouts/menu_mfg')
+
                     @include('layouts/menu_warehouse')
 
                     @include('layouts/menu_system')

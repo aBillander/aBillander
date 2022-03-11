@@ -75,6 +75,19 @@ function abi_toSql($query)
 
 
 
+if (! function_exists('abi_version')) {
+    /**
+     * Get the version number of the aBillander Application.
+     *
+     * @param  none
+     * @return string
+     */
+    function abi_version()
+    {
+        return App\Models\Configuration::VERSION;
+    }
+}
+
 if (! function_exists('abi_laravel_version')) {
     /**
      * Get the version number of the Laravel framework.

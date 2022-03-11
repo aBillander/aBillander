@@ -10,7 +10,7 @@
                     <ul class="dropdown-menu" role="menu">
                          <li>
                             <a href="{{ AbiConfiguration::get('URL_ABILLANDER_DOCS') }}" target="_blank">
-                                 {{l('Documentation', [], 'layouts')}}
+                                 <i class="fa fa-life-saver text-info"></i> {{l('Documentation', [], 'layouts')}}
                             </a>
                         </li>
                          <li>
@@ -65,11 +65,13 @@
                                  {{l('Document sequences', [], 'layouts')}}
                             </a>
                         </li>
+{{--
                          <li>
                             <a href="{{ URL::to('helpcontents') }}">
                                  <i class="fa fa-life-saver text-info"></i> {{l('Help Contents', [], 'layouts')}}
                             </a>
                         </li>
+--}}
                          <li>
                             <a href="{{ URL::to('companies') }}">
                                  {{l('Company', [], 'layouts')}}

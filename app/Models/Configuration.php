@@ -9,6 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Configuration extends Model
 {
+    /**
+     * The aBillander Application version.
+     *
+     * @var string
+     */
+    const VERSION = '9.2.22';
+
+
     protected $fillable = [ 'name', 'value', 'description' ];
 
 	public static $rules = [

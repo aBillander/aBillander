@@ -60,7 +60,7 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                 {{ $line->name }}</td>
                 <td class="text-right" title="{{ $ecotax }}">{{ $line->as_priceable( $line->unit_final_price - $ecotax ) }}</td>
                 <td class="text-right">{{ $line->as_price('cost_price') }}</td>
-                <td class="text-right">{{ $line->as_percentable( \App\Calculator::margin( $line->cost_price, $line->unit_final_price - $ecotax, $document->currency ) ) }}</td>
+                <td class="text-right">{{ $line->as_percentable( \App\Models\Calculator::margin( $line->cost_price, $line->unit_final_price - $ecotax, $document->currency ) ) }}</td>
                 <td class="text-right">{{ $line->as_priceable( ( $line->unit_final_price - $ecotax - $line->cost_price )*$line->quantity ) }}</td>
 
 
@@ -140,7 +140,7 @@ $document_total_discount_percent = $document->document_discount_percent + $docum
                 <td>{{ $document->as_percentable( $document_total_discount_percent ) }}</td>
                 <td>{{ $document->as_priceable($document->total_revenue_with_discount) }}</td>
                 <td class="text-right">{{ $document->as_priceable($document->total_cost_price) }}</td>
-                <td class="text-right">{{ $document->as_percentable( \App\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount, $document->currency ) ) }}</td>
+                <td class="text-right">{{ $document->as_percentable( \App\Models\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount, $document->currency ) ) }}</td>
                 <td class="text-right">{{ $document->as_priceable( $document->total_revenue_with_discount - $document->total_cost_price ) }}</td>
 
 

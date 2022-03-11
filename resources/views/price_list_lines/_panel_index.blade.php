@@ -109,11 +109,11 @@
 
             <td>= <span class="btn btn-xs btn-grey" style="font-weight: bold;color: #c09853;
 background-color: #fcf8e3;
-border-color: #fbeed5;cursor: default">{{ $line->as_percentable( \App\Calculator::discount( optional($line->product)->price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
+border-color: #fbeed5;cursor: default">{{ $line->as_percentable( \App\Models\Calculator::discount( optional($line->product)->price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
             <td>{{ $line->as_priceable(optional($line->product)->cost_price) }}</td>
             <td><span class="btn btn-xs btn-grey" style="font-weight: bold;color: #3a87ad;
 background-color: #d9edf7;
-border-color: #bce8f1;cursor: default">{{ $line->as_percentable( \App\Calculator::margin( optional($line->product)->cost_price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
+border-color: #bce8f1;cursor: default">{{ $line->as_percentable( \App\Models\Calculator::margin( optional($line->product)->cost_price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
 
 			<td class="text-right button-pad">
                 @if (  is_null($line->deleted_at))

@@ -1,7 +1,7 @@
 
 <div class="row">
     <div class="form-group col-lg-4 col-md-4 col-sm-4">
-        <img src="{{ URL::to(\App\Image::$products_path . $image->getImageFolder() . $image->id . '-small_default' . '.' . $image->extension) }}" style="border: 1px solid #dddddd;">
+        <img src="{{ URL::to(\App\Models\Image::$products_path . $image->getImageFolder() . $image->id . '-small_default' . '.' . $image->extension) }}" style="border: 1px solid #dddddd;">
     </div>
 
     <div class="form-group col-lg-8 col-md-8 col-sm-8">

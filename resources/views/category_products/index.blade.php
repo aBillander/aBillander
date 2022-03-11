@@ -86,8 +86,8 @@ border-color: #269abc;" data-toggle="dropdown" title="{{l('Back to', 'layouts')}
 
                 @endif</td>
 
-      <td>{{ \App\Product::getProcurementTypeName($product->procurement_type) }}<br />
-        <span class="text-info">{{ \App\Product::getMrpTypeName($product->mrp_type) }}</span>
+      <td>{{ \App\Models\Product::getProcurementTypeName($product->procurement_type) }}<br />
+        <span class="text-info">{{ \App\Models\Product::getMrpTypeName($product->mrp_type) }}</span>
 
       </td>
 
@@ -97,13 +97,13 @@ border-color: #269abc;" data-toggle="dropdown" title="{{l('Back to', 'layouts')}
 @endphp
 @if ($img)
               <a class="view-image" data-html="false" data-toggle="modal" 
-                     href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
+                     href="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
                      data-content="{{l('You are going to view a record. Are you sure?')}}" 
                      data-title="{{ l('Product Images') }} :: {{ $product->name }} " 
                      data-caption="({{$img->filename}}) {{ $img->caption }} " 
                      onClick="return false;" title="{{l('View Image')}}">
 
-                      <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+                      <img src="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
               </a>
 @endif
       </td>

@@ -80,7 +80,7 @@
 
 @php
 
-$taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+$taxList = \App\Models\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
 @endphp    
 

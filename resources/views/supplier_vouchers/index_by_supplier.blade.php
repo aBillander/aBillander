@@ -176,7 +176,7 @@
 
 @if ( $payment->currency_conversion_rate != 1.0 )
         <br />
-        <span class="text-warning">{{ \App\Currency::viewMoneyWithSign($payment->amount_currency, $payment->currency) }}</span>
+        <span class="text-warning">{{ \App\Models\Currency::viewMoneyWithSign($payment->amount_currency, $payment->currency) }}</span>
 
 @endif
 
@@ -211,7 +211,7 @@
             	@else
             		<span>
             	@endif
-            	{{\App\Payment::getStatusName($payment->status)}}</span></td>
+            	{{\App\Models\Payment::getStatusName($payment->status)}}</span></td>
 
 
       <td class="text-center">

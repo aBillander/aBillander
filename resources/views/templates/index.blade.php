@@ -44,11 +44,11 @@
 		<tr>
 			<td>{{ $template->id }}</td>
 			<td>{{ $template->name }}</td>
-			<td>{{ \App\Template::getTypeName($template->model_name) }}</td>
+			<td>{{ \App\Models\Template::getTypeName($template->model_name) }}</td>
 			<td>{{ $template->folder }}</td>
 			<td>{{ $template->file_name }}</td>
 			<td>{{ $template->paper }}</td>
-			<td>{{ \App\Template::getOrientationName($template->orientation) }}</td>
+			<td>{{ \App\Models\Template::getOrientationName($template->orientation) }}</td>
 
             <!-- td class="text-center">@if ($template->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td -->
 

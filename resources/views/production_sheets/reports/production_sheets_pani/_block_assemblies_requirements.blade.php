@@ -14,7 +14,7 @@ $pani_sourdough_qty['10500'] = $pani_sourdough_qty['10501'] = $pani_sourdough_qt
 foreach ($sheet->productionorders->where('procurement_type', 'manufacture')->where('product_reference', '<', '2000') as $order)
 {
     // $product = $order->product;
-    $product = \App\Product::find( $order->product_id );
+    $product = \App\Models\Product::find( $order->product_id );
     $pani_sourdough_qty['10500'] += $product->getChildProductQuantity( $pani_sourdough_id[0], $order->planned_quantity );
     $pani_sourdough_qty['10501'] += $product->getChildProductQuantity( $pani_sourdough_id[1], $order->planned_quantity );
     $pani_sourdough_qty['10502'] += $product->getChildProductQuantity( $pani_sourdough_id[2], $order->planned_quantity );
@@ -37,7 +37,7 @@ foreach ($sheet->productionorders->where('procurement_type', 'manufacture')->whe
   
   @foreach ($sheet->productionorders->where('schedule_sort_order', $schedule_sort_order)->whereIn('product_reference', $pani_sourdough)->sortBy('product_reference') as $order)
   @php
-    $product = \App\Product::find( $order->product_id );
+    $product = \App\Models\Product::find( $order->product_id );
   @endphp
 
     <tr xstyle="font-weight: bold;">

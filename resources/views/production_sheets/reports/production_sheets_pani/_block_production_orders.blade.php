@@ -16,7 +16,7 @@
 
   @foreach ($sheet->productionorders->where('procurement_type', $procurement_type)->where('product_reference', '<', '2000') as $order)
   @php
-    $product = \App\Product::find( $order->product_id );
+    $product = \App\Models\Product::find( $order->product_id );
   @endphp
   
     <tr>

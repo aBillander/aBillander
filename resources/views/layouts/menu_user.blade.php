@@ -1,9 +1,9 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ Auth::user()->getFullName() }}  
-@if ( \App\Models\Todo::pending() )
+@if ( \App\Models\Models\Todo::pending() )
                     <span id="nbr_todos" class="badge" title="{{l('Pending Todos', [], 'layouts')}}">
-                        {{ \App\Models\Todo::pending() }}
+                        {{ \App\Models\Models\Todo::pending() }}
                     </span> 
 @endif
                     <span class="caret"></span></a>

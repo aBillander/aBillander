@@ -45,7 +45,7 @@
                &nbsp; {{ l('Stocks') }}
             </a>
 
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+@if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') )
             <a id="b_manufacturing" href="#manufacturing" class="list-group-item">
                <i class="fa fa-cubes"></i>
                &nbsp; {{ l('Manufacturing') }}
@@ -53,7 +53,7 @@
 
 @endif
 
-@if ( \App\Configuration::isTrue('ENABLE_COMBINATIONS') &&  
+@if ( AbiConfiguration::isTrue('ENABLE_COMBINATIONS') &&  
       ($product->product_type == 'simple') || ($product->product_type == 'combinable') )
 
             <a id="b_combinations" href="#combinations" class="list-group-item">
@@ -75,9 +75,9 @@
 
          <div class="list-group"><?php $img = $product->getFeaturedImage() ?>
 @if ( $img )
-            <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() .  $img->id . '-medium_default' . '.' .  $img->extension ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
+            <img src="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() .  $img->id . '-medium_default' . '.' .  $img->extension ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
 @else
-            <img src="{{ URL::to( \App\Image::pathProducts() . '/default-medium_default.png' ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
+            <img src="{{ URL::to( \App\Models\Image::pathProducts() . '/default-medium_default.png' ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
 @endif
          </div>
 

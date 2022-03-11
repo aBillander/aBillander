@@ -157,7 +157,7 @@ background-color: #325d88; border-color: #772953;">
                       <a href="{{ URL::to('productionsheets/' . $document->production_sheet_id) }}" title="{{l('View Document', 'layouts')}}" target="_blank">
 
                           
-                            <span class="btn btn-xs btn-grey">#{{ $document->production_sheet_id }} ({{ abi_date_form_short( \App\ProductionSheet::find($document->production_sheet_id)->due_date ) }})</span> 
+                            <span class="btn btn-xs btn-grey">#{{ $document->production_sheet_id }} ({{ abi_date_form_short( \App\Models\ProductionSheet::find($document->production_sheet_id)->due_date ) }})</span> 
 
                       </a> 
 

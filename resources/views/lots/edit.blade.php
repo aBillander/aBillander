@@ -66,7 +66,7 @@ $label_short = strlen($label) > 40 ? substr($label, 0, 40)."&hellip;" : $label;
                           
                       {!! Form::open(array('route' => ['lots.attachment.store', $lot->id], 'title' => l('Upload an Attach Files', 'layouts'), 'class' => '', 'id' => 'add-attachment-action', 'files' => true)) !!}
 
-                      <input type="hidden" value="App\Lot"     name="model_class"     id="model_class">
+                      <input type="hidden" value="App\Models\Lot"     name="model_class"     id="model_class">
                       <input type="hidden" value="{{ $lot->id }}"                 name="model_id"        id="model_id">
                       <input type="hidden" value="{{ $lot->reference ?: $lot->id }}" name="model_reference" id="model_reference">
 

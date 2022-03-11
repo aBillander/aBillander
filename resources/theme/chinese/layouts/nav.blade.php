@@ -12,18 +12,18 @@
 
             <!-- Branding Image -->
             <a class="navbar-brand" href="{{ url('/') }}">
-                @if ( \App\Configuration::isEmpty('HEADER_TITLE') )
-                    <?php $img = \App\Context::getContext()->company->company_logo ?? ''; ?>
+                @if ( AbiConfiguration::isEmpty('HEADER_TITLE') )
+                    <?php $img = AbiContext::getContext()->company->company_logo ?? ''; ?>
                     @if ( $img )
 
-                        <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
+                        <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( AbiCompany::imagesPath() . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
 
                         <!-- img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ asset('assets/theme/images/company_logo.png') }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;" -->
                     @else
                         <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>
                     @endif
                 @else
-                    {!! \App\Configuration::get('HEADER_TITLE') !!}
+                    {!! AbiConfiguration::get('HEADER_TITLE') !!}
                     {{-- <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span> --}}
                 @endif
             </a>
@@ -49,7 +49,7 @@
                             </a>
                         </li>
                         <li class="divider"></li>
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
                          <li>
                             <a href="{{ URL::to('wooc/worders') }}">
                                  <i class="fa fa-cloud-download btn-xs btn-warning"></i> 
@@ -120,7 +120,7 @@
                     </ul>
                 </li>
 
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+@if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') )
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cubes"></i> {{l('Manufacturing', [], 'layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -215,14 +215,14 @@
                                  {{l('Ingredients', [], 'layouts')}}
                             </a>
                         </li -->
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+@if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') )
                          <li>
                             <a href="{{ URL::to('productboms') }}">
                                  {{l('Bills of Materials', [], 'layouts')}}
                             </a>
                         </li>
 @endif
-@if ( \App\Configuration::isTrue('ENABLE_COMBINATIONS') )
+@if ( AbiConfiguration::isTrue('ENABLE_COMBINATIONS') )
                          <li>
                             <a href="{{ URL::to('optiongroups') }}">
                                  {{l('Product Options', [], 'layouts')}}
@@ -268,7 +268,7 @@
                                  {{l('Taxes', [], 'layouts')}}
                             </a>
                         </li>
-@if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if ( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
                          <li>
                             <a href="{{ URL::to('ecotaxes') }}">
                                  {{l('Ecotaxes', [], 'layouts')}}
@@ -336,9 +336,9 @@
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ Auth::user()->getFullName() }}  
-@if ( \App\Todo::pending() && 0)
+@if ( \App\Models\Todo::pending() && 0)
                     <span id="nbr_todos" class="badge" title="{{l('Pending Todos', [], 'layouts')}}">
-                        {{ \App\Todo::pending() }}
+                        {{ \App\Models\Todo::pending() }}
                     </span> 
 @endif
                     <span class="caret"></span></a>

@@ -161,7 +161,7 @@ table.border td {
 			</div>
 			
 			<div class="col-md-2">
-				<span class="label label-info ">{{ \App\SupplierInvoice::getStatusList()[ $cinvoice->status ] }}</span>
+				<span class="label label-info ">{{ \App\Models\SupplierInvoice::getStatusList()[ $cinvoice->status ] }}</span>
 			</div>
 			
 			<div class="col-md-4">
@@ -257,7 +257,7 @@ table.border td {
 								</td>
 								
 								<td class="small">
-									{{ \App\Tax::find($line->tax_id)->percent }} %
+									{{ \App\Models\Tax::find($line->tax_id)->percent }} %
 								</td>
 								
 								<td class="small">

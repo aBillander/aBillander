@@ -8,7 +8,7 @@
     <div class="modal-content">
       <div class="modal-header alert-info">
         <button class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="detailModalLabel">{{ l('New Down Payment to Supplier Detail') }} :: <span class="lead well well-sm alert-warning">{{ $downpayment->reference ?: $downpayment->id }}</span> {{ \App\Currency::viewMoneyWithSign($downpayment->amount, $downpayment->currency) }}</h4>
+        <h4 class="modal-title" id="detailModalLabel">{{ l('New Down Payment to Supplier Detail') }} :: <span class="lead well well-sm alert-warning">{{ $downpayment->reference ?: $downpayment->id }}</span> {{ \App\Models\Currency::viewMoneyWithSign($downpayment->amount, $downpayment->currency) }}</h4>
       </div>
 
       <form id="downpayment_payment_details">

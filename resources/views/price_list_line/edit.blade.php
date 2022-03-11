@@ -33,7 +33,7 @@
 
 @section('scripts')    @parent
 
-{!! \App\Calculator::marginJSCode( $price->pricelist->currency, true ) !!}
+{!! \App\Models\Calculator::marginJSCode( $price->pricelist->currency, true ) !!}
 
 <script type="text/javascript">
 

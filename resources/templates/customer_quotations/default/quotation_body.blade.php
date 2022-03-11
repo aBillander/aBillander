@@ -8,16 +8,16 @@
 		<td class="header">
 
 
-        @if ($img = \App\Context::getContext()->company->company_logo)
+        @if ($img = AbiContext::getContext()->company->company_logo)
 
-            <img class="img-rounded" height="{{ '60' }}" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}">
+            <img class="img-rounded" height="{{ '60' }}" src="{{ URL::to( AbiCompany::imagesPath() . $img ) }}">
 
         @endif
 
 
 		<div class="banner" xstyle="visibility:hidden">
 
-			&nbsp; {!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
+			&nbsp; {!! AbiConfiguration::get('CUSTOMER_INVOICE_BANNER') !!}
 
 		</div>
 
@@ -227,7 +227,7 @@
 				<span>Dto.</span>
 			</th>
 			<th class="tax" width="7%" style="border: 1px #ccc solid">
-				<span>{!! \App\Configuration::get('CUSTOMER_INVOICE_TAX_LABEL') !!}</span>
+				<span>{!! AbiConfiguration::get('CUSTOMER_INVOICE_TAX_LABEL') !!}</span>
 			</th>
 			<th class="total xlast-column" width="12%" style="border: 1px #ccc solid">
 				<span>Total</span>
@@ -448,7 +448,7 @@ ________________________________________
 --}}
 
 {{-- --} }
-	{{ $company->name_fiscal }} - {!! \App\Configuration::get('CUSTOMER_INVOICE_CAPTION') !!}
+	{{ $company->name_fiscal }} - {!! AbiConfiguration::get('CUSTOMER_INVOICE_CAPTION') !!}
 { {-- --}}
 
 
@@ -457,7 +457,7 @@ ________________________________________
 				<tr>
 					<td style="padding-right: 2mm">
 
-						{!! \App\Configuration::get('CUSTOMER_INVOICE_CAPTION') !!}
+						{!! AbiConfiguration::get('CUSTOMER_INVOICE_CAPTION') !!}
 
 <!-- 
 Según el Real Decreto 110/2015 tanto las lámparas led como bajo consumo están sometidas al RAE. Número de registro 6299.
@@ -490,7 +490,7 @@ $GLOBALS['var'] = 'Presupuesto nº: ' . ($document->document_reference ?: 'BORRA
 
         // $pdf->page_text(30, ($pdf->get_height() - 26.89), "Impreso el: " . date('d M Y H:i:s'), null, 10);
         
-        if ( 1 || $PAGE_COUNT > 1 || \App\Configuration::isTrue('DEVELOPER_MODE') )
+        if ( 1 || $PAGE_COUNT > 1 || AbiConfiguration::isTrue('DEVELOPER_MODE') )
         {
 			// $pdf->page_text(($pdf->get_width() - 82), ($pdf->get_height() - 26.89), "Página {PAGE_NUM} de {PAGE_COUNT}", null, 9);
 

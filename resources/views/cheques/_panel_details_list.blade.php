@@ -78,7 +78,7 @@
                                 @else
                                     <span class="label">
                                 @endif
-                                {{\App\Payment::getStatusName(optional($detail->customerpayment)->status)}}</span>
+                                {{\App\Models\Payment::getStatusName(optional($detail->customerpayment)->status)}}</span>
 
                         </td>
 

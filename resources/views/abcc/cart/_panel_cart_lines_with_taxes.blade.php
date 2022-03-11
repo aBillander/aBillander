@@ -96,21 +96,21 @@
       <td class="button-pad">
 
                     <a class="view-image-multiple" data-html="false" data-toggle="modal"
-                       href="{{ URL::to( \App\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-large_default' . '.' . $line->image->extension ) }}"
+                       href="{{ URL::to( \App\Models\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-large_default' . '.' . $line->image->extension ) }}"
                        data-title="{{ $line->product->name }}"
                        data-caption="{{ $line->image->caption }}"
                        data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 
                        data-id="{{ $line->product->id }}" 
                        onClick="return false;" title="{{l('View Image')}}">
 
-                        <img src="{{ URL::to( \App\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-mini_default' . '.' . $line->image->extension ) . '?'. 'time='. time() }}"
+                        <img src="{{ URL::to( \App\Models\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-mini_default' . '.' . $line->image->extension ) . '?'. 'time='. time() }}"
                              alt="{{ $line->product->name }}" style="border: 1px solid #dddddd;">
                     </a>
 
       </td>
 
       <td class="text-left view-image-multiple" data-html="false" data-toggle="modal"
-                       href="{{ URL::to( \App\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-large_default' . '.' . $line->image->extension ) }}"
+                       href="{{ URL::to( \App\Models\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-large_default' . '.' . $line->image->extension ) }}"
                        data-title="{{ $line->product->name }}"
                        data-caption="{{ $line->image->caption }}"
                        data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 

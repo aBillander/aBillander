@@ -8,9 +8,9 @@
 		<td class="header">
 
 
-        @if ($img = \App\Context::getContext()->company->company_logo)
+        @if ($img = AbiContext::getContext()->company->company_logo)
 
-            <img class="img-rounded" height="{{ '60' }}" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}">
+            <img class="img-rounded" height="{{ '60' }}" src="{{ URL::to( AbiCompany::imagesPath() . $img ) }}">
 
         @endif
 

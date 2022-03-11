@@ -62,8 +62,8 @@
                   
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
                      {{ l('Product type') }}
-                     <div class="form-control">{{ \App\Product::getTypeName($product->product_type) }}</div>
-                     {{-- !! Form::text('product_type_name', \App\Product::getTypeName($product->product_type), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !! --}}
+                     <div class="form-control">{{ \App\Models\Product::getTypeName($product->product_type) }}</div>
+                     {{-- !! Form::text('product_type_name', \App\Models\Product::getTypeName($product->product_type), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !! --}}
                   </div>
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('procurement_type') ? 'has-error' : '' }}"">

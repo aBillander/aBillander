@@ -64,7 +64,7 @@
 {{--
 @if ( $document->status != 'draft' && $document->status != 'canceled')
                       <li class="divider"></li>
-                      <li><a href="{{ route('customerorder.single.order', [$document->id]) }}"><i class="fa {{ \App\CustomerOrder::getBadge('i_class') }} text-success"></i> {{l('Make Order')}}</a></li>
+                      <li><a href="{{ route('customerorder.single.order', [$document->id]) }}"><i class="fa {{ \App\Models\CustomerOrder::getBadge('i_class') }} text-success"></i> {{l('Make Order')}}</a></li>
 @endif
 --}}
 

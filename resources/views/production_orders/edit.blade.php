@@ -29,7 +29,7 @@
                     data-oid="{{ $document->id }}" data-oproduct="{{ $document->product_id }}" data-oreference="{{ $document->product_reference }}" data-oname="{{ $document->product_name }}" data-oquantity="{{ $document->planned_quantity }}" 
                     data-olot_reference=
           @if ( $document->product->lot_tracking )
-                  "{{ \App\Lot::generate( \Carbon\Carbon::now(), $document->product, $document->product->expiry_time ) }}"
+                  "{{ \App\Models\Lot::generate( \Carbon\Carbon::now(), $document->product, $document->product->expiry_time ) }}"
           @else
                   ""
           @endif 

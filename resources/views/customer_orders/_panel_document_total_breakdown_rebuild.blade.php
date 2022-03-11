@@ -11,8 +11,8 @@
 
 @php
 
-    $alltaxes = \App\Tax::get()->sortByDesc('percent');
-    $alltax_rules = \App\TaxRule::get();
+    $alltaxes = \App\Models\Tax::get()->sortByDesc('percent');
+    $alltax_rules = \App\Models\TaxRule::get();
 
     $documentlines = $document->documentlines;
     $taxlines = $document->documentlinetaxes;

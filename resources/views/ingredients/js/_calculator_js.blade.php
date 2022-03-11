@@ -1,5 +1,5 @@
 
-{!! \App\Calculator::marginJSCode( AbiContext::getContext()->currency, true ) !!}
+{!! \App\Models\Calculator::marginJSCode( AbiContext::getContext()->currency, true ) !!}
 
 <script type="text/javascript">
 

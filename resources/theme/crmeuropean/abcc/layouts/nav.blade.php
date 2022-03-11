@@ -12,14 +12,14 @@
                 <a href="{{ URL::to( (Auth::user()->home_page ? '/abcc' : '/abcc') ) }}" class="navbar-brand" style="xposition: relative;">
 { {--
                 @if ( 0 )
-<!--                @ i f ($img = \App\Context::getContext()->company->company_logo)          -->
-                    <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
+<!--                @ i f ($img = AbiContext::getContext()->company->company_logo)          -->
+                    <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( AbiCompany::imagesPath() . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
                     <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> LXVII</span>
 --} }
-                @if ( \App\Configuration::isEmpty('ABCC_HEADER_TITLE') )
+                @if ( AbiConfiguration::isEmpty('ABCC_HEADER_TITLE') )
                     <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> LXVII</span>
                 @else
-                    {!! \App\Configuration::get('ABCC_HEADER_TITLE') !!}
+                    {!! AbiConfiguration::get('ABCC_HEADER_TITLE') !!}
                 @endif
                 </a>
             @else
@@ -29,10 +29,10 @@
 
                 <a href="{{ URL::to('/abcc') }}" class="navbar-brand">
 
-                    @if ( \App\Configuration::isEmpty('ABCC_HEADER_TITLE') )
+                    @if ( AbiConfiguration::isEmpty('ABCC_HEADER_TITLE') )
                         <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> Customer Center</span>
                     @else
-                        {!! \App\Configuration::get('ABCC_HEADER_TITLE') !!}
+                        {!! AbiConfiguration::get('ABCC_HEADER_TITLE') !!}
                     @endif
 
                 </a>
@@ -50,14 +50,14 @@
                 </li>
 @endif
 
-@if( \App\Configuration::isTrue('ABCC_ENABLE_NEW_PRODUCTS') )
+@if( AbiConfiguration::isTrue('ABCC_ENABLE_NEW_PRODUCTS') )
                 <li class="dropdown">
                     <a href="{{ route('abcc.catalogue.newproducts') }}" class="dropdown-toggle"><i class="fa fa-bullhorn"></i> {{l('New Products', [], 'abcc/layouts')}} </a>
                 </li>
 @endif
                 <li class="dropdown">
                     <a href="{{ route('abcc.cart') }}" class="dropdown-toggle"><i class="fa fa-shopping-cart"></i> {{l('Shopping Cart', [], 'abcc/layouts')}}  <span id="badge_cart_nbr_items" class="badge">
-                        {{ \App\Context::getContext()->cart->nbrItems() }}
+                        {{ AbiContext::getContext()->cart->nbrItems() }}
                     </span> </a>
                 </li>
 
@@ -65,7 +65,7 @@
                     <a href="{{ route('abcc.catalogue') }}" class="dropdown-toggle"><i class="fa fa-book"></i> {{l('Catalogue', [], 'abcc/layouts')}} </a>
                 </li>
 
-@if ( \App\Configuration::isTrue('ABCC_ENABLE_SHIPPING_SLIPS') || \App\Configuration::isTrue('ABCC_ENABLE_INVOICES') )
+@if ( AbiConfiguration::isTrue('ABCC_ENABLE_SHIPPING_SLIPS') || AbiConfiguration::isTrue('ABCC_ENABLE_INVOICES') )
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-history"></i> {{l('Order History', [], 'abcc/layouts')}} <span class="caret"></span></a>
@@ -76,7 +76,7 @@
                             </a>
                         </li>
 
-@if ( \App\Configuration::isTrue('ABCC_ENABLE_SHIPPING_SLIPS') )
+@if ( AbiConfiguration::isTrue('ABCC_ENABLE_SHIPPING_SLIPS') )
 
                         <li class="divider"></li>
                          <li>
@@ -86,7 +86,7 @@
                         </li>
 @endif
 
-@if ( \App\Configuration::isTrue('ABCC_ENABLE_INVOICES') )
+@if ( AbiConfiguration::isTrue('ABCC_ENABLE_INVOICES') )
 
                         <li class="divider"></li>
                          <li>
@@ -182,7 +182,7 @@
                     @if( isset($languages) )
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    <i class="fa fa-language"></i> {{ \App\Context::getContext()->language->name }} <span class="caret"></span>
+                                    <i class="fa fa-language"></i> {{ AbiContext::getContext()->language->name }} <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" role="menu">
                                 @foreach ($languages as $language)

@@ -49,7 +49,7 @@
         <tr>
       <td class="text-center">{{ $rule->id }}</td>
       <td>{{ $rule->name }}
-          <br /><span class="text-warning">[{{ \App\PriceRule::getRuleTypeName($rule->rule_type) }}]</span> <span title="{{l('Creation date', 'pricerules')}}">{{ abi_date_short( $rule->created_at ) }}</span>
+          <br /><span class="text-warning">[{{ \App\Models\PriceRule::getRuleTypeName($rule->rule_type) }}]</span> <span title="{{l('Creation date', 'pricerules')}}">{{ abi_date_short( $rule->created_at ) }}</span>
       </td>
       <!-- td>{{ optional($rule->category)->name }}</td -->
       <td>{{ optional($rule->customergroup)->name }}</td>

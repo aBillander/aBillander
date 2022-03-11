@@ -55,7 +55,7 @@
                 {{ $line->name }}</td>
                 <td class="text-right">{{ $line->as_price('unit_final_price') }}</td>
                 <td class="text-right">{{ $line->as_price('cost_price') }}</td>
-                <td class="text-right">{{ $line->as_percentable( \App\Calculator::margin( $line->cost_price, $line->unit_final_price, $document->currency ) ) }}</td>
+                <td class="text-right">{{ $line->as_percentable( \App\Models\Calculator::margin( $line->cost_price, $line->unit_final_price, $document->currency ) ) }}</td>
                 <td class="text-right">{{ $line->as_priceable( ( $line->unit_final_price - $line->cost_price )*$line->quantity ) }}</td>
 
 
@@ -129,7 +129,7 @@
                 <td>{{ $document->as_percent('document_discount_percent') }}</td>
                 <td>{{ $document->as_priceable($document->total_revenue_with_discount) }}</td>
                 <td class="text-right">{{ $document->as_priceable($document->total_cost_price) }}</td>
-                <td class="text-right">{{ $document->as_percentable( \App\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount, $document->currency ) ) }}</td>
+                <td class="text-right">{{ $document->as_percentable( \App\Models\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount, $document->currency ) ) }}</td>
                 <td class="text-right">{{ $document->as_priceable( $document->total_revenue_with_discount - $document->total_cost_price ) }}</td>
 
 

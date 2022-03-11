@@ -54,7 +54,7 @@
                   
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
                      {{ l('Product type') }}
-                     {!! Form::text('product_type_name', \App\Product::getTypeName($product->product_type), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
+                     {!! Form::text('product_type_name', \App\Models\Product::getTypeName($product->product_type), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !!}
                   </div>
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('procurement_type') ? 'has-error' : '' }}"">
@@ -134,7 +134,7 @@
                      {!! Form::text('volume', null, array('class' => 'form-control', 'id' => 'volume')) !!}
                      {!! $errors->first('volume', '<span class="help-block">:message</span>') !!}
                   </div>
-@if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if ( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('ecotax_id') ? 'has-error' : '' }}">
                     {{ l('Eco-Tax') }}
                     {!! Form::select('ecotax_id', array('' => l('-- Please, select --', [], 'layouts')) + $ecotaxList, null, array('class' => 'form-control')) !!}

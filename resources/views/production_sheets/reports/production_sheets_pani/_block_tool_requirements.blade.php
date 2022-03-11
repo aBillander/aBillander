@@ -14,7 +14,7 @@ $pani_tool_qty['90000'] = $pani_tool_qty['90001'] = $pani_tool_qty['90100'] = 0.
 foreach ($sheet->productionorders->where('procurement_type', 'manufacture')->where('product_reference', '<', '2000') as $order)
 {
     // $product = $order->product;
-    $product = \App\Product::find( $order->product_id );
+    $product = \App\Models\Product::find( $order->product_id );
     $pani_tool_qty['90000'] += $product->getChildToolQuantity( $pani_tool_id[0], $order->planned_quantity );
     $pani_tool_qty['90001'] += $product->getChildToolQuantity( $pani_tool_id[1], $order->planned_quantity );
     $pani_tool_qty['90100'] += $product->getChildToolQuantity( $pani_tool_id[2], $order->planned_quantity );

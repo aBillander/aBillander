@@ -22,7 +22,7 @@
 
   @foreach ($sheet->productionorders->whereIn('product_reference', $family['references']) as $order)
   @php
-    $product = \App\Product::find( $order->product_id );
+    $product = \App\Models\Product::find( $order->product_id );
   @endphp
 
 

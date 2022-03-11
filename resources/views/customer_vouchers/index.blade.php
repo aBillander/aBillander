@@ -272,7 +272,7 @@
             	@else
             		<span class="label">
             	@endif
-            	{{\App\Payment::getStatusName($payment->status)}}</span>
+            	{{\App\Models\Payment::getStatusName($payment->status)}}</span>
 
               @if ( $payment->status == 'paid' )
 {{--                @if ( AbiConfiguration::isTrue('ENABLE_CRAZY_IVAN') ) --}}

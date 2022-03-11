@@ -78,19 +78,19 @@
                                         <p class="MsoNormal"><span style="color:black">{{ $customer->name_fiscal }}<u></u><u></u></span></p>
                                       </td>
                                       <td style="width:68.0pt;padding:0cm 3.5pt 0cm 3.5pt;height:15.0pt" width="91" valign="bottom" nowrap="nowrap">
-                                        <p class="MsoNormal" style="text-align:right" align="right"><span style="color:black">{{ \App\Currency::viewMoney( $terms[1] ) }}<u></u><u></u></span></p>
+                                        <p class="MsoNormal" style="text-align:right" align="right"><span style="color:black">{{ \App\Models\Currency::viewMoney( $terms[1] ) }}<u></u><u></u></span></p>
                                       </td>
                                       <td style="width:68.0pt;padding:0cm 3.5pt 0cm 3.5pt;height:15.0pt" width="91" valign="bottom" nowrap="nowrap">
-                                        <p class="MsoNormal" style="text-align:right" align="right"><span style="color:black">{{ \App\Currency::viewMoney( $terms[2] ) }}<u></u><u></u></span></p>
+                                        <p class="MsoNormal" style="text-align:right" align="right"><span style="color:black">{{ \App\Models\Currency::viewMoney( $terms[2] ) }}<u></u><u></u></span></p>
                                       </td>
                                       <td style="width:68.0pt;padding:0cm 3.5pt 0cm 3.5pt;height:15.0pt" width="91" valign="bottom" nowrap="nowrap">
-                                        <p class="MsoNormal" style="text-align:right" align="right"><span style="color:black">{{ \App\Currency::viewMoney( $terms[3] ) }}<u></u><u></u></span></p>
+                                        <p class="MsoNormal" style="text-align:right" align="right"><span style="color:black">{{ \App\Models\Currency::viewMoney( $terms[3] ) }}<u></u><u></u></span></p>
                                       </td>
                                       <td style="width:68.0pt;padding:0cm 3.5pt 0cm 3.5pt;height:15.0pt" width="91" valign="bottom" nowrap="nowrap">
-                                        <p class="MsoNormal" style="text-align:right" align="right"><span style="color:black">{{ \App\Currency::viewMoney( $terms[4] ) }}<u></u><u></u></span></p>
+                                        <p class="MsoNormal" style="text-align:right" align="right"><span style="color:black">{{ \App\Models\Currency::viewMoney( $terms[4] ) }}<u></u><u></u></span></p>
                                       </td>
                                       <td style="width:66.0pt;padding:0cm 3.5pt 0cm 3.5pt;height:15.0pt" width="88" valign="bottom" nowrap="nowrap">
-                                        <p class="MsoNormal" style="text-align:right" align="right"><span style="color:black">{{ \App\Currency::viewMoney( $total ) }}<u></u><u></u></span></p>
+                                        <p class="MsoNormal" style="text-align:right" align="right"><span style="color:black">{{ \App\Models\Currency::viewMoney( $total ) }}<u></u><u></u></span></p>
                                       </td>
                                     </tr>
                                   </tbody>

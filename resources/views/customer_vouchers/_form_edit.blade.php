@@ -8,7 +8,7 @@
 </div>
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {!! Form::label('status_name', l('Status', [], 'layouts')) !!}
-    <div class="form-control" style="background-color: #f9f9f9;">{{ \App\Payment::getStatusName($payment->status) }}</div>
+    <div class="form-control" style="background-color: #f9f9f9;">{{ \App\Models\Payment::getStatusName($payment->status) }}</div>
     {!! Form::hidden('status', null, array('id' => 'status')) !!}
 </div>
 </div>

@@ -61,8 +61,8 @@
                 <span class="text-success">{{ $work_centerList[ $product->work_center_id ] ?? '-' }}</span>
             </td>
 
-      <td>{{ \App\Product::getProcurementTypeName($product->procurement_type) }}<br />
-        <span class="text-info">{{ \App\Product::getMrpTypeName($product->mrp_type) }}</span>
+      <td>{{ \App\Models\Product::getProcurementTypeName($product->procurement_type) }}<br />
+        <span class="text-info">{{ \App\Models\Product::getMrpTypeName($product->mrp_type) }}</span>
 
       </td>
 

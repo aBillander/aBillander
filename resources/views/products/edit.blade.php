@@ -118,7 +118,7 @@
   $img = $product->getFeaturedImage()
 @endphp
 @if ( $img )
-            <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() .  $img->filename . '-medium_default' . '.' .  $img->extension ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
+            <img src="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() .  $img->filename . '-medium_default' . '.' .  $img->extension ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
 @endif
          </div>
 

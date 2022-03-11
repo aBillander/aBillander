@@ -12,7 +12,7 @@
                <a href="{{ URL::to('warehouseshippingslips') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Documents') }}</a>
                
             </div>
-            <h2><a class="btn btn-sm {{ \App\WarehouseShippingSlip::getBadge('a_class') }}" href="{{ URL::to('warehouseshippingslips') }}" title="{{ l('Documents') }}"><i class="fa {{ \App\WarehouseShippingSlip::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> {{ l('New Document') }}</h2>
+            <h2><a class="btn btn-sm {{ \App\Models\WarehouseShippingSlip::getBadge('a_class') }}" href="{{ URL::to('warehouseshippingslips') }}" title="{{ l('Documents') }}"><i class="fa {{ \App\Models\WarehouseShippingSlip::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> {{ l('New Document') }}</h2>
         </div>
     </div>
 </div> 

@@ -130,7 +130,7 @@
 
 @if ( $document->currency_conversion_rate != 1.0 )
         <br />
-        <span class="text-warning">{{ \App\Currency::viewMoneyWithSign($document->total_currency_tax_incl, $document->currency) }}</span>
+        <span class="text-warning">{{ \App\Models\Currency::viewMoneyWithSign($document->total_currency_tax_incl, $document->currency) }}</span>
 
 @endif
 

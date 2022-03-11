@@ -41,7 +41,7 @@
 				<tr>
 					<td>{{ $sequence->id }}</td>
 					<td>{{ $sequence->name }}</td>
-					<td>{{ \App\Sequence::getTypeName($sequence->model_name) }}</td>
+					<td>{{ \App\Models\Sequence::getTypeName($sequence->model_name) }}</td>
 					<td>{{ $sequence->format }}</td>
 					<td>{{ $sequence->next_id }}</td>
 					<td>@if (  is_null($sequence->last_date_used))

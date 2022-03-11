@@ -9,8 +9,8 @@
 
 $candeal_dough = ['10500', '10510'];
 $candeal_dough_id = [
-          \App\Product::where('reference', '10500')->first(),
-          \App\Product::where('reference', '10510')->first(),
+          \App\Models\Product::where('reference', '10500')->first(),
+          \App\Models\Product::where('reference', '10510')->first(),
 ];
 
 // Force-brute strategy:
@@ -21,7 +21,7 @@ $candeal_dough_qty['10500'] = $candeal_dough_qty['10510'] = 0.0;
 foreach ($sheet->productionorders->where('procurement_type', 'manufacture')->whereIn('product_reference', $family['references']) as $order)
 {
     // $product = $order->product;
-    $product = \App\Product::find( $order->product_id );
+    $product = \App\Models\Product::find( $order->product_id );
     $candeal_dough_qty['10500'] += $product->getChildProductQuantity( $candeal_dough_id[0]->id, $order->planned_quantity );
     $candeal_dough_qty['10510'] += $product->getChildProductQuantity( $candeal_dough_id[1]->id, $order->planned_quantity );
 
@@ -43,7 +43,7 @@ foreach ($sheet->productionorders->where('procurement_type', 'manufacture')->whe
 {{--
   @foreach ($sheet->productionorders->whereIn('product_reference', $family['references']) as $order)
   @php
-    $product = \App\Product::find( $order->product_id );
+    $product = \App\Models\Product::find( $order->product_id );
   @endphp
 
 

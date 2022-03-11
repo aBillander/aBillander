@@ -205,6 +205,10 @@ class ConfigurationKeysController extends Controller {
                         'ABSRC_ITEMS_PERPAGE',
 
                     ],
+
+                123 => [
+
+                    ],
         ];
 
    }

@@ -108,7 +108,7 @@ return [
 	'The database backup has been proceed successfully.' => 'La copia de seguridad de la base de datos se ha realizado correctamente.',
 	'Error: The database backup process has been failed.' => 'Error: el proceso de copia de seguridad de la base de datos ha fallado.',
 
-	'Cache has been cleared &#58&#58 (:cache) ' => 'La cache se ha borrado &#58&#58 (:cache) ',
+	'Cache has been cleared &#58&#58 (:cache) ' => 'La caché se ha borrado &#58&#58 (:cache) ',
 
 
 

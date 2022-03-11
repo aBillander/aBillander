@@ -356,5 +356,9 @@ return [
 	'Configuration Keys - Edit' => 'Claves de Configuración - Modificar',
 	'Edit Configuration Key' => 'Modificar Clave de Configuración',
 
+	'System Tools' => 'Herramientas de Sistema',
+	'SYSTOOL_CLEAR_CACHE.name' => 'Borrar la caché',
+	'SYSTOOL_CLEAR_CACHE.help' => 'php artisan cache:clear, config:clear, route:clear, view:clear',
+
 
 ];

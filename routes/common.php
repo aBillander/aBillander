@@ -32,7 +32,8 @@ Route::get('clear-cache', function()
     // composer dump-autoload
 
     return redirect()->back()->with('success', l('Cache has been cleared &#58&#58 (:cache) ', ['cache' => 'cache:clear, config:clear, route:clear, view:clear'], 'layouts'));
-});
+
+})->name('clear-cache');
 
 
 Route::get('dbbackup', function()

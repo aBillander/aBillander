@@ -54,7 +54,7 @@
             </a>
 
 @if (AbiConfiguration::isTrue('DEVELOPER_MODE') )
-            <a id="b_tab_index_none_2" href="" class="list-group-item" style="padding: 3px 15px;">
+            <a id="b_tab_index_none_1" href="" class="list-group-item" style="padding: 3px 15px;">
             </a>
             <a href="http://bootswatch.com/3/united/" target="_blank" class="list-group-item">
                - {{ l('Template BS3') }}
@@ -68,6 +68,7 @@
             <a href="http://zetcode.com/php/carbon/" target="_blank" class="list-group-item">
                - {{ l('Carbon') }}
             </a>
+@endif
             <a id="b_tab_index_none_2" href="" class="list-group-item" style="padding: 3px 15px;">
             </a>
             <a href="{{ URL::to('translations') }}" class="list-group-item">
@@ -78,6 +79,11 @@
                <i class="fa fa-wrench"></i>
                &nbsp; {{l('Document templates', [], 'layouts')}}
             </a>
-@endif
+            <a id="b_tab_index_none_3" href="" class="list-group-item" style="padding: 3px 15px;">
+            </a>
+            <a id="b_tab_index_123" href="{{ URL::to('configurationkeys?tab_index=123') }}" class="list-group-item @if ($tab_index==123) active @endif">
+               <i class="fa fa-wrench text-danger"></i>
+               &nbsp; {{l('System Tools')}}
+            </a>
          </div>
       </div>

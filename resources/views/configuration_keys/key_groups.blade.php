@@ -40,7 +40,7 @@
             </a>
 @endif
 
-@if ( AbiConfiguration::isTrue('ENABLE_FSOL_CONNECTOR') )
+@if ( 0 && AbiConfiguration::isTrue('ENABLE_FSOL_CONNECTOR') )
             <a href="{{ route('fsxconfigurationkeys.index') }}" class="list-group-item">
                <i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i>
                &nbsp; {{l('Enlace FactuSOL', 'layouts')}}

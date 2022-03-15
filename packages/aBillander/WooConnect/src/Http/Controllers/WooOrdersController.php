@@ -143,7 +143,7 @@ class WooOrdersController extends Controller
 
 		$orders = collect($results);
 
-		abi_r($results);abi_r('*************************');abi_r($orders);die();
+//		abi_r($results);abi_r('*************************');abi_r($orders);die();
 
 		// Allready imported? Let's see deeply
 		$first = $orders->first()["id"];

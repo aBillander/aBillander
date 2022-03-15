@@ -38,7 +38,11 @@ Route::get('migratethis', function()
 	// 2022-03-15
 	$date = '2022-03-15';
 
-	Illuminate\Support\Facades\DB::statement("RENAME TABLE `product_b_o_ms` TO `xtra1225`.`product_b_o_m_s`;");
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `images` CHANGE `imageable_type` `imageable_type` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;");
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `images` CHANGE `imageable_id` `imageable_id` INT(10) UNSIGNED NULL;");
+
+	Illuminate\Support\Facades\DB::statement("RENAME TABLE `product_b_o_ms` TO `product_b_o_m_s`;");
 
 	$tables = ['Company', 'Customer', 'Supplier', 'Warehouse'];
 

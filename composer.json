@@ -6,13 +6,15 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "automattic/woocommerce": "^3.0.0",
+        "barryvdh/laravel-dompdf": "^1.0",
         "fruitcake/laravel-cors": "^2.0.5",
         "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "^2.7",
         "laravel/framework": "^9.0",
         "laravel/sanctum": "^2.14",
         "laravel/tinker": "^2.7",
-        "laravelcollective/html": "^6.3",
-        "automattic/woocommerce": "^3.0.0"
+        "laravelcollective/html": "^6.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

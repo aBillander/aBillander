@@ -51,6 +51,10 @@ class WooConfigurationKeysController extends Controller {
 
                         'WOOC_USE_LOCAL_PRODUCT_NAME',
 
+                        'WOOC_DEF_PRODUCT_STATUS',
+                        'WOOC_DEF_MANAGE_STOCK',
+                        'WOOC_DEF_REVIEWS_ALLOWED',
+
                     ],
 
                 2 => [
@@ -103,8 +107,13 @@ class WooConfigurationKeysController extends Controller {
         $languageList = Language::pluck('name', 'id')->toArray();
         $orders_sequenceList = Sequence::listFor( CustomerOrder::class );
         $taxList = Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $woo_product_statusList = [];
+        foreach (WooProduct::$statuses as $value) {
+            // code...
+            $woo_product_statusList[$value] = $value;
+        }
 
-        return view( $tab_view, compact('tab_index', 'key_group', 'currencyList', 'customer_groupList', 'price_listList', 'warehouseList', 'languageList', 'orders_sequenceList', 'taxList') );
+        return view( $tab_view, compact('tab_index', 'key_group', 'currencyList', 'customer_groupList', 'price_listList', 'warehouseList', 'languageList', 'orders_sequenceList', 'taxList', 'woo_product_statusList') );
 
         // https://bootsnipp.com/snippets/M27e3
     }

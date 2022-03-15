@@ -38,7 +38,8 @@ class LoginController extends Controller
             $user_home =  RouteServiceProvider::USERS_HOME;
         }
 
-        return redirect()->intended( $user_home );
+        return redirect( $user_home );
+//        return redirect()->intended( $user_home );
     }
 
     /**

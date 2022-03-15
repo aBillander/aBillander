@@ -348,7 +348,9 @@ function combos($data, &$all = array(), $group = array(), $val = null, $i = 0)
  */
 function checkRoute($route='') {
 
-	if ($route=='/') return true;
+	// Note that:  Route::has('named.route'), not on url!
+
+    if ($route=='/') return true;
 
 	$route=ltrim($route, '/');
 

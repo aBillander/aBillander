@@ -48,6 +48,20 @@ Route::get('/home0', function () {
     return view('home');
 });
 
+
+Route::get('/h1', function () {
+    // 
+    $user_home = Auth::user()->home_page;
+    abi_r($user_home);
+    abi_r((int) checkRoute( $user_home  ));
+
+
+        if ( ! checkRoute( $user_home  ) ) 
+        {
+            $user_home =  App\Providers\RouteServiceProvider::USERS_HOME;
+        }
+});
+
 Route::get('/soon', function () {
     // 
     return view('soon');

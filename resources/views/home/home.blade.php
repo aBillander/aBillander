@@ -12,17 +12,17 @@
     </div>
     <h2>
          
-        <a href="{{ route('logout') }}"
-            onclick="event.preventDefault();
-                     document.getElementById('logout-form').submit();">
+        <a class="btn btn-sm alert-warning" href="#" onclick="return false;" title=" _ninette_ ">
+            <i class="fa fa-key"></i>
+        </a> 
+
+        <span style="color: #cccccc;">/</span> 
+
+        <a href="#" onclick="return false;">
             {{ Auth::user()->getFullName() }}
         </a>
 
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            {{ csrf_field() }}
-        </form>
-
-         <!-- a href="{{ URL::to('auth/logout') }}">{{ Auth::user()->getFullName() }}</a --> <span style="color: #cccccc;">/</span> {{ l('Home') }}
+         <span style="color: #cccccc;">/</span> {{ l('Home') }}
     </h2>
 </div>
 

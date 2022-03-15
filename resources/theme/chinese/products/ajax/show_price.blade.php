@@ -156,14 +156,14 @@
           <tr>
             <td>{{$product->as_money('price')}}</td>
             <td>{{$product->as_price('cost_price')}}</td>
-            <td>{{$product->as_percentable(\App\Models\Calculator::margin($product->cost_price, $product->price))}}</td>
+            <td>{{$product->as_percentable(\App\Helpers\Calculator::margin($product->cost_price, $product->price))}}</td>
 
             <td class="text-right">{{$product->as_moneyable($product->customer_price->getPrice(), $currency)}}<br />
             {{$product->as_moneyable($product->customer_price->convertToBaseCurrency()->getPrice())}}</td>
 
             <td class="text-right">{{$product->as_priceable($product->price-$product->customer_price->convertToBaseCurrency()->getPrice())}} ({{ $product->as_percentable(100.0*($product->price-$product->customer_price->convertToBaseCurrency()->getPrice())/$product->price) }}%)</td>
 
-            <td class="text-right">{{$product->as_percentable( \App\Models\Calculator::margin($product->cost_price, $product->customer_price->convertToBaseCurrency()->getPrice() ))}}</td>
+            <td class="text-right">{{$product->as_percentable( \App\Helpers\Calculator::margin($product->cost_price, $product->customer_price->convertToBaseCurrency()->getPrice() ))}}</td>
 
             <td class="text-right">{{$product->as_moneyable($product->customer_price->getPriceWithTax(), $currency)}}</td>
           </tr>

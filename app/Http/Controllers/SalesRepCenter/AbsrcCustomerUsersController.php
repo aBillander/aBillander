@@ -131,12 +131,12 @@ class AbsrcCustomerUsersController extends Controller
                 'fromName' => config('mail.from.name'   ),    // Configuration::get('ABCC_EMAIL_NAME'),
                 'to'       => $customeruser->email,         // $cinvoice->customer->address->email,
                 'toName'   => $customeruser->full_name,    // $cinvoice->customer->name_fiscal,
-                'subject'  => l(' :_> Confirmación de acceso al Centro de Clientes de :company', ['company' => use App\Models\Context::getcontext()->company->name_fiscal]),
+                'subject'  => l(' :_> Confirmación de acceso al Centro de Clientes de :company', ['company' => Context::getcontext()->company->name_fiscal]),
                 );
 
             
 
-            $send = Mail::send('emails.'.use App\Models\Context::getContext()->language->iso_code.'.invitation_confirmation', $template_vars, function($message) use ($data)
+            $send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.invitation_confirmation', $template_vars, function($message) use ($data)
             {
                 $message->from($data['from'], $data['fromName']);
 

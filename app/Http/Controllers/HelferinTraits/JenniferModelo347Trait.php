@@ -7,7 +7,7 @@ use App\Models\Context;
 use App\Models\Customer;
 use App\Models\Modelo347;
 use App\Models\Product;
-use App\Models\Tools;
+use App\Helpers\Tools;
 use Carbon\Carbon;
 use Excel;
 use Illuminate\Http\Request;

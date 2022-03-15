@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use App\Models\Configuration;
-use App\Models\Calculator;
+use App\Helpers\Calculator;
 
 trait BillableLineProfitabilityTrait
 {

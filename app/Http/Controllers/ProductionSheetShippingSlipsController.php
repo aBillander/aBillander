@@ -306,7 +306,7 @@ class ProductionSheetShippingSlipsController extends BillableController
 
 
         // Start Logger
-        $logger = use App\Models\ActivityLogger::setup( 'Invoice Production Sheet Shipping Slips', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Invoice Production Sheet Shipping Slips', __METHOD__ )
                     ->backTo( route('productionsheet.shippingslips', $params['production_sheet_id']) );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 

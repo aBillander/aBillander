@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 // use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Helpers\Calculator;
+use App\Helpers\Price;
 
 use App\Traits\ViewFormatterTrait;
 

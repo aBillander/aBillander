@@ -163,8 +163,8 @@ class CompaniesController extends Controller {
 			Configuration::updateValue('HEADER_TITLE', '');
 
 			// Delete old image
-			$old_file = public_path( Company::imagesPath() . use Context::getContext()->company->company_logo );
-	        if ( use Context::getContext()->company->company_logo && file_exists( $old_file ) ) {
+			$old_file = public_path( Company::imagesPath() . Context::getContext()->company->company_logo );
+	        if ( Context::getContext()->company->company_logo && file_exists( $old_file ) ) {
 	            unlink( $old_file );
       		}
 

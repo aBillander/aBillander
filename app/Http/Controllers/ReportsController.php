@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Tools;
 use App\Http\Controllers\HelferinTraits\ReportsABCCustomerSalesTrait;
 use App\Http\Controllers\HelferinTraits\ReportsABCProductSalesTrait;
 use App\Models\Category;
@@ -13,7 +14,6 @@ use App\Models\CustomerOrder;
 use App\Models\CustomerShippingSlip;
 use App\Models\Ecotax;
 use App\Models\Product;
-use App\Models\Tools;
 use App\Traits\DateFormFormatterTrait;
 use Carbon\Carbon;
 use Excel;
@@ -219,7 +219,7 @@ foreach ($products as $product) {
                         : 'todos';
 
         // Sheet Header Report Data
-        $data[] = [use App\Models\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
 
         $row = [];
         $row[] = 'Listado de Ventas comparativas por Producto ('.l($model).') ';
@@ -482,7 +482,7 @@ foreach ($customers as $customer) {
                         : 'todos';
 
         // Sheet Header Report Data
-        $data[] = [use App\Models\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
 
         $row = [];
         $row[] = 'Listado de Ventas comparativas por Cliente ('.l($model).') ';
@@ -751,7 +751,7 @@ foreach ($customers as $customer) {
                         : 'todos';
 
         // Sheet Header Report Data
-        $data[] = [use App\Models\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
 
         $row = [];
         $row[] = 'Listado de Ventas de Servicios comparativas por Cliente ('.l($model).') ';
@@ -1017,7 +1017,7 @@ foreach ($categories as $category) {
                         : 'todos';
 
         // Sheet Header Report Data
-        $data[] = [use App\Models\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
 
         $row = [];
         $row[] = 'Listado de Ventas comparativas por Categoría ('.l($model).') ';
@@ -1173,12 +1173,12 @@ foreach ($categories as $category) {
         {
             $search = $request->term;
 
-            $customers = use App\Models\Customer::where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
+            $customers = Customer::where(   'name_fiscal',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'name_commercial',      'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'identification', 'LIKE', '%'.$search.'%' )
 //                                    ->with('currency')
 //                                    ->with('addresses')
-                                    ->take( intval(use App\Models\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                     ->get();
 
 //            return $customers;
@@ -1199,7 +1199,7 @@ foreach ($categories as $category) {
     {
         $search = $request->term;
 
-        $products = use App\Models\Product::select('id', 'name', 'reference', 'measure_unit_id')
+        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
 //                                ->IsSaleable()
@@ -1207,7 +1207,7 @@ foreach ($categories as $category) {
 //                                ->IsActive()
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->take( intval(use App\Models\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 
@@ -1221,7 +1221,7 @@ foreach ($categories as $category) {
     {
         $search = $request->term;
 
-        $documents = use App\Models\CustomerOrder::select('id', 'document_reference', 'document_date', 'reference_external')
+        $documents = CustomerOrder::select('id', 'document_reference', 'document_date', 'reference_external')
                                 ->where(   'id',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference_external', 'LIKE', '%'.$search.'%' )
@@ -1229,7 +1229,7 @@ foreach ($categories as $category) {
                                 ->orderBy('document_date', 'DESC')
                                 ->orderBy('id', 'ASC')
 //                                ->toSql();
-                                ->take( intval(use App\Models\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 
@@ -1243,7 +1243,7 @@ foreach ($categories as $category) {
     {
         $search = $request->term;
 
-        $documents = use App\Models\CustomerShippingSlip::select('id', 'document_reference', 'document_date', 'reference_external')
+        $documents = CustomerShippingSlip::select('id', 'document_reference', 'document_date', 'reference_external')
                                 ->where(   'id',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference_external', 'LIKE', '%'.$search.'%' )
@@ -1251,7 +1251,7 @@ foreach ($categories as $category) {
                                 ->orderBy('document_date', 'DESC')
                                 ->orderBy('id', 'ASC')
 //                                ->toSql();
-                                ->take( intval(use App\Models\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 
@@ -1265,7 +1265,7 @@ foreach ($categories as $category) {
     {
         $search = $request->term;
 
-        $documents = use App\Models\CustomerInvoice::select('id', 'document_reference', 'document_date', 'reference_external')
+        $documents = CustomerInvoice::select('id', 'document_reference', 'document_date', 'reference_external')
                                 ->where(   'id',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'document_reference', 'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference_external', 'LIKE', '%'.$search.'%' )
@@ -1273,7 +1273,7 @@ foreach ($categories as $category) {
                                 ->orderBy('document_date', 'DESC')
                                 ->orderBy('id', 'ASC')
 //                                ->toSql();
-                                ->take( intval(use App\Models\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 

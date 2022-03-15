@@ -101,7 +101,7 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                 <td class="text-right button-pad" title="{{ l('Ecotax', 'customerdocuments') }}: {{ $line->as_priceable( $ecotax ) }} {{ $document->currency->sign }}">{{ $line->as_priceable( $line->unit_final_price - $ecotax ) }}<br />
                   <span class="alert-success">{{ $line->as_priceable( $line->unit_final_price ) }} - {{ $line->as_priceable( $ecotax ) }}</span></td>
                 <td class="text-right">{{ $line->as_price('cost_price') }}</td>
-                <td class="text-right">{{ $line->as_percentable( \App\Models\Calculator::margin( $line->cost_price * $line->quantity_total, ($line->unit_final_price - $ecotax) * $line->quantity, $document->currency ) ) }}</td>
+                <td class="text-right">{{ $line->as_percentable( \App\Helpers\Calculator::margin( $line->cost_price * $line->quantity_total, ($line->unit_final_price - $ecotax) * $line->quantity, $document->currency ) ) }}</td>
                 <td class="text-right">{{ $line->as_priceable( ( $line->unit_final_price - $ecotax - $line->cost_price )*$line->quantity - $line->cost_price*$line->extra_quantity ) }}</td>
 
 
@@ -111,7 +111,7 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
 
                   <span class="alert-success">{{ $line->as_percent('commission_percent') }}</span></td>
 
-                <td class="text-right">{{ $line->as_percentable( \App\Models\Calculator::margin( $line->cost_price*$line->quantity_total, ( $line->unit_final_price - $ecotax )*$line->quantity - $line->getSalesRepCommission(), $document->currency ) ) }}</td>
+                <td class="text-right">{{ $line->as_percentable( \App\Helpers\Calculator::margin( $line->cost_price*$line->quantity_total, ( $line->unit_final_price - $ecotax )*$line->quantity - $line->getSalesRepCommission(), $document->currency ) ) }}</td>
 
                 <td class="text-right">{{ $line->as_priceable( ( $line->unit_final_price - $ecotax - $line->cost_price )*$line->quantity - $line->cost_price*$line->extra_quantity - $line->getSalesRepCommission() ) }}</td>
 @endif
@@ -213,7 +213,7 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                 </td>
 
                 <td class="text-right">{{ $document->as_priceable($document->total_cost_price) }}</td>
-                <td class="text-right">{{ $document->as_percentable( \App\Models\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount, $document->currency ) ) }}</td>
+                <td class="text-right">{{ $document->as_percentable( \App\Helpers\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount, $document->currency ) ) }}</td>
                 <td class="text-right">{{ $document->as_priceable( $document->total_revenue_with_discount - $document->total_cost_price ) }}</td>
 
 
@@ -225,7 +225,7 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
 @endif
                 </td>
 
-                <td class="text-right">{{ $document->as_percentable( \App\Models\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount - $document->getSalesRepCommission(), $document->currency ) ) }}</td>
+                <td class="text-right">{{ $document->as_percentable( \App\Helpers\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount - $document->getSalesRepCommission(), $document->currency ) ) }}</td>
                 <td class="text-right">{{ $document->as_priceable( $document->total_revenue_with_discount - $document->getSalesRepCommission() - $document->total_cost_price ) }}</td>
 @endif
             </tr>

@@ -25,8 +25,8 @@ class CreateImagesTable extends Migration {
 
 			$table->tinyInteger('active')->default(1);
 
-			$table->integer('imageable_id')->unsigned()->nullable(false);
-			$table->string('imageable_type');
+			$table->integer('imageable_id')->unsigned()->nullable();	// Not good, but convenient
+			$table->string('imageable_type')->nullable();				// Not good, but convenient
 
 			$table->timestamps();
 		});

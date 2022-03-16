@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
+
 // Most suitable way to go about this is listen to db queries. You can do
 /*
 \DB::listen(function ($query) {
@@ -33,8 +35,83 @@ Route::get('/conf', function () {
 /* ********************************************************** */
 
 
+
+function table_models($table, $field, $models)
+{
+/*
+SELECT
+  category,
+  COUNT(*) AS `num`
+FROM
+  posts
+GROUP BY
+  category
+*/
+	foreach ($models as $model) {
+		// code...
+		$sql = "UPDATE `$table` SET `$field` = 'App\\\\Models\\\\$model' WHERE `$field` = 'App\\\\$model';";
+		DB::statement($sql);
+		abi_r($sql);
+	}
+  
+  	return true;
+}
+
 Route::get('migratethis', function()
 {
+	// 2022-03-16
+	$date = '2022-03-16';
+
+	// SELECT DISTINCT column1, column2, ... FROM table_name;
+
+	// Table email_logs
+	table_models('email_logs', 'userable_type', ['CustomerUser', 'SalesRepUser', 'User']);
+
+	die('OK');
+
+	// Table shipping_model_attachments
+	table_models('model_attachments', 'attachmentable_type ', ['Supplier', 'DownPayment', 'Product', 'Lot', 'Customer', 'Cheque']);
+
+	// Table shipping_method_service_lines
+	table_models('shipping_method_service_lines', 'tabulable_type', ['ShippingMethod']);
+
+	// Table shipping_methods
+	table_models('shipping_methods', 'class_name', ['ShippingMethods\\\\StorePickUpShippingMethod', 'ShippingMethods\\\\RegularDeliveryRouteShippingMethod', 'ShippingMethods\\\\TransportAgencyShippingMethod']);
+
+	die('OK');
+
+	// Table stock_movements
+	table_models('stock_movements', 'stockmovementable_type', ['CustomerShippingSlipLine']);
+
+	die('OK');
+
+	// Table payments
+	table_models('payments', 'paymentable_type'  , ['CustomerInvoice', 'SupplierInvoice']);
+	table_models('payments', 'paymentorable_type', ['Customer', 'Supplier']);
+
+	die('OK');
+
+	// Table images
+	table_models('images', 'imageable_type', ['Product']);
+
+	// Table document_ascriptions
+	table_models('document_ascriptions', 'leftable_type' , ['CustomerOrder', 'CustomerShippingSlip']);
+	table_models('document_ascriptions', 'rightable_type', ['CustomerOrder', 'CustomerShippingSlip', 'CustomerInvoice']);
+
+	die('OK');
+
+	// Table bank_accounts
+	$table = 'bank_accounts';
+	$field = 'bank_accountable_type';
+	$models = ['Company', 'Customer'];
+	foreach ($models as $model) {
+		// code...
+		DB::statement("UPDATE `$table` SET `$field` = 'App\\\\Models\\\\$model' WHERE `$field` = 'App\\\\$model';");
+	}
+
+	die('OK - '.$date);
+
+
 	// 2022-03-15
 	$date = '2022-03-15';
 
@@ -42,13 +119,13 @@ Route::get('migratethis', function()
 
 	Illuminate\Support\Facades\DB::statement("ALTER TABLE `images` CHANGE `imageable_id` `imageable_id` INT(10) UNSIGNED NULL;");
 
-	Illuminate\Support\Facades\DB::statement("RENAME TABLE `product_b_o_ms` TO `product_b_o_m_s`;");
+	Illuminate\Support\Facades\DB::statement("RENAME TABLE `product_b_o_m_s` TO `product_b_o_m_s`;");
 
-	$tables = ['Company', 'Customer', 'Supplier', 'Warehouse'];
-
-	foreach ($tables as $table) {
+	// Table addresses
+	$models = ['Company', 'Customer', 'Supplier', 'Warehouse'];
+	foreach ($models as $model) {
 		// code...
-		Illuminate\Support\Facades\DB::statement("UPDATE `addresses` SET `addressable_type` = 'App\\Models\\'.$table WHERE `addressable_type` = 'App\\'.$table;");
+		Illuminate\Support\Facades\DB::statement("UPDATE `addresses` SET `addressable_type` = 'App\\Models\\'.$model WHERE `addressable_type` = 'App\\'.$model;");
 	}	
 
 	die('OK - '.$date);

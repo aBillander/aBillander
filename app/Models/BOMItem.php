@@ -12,7 +12,7 @@ class BOMItem extends Model
 
     public static $rules = [
         'product_id' => 'exists:products,id',
-        'product_bom_id' => 'exists:product_b_o_ms,id',
+        'product_bom_id' => 'exists:product_b_o_m_s,id',
         'quantity' => 'required|numeric'
     ];
 

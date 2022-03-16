@@ -29,9 +29,9 @@ class ProductBOM extends Model
          * @var array
          */
         'columns' => [
-            'product_b_o_ms.name' => 10,
-//            'product_b_o_ms.notes' => 4,
-            'product_b_o_ms.alias' => 7,
+            'product_b_o_m_s.name' => 10,
+//            'product_b_o_m_s.notes' => 4,
+            'product_b_o_m_s.alias' => 7,
  //           'products.description' => 10,
  //           'posts.title' => 2,
  //           'posts.body' => 1,
@@ -54,7 +54,7 @@ class ProductBOM extends Model
 
 	// Add your validation rules here
 	public static $rules = [
-                            'alias'    => 'required|min:2|max:32|unique:product_b_o_ms,alias',   // ,{$id},id', //,deleted_at,NULL',
+                            'alias'    => 'required|min:2|max:32|unique:product_b_o_m_s,alias',   // ,{$id},id', //,deleted_at,NULL',
                             'name'     => 'required|min:2|max:128',
                             'measure_unit_id' => 'exists:measure_units,id',
 	];

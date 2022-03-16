@@ -13,9 +13,9 @@ class CreateProductBOMsTable extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('product_b_o_ms');
+        Schema::dropIfExists('product_b_o_m_s');
 
-        Schema::create('product_b_o_ms', function (Blueprint $table) {
+        Schema::create('product_b_o_m_s', function (Blueprint $table) {
             $table->increments('id');
             $table->string('alias', 32)->nullable(false);
             $table->string('name', 128)->nullable(false);                       // BOM description
@@ -39,6 +39,6 @@ class CreateProductBOMsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_b_o_ms');
+        Schema::dropIfExists('product_b_o_m_s');
     }
 }

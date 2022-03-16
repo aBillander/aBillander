@@ -76,4 +76,21 @@ Add the facade of this package to the $aliases array.
 
 composer require barryvdh/laravel-dompdf
 
+remember folder storage/fonts
 
+
+2022-03-16
+==========
+
+Tables with Model field(s)
+
+x addresses
+x bank_accounts
+x document_ascriptions
+x email_logs
+x images
+x model_attachments
+x payments
+x shipping_method_service_lines
+x shipping_methods
+x stock_movements

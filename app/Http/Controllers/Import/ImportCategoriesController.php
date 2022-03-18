@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ActivityLogger;
 use App\Models\Category;
 use App\Models\Configuration;
+use App\Helpers\Exports\ArrayExport;
 use Excel;
 use Illuminate\Http\Request;
 
@@ -359,36 +360,20 @@ class ImportCategoriesController extends Controller
 //                          ->orderBy('name', 'asc')
                           ->get();
 
-/*        $pricelist = $this->pricelist
-                    ->with('pricelistlines')
-                    ->with('pricelistlines.category')
-                    ->findOrFail($id);
-
-        $pricelist  = $this->pricelist->findOrFail($id);
-        $lines = $this->pricelistline
-                        ->select('price_list_lines.*', 'categories.id', 'categories.reference', 'categories.name')
-//                        ->with('category')
-                        ->where('price_list_id', $id)
-                        ->join('categories', 'categories.id', '=', 'price_list_lines.category_id')       // Get field to order by
-                        ->orderBy('categories.reference', 'asc')
-                        ->get();
-*/
-
         // Initialize the array which will be passed into the Excel generator.
         $data = []; 
 
         // Define the Excel spreadsheet headers
         $headers = [ 'id', 'name', 'description', 'position', 'publish_to_web', 'webshop_id', 'reference_external', 
                      'active', 'parent_id',
-//                    'position', 'is_root', 
         ];
 
         $data[] = $headers;
 
         // Convert each member of the returned collection into an array,
-        // and append it to the payments array.
+        // and append it to the $data array.
         foreach ($categories as $category) {
-            // $data[] = $line->toArray();
+
             $row = [];
             foreach ($headers as $header)
             {
@@ -399,26 +384,16 @@ class ImportCategoriesController extends Controller
             $data[] = $row;
         }
 
-        $sheetName = 'Categories' ;
+        $styles = [];
 
-        // abi_r($data, true);
+        $sheetTitle = 'Categories';
+
+        $export = (new ArrayExport($data, $styles))->setTitle($sheetTitle);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Categories', function($excel) use ($sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

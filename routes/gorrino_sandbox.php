@@ -1,5 +1,8 @@
 <?php
 
+use Maatwebsite\Excel\Facades\Excel;
+use App\Helpers\Exports\ArrayExport;
+
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 // use Queridiam\WooCommerce\Facades\WooCommerce;
 
@@ -11,6 +14,34 @@ use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientExcept
 | Quick & dirty!
 |
 */
+
+
+/* ********************************************************** */
+
+
+
+Route::get('/excel', function () {
+    // 
+
+    $data = App\Models\User::all()->toArray();
+
+    $styles = [
+            // Style the first row as bold text.
+            1    => ['font' => ['bold' => true, 'italic' => true]],
+
+            // Styling a specific cell by coordinate.
+            'B2' => ['font' => ['italic' => true]],
+
+            // Styling an entire column.
+            'C'  => ['font' => ['size' => 16]],
+        ];
+
+    $export = (new ArrayExport($data))->setStyles($styles)->setTitle('Categories');
+    // same as: 
+    // $export = new ArrayExport($data, $styles, $title);
+
+    return Excel::download($export, 'users.xlsx', null, ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']);
+});
 
 
 /* ********************************************************** */

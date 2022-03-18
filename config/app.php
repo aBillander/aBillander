@@ -223,6 +223,8 @@ return [
         'Form'   => Collective\Html\FormFacade::class,
         'HTML'   => Collective\Html\HtmlFacade::class,
         'iImage' => Intervention\Image\Facades\Image::class,
+
+// Auto-discovered:
 //        'PDF'    => Barryvdh\DomPDF\Facade::class,
 //        'Excel'  => Maatwebsite\Excel\Facades\Excel::class,
 

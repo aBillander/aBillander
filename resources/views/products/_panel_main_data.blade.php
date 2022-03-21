@@ -94,6 +94,17 @@
                      </div>
                    </div>
 
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('reference_external_wrin') ? 'has-error' : '' }}">
+                     {{ l('WRIN') }}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-content="{{ l('Reference of this Product in an external System.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+                     {!! Form::text('reference_external_wrin', null, array('class' => 'form-control', 'id' => 'reference_external_wrin') + $foo) !!}
+                     {!! $errors->first('reference_external_wrin', '<span class="help-block">:message</span>') !!}
+                  </div>
+
+{{--
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
 
    <div class="panel-footer text-right" style="border-right: 1px solid #e95420;
@@ -106,7 +117,7 @@ border-left:1px solid #e95420;">
    </div>
 
                   </div>
-
+--}}
         </div>
 
         <div class="row">

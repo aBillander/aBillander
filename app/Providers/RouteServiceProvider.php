@@ -50,25 +50,25 @@ class RouteServiceProvider extends ServiceProvider
                 ->group(base_path('routes/web.php'));
 
             // ABCC
-            if ( Configuration::isFalse('ENABLE_CUSTOMER_CENTER') )
+            if ( Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/abcc.php'));
 
             // ABSRC
-            if ( Configuration::isFalse('ENABLE_SALESREP_CENTER') )
+            if ( Configuration::isTrue('ENABLE_SALESREP_CENTER') )
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/absrc.php'));
 
             // mCRM
-            if ( Configuration::isFalse('ENABLE_MCRM') )
+            if ( Configuration::isTrue('ENABLE_MCRM') )
             Route::middleware('web')
                  ->namespace($this->namespace)
                  ->group(base_path('routes/web_crm.php'));
 
             // MFG
-            if ( Configuration::isFalse('ENABLE_MANUFACTURING') )
+            if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
             Route::middleware('web')
                  ->namespace($this->namespace)
                  ->group(base_path('routes/web_mfg.php'));

@@ -1,5 +1,5 @@
 
-@if ( 1 || AbiConfiguration::isTrue('ENABLE_MCRM') )
+@if ( AbiConfiguration::isTrue('ENABLE_MCRM') )
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-users"></i> {!! l('microCRM', [], 'layouts') !!} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">

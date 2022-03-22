@@ -75,6 +75,8 @@
             <th>{{l('Product Name')}}</th>
             <th>{{l('Quantity')}}</th>
             <th>{{l('Cost Price')}}</th>
+            <th>{{l('Average Cost Price')}}</th>
+            <th>{{l('Last Purchase Price')}}</th>
 			<th> </th>
 		</tr>
 	</thead>
@@ -92,6 +94,9 @@
             {{ $line->as_price('cost_price') }}
 @endif
             </td>
+            
+            <td>{{ $line->as_price('cost_average') }}</td>
+            <td>{{ $line->as_price('last_purchase_price') }}</td>
 
 			<td class="text-right button-pad">
                 @if ( !$line->stockcount->processed )

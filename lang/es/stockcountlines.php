@@ -52,6 +52,8 @@ return [
 
 	'Stock Count'     => 'Inventario de Almacén',
 	'Cost Price'     => 'Precio de Coste',
+	'Average Cost Price'     => 'Precio de Coste Promedio',
+	'Last Purchase Price'     => 'Precio última Compra',
 	'Sales Price'     => 'Precio de Venta',
 	'Sales Price (with Tax)'     => 'Precio (con Impuestos)',
 	'Discount (%)'     => 'Descuento (%)',

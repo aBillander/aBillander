@@ -4,7 +4,7 @@
          {!! Form::hidden('product_id', null, array('id' => 'product_id')) !!}
          {!! Form::hidden('combination_id', null, array('id' => 'combination_id')) !!}
 
-       <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('date') ? 'has-error' : '' }}">
+       <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('date') ? 'has-error' : '' }} hidden">
 {{--
             {{ l('Date') }}
             {!! Form::text('date_form', old('date_form'), array('class' => 'form-control', 'id' => 'date_form', 'autocomplete' => 'off')) !!}
@@ -22,11 +22,22 @@
       </div>
 
       <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('cost_price') ? 'has-error' : '' }}">
-         {{ l('Cost Price') }}
-         {!! Form::text('cost_price', null, array('class' => 'form-control', 'id' => 'cost_price', 'autocomplete' => 'off', 
-                          'onclick' => 'this.select()')) !!}
+         {{ l('Cost Price') }} <span class="badge" style="background-color: #3a87ad;">{{ AbiContext::getContext()->currency->iso_code }}</span>
+         {!! Form::text('cost_price', null, array('class' => 'form-control', 'id' => 'cost_price', 'autocomplete' => 'off', 'onclick' => 'this.select()')) !!}
          {!! $errors->first('cost_price', '<span class="help-block">:message</span>') !!}
       </div>
+
+          <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('cost_average') ? 'has-error' : '' }}">
+             {{ l('Average Cost Price') }} <span class="badge" style="background-color: #3a87ad;">{{ AbiContext::getContext()->currency->iso_code }}</span>
+             {!! Form::text('cost_average', null, array('class' => 'form-control', 'id' => 'cost_average', 'autocomplete' => 'off', 'onclick' => 'this.select()')) !!}
+            {!! $errors->first('cost_average', '<span class="help-block">:message</span>') !!}
+          </div>
+          <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('last_purchase_price') ? 'has-error' : '' }}">
+             {{ l('Last Purchase Price') }} <span class="badge" style="background-color: #3a87ad;">{{ AbiContext::getContext()->currency->iso_code }}</span>
+             {!! Form::text('last_purchase_price', null, array('class' => 'form-control', 'id' => 'last_purchase_price', 'autocomplete' => 'off', 'onclick' => 'this.select()')) !!}
+            {!! $errors->first('last_purchase_price', '<span class="help-block">:message</span>') !!}
+          </div>
+
 
 </div>
 

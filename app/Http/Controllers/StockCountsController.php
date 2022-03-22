@@ -337,6 +337,7 @@ class StockCountsController extends Controller
             // {
                 $product->cost_price = $line->cost_price;
                 $product->cost_average = $line->cost_average;
+                $product->last_purchase_price = $line->last_purchase_price;
 
                 $product->save();
             // }
@@ -356,7 +357,7 @@ class StockCountsController extends Controller
  //                   'quantity_after_movement' => ,
                     'measure_unit_id' => $product->measure_unit_id,
 
-                    'price' => $line->getPriceForStockValuation(),
+                    'price_currency' => $line->getPriceForStockValuation(),
                     'currency_id' => Context::getContext()->company->currency->id,
                     'conversion_rate' => Context::getContext()->company->currency->conversion_rate,
 

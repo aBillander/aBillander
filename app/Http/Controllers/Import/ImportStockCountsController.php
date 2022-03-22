@@ -493,7 +493,6 @@ class ImportStockCountsController extends Controller
 
         // Define the Excel spreadsheet headers
         $data[] = [ 'product_id', 'reference', 'NOMBRE', 'quantity', 'cost_price', 'cost_average', 'last_purchase_price', 'stock_count_id', 'stock_count_NAME' ];
-        // removed: , 'cost_price',
 
         // Convert each member of the returned collection into an array,
         // and append it to the payments array.

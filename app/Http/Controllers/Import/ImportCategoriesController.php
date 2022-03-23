@@ -7,8 +7,11 @@ use App\Models\ActivityLogger;
 use App\Models\Category;
 use App\Models\Configuration;
 use App\Helpers\Exports\ArrayExport;
+use App\Helpers\Imports\ArrayImport;
 use Excel;
 use Illuminate\Http\Request;
+
+use App\Helpers\Imports\CategoriesImport;
 
 class ImportCategoriesController extends Controller
 {
@@ -173,36 +176,6 @@ class ImportCategoriesController extends Controller
 
         return redirect('activityloggers/'.$logger->id)
                 ->with('success', l('Se han cargado las Categorías desde el Fichero: <strong>:file</strong> .', ['file' => $file]));
-
-
-//        abi_r('Se han cargado: '.$i.' categoryos');
-
-
-
-        // See: https://www.google.com/search?client=ubuntu&channel=fs&q=laravel-excel+%22Serialization+of+%27Illuminate%5CHttp%5CUploadedFile%27+is+not+allowed%22&ie=utf-8&oe=utf-8
-        // https://laracasts.com/discuss/channels/laravel/serialization-of-illuminatehttpuploadedfile-is-not-allowed-on-queue
-
-        // See: https://github.com/LaravelDaily/Laravel-Import-CSV-Demo/blob/master/app/Http/Controllers/ImportController.php
-        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
-/*
-        Excel::filter('chunk')->load('file.csv')->chunk(250, function($results)
-        {
-                foreach($results as $row)
-                {
-                    // do stuff
-                }
-        });
-
-        Excel::filter('chunk')->load(database_path('seeds/csv/users.csv'))->chunk(250, function($results) {
-            foreach ($results as $row) {
-                $user = User::create([
-                    'username' => $row->username,
-                    // other fields
-                ]);
-            }
-        });
-*/
-        // See: https://www.youtube.com/watch?v=z_AhZ2j5sI8  Modificar datos importados
     }
 
 
@@ -213,25 +186,16 @@ class ImportCategoriesController extends Controller
      */
     protected function processFile( $file, $logger )
     {
+        // $reader = Excel::toArray(new CategoriesImport( $logger ), $file);
+        // Excel::import(new CategoriesImport( $logger )), $file);
 
-        // 
-        // See: https://www.youtube.com/watch?v=rWjj9Slg1og
-        // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
-        Excel::filter('chunk')->selectSheetsByIndex(0)->load( $file )->chunk(250, function ($reader) use ( $logger )
-        {
-            
- /*           $reader->each(function ($sheet){
-                // ::firstOrCreate($sheet->toArray);
-                abi_r($sheet);
-            });
+        // Get data as an array
+        $worksheet = Excel::toCollection(new ArrayImport, $file);
 
-            $reader->each(function($sheet) {
-                // Loop through all rows
-                $sheet->each(function($row) {
-                    // Loop through all columns
-                });
-            });
-*/
+        // abi_r($worksheet->first(), true);
+
+        $reader = $worksheet->first();    // First sheet in worksheet
+
 
 // Process reader STARTS
 
@@ -258,7 +222,7 @@ class ImportCategoriesController extends Controller
                     // Some Poor Man checks:
                     if ( array_key_exists('id', $data)) {
                         $data['id'] = intval( $data['id'] );
-                        if ( $data['id'] <= 0 ) unset( $data['id'] );
+                        if ( $data['id'] <= 0 ) $data['id'] = NULL;
                     }
 
                     $data['publish_to_web'] = intval( $data['publish_to_web'] ) > 0 ? 1 : 0;
@@ -313,7 +277,7 @@ class ImportCategoriesController extends Controller
                         
                         // Create Category
                         // $category = $this->category->create( $data );
-                        $category = $this->category->create( $data );
+                        $category = $this->category->updateOrCreate( ['id' => $data['id']], $data );
 
                         $i_ok++;
 
@@ -340,9 +304,7 @@ class ImportCategoriesController extends Controller
 
             $logger->log('INFO', 'Se han procesado {i} Categorías.', ['i' => $i]);
 
-// Process reader          
-    
-        }, false);      // should not queue $shouldQueue
+// Process reader ENDS
 
     }
 

@@ -19,6 +19,25 @@ use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientExcept
 /* ********************************************************** */
 
 
+Route::get('/auton', function () {
+    // 
+    $lines2 = \App\Models\SupplierShippingSlipLine::
+                      where('product_id', 5)
+                    ->whereHas('document', function($q)
+                            {
+                                $q->where('status', 'confirmed');
+                            }
+                    )
+                    ->get();
+
+    abi_r($lines2);
+});
+
+
+
+/* ********************************************************** */
+
+
 
 Route::get('/excel', function () {
     // 

@@ -19,18 +19,20 @@ trait BillableIntrospectorTrait
     {
         // CustomerShippingSlipsController
         // CustomerShippingSlip
-        static $classname;
+//        static $classname;
 
-        return $classname ?: $classname = ( new ReflectionClass($this) )->getShortName();
+//        return $classname ?: $classname = ( new ReflectionClass($this) )->getShortName();
+        return ( new ReflectionClass($this) )->getShortName();
     }
     
     public function getClassName()
     {
         // App\Http\Controllers\CustomerShippingSlipsController
         // App\CustomerShippingSlip
-        static $classname_full;
+//        static $classname_full;
 
-        return $classname_full ?: $classname_full = ( new ReflectionClass($this) )->getName();
+//        return $classname_full ?: $classname_full = ( new ReflectionClass($this) )->getName();
+        return ( new ReflectionClass($this) )->getName();
     }
     
     public function getClassSnakeCase()
@@ -44,50 +46,54 @@ trait BillableIntrospectorTrait
     {
         // Controller
         // Slip
-        static $segment;
+//        static $segment;
 
-        if ($segment) return $segment;
+//        if ($segment) return $segment;
 
         // http://otroblogmas.com/parsear-strings-formato-camelcase-php/
         $str = \Str::snake($this->getClass());
 
         $segments = array_reverse(explode('_', $str));
 
-        return $segment = \Str::studly($segments[0]);
+//        return $segment = \Str::studly($segments[0]);
+        return \Str::studly($segments[0]);
     }
     
     public function getClassFirstSegment()
     {
         // Cusromer
         // Supplier
-        static $segment;
+//        static $segment;
 
-        if ($segment) return $segment;
+//        if ($segment) return $segment;
 
         // http://otroblogmas.com/parsear-strings-formato-camelcase-php/
         $str = \Str::snake($this->getClass());
 
         $segments = explode('_', $str);
 
-        return $segment = \Str::studly($segments[0]);
+//        return $segment = \Str::studly($segments[0]);
+        return \Str::studly($segments[0]);
     }
 
     public function getParentClass()
     {
         // CustomerShippingSlips
         // CustomerShipping
-        static $classname;
+//        static $classname;
 
-        return $classname ?: $classname = substr( $this->getClass(), 0, -strlen($this->getClassLastSegment()) );
+//        return $classname ?: $classname = substr( $this->getClass(), 0, -strlen($this->getClassLastSegment()) );
+        return substr( $this->getClass(), 0, -strlen($this->getClassLastSegment()) );
     }
     
     public function getParentClassName()
     {
         // App\Http\Controllers\CustomerShippingSlips
         // App\CustomerShipping
-        static $classname_full;
+//        static $classname_full;
 
-        return $classname_full ?: $classname_full = substr( $this->getClassName(), 0, -strlen($this->getClassLastSegment()) );
+//        return $classname_full ?: $classname_full = substr( $this->getClassName(), 0, -strlen($this->getClassLastSegment()) );
+        return substr( $this->getClassName(), 0, -strlen($this->getClassLastSegment()) );
     }
     
     public function getParentClassSnakeCase()

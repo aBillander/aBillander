@@ -5,6 +5,8 @@ namespace App\StockMovements;
 use App\Models\StockMovement;
 use App\Models\WarehouseProductLine;
 
+use App\Exceptions\StockMovementException;
+
 class InitialStockStockMovement extends StockMovement implements StockMovementInterface
 {
 
@@ -33,7 +35,7 @@ class InitialStockStockMovement extends StockMovement implements StockMovementIn
         $price_in = $this->price;                       // Price in Company's Currency
 
         if ( $product->getStockByWarehouse( $this->warehouse_id ) > 0.0 ) 
-            throw new StockMovementException( l('Cannot set Initial Stock because Product has already stock', 'stockmovements') );
+            throw new StockMovementException( l('Cannot set Initial Stock because Product has already stock', 'stockmovements') . ' [' . $product->reference . '] ' . $product->name );
 
         $current_quantity_onhand = $product->quantity_onhand;
 

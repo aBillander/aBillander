@@ -227,6 +227,13 @@ class ProductsController extends Controller
         // Create Product
         $product = $this->product->create($request->all());
 
+        // Not fillables:
+        $product->cost_average = $request->input('cost_average');
+        $product->last_purchase_price = $request->input('last_purchase_price');
+
+        $product->save();
+
+
 
         // Event
         // event( new ProductCreated(), $data );
@@ -244,7 +251,7 @@ class ProductsController extends Controller
 
                         'document_reference' => '', 
                         'quantity' => $request->input('quantity_onhand'),  
-                        'price' => null,        // Use default
+                        'price_currency' => $product->getPriceForStockValuation(),
                         'currency_id' => Context::getContext()->company->currency->id,
                         'conversion_rate' => Context::getContext()->company->currency->conversion_rate,
 

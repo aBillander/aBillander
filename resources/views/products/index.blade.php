@@ -46,12 +46,6 @@
           <ul class="dropdown-menu">
             <li><a href="{{ route('products.import') }}"><i class="fa fa-file-excel-o"></i> &nbsp; {{l('File', [], 'layouts')}}</a>
             </li>
-
-@if ( AbiConfiguration::isTrue('ENABLE_FSOL_CONNECTOR') )
-            <li class="divider"></li>
-            <li><a href="{{ route('fsxproducts.index') }}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> &nbsp; {{l('FactuSOL')}}</a>
-            </li>
-@endif
           </ul>
         </div>
 

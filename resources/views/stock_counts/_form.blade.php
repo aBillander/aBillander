@@ -46,6 +46,11 @@
   {!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
   {!! link_to_route('stockcounts.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
 
+@if ( $with_lines ?? false)
+
+  <a class="pull-right btn xbtn-xs btn-blue" href="{{ URL::to('stockcounts/' . $stockcount->id . '/stockcountlines') }}"><i class="fa fa-folder-open-o"></i> &nbsp;{{l('Stock Count Lines')}}</a>
+
+@endif
 
 
 @section('scripts')

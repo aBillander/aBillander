@@ -203,6 +203,17 @@
         </div>
 
         <div class="row">
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3">
+                     {{ l('Average Cost Price') }} <span class="badge" style="background-color: #3a87ad;">{{ AbiContext::getContext()->currency->iso_code }}</span>
+                     {!! Form::text('cost_average', null, array('class' => 'form-control', 'id' => 'cost_average')) !!}
+                  </div>
+                  <div class="form-group col-lg-3 col-md-3 col-sm-3">
+                     {{ l('Last Purchase Price') }} <span class="badge" style="background-color: #3a87ad;">{{ AbiContext::getContext()->currency->iso_code }}</span>
+                     {!! Form::text('last_purchase_price', null, array('class' => 'form-control', 'id' => 'last_purchase_price')) !!}
+                  </div>
+        </div>
+
+        <div class="row">
              <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('category_id') ? 'has-error' : '' }}">
                 {{ l('Category') }}
                 {!! Form::select('category_id', array('0' => l('-- Please, select --', [], 'layouts')) + $categoryList, null, array('class' => 'form-control')) !!}

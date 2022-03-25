@@ -131,7 +131,7 @@ class StockCountsController extends Controller
 
         $stockcount->update($request->all());
 
-        return redirect('stockcounts')
+        return redirect()->back()
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $stockcount->id], 'layouts') . $stockcount->name);
     }
 

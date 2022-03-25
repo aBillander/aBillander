@@ -345,7 +345,7 @@ class ImportStockCountsController extends Controller
                             // Cost Price
                             if ( array_key_exists('cost_price', $data) )
                             {
-                                if (  $data['cost_price'] === NULL || trim($data['cost_price']) === '' ) 
+                                if ( floatval( trim($data['cost_price'] <= 0.0 ) 
                                 {
                                     // Use current
                                     $data['cost_price'] = $product->cost_price;
@@ -360,13 +360,12 @@ class ImportStockCountsController extends Controller
                             // Cost Average
                             if ( array_key_exists('cost_average', $data) )
                             {
-                                if (  $data['cost_average'] === NULL || trim($data['cost_average']) === '' ) 
+                                if ( ! (($data['cost_average']=(float) $data['cost_average']) > 0) ) 
                                 {
                                     // Use current
                                     $data['cost_average'] = $product->cost_average;
-                                } else {
-                                    $data['cost_average'] = floatval( trim($data['cost_average']) );
                                 }
+
                             } else {
                                 // Use current
                                 $data['cost_average'] = $product->cost_average;
@@ -375,7 +374,7 @@ class ImportStockCountsController extends Controller
                             // Last Purchase Price
                             if ( array_key_exists('last_purchase_price', $data) )
                             {
-                                if (  $data['last_purchase_price'] === NULL || trim($data['last_purchase_price']) === '' ) 
+                                if ( floatval( trim($data['last_purchase_price']) <= 0.0 ) 
                                 {
                                     // Use current
                                     $data['last_purchase_price'] = $product->last_purchase_price;

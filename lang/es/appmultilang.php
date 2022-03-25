@@ -41,9 +41,9 @@ return array(
 	|
 	*/
 
-    'App\Product.manual'  => 'Manual',  //  => manualy place manufacture or purchase orders
-    'App\Product.onorder' => 'Bajo Pedido',  //  => manufactured or purchased on order
-    'App\Product.reorder' => 'Punto de Pedido',  //  => Reorder Point Planning
+    'App\Models\Product.manual'  => 'Manual',  //  => manualy place manufacture or purchase orders
+    'App\Models\Product.onorder' => 'Bajo Pedido',  //  => manufactured or purchased on order
+    'App\Models\Product.reorder' => 'Punto de Pedido',  //  => Reorder Point Planning
     // 'forecast' => Forecast Based Planning
     // 'phased'   => Time-phased Planning (planning cycles)
 
@@ -234,10 +234,10 @@ return array(
 	|
 	*/
 
-	'App\CustomerOrder.draft' => 'Borrador',
-	'App\CustomerOrder.confirmed'    => 'Confirmado',
-	'App\CustomerOrder.closed'    => 'Cerrado',
-    'App\CustomerOrder.canceled' => 'Cancelado',
+	'App\Models\CustomerOrder.draft' => 'Borrador',
+	'App\Models\CustomerOrder.confirmed'    => 'Confirmado',
+	'App\Models\CustomerOrder.closed'    => 'Cerrado',
+    'App\Models\CustomerOrder.canceled' => 'Cancelado',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -248,16 +248,16 @@ return array(
 	|
 	*/
 
-	'App\CustomerShippingSlip.draft' => 'Borrador',
-	'App\CustomerShippingSlip.confirmed'    => 'Confirmado',
-	'App\CustomerShippingSlip.closed'    => 'Cerrado',
-    'App\CustomerShippingSlip.canceled' => 'Cancelado',
+	'App\Models\CustomerShippingSlip.draft' => 'Borrador',
+	'App\Models\CustomerShippingSlip.confirmed'    => 'Confirmado',
+	'App\Models\CustomerShippingSlip.closed'    => 'Cerrado',
+    'App\Models\CustomerShippingSlip.canceled' => 'Cancelado',
 
-    'App\CustomerShippingSlip.pending' => 'Pendiente',
-    'App\CustomerShippingSlip.processing' => 'Preparación',
-    'App\CustomerShippingSlip.transit' => 'Reparto',
-    'App\CustomerShippingSlip.exception' => 'Excepción',
-    'App\CustomerShippingSlip.delivered' => 'Entregado',
+    'App\Models\CustomerShippingSlip.pending' => 'Pendiente',
+    'App\Models\CustomerShippingSlip.processing' => 'Preparación',
+    'App\Models\CustomerShippingSlip.transit' => 'Reparto',
+    'App\Models\CustomerShippingSlip.exception' => 'Excepción',
+    'App\Models\CustomerShippingSlip.delivered' => 'Entregado',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -268,16 +268,16 @@ return array(
 	|
 	*/
 
-	'App\WarehouseShippingSlip.draft' => 'Borrador',
-	'App\WarehouseShippingSlip.confirmed'    => 'Confirmado',
-	'App\WarehouseShippingSlip.closed'    => 'Cerrado',
-    'App\WarehouseShippingSlip.canceled' => 'Cancelado',
+	'App\Models\WarehouseShippingSlip.draft' => 'Borrador',
+	'App\Models\WarehouseShippingSlip.confirmed'    => 'Confirmado',
+	'App\Models\WarehouseShippingSlip.closed'    => 'Cerrado',
+    'App\Models\WarehouseShippingSlip.canceled' => 'Cancelado',
 
-    'App\WarehouseShippingSlip.pending' => 'Pendiente',
-    'App\WarehouseShippingSlip.processing' => 'Preparación',
-    'App\WarehouseShippingSlip.transit' => 'Reparto',
-    'App\WarehouseShippingSlip.exception' => 'Excepción',
-    'App\WarehouseShippingSlip.delivered' => 'Entregado',
+    'App\Models\WarehouseShippingSlip.pending' => 'Pendiente',
+    'App\Models\WarehouseShippingSlip.processing' => 'Preparación',
+    'App\Models\WarehouseShippingSlip.transit' => 'Reparto',
+    'App\Models\WarehouseShippingSlip.exception' => 'Excepción',
+    'App\Models\WarehouseShippingSlip.delivered' => 'Entregado',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -288,10 +288,10 @@ return array(
 	|
 	*/
 
-    'App\CustomerInvoice.invoice'    => 'Factura',
-    'App\CustomerInvoice.corrective' => 'Factura Rectificativa',
-    'App\CustomerInvoice.credit'     => 'Nota de Abono',
-    'App\CustomerInvoice.deposit'    => 'Anticipo',
+    'App\Models\CustomerInvoice.invoice'    => 'Factura',
+    'App\Models\CustomerInvoice.corrective' => 'Factura Rectificativa',
+    'App\Models\CustomerInvoice.credit'     => 'Nota de Abono',
+    'App\Models\CustomerInvoice.deposit'    => 'Anticipo',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -302,10 +302,10 @@ return array(
 	|
 	*/
 
-	'App\CustomerInvoice.draft'     => 'Borrador',
-	'App\CustomerInvoice.confirmed' => 'Confirmado',
-	'App\CustomerInvoice.closed'    => 'Cerrado',
-    'App\CustomerInvoice.canceled'  => 'Cancelado',
+	'App\Models\CustomerInvoice.draft'     => 'Borrador',
+	'App\Models\CustomerInvoice.confirmed' => 'Confirmado',
+	'App\Models\CustomerInvoice.closed'    => 'Cerrado',
+    'App\Models\CustomerInvoice.canceled'  => 'Cancelado',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -316,12 +316,12 @@ return array(
 	|
 	*/
 
-	'App\CustomerInvoice.pending'  => 'Pendiente',
-	'App\CustomerInvoice.halfpaid' => 'Parcialmente Pagado',
-	'App\CustomerInvoice.paid'     => 'Pagado',
-    'App\CustomerInvoice.overdue'  => 'Vencido',
-    'App\CustomerInvoice.doubtful' => 'Pago Dudoso',
-    'App\CustomerInvoice.archived' => 'Archivado',
+	'App\Models\CustomerInvoice.pending'  => 'Pendiente',
+	'App\Models\CustomerInvoice.halfpaid' => 'Parcialmente Pagado',
+	'App\Models\CustomerInvoice.paid'     => 'Pagado',
+    'App\Models\CustomerInvoice.overdue'  => 'Vencido',
+    'App\Models\CustomerInvoice.doubtful' => 'Pago Dudoso',
+    'App\Models\CustomerInvoice.archived' => 'Archivado',
 
 
 	/*
@@ -333,14 +333,14 @@ return array(
 	|
 	*/
 
-	'App\SupplierOrder.draft' => 'Borrador',
-	'App\SupplierOrder.confirmed'    => 'Confirmado',
-	'App\SupplierOrder.closed'    => 'Cerrado',
-    'App\SupplierOrder.canceled' => 'Cancelado',    
+	'App\Models\SupplierOrder.draft' => 'Borrador',
+	'App\Models\SupplierOrder.confirmed'    => 'Confirmado',
+	'App\Models\SupplierOrder.closed'    => 'Cerrado',
+    'App\Models\SupplierOrder.canceled' => 'Cancelado',    
 
-    'App\SupplierOrder.pending' => 'Pendiente',
-    'App\SupplierOrder.partial' => 'Parcialmente',
-    'App\SupplierOrder.received' => 'Recibido',
+    'App\Models\SupplierOrder.pending' => 'Pendiente',
+    'App\Models\SupplierOrder.partial' => 'Parcialmente',
+    'App\Models\SupplierOrder.received' => 'Recibido',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -351,16 +351,16 @@ return array(
 	|
 	*/
 
-	'App\SupplierShippingSlip.draft' => 'Borrador',
-	'App\SupplierShippingSlip.confirmed'    => 'Confirmado',
-	'App\SupplierShippingSlip.closed'    => 'Cerrado',
-    'App\SupplierShippingSlip.canceled' => 'Cancelado',
+	'App\Models\SupplierShippingSlip.draft' => 'Borrador',
+	'App\Models\SupplierShippingSlip.confirmed'    => 'Confirmado',
+	'App\Models\SupplierShippingSlip.closed'    => 'Cerrado',
+    'App\Models\SupplierShippingSlip.canceled' => 'Cancelado',
 
-    'App\SupplierShippingSlip.pending' => 'Pendiente',
-    'App\SupplierShippingSlip.processing' => 'Preparación',
-    'App\SupplierShippingSlip.transit' => 'Reparto',
-    'App\SupplierShippingSlip.exception' => 'Excepción',
-    'App\SupplierShippingSlip.delivered' => 'Entregado',
+    'App\Models\SupplierShippingSlip.pending' => 'Pendiente',
+    'App\Models\SupplierShippingSlip.processing' => 'Preparación',
+    'App\Models\SupplierShippingSlip.transit' => 'Reparto',
+    'App\Models\SupplierShippingSlip.exception' => 'Excepción',
+    'App\Models\SupplierShippingSlip.delivered' => 'Entregado',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -371,10 +371,10 @@ return array(
 	|
 	*/
 
-    'App\SupplierInvoice.invoice'    => 'Factura',
-    'App\SupplierInvoice.corrective' => 'Factura Rectificativa',
-    'App\SupplierInvoice.credit'     => 'Nota de Abono',
-    'App\SupplierInvoice.deposit'    => 'Anticipo',
+    'App\Models\SupplierInvoice.invoice'    => 'Factura',
+    'App\Models\SupplierInvoice.corrective' => 'Factura Rectificativa',
+    'App\Models\SupplierInvoice.credit'     => 'Nota de Abono',
+    'App\Models\SupplierInvoice.deposit'    => 'Anticipo',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -385,10 +385,10 @@ return array(
 	|
 	*/
 
-	'App\SupplierInvoice.draft'     => 'Borrador',
-	'App\SupplierInvoice.confirmed' => 'Confirmado',
-	'App\SupplierInvoice.closed'    => 'Cerrado',
-    'App\SupplierInvoice.canceled'  => 'Cancelado',
+	'App\Models\SupplierInvoice.draft'     => 'Borrador',
+	'App\Models\SupplierInvoice.confirmed' => 'Confirmado',
+	'App\Models\SupplierInvoice.closed'    => 'Cerrado',
+    'App\Models\SupplierInvoice.canceled'  => 'Cancelado',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -399,12 +399,12 @@ return array(
 	|
 	*/
 
-	'App\SupplierInvoice.pending'  => 'Pendiente',
-	'App\SupplierInvoice.halfpaid' => 'Parcialmente Pagado',
-	'App\SupplierInvoice.paid'     => 'Pagado',
-    'App\SupplierInvoice.overdue'  => 'Vencido',
-    'App\SupplierInvoice.doubtful' => 'Pago Dudoso',
-    'App\SupplierInvoice.archived' => 'Archivado',
+	'App\Models\SupplierInvoice.pending'  => 'Pendiente',
+	'App\Models\SupplierInvoice.halfpaid' => 'Parcialmente Pagado',
+	'App\Models\SupplierInvoice.paid'     => 'Pagado',
+    'App\Models\SupplierInvoice.overdue'  => 'Vencido',
+    'App\Models\SupplierInvoice.doubtful' => 'Pago Dudoso',
+    'App\Models\SupplierInvoice.archived' => 'Archivado',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -441,12 +441,12 @@ return array(
 	|
 	*/
 
-	'App\Cheque.pending' => 'Pendiente',// Pendiente de depositar
-    'App\Cheque.deposited' => 'Depositado',	// Depositado
-    'App\Cheque.paid' => 'Pagado',			// or cleared: pagaddo (ingresado en el banco)
-    'App\Cheque.voided' => 'Anulado',		// Anulado
-    'App\Cheque.bounced' => 'Devuelto',		// or dishonored, or returned, or rejected
-    'App\Cheque.rejected' => 'Rechazado',		// or dishonored, or returned, or bounced
+	'App\Models\Cheque.pending' => 'Pendiente',// Pendiente de depositar
+    'App\Models\Cheque.deposited' => 'Depositado',	// Depositado
+    'App\Models\Cheque.paid' => 'Pagado',			// or cleared: pagaddo (ingresado en el banco)
+    'App\Models\Cheque.voided' => 'Anulado',		// Anulado
+    'App\Models\Cheque.bounced' => 'Devuelto',		// or dishonored, or returned, or rejected
+    'App\Models\Cheque.rejected' => 'Rechazado',		// or dishonored, or returned, or bounced
 
 	/*
 	|--------------------------------------------------------------------------
@@ -457,8 +457,8 @@ return array(
 	|
 	*/
 
-	'App\DownPayment.pending' => 'Pendiente',
-    'App\DownPayment.applied' => 'Aplicado',
+	'App\Models\DownPayment.pending' => 'Pendiente',
+    'App\Models\DownPayment.applied' => 'Aplicado',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -469,8 +469,8 @@ return array(
 	|
 	*/
 
-	'App\CommissionSettlement.pending' => 'Pendiente',
-	'App\CommissionSettlement.closed'    => 'Cerrado',
+	'App\Models\CommissionSettlement.pending' => 'Pendiente',
+	'App\Models\CommissionSettlement.closed'    => 'Cerrado',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -481,8 +481,8 @@ return array(
 	|
 	*/
 
-	'App\ShippingMethod.price'  => 'Precio',
-	'App\ShippingMethod.weight' => 'Peso',
+	'App\Models\ShippingMethod.price'  => 'Precio',
+	'App\Models\ShippingMethod.weight' => 'Peso',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -493,8 +493,8 @@ return array(
 	|
 	*/
 
-	'App\SalesRep.external'  => 'Agente Externo',
-	'App\SalesRep.employee' => 'Empleado',
+	'App\Models\SalesRep.external'  => 'Agente Externo',
+	'App\Models\SalesRep.employee' => 'Empleado',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -505,10 +505,10 @@ return array(
 	|
 	*/
 
-	'App\Lot.Default' => 'Por defecto',
-    'App\Lot.LongCaducity' => 'Caducidad larga',
-    'App\Lot.ShortCaducity' => 'Caducidad corta',
-    'App\Lot.CaducityDate' => 'Fecha Caducidad',
+	'App\Models\Lot.Default' => 'Por defecto',
+    'App\Models\Lot.LongCaducity' => 'Caducidad larga',
+    'App\Models\Lot.ShortCaducity' => 'Caducidad corta',
+    'App\Models\Lot.CaducityDate' => 'Fecha Caducidad',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -519,8 +519,8 @@ return array(
 	|
 	*/
 
-	'App\Lot.FIFO' => 'Más antiguo primero',
-    'App\Lot.LIFO' => 'Más reciente primero',
+	'App\Models\Lot.FIFO' => 'Más antiguo primero',
+    'App\Models\Lot.LIFO' => 'Más reciente primero',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -531,8 +531,8 @@ return array(
 	|
 	*/
 
-	'App\ProductionOrder.released'    => 'Lanzada',
-    'App\ProductionOrder.finished'  => 'Terminada',
+	'App\Models\ProductionOrder.released'    => 'Lanzada',
+    'App\Models\ProductionOrder.finished'  => 'Terminada',
 
 
 /* **************************************************************************** */
@@ -565,13 +565,13 @@ return array(
 	|
 	*/
 
-    'App\MeasureUnit.Quantity'     => 'Cantidad',
-	'App\MeasureUnit.Length'     => 'Longitud',
-	'App\MeasureUnit.Area'     => 'Superficie',
-	'App\MeasureUnit.Liquid Volume'     => 'Volumen (líquidos)',
-	'App\MeasureUnit.Dry Volume'     => 'Volumen (sólidos)',
-	'App\MeasureUnit.Mass'     => 'Masa',
-	'App\MeasureUnit.Time'     => 'Tiempo',
+    'App\Models\MeasureUnit.Quantity'     => 'Cantidad',
+	'App\Models\MeasureUnit.Length'     => 'Longitud',
+	'App\Models\MeasureUnit.Area'     => 'Superficie',
+	'App\Models\MeasureUnit.Liquid Volume'     => 'Volumen (líquidos)',
+	'App\Models\MeasureUnit.Dry Volume'     => 'Volumen (sólidos)',
+	'App\Models\MeasureUnit.Mass'     => 'Masa',
+	'App\Models\MeasureUnit.Time'     => 'Tiempo',
 
 
 	/*

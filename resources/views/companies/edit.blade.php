@@ -169,9 +169,19 @@ $(function() {
       }
       else  
       {
+
+@if( Session::get('tabName') == '#bankaccounts' )
+         $("#panel_bankaccounts").show();
+         $("#b_bankaccounts").addClass('active');
+
+         // Simulate click
+         $("#btn-new-bankaccount").trigger("click");
+@else
          $("#panel_main").show();
          $("#b_main").addClass('active');
          // document.f_cliente.nombre.focus();
+@endif
+
       }
 
       // Gracefully scrolls to the top of the page

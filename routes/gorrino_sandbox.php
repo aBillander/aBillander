@@ -19,6 +19,23 @@ use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientExcept
 /* ********************************************************** */
 
 
+Route::get('/w2', function () {
+    // Este almacén se creó sin dirección, y da error el listado de almacenes; hay que borrar el registro
+    $lines2 = \App\Models\Warehouse::
+                      where('id', 2)
+                    ->first();
+
+    abi_r($lines2->delete());
+});
+
+
+
+/* ********************************************************** */
+
+
+/* ********************************************************** */
+
+
 Route::get('/auton', function () {
     // 
     $lines2 = \App\Models\SupplierShippingSlipLine::

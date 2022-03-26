@@ -48,7 +48,7 @@ class BackupDatabase extends Command
 
         $date = str_replace( [' ', ':'], '_', \Carbon\Carbon::now()->toDateTimeString() );
 
-        $file = storage_path( abi_tenant_db_backups_path() ) . 'backup_'.config('database.connections.mysql.database').'_'.$date.'.sql';
+        $file = storage_path( abi_tenant_db_backups_path() ) . '/backup_'.config('database.connections.mysql.database').'_'.$date.'.sql';
 
             try {
                 // This can fail because:

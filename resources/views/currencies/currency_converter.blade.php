@@ -57,7 +57,7 @@
 
 <script>
 
-	@include('currencies.js.jquery-validation.js')
+	@include('currencies.js.jquery-validation_js')
 
 </script>
 

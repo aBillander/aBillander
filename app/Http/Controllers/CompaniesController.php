@@ -200,6 +200,8 @@ class CompaniesController extends Controller {
 
         $request->merge( ['notes' => $request->input('bank_account_notes')] );
 
+        $request->session()->flash('tabName', $section);
+
         $this->validate($request, BankAccount::$rules);
 
         $bankaccount = $company->bankaccounts->where('id', $request->input('bank_account_id'))->first();

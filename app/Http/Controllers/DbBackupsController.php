@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use \Artisan;
+use Artisan;
 
 use App\Helpers\Tools;
 use App\Models\Configuration;

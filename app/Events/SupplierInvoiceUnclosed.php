@@ -10,7 +10,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-use App\SupplierInvoice as Document;
+use App\Models\SupplierInvoice as Document;
 
 class SupplierInvoiceUnclosed
 {

@@ -4,10 +4,10 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-use App\ProductionSheet;
-use App\ProductionSheetNew;
+use App\Models\ProductionSheet;
+use App\Models\ProductionSheetNew;
 
-use App\ProductionSheetRegistry;
+use App\Models\ProductionSheetRegistry;
 
 // php artisan make:provider ProductionSheetServiceProvider
 

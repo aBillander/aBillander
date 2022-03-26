@@ -6,7 +6,7 @@ use App\Events\ProductionOrderFinished;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use App\Configuration;
+use App\Models\Configuration;
 
 class ProductionOrderFinishedListener
 {

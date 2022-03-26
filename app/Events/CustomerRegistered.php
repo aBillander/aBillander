@@ -4,9 +4,9 @@ namespace App\Events;
 
 use Illuminate\Queue\SerializesModels;
 
-use App\User;
-use App\Customer;
-use App\CustomerUser;
+use App\Models\User;
+use App\Models\Customer;
+use App\Models\CustomerUser;
 
 class CustomerRegistered
 {

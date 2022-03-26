@@ -10,7 +10,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-use App\CustomerInvoice as Document;
+use App\Models\CustomerInvoice as Document;
 
 class CustomerInvoicePosted
 {

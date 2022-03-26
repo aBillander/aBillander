@@ -7,7 +7,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use Carbon\Carbon;
-use App\EmailLog;
+use App\Models\EmailLog;
 
 class LogSentMessageListener
 {

@@ -42,7 +42,7 @@ class BillanderServiceProvider extends ServiceProvider
 
         /*
         if( \Auth::check() )
-            $user = \App\User::find( Auth::id() );       // $email = Auth::user()->email;
+            $user = User::find( Auth::id() );       // $email = Auth::user()->email;
         else
             $user = NULL;
 

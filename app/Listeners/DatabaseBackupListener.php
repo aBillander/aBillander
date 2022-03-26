@@ -3,14 +3,12 @@
 namespace App\Listeners;
 
 use App\Events\DatabaseBackup;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Models\Configuration;
+use App\Models\Context;
 use Illuminate\Contracts\Queue\ShouldQueue;
-
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\File;
-
 use Mail;
-
-use App\Configuration;
 
 class DatabaseBackupListener
 {
@@ -94,7 +92,7 @@ class DatabaseBackupListener
 
             
 
-            $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.dbbackup_warning', $template_vars, function($message) use ($data)
+            $send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.dbbackup_warning', $template_vars, function($message) use ($data)
             {
                 $message->from($data['from'], $data['fromName']);
 

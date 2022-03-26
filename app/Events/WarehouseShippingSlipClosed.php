@@ -10,7 +10,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-use App\WarehouseShippingSlip as Document;
+use App\Models\WarehouseShippingSlip as Document;
 
 class WarehouseShippingSlipClosed
 {

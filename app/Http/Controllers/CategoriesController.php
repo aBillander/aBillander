@@ -68,6 +68,14 @@ class CategoriesController extends Controller {
         }
 */
 
+        // Check position
+        if ( (int) $request->input('position') == 0 )
+        {
+            $max_position = (int) Category::where('parent_id', $parentId)->max('position');
+
+            $request->merge( ['position' => $max_position + 10] );
+        }
+
         $this->validate($request, Category::$rules['main_data']);
 
         $category = $this->category->create($request->all());

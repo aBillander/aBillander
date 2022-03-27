@@ -38,7 +38,7 @@ class CustomerOrderTemplatesController extends Controller
      */
     public function create()
     {
-        $templateList = Template::listFor( 'App\CustomerOrder' );
+        $templateList = Template::listFor( CustomerOrder::class );
 
         return view('customer_order_templates.create', compact('templateList'));
     }
@@ -162,7 +162,7 @@ class CustomerOrderTemplatesController extends Controller
      */
     public function edit(CustomerOrderTemplate $customerordertemplate)
     {
-        $templateList = Template::listFor( 'App\CustomerOrder' );
+        $templateList = Template::listFor( CustomerOrder::class );
 
         return view('customer_order_templates.edit', compact('customerordertemplate', 'templateList'));
     }

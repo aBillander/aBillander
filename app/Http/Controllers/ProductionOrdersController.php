@@ -1148,9 +1148,6 @@ class ProductionOrdersController extends Controller
                      ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         }
 
-        // abi_r($document->hasManyThrough('App\CustomerInvoiceLineTax', 'App\CustomerInvoiceLine'), true);
-
-        // $company = \App\Models\Company::find( intval(Configuration::get('DEF_COMPANY')) );
         $company = Context::getContext()->company;
 
         // Template

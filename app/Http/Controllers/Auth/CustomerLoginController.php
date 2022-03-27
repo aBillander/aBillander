@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Auth;
-
 use App\Configuration;
 use App\CustomerUser;
+use App\Http\Controllers\Controller;
+use App\Models\Language;
+use Auth;
+use Illuminate\Http\Request;
 
 class CustomerLoginController extends Controller
 {
@@ -26,7 +26,7 @@ class CustomerLoginController extends Controller
 
     public function showLoginForm()
     {
-      $languages = \App\Language::orderBy('name')->get();
+      $languages = Language::orderBy('name')->get();
 
       // ToDo: remember language using cookie :: echo Request::cookie('user_language');
 
@@ -88,7 +88,7 @@ class CustomerLoginController extends Controller
      */
     public function setLanguage($id)
     {
-      $language = \App\Language::findOrFail( $id );
+      $language = Language::findOrFail( $id );
 
       Cookie::queue('user_language', $language->id, 30*24*60);
       

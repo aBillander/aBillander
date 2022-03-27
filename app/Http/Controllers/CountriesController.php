@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
-use App\Models\Country as Country;
+use App\Models\Country;
 use View;
 
 class CountriesController extends Controller {

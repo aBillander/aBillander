@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Models\Payment as Payment;
+use App\Models\Payment;
 
 class CustomerDownPaymentsController extends Controller {
 

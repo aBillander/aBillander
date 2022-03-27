@@ -49,7 +49,7 @@ class ShippingMethodsController extends Controller {
 		$shippingmethod = $this->shippingmethod;
 		$shippingmethod->carrier_id = null;
 		$shippingmethod->free_shipping_from = 0.0;
-		$shippingmethod->class_name = 'App\ShippingMethods\\';
+		$shippingmethod->class_name = 'App\\Models\\ShippingMethods\\';
 
 		$billing_typeList = ShippingMethod::getBillingTypeList();
 

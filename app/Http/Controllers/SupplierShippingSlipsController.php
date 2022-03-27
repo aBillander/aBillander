@@ -93,9 +93,9 @@ class SupplierShippingSlipsController extends BillableController
         if ( !($items_per_page >= 0) ) 
             $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
 
-        $sequenceList = Sequence::listFor( 'App\\SupplierInvoice' );
+        $sequenceList = Sequence::listFor( SupplierInvoice::class );
 
-        $templateList = Template::listFor( 'App\\SupplierInvoice' );
+        $templateList = Template::listFor( SupplierInvoice::class );
 
         $supplier = $this->supplier->findOrFail($id);
 
@@ -624,9 +624,9 @@ class SupplierShippingSlipsController extends BillableController
         if ( !($items_per_page >= 0) ) 
             $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
 
-        $sequenceList = Sequence::listFor( 'App\\Models\\SupplierInvoice' );
+        $sequenceList = Sequence::listFor( SupplierInvoice::class );
 
-        $templateList = Template::listFor( 'App\\Models\\SupplierInvoice' );
+        $templateList = Template::listFor( SupplierInvoice::class );
 
         $payment_methodList = PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 

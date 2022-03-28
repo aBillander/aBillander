@@ -61,7 +61,7 @@ class CustomerUser extends Authenticatable
         'customer_id' => 'exists:customers,id', 
         'language_id' => 'exists:languages,id', 
         'email' => 'required|email|unique:customer_users,email',
-        'password'    => 'required|min:6|max:32',
+        'password'    => 'required|min:8|max:32',
 //        'language_id' => 'exists:languages,id',
 //        'customer_id' => 'exists:customers,id',
 //        'address_id' => 'exists:addresses,id',

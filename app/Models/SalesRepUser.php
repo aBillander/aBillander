@@ -60,7 +60,7 @@ class SalesRepUser extends Authenticatable
     public static $rules = array(
         'sales_rep_id' => 'exists:sales_reps,id', 
         'email' => 'required|email|unique:sales_rep_users,email',
-        'password'    => array('required', 'min:6', 'max:32'),
+        'password'    => array('required', 'min:8', 'max:32'),
 //        'language_id' => 'exists:languages,id',
         'warehouse_id' => 'sometimes|nullable|exists:warehouses,id',        // https://stackoverflow.com/questions/52102021/laravel-validation-depending-on-the-value-of-field
         // https://laravel.com/docs/5.5/validation#rule-exists

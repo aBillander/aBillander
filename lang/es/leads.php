@@ -32,9 +32,9 @@ return [
 	'Assigned to' => 'Asignado a',
 	'Party'     => 'Tercero',
 
-	'App\Lead.open' => 'Abierto',
-	'App\Lead.completed' => 'Terminado',
-	'App\Lead.failed' => 'Fallido',
+	'App\Models\Lead.open' => 'Abierto',
+	'App\Models\Lead.completed' => 'Terminado',
+	'App\Models\Lead.failed' => 'Fallido',
 
 	'Show Lead Lines'     => 'Mostrar Líneas de Oportunidad',
 

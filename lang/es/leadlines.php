@@ -43,8 +43,8 @@ return [
 	'Assigned to' => 'Asignado a',
 	'Party'     => 'Tercero',
 
-	'App\LeadLine.open' => 'Abierto',
-	'App\LeadLine.completed' => 'Terminado',
+	'App\Models\LeadLine.open' => 'Abierto',
+	'App\Models\LeadLine.completed' => 'Terminado',
 
 	'Position'     => 'Posición',
 

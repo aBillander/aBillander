@@ -47,13 +47,13 @@ return [
 	'Assigned to' => 'Asignado a',
 
 	'Type' => 'Tipo',
-	'App\Party.partner' => 'Partner',
-	'App\Party.prescriptor' => 'Prescriptor',
-	'App\Party.reseller' => 'Distribuidor',
-	'App\Party.prospect' => 'Prospecto',
-	'App\Party.agency' => 'Agencia',
-	'App\Party.developer' => 'Desarrollador',
-	'App\Party.other' => 'Otro',
+	'App\Models\Party.partner' => 'Partner',
+	'App\Models\Party.prescriptor' => 'Prescriptor',
+	'App\Models\Party.reseller' => 'Distribuidor',
+	'App\Models\Party.prospect' => 'Prospecto',
+	'App\Models\Party.agency' => 'Agencia',
+	'App\Models\Party.developer' => 'Desarrollador',
+	'App\Models\Party.other' => 'Otro',
 
 
 

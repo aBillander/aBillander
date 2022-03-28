@@ -59,6 +59,13 @@ GROUP BY
 
 Route::get('migratethis', function()
 {
+	// 2022-03-27
+	$date = '2022-03-27';
+
+	DB::statement("ALTER TABLE `parties` CHANGE `email` `email` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;");
+
+	die('OK - '.$date);
+
 	// 2022-03-16
 	$date = '2022-03-16';
 

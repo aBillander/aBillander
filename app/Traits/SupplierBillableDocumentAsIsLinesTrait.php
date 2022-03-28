@@ -29,12 +29,12 @@ trait SupplierBillableDocumentAsIsLinesTrait
 
         // Product
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $combination = Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
+            $product = Product::with('tax')->findOrFail(intval($product_id));
         }
 
         $reference  = $product->reference;
@@ -107,7 +107,7 @@ trait SupplierBillableDocumentAsIsLinesTrait
         // Supplier Final Price
         if ( array_key_exists('unit_supplier_final_price', $params) )
         {
-            $unit_supplier_final_price = new \App\Price( $params['unit_supplier_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
+            $unit_supplier_final_price = new Price( $params['unit_supplier_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
 
             $unit_supplier_final_price->applyTaxPercent( $tax_percent );
 

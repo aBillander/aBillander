@@ -5,8 +5,8 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Image as Image;
-use \iImage as iImage;
+use App\Models\Image;
+use iImage;
 
 class ImagesController extends Controller {
 

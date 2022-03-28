@@ -81,10 +81,10 @@ class ProductionSheetInvoicesController extends BillableController
         if ( !($items_per_page >= 0) ) 
             $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
 
-        $sequenceList       = Sequence::listFor( 'App\\CustomerShippingSlip' );
+        $sequenceList       = Sequence::listFor( CustomerShippingSlip::class );
         // $order_sequenceList = Sequence::listFor( Document::class );
 
-        $templateList = Template::listFor( 'App\\CustomerShippingSlip' );
+        $templateList = Template::listFor( CustomerShippingSlip::class );
 
         // $statusList = CustomerInvoice::getStatusList();
         // $order_statusList = Document::getStatusList();

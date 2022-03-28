@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\PackItem;
 
 trait ProductPackableTrait
 {
@@ -47,7 +48,7 @@ trait ProductPackableTrait
     // PackItems
     public function packitems()
     {
-        return $this->hasMany('App\PackItem')->orderBy('line_sort_order', 'asc');
+        return $this->hasMany(PackItem::class)->orderBy('line_sort_order', 'asc');
     }
 
 

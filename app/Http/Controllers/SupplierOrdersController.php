@@ -97,9 +97,9 @@ class SupplierOrdersController extends BillableController
         if ( !($items_per_page >= 0) ) 
             $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
 
-        $sequenceList = Sequence::listFor( 'App\\SupplierInvoice' );
+        $sequenceList = Sequence::listFor( SupplierInvoice::class );
 
-        $templateList = Template::listFor( 'App\\SupplierInvoice' );
+        $templateList = Template::listFor( SupplierInvoice::class );
 
         $supplier = $this->supplier->findOrFail($id);
 
@@ -554,9 +554,9 @@ class SupplierOrdersController extends BillableController
                 $line->quantity_onhand = $line->quantity;
             }
 
-        $sequenceList = Sequence::listFor( 'App\\SupplierShippingSlip' );
+        $sequenceList = Sequence::listFor( SupplierShippingSlip::class );
 
-        $templateList = Template::listFor( 'App\\SupplierShippingSlip' );
+        $templateList = Template::listFor( SupplierShippingSlip::class );
 
         return view($this->view_path.'._panel_document_entries', $this->modelVars() + compact('document', 'sequenceList', 'templateList', 'onhand_only'));
     }

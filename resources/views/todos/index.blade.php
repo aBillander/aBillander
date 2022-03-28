@@ -53,15 +53,17 @@
             <td>{{ $todo->shortUrl() }}</td>
 
             <td class="text-center">
-                <a class="btn btn-sm toggle-item" id="item_{{ $todo->id }}" 
+                <a class="btn btn-sm toggle-item" id="item_{{ $todo->id }}"> 
 {{--
                         href="{{ URL::to('todos/' . $todo->id ) }}" 
                         data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
                         data-title="{{ l('Todos') }} :: ({{$todo->id}}) {{ $todo->name }} " 
                         onClick="return false;" title="{{l('Delete', [], 'layouts')}}">
 --}}
-                        @if ($todo->completed) <i class="fa fa-check-square" style="color: #38b44a;"></i> 
-                        @else <i class="fa fa-square-o" style="color: #df382c;"></i> 
+                        @if ($todo->completed) 
+                            <i class="fa fa-check-square" style="color: #38b44a;"></i> 
+                        @else 
+                            <i class="fa fa-square-o" style="color: #df382c;"></i> 
                         @endif
                 </a></td>
 

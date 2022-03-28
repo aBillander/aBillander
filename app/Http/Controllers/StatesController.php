@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Models\Country as Country;
-use App\Models\State as State;
+use App\Models\Country;
+use App\Models\State;
 
 class StatesController extends Controller {
 

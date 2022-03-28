@@ -82,9 +82,9 @@ class CustomerQuotationsController extends BillableController
         if ( !($items_per_page >= 0) ) 
             $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
 
-        $sequenceList = Sequence::listFor( 'App\\CustomerInvoice' );
+        $sequenceList = Sequence::listFor( CustomerInvoice::class );
 
-        $templateList = Template::listFor( 'App\\CustomerInvoice' );
+        $templateList = Template::listFor( CustomerInvoice::class );
 
         $customer = $this->customer->findOrFail($id);
 
@@ -536,9 +536,9 @@ class CustomerQuotationsController extends BillableController
         if ( !($items_per_page >= 0) ) 
             $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
 
-        $sequenceList = Sequence::listFor( 'App\\CustomerInvoice' );
+        $sequenceList = Sequence::listFor( CustomerInvoice::class );
 
-        $templateList = Template::listFor( 'App\\CustomerInvoice' );
+        $templateList = Template::listFor( CustomerInvoice::class );
 
         $customer = $this->customer->findOrFail($id);
 
@@ -903,9 +903,9 @@ class CustomerQuotationsController extends BillableController
                 $line->quantity_onhand = $line->quantity;
             }
 
-        $sequenceList = Sequence::listFor( 'App\\CustomerOrder' );
+        $sequenceList = Sequence::listFor( CustomerOrder::class );
 
-        $templateList = Template::listFor( 'App\\CustomerOrder' );
+        $templateList = Template::listFor( CustomerOrder::class );
 
         return view($this->view_path.'._panel_document_availability', $this->modelVars() + compact('document', 'sequenceList', 'templateList', 'onhand_only'));
     }

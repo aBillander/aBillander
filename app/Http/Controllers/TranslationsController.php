@@ -24,7 +24,7 @@ return [$a, $b, $c];
 
 use App\Http\Controllers\Controller;
 
-use Illuminate\Http\Request as Request;
+use Illuminate\Http\Request;
 
 use App\Models\Context;
 use App\Models\Language;

@@ -255,4 +255,18 @@ return [
 	'Invoice by Shipping Address?' => '¿Facturar por Dirección de Envío?',
 	'One Invoice per Shipping Address' => 'Una Factura por Dirección de Envío',
 	'One Invoice per Shipping Slip and Shipping Address' => 'Una Factura por Albarán y Dirección de Envío',
+
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Customers Language Lines :: VAT Regime List
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Contacts'     => 'Contactos',
+	'Commercial Actions' => 'Acciones Comerciales',
 ];

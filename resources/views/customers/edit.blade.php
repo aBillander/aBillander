@@ -80,6 +80,14 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-address-book"></i>
                &nbsp; {{ l('Address Book') }}
             </a>
+            <a id="b_contacts" href="#contacts" class="list-group-item" xstyle="background-color: #fcf8e3; color: #c09853;">
+               <i class="fa fa-users"></i>
+               &nbsp;{{ l('Contacts') }}
+            </a>
+            <a id="b_actions" href="#actions" class="list-group-item" xstyle="background-color: #fcf8e3; color: #c09853;">
+               <i class="fa fa-tasks"></i>
+               &nbsp;{{ l('Commercial Actions') }}
+            </a>
             <!-- a id="b_specialprices" href="#specialprices" class="list-group-item">
                <i class="fa fa-list-alt"></i>
                &nbsp; Precios Especiales
@@ -144,6 +152,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
           @include('customers._panel_addressbook')
 
+          @include('customers._panel_contacts')
+
+          @include('customers._panel_actions')
+
           @include('customers._panel_orders')
 
           @include('customers._panel_products')
@@ -182,6 +194,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#panel_commercial").hide();
       $("#panel_bankaccounts").hide();
       $("#panel_addressbook").hide();
+      $("#panel_contacts").hide();
+      $("#panel_actions").hide();
  //     $("#panel_specialprices").hide();
  //     $("#panel_accounting").hide();
       $("#panel_orders").hide();
@@ -196,6 +210,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#b_commercial").removeClass('active');
       $("#b_bankaccounts").removeClass('active');
       $("#b_addressbook").removeClass('active');
+      $("#b_contacts").removeClass('active');
+      $("#b_actions").removeClass('active');
  //     $("#b_specialprices").removeClass('active');
  //     $("#b_accounting").removeClass('active');
       $("#b_orders").removeClass('active');
@@ -221,6 +237,17 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       {
          $("#panel_addressbook").show();
          $("#b_addressbook").addClass('active');
+      }
+      else if(window.location.hash.substring(1) == 'contacts')
+      {
+         $("#panel_contacts").show();
+         $("#b_contacts").addClass('active');
+      }
+      else if(window.location.hash.substring(1) == 'actions')
+      {
+         $("#panel_actions").show();
+         $("#b_actions").addClass('active');
+         getCustomerActions();
       }
       else if(window.location.hash.substring(1) == 'orders')
       {

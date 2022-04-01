@@ -137,7 +137,7 @@ class SalesRepsController extends Controller {
 	{
         $this->salesrep->findOrFail($id)->delete();
 
-        return redirect('sales_reps')
+        return redirect('salesreps')
 				->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));
 	}
 

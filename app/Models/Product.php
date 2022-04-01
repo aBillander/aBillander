@@ -2,24 +2,18 @@
 
 namespace App\Models;
 
+use App\Helpers\Price;
 use App\Scopes\ShowOnlyActiveScope;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
-use App\Traits\ProductPackableTrait;
+use App\Traits\AutoSkuTrait;
 use App\Traits\ModelAttachmentableTrait;
-
-// use Illuminate\Validation\Rule;
-
+use App\Traits\ProductPackableTrait;
+use App\Traits\SearchableTrait;
+use App\Traits\StockableTrait;
+use App\Traits\ViewFormatterTrait;
 use Auth;
 use Carbon\Carbon;
-
-use App\Traits\ViewFormatterTrait;
-use App\Traits\AutoSkuTrait;
-
-use App\Traits\StockableTrait;
-
-use App\Traits\SearchableTrait;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 // use App\Traits\FullTextSearchTrait;
 
 class Product extends Model {

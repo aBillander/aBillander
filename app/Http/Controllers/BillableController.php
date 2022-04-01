@@ -76,6 +76,7 @@ class BillableController extends Controller
                                     ->find( $search );
 
             $customers->invoice_sequence_id = $customers->getInvoiceSequenceId();
+            $customers->shipping_method_id = $customers->getShippingMethodId();
 
 //            return $customers;
 //            return Product::searchByNameAutocomplete($query, $onhand_only);

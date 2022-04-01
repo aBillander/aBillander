@@ -260,12 +260,22 @@ class Customer extends Model {
     
     public function getShippingMethodId() 
     {
-        if (   $this->shipping_method_id
-            && ShippingMethod::where('id', $this->shipping_method_id)->exists()
-            )
-            return $this->shipping_method_id;
+        $shipping_method_id = 0;
 
-        return Configuration::getInt('DEF_SHIPPING_METHOD');
+        if ( $this->shipping_method_id )
+            $shipping_method_id = $this->shipping_method_id;
+        else
+
+        // Second: Customer Group has shippingmethod?
+        if ( $this->customergroup && $this->customergroup->shipping_method_id ) {
+
+            $shipping_method_id = $this->customergroup->shipping_method_id;
+        }
+
+        if ( !ShippingMethod::where('id', $shipping_method_id)->exists() )
+            $shipping_method_id = Configuration::getInt('DEF_SHIPPING_METHOD');
+
+        return $shipping_method_id;
     }
 
 

@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-use App\Traits\BillableLineTrait;
+use App\Helpers\Price;
 use App\Traits\BillableLineProfitabilityTrait;
+use App\Traits\BillableLineTrait;
 use App\Traits\ViewFormatterTrait;
+use Illuminate\Database\Eloquent\Model;
 
 // use ReflectionClass;
 

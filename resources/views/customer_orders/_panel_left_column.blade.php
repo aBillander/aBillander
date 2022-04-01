@@ -275,7 +275,15 @@ color: #ffffff; background-color: #772953; border-color: #772953;">
                 {{l('Customer Group')}}:<br /> {{ $customer->customergroup->name ?? '-' }}
               </li>
               <li class="list-group-item">
-                {{l('Price List')}}:<br /> {{ $customer->pricelist->name ?? '-' }}
+                {{l('Price List')}}:<br />
+                @if( $customer->currentpricelist() )
+                  {{ $customer->currentpricelist()->name }}
+                  @if( ! $customer->price_list_id )
+                      <span class="text-warning">({{l('Group Price List')}})</span>
+                  @endif
+                @else
+                  -
+                @endif
               </li>
               <li class="list-group-item">
                 {{l('Sales Representative')}}:<br />

@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-use Auth;
-
+use App\Helpers\Price;
 use App\Traits\ViewFormatterTrait;
+use Auth;
+use Illuminate\Database\Eloquent\Model;
 
 class WarehouseShippingSlip extends Model
 {

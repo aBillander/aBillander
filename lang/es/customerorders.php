@@ -389,4 +389,6 @@ return [
 	'Document Discount Lines.' => 'Líneas de Descuento del Documento.',
 	'Calculated Commission for the entire Document (average).' => 'Comisión calculada para el Documento en conjunto (promedio).',
 
+	'Group Price List' => 'Tarifa del Grupo de Clientes',
+
 ];

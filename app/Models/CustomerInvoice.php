@@ -63,7 +63,7 @@ class CustomerInvoice extends Billable
                             'payment_date'  => 'nullable|date',
                             'delivery_date' => 'nullable|date|after_or_equal:document_date',
                             'customer_id' => 'exists:customers,id',
-                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Models\Customer',
+                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\\Models\\Customer',
                             'sequence_id' => 'exists:sequences,id',
 //                            'warehouse_id' => 'exists:warehouses,id',
 //                            'carrier_id'   => 'exists:carriers,id',

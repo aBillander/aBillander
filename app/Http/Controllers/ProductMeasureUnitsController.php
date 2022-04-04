@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Configuration;
+use App\Models\MeasureUnit;
 use App\Models\Product;
 use App\Models\ProductMeasureUnit;
 use Illuminate\Http\Request;

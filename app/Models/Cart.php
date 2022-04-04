@@ -35,7 +35,7 @@ class Cart extends Model implements ShippableInterface
     public static $rules = [
                             'customer_id' => 'exists:customers,id',
                             'invoicing_address_id' => '',
-                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Customer',
+                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\\Models\\Customer',
 //                            'carrier_id'   => 'exists:carriers,id',
                             'currency_id' => 'exists:currencies,id',
 //                            'payment_method_id' => 'exists:payment_methods,id',

@@ -340,4 +340,6 @@ return [
 	'Use Customer Shipping Slip <i>ID</i> or ID as seen in Shipping Slip url on your browser.' => 
 		'Introduzca el <i>ID</i> del Albarán o el ID que aparece en la url del Albarán, cuando éste se muestra en su navegador.',
 
+	'Group Price List' => 'Tarifa del Grupo de Clientes',
+
 ];

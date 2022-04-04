@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 	<head>
 
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
 		<style>
 
@@ -70,6 +70,12 @@
 
                 <div class="">
                 {!! HTML::image('assets/theme/images/fembots.jpg', 'Lara Billander', array('title' => 'aBillander Fembot Team', 'width' => '200', 'xheight' => '176', 'class' => 'center-block', 'style' => 'padding: 10px; -webkit-border-radius: 18px;')) !!}
+                </div>
+
+                <div>
+                    <p>
+                        {{ $exception ? $exception->getMessage() : '' }}
+                    </p>
                 </div>
 
                 <!-- div class="error-actions">

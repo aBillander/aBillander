@@ -83,7 +83,7 @@ class WarehouseShippingSlip extends Model
 //                            'payment_date'  => 'date',
                             'delivery_date' => 'nullable|date|after_or_equal:document_date',
 //                            'customer_id' => 'exists:customers,id',
-//                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\Customer',
+//                            'shipping_address_id' => 'exists:addresses,id,addressable_id,{customer_id},addressable_type,App\\Models\\Customer',
                             'sequence_id' => 'exists:sequences,id',
                             'warehouse_id' => 'exists:warehouses,id',
                             'warehouse_counterpart_id' => 'different:warehouse_id|exists:warehouses,id',

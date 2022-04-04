@@ -408,4 +408,6 @@ return [
 
 	'Apply and Save' => 'Aplicar y Guardar',
 
+	'Group Price List' => 'Tarifa del Grupo de Clientes',
+
 ];

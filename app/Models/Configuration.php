@@ -40,7 +40,7 @@ class Configuration extends Model
 				
 			} catch (\Illuminate\DataBase\QueryException $e) {
 
-				abort(503, '');
+				abort(503, l('Cannot stablish a database connection :: Configurations are not loaded.', 'layouts'));
 
 				// Die (not so) silently:
 				echo 'Cannot stablish a database connection :: Configurations are not loaded.';

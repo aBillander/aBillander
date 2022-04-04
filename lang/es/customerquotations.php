@@ -330,4 +330,6 @@ return [
 
 	'Customer Reference' => 'Referencia del Cliente',
 
+	'Group Price List' => 'Tarifa del Grupo de Clientes',
+
 ];

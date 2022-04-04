@@ -481,6 +481,8 @@ return [
 	|
 	*/
 
+	'Cannot stablish a database connection :: Configurations are not loaded.' => 'No se ha podido establecer una conexión con la base de datos :: Las configuraciones no se han cargado.',
+
 	'There is not any Sequence for this type of Document &#58&#58 You must create one first'    
 	 => 'No existe ninguna Serie para este tipo de Documento &#58&#58 Debe crear una primero',
 

@@ -149,6 +149,11 @@ class DbBackupsController extends Controller
 	 */
 	public function process()
 	{
+        if (!\function_exists('proc_open')) {
+	        return redirect()->back()	// '/dbbackups')
+	                ->with('error', l('The Data Base Backup class relies on proc_open, which is not available on your PHP installation.'));
+        }
+
         try {
 
 	    	// save it to the storage/backups/backup.sql file

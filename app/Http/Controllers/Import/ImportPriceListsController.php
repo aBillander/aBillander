@@ -7,6 +7,8 @@ use App\Models\ActivityLogger;
 use App\Models\PriceList;
 use App\Models\PriceListLine;
 use App\Models\Product;
+use App\Helpers\Exports\ArrayExport;
+use App\Helpers\Imports\ArrayImport;
 use Excel;
 use Illuminate\Http\Request;
 
@@ -91,19 +93,6 @@ class ImportPriceListsController extends Controller
         $pricelist = $this->pricelist->findOrFail($id);
 
         return view('imports.price_lists', compact('pricelist'));
-/*
-		$country = $this->country->findOrFail($id);
-		
-		return view('countries.edit', compact('country'));
-
-        $customer_orders = $this->customerOrder
-                            ->with('customer')
-                            ->with('currency')
-                            ->with('paymentmethod')
-                            ->orderBy('id', 'desc')->get();
-
-        return view('customer_orders.index', compact('customer_orders'));
-*/        
     }
 
     public function process(Request $request, $id)
@@ -161,10 +150,10 @@ class ImportPriceListsController extends Controller
 
         // Start Logger
         $logger = ActivityLogger::setup( 'Import Price List', __METHOD__ )
-                    ->backTo( route('pricelists.import', [$pricelist->id]) );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+                    ->backTo( route('pricelists.import', [$pricelist->id]) );
 
 
-        if ( $request->input('empty_log', 0) ) 
+        if ( !$request->input('simulate', 0) && $request->input('empty_log', 0) ) 
         {
             $logger->empty();
         }
@@ -216,36 +205,6 @@ class ImportPriceListsController extends Controller
 
         return redirect('activityloggers/'.$logger->id)
                 ->with('success', l('Se ha cargado la Tarifa :name desde el Fichero: <strong>:file</strong> .', ['name' => $name, 'file' => $file]));
-
-
-//        abi_r('Se han cargado: '.$i.' productos');
-
-
-
-        // See: https://www.google.com/search?client=ubuntu&channel=fs&q=laravel-excel+%22Serialization+of+%27Illuminate%5CHttp%5CUploadedFile%27+is+not+allowed%22&ie=utf-8&oe=utf-8
-        // https://laracasts.com/discuss/channels/laravel/serialization-of-illuminatehttpuploadedfile-is-not-allowed-on-queue
-
-        // See: https://github.com/LaravelDaily/Laravel-Import-CSV-Demo/blob/master/app/Http/Controllers/ImportController.php
-        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
-/*
-        Excel::filter('chunk')->load('file.csv')->chunk(250, function($results)
-        {
-                foreach($results as $row)
-                {
-                    // do stuff
-                }
-        });
-
-        Excel::filter('chunk')->load(database_path('seeds/csv/users.csv'))->chunk(250, function($results) {
-            foreach ($results as $row) {
-                $user = User::create([
-                    'username' => $row->username,
-                    // other fields
-                ]);
-            }
-        });
-*/
-        // See: https://www.youtube.com/watch?v=z_AhZ2j5sI8  Modificar datos importados
     }
 
 
@@ -256,25 +215,13 @@ class ImportPriceListsController extends Controller
      */
     protected function processFile( $file, $logger, $params = [] )
     {
+        // Get data as an array
+        $worksheet = Excel::toCollection(new ArrayImport, $file);
 
-        // 
-        // See: https://www.youtube.com/watch?v=rWjj9Slg1og
-        // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
-        Excel::filter('chunk')->selectSheetsByIndex(0)->load( $file )->chunk(250, function ($reader) use ( $logger, $params )
-        {
-            
- /*           $reader->each(function ($sheet){
-                // ::firstOrCreate($sheet->toArray);
-                abi_r($sheet);
-            });
+        // abi_r($worksheet->first(), true);
 
-            $reader->each(function($sheet) {
-                // Loop through all rows
-                $sheet->each(function($row) {
-                    // Loop through all columns
-                });
-            });
-*/
+        $reader = $worksheet->first();    // First sheet in worksheet
+
 
 // Process reader STARTS
 
@@ -418,9 +365,7 @@ class ImportPriceListsController extends Controller
 
             $logger->log('INFO', 'Se han procesado {i} Líneas de Tarifa.', ['i' => $i]);
 
-// Process reader          
-    
-        }, false);      // should not queue $shouldQueue
+// Process reader ENDS
 
     }
 
@@ -452,13 +397,16 @@ class ImportPriceListsController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $data[] = [ 'reference', 'NOMBRE', 'price', 'price_list_id' ];
+        $headers = [ 'product_id', 'reference', 'NOMBRE', 'price', 'price_list_id' ];
+
+        $data[] = $headers;
 
         // Convert each member of the returned collection into an array,
-        // and append it to the payments array.
+        // and append it to the $data array.
         foreach ($lines as $line) {
             // $data[] = $line->toArray();
             $data[] = [
+                            'product_id' => $line->product_id,
                             'reference' => $line->reference,
                             'NOMBRE' => $line->name,
                             'price' => $line->price,
@@ -466,26 +414,19 @@ class ImportPriceListsController extends Controller
             ];
         }
 
-        $sheetName = $pricelist->price_is_tax_inc > 0 ?
+        $styles = [];
+
+        $sheetTitle = $pricelist->price_is_tax_inc > 0 ?
                     'Precio incluye IVA' :
                     'Precio es SIN IVA' ;
 
+        $export = (new ArrayExport($data, $styles))->setTitle($sheetTitle);
+
+//        $sheetFileName = $sheetTitle;
+        $sheetFileName = 'Price_List_'.$id;
+
         // Generate and return the spreadsheet
-        Excel::create('Price_List_'.$id, function($excel) use ($id, $sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

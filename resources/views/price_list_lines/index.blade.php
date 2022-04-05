@@ -7,8 +7,12 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
+        <a class="btn btn-sm btn-grey" href="{{ URL::route('pricelists.import', [$list->id] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-upload"></i></a>
+        
         <a href="{{ URL::to('pricelists/'.$list->id.'/pricelistlines/create') }}" class="btn btn-sm btn-success" 
         		title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+
+        <a class="btn btn-sm btn-grey" href="{{ URL::route('pricelists.export', [$list->id] ) }}" title="{{l('Export', [], 'layouts')}}"><i class="fa fa-file-excel-o"></i> {{l('Export', [], 'layouts')}}</a>
 
         <button  name="b_search_filter" id="b_search_filter" class="btn btn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}">
            <i class="fa fa-filter"></i>

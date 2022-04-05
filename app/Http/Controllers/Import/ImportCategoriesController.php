@@ -11,7 +11,7 @@ use App\Helpers\Imports\ArrayImport;
 use Excel;
 use Illuminate\Http\Request;
 
-use App\Helpers\Imports\CategoriesImport;
+// use App\Helpers\Imports\CategoriesImport;
 
 class ImportCategoriesController extends Controller
 {
@@ -137,7 +137,11 @@ class ImportCategoriesController extends Controller
                     ->backTo( route('categories.import') );        // 'Import Categories :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
-        $logger->empty();
+        if ( $request->input('empty_log', 0) ) 
+        {
+            $logger->empty();
+        }
+
         $logger->start();
 
         $file = $request->file('data_file')->getClientOriginalName();   // . '.' . $request->file('data_file')->getClientOriginalExtension();
@@ -184,7 +188,7 @@ class ImportCategoriesController extends Controller
      *
      * @return 
      */
-    protected function processFile( $file, $logger )
+    protected function processFile( $file, $logger, $params = [] )
     {
         // $reader = Excel::toArray(new CategoriesImport( $logger ), $file);
         // Excel::import(new CategoriesImport( $logger )), $file);
@@ -212,7 +216,7 @@ class ImportCategoriesController extends Controller
                 foreach($reader as $row)
                 {
                     // do stuff
-                    // if ($i > $max_id) break;
+                    if ($i > $max_id) break;
 
                     // Prepare data
                     $data = $row->toArray();

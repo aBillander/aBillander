@@ -8,6 +8,8 @@
     <div class="col-md-12">
         <div class="page-header">
             <div class="pull-right">
+                <a class="btn btn-blue" href="{{ URL::to('pricelists/' . $pricelist->id . '/pricelistlines') }}" title="{{l('Show Price List Lines', 'pricelists')}}"><i class="fa fa-folder-open-o"></i> {{l('Show Price List Lines', 'pricelists')}}</a>
+
                 <a href="{{ URL::to('pricelists') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Price Lists') }}</a>
             </div>
             <h2><a href="{{ URL::to('pricelists') }}">{{ l('Price Lists') }}</a> <span style="color: #cccccc;">/</span> {{ l('Import') }} <span style="color: #cccccc;">::</span> [{{$pricelist->id}}] {{$pricelist->name}} </h2>

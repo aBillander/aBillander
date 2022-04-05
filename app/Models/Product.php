@@ -97,7 +97,7 @@ class Product extends Model {
     protected $appends = ['extra_measureunits', 'tool_id', 'quantity_available'];
     
     protected $fillable = [ 'product_type', 'procurement_type', 'mrp_type', 
-                            'name', 'position', 'reference', 'ean13', 'description', 'description_short', 
+                            'name', 'position', 'reference', 'reference_external_wrin', 'ean13', 'description', 'description_short', 
                             'quantity_decimal_places', 'manufacturing_batch_size',
 //                            'warranty_period', 
 

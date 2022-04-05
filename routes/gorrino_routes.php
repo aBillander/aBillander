@@ -59,6 +59,20 @@ GROUP BY
 
 Route::get('migratethis', function()
 {
+
+	// 2022-03-21
+
+	$date = '2022-03-21';
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `reference_external_wrin` varchar(32) NULL AFTER `webshop_id`;");
+
+	// die('OK - '.$date);
+
+	Illuminate\Support\Facades\DB::statement("INSERT INTO `templates` (`id`, `name`, `model_name`, `folder`, `file_name`, `paper`, `orientation`, `created_at`, `updated_at`, `deleted_at`) VALUES (NULL, 'xtranat Albarán Gorillas', 'CustomerShippingSlipPdf', 'templates::', 'xtragorillas', 'A4', 'portrait', '2022-03-21 07:30:53', '2022-03-21 07:30:53', NULL);");
+
+	die('OK - '.$date);
+
+
 	// 2022-03-16
 	$date = '2022-03-16';
 

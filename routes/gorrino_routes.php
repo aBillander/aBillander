@@ -21,6 +21,55 @@
 */
 
 
+
+/* ********************************************************** */
+
+Route::get('/scount', function () {
+	$line = \App\StockCountLine::with('product')->find(4);
+	$product = $line->product;
+	$stockcount = \App\StockCount::find($line->stock_count_id);
+
+            // Let's move on:
+            $data = [
+
+                    'movement_type_id' => \App\StockMovement::INITIAL_STOCK,
+                    'date' => $stockcount->document_date,
+
+ //                   'stockmovementable_id' => ,
+ //                   'stockmovementable_type' => ,
+
+                    'document_reference' => 'Stock Count #'.$stockcount->id,
+ //                   'quantity_before_movement' => ,
+                    'quantity' => $line->quantity,
+ //                   'quantity_after_movement' => ,
+                    'measure_unit_id' => $product->measure_unit_id,
+
+                    'price' => $line->getPriceForStockValuation(),
+                    'currency_id' => \App\Context::getContext()->company->currency->id,
+                    'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+
+                    'notes' => '',
+
+                    'product_id' => $product->id,
+                    'combination_id' => '', // $line->combination_id,
+                    'reference' => $product->reference,
+                    'name' => $product->name,
+
+                    'warehouse_id' => $stockcount->warehouse_id,
+ //                   'warehouse_counterpart_id' => ,
+                    
+            ];
+
+	abi_r($data);
+
+
+            $stockmovement = \App\StockMovement::createAndProcess( $data );  // null; sleep(2);    // 
+
+	abi_r($stockmovement);
+});
+
+
+
 /* ********************************************************** */
 
 Route::get('testemail/{email}', function( $email = null )
@@ -317,6 +366,20 @@ Route::get('mqueuer', 'MProbeController@queuer');
 
 Route::get('migratethis', function()
 {
+
+	// 2022-03-21
+
+	$date = '2022-03-21';
+
+	Illuminate\Support\Facades\DB::statement("ALTER TABLE `products` ADD `reference_external_wrin` varchar(32) NULL AFTER `webshop_id`;");
+
+	// die('OK - '.$date);
+
+	Illuminate\Support\Facades\DB::statement("INSERT INTO `templates` (`id`, `name`, `model_name`, `folder`, `file_name`, `paper`, `orientation`, `created_at`, `updated_at`, `deleted_at`) VALUES (NULL, 'xtranat Albarán Gorillas', 'CustomerShippingSlipPdf', 'templates::', 'xtragorillas', 'A4', 'portrait', '2022-03-21 07:30:53', '2022-03-21 07:30:53', NULL);");
+
+	die('OK - '.$date);
+
+
 	// 2022-02-09
 	$date = '2022-02-09';
 

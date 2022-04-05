@@ -8,7 +8,7 @@
      </div>
     <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('conversion_rate') ? 'has-error' : '' }}">
         {!! Form::label('conversion_rate', l('Conversion rate')) !!}
-             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
+             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="#app" 
                         data-content="{{ l('Conversion rates are calculated from one unit of your main Measura Unit. For example, if the main unit is "bottle" and your chosen unit is "pack-of-sixs, the Conversion rate will be "6" (since a pack of six bottles will contain six bottles).') }}">
                     <i class="fa fa-question-circle abi-help"></i>
              </a>

@@ -2,14 +2,10 @@
 
 namespace App;
 
+use App\Traits\ViewFormatterTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-use App\Traits\ViewFormatterTrait;
-
-// use \Lang;
-
-use \App\Exceptions\StockMovementException;
+use App\Exceptions\StockMovementException;
 
 class StockMovement extends Model {
 
@@ -595,6 +591,7 @@ class StockMovement extends Model {
             // Comment next line: Maybe I want to set stock=0.0 explicitly
             // throw new \App\Exceptions\StockMovementException('Cannot process movement because Quantity has not changed');
         }
+
         $this->save();
 
         // Average price stuff

@@ -111,6 +111,7 @@ class CreateProductsTable extends Migration {
 			
 			$table->tinyInteger('publish_to_web')->default(0);
 			$table->string('webshop_id', 16)->nullable();
+            $table->string('reference_external_wrin', 32)->nullable();         // To allow an external system or interface to save its own internal reference to have a link between records into aBillander and records into an external system
 			$table->tinyInteger('blocked')->default(0);							// Sales not allowed
 			$table->tinyInteger('active')->default(1);
 

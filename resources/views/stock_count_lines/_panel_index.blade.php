@@ -86,7 +86,7 @@
 			<td>{{ $line->id }}</td>
             <td><a href="{{ URL::to('products/' . optional($line->product)->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}" target="_new">{{ optional($line->product)->reference }}</a></td>
             <td>{{ $line->name }}</td>
-            <td>{{ $line->as_quantity('quantity') }}</td>
+            <td>{{ $line->as_quantityable($line->quantity, 1) }}</td>
             <td>
 @if ( $line->cost_price == NULL )
             -

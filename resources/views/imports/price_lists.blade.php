@@ -32,11 +32,13 @@
             <br />
                     <span class="badge" style="background-color: #3a87ad;" title="{{ $pricelist->currency->name }}">{{ $pricelist->currency->iso_code }}</span> ({{ l(':decimals decimals', ['decimals' => $pricelist->currency->decimalPlaces])}} )
                         <br />
+                        <br />
                     <span class="label label-success">{{ $pricelist->getType() }}</span>
                     @if ($pricelist->type != 'price')
                       <span class="label label-default">{{ $pricelist->as_percent('amount') }}%</span>
                     @endif
                     @if ( $pricelist->price_is_tax_inc )
+                        <br />
                         <br />
                         <span class="label label-info">{{ l('Tax Included', [], 'pricelists') }}</span>
                     @endif

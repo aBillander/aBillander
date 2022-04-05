@@ -50,6 +50,12 @@
 -->
 {!! link_to_route('pricelists.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
 
+@if ( $with_lines ?? false)
+
+  <a class="pull-right btn xbtn-xs btn-blue" href="{{ URL::to('pricelists/' . $pricelist->id . '/pricelistlines') }}"><i class="fa fa-folder-open-o"></i> &nbsp;{{l('Show Price List Lines')}}</a>
+
+@endif
+
 
 @section('scripts')    @parent
 

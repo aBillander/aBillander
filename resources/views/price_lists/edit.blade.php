@@ -15,7 +15,7 @@
 
         {!! Form::model($pricelist, array('method' => 'PATCH', 'route' => array('pricelists.update', $pricelist->id))) !!}
 
-          @include('price_lists._form')
+          @include('price_lists._form', ['with_lines' => true])
 
         {!! Form::close() !!}
 			</div>

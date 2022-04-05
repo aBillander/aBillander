@@ -29,6 +29,51 @@ class Ecotax extends Model {
 //        'amount'   => array('nullable', 'numeric'),
 //        'position' => array('nullable', 'numeric'),      // , 'min:0')   Allow negative in case starts on 0
     	);
+    
+
+    public static function boot()
+    {
+        parent::boot();
+
+
+        static::deleting(function ($ecotax)
+        {
+            // before delete() method call this
+            $relations = [
+                    'products',
+
+                    'customerquotationlines',
+                    'customerorderlines',
+                    'customershippingsliplines',
+                    'customerinvoicelines',
+ //                   'warehouseshippingsliplines',
+
+ //                   'supplierorderlines',
+ //                   'suppliershippingsliplines',
+ //                   'supplierinvoicelines',
+            ];
+
+            // load relations
+            $ecotax->load( $relations );
+
+            // Check Relations
+            foreach ($relations as $relation) {
+                # code...
+                if ( $ecotax->{$relation}->count() > 0 )
+                    throw new \Exception( l('Ecotax has :relation', ['relation' => $relation], 'exceptions') );
+            }
+
+        });
+
+        static::deleted(function ($ecotax)
+        {
+            // After delete() method call this
+            $ecotax->ecotaxrules()->delete();
+        });
+
+    }
+
+
 
     public static function getTypeList()
     {
@@ -111,4 +156,26 @@ class Ecotax extends Model {
     {
         return $this->hasMany(Product::class);
     }
+    
+    
+    public function customerquotationlines()
+    {
+        return $this->hasMany(CustomerQuotationLine::class);
+    }
+
+    public function customerorderlines()
+    {
+        return $this->hasMany(CustomerOrderLine::class);
+    }
+
+    public function customershippingsliplines()
+    {
+        return $this->hasMany(CustomerShippingSlipLine::class);
+    }
+    
+    public function customerinvoicelines()
+    {
+        return $this->hasMany(CustomerInvoiceLine::class);
+    }
+
 }

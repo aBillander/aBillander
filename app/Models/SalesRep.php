@@ -44,6 +44,51 @@ class SalesRep extends Model {
 //        'address1' => 'required|min:2|max:128',
 //        'state_id' => 'exists:states,id',           // If State exists, Country must do also!
     	);
+    
+
+    public static function boot()
+    {
+        parent::boot();
+
+
+        static::deleting(function ($salesrep)
+        {
+            // before delete() method call this
+            $relations = [
+                    'customers',
+                    'commissionsettlements',
+//                    'users',
+
+                    'customerquotations',
+                    'customerorders',
+                    'customershippingslips',
+                    'customerinvoices',
+
+                    'customerquotationlines',
+                    'customerorderlines',
+                    'customershippingsliplines',
+                    'customerinvoicelines',
+            ];
+
+            // load relations
+            $salesrep->load( $relations );
+
+            // Check Relations
+            foreach ($relations as $relation) {
+                # code...
+                if ( $salesrep->{$relation}->count() > 0 )
+                    throw new \Exception( l('Sales Representative has :relation', ['relation' => $relation], 'exceptions') );
+            }
+
+        });
+
+        static::deleted(function ($salesrep)
+        {
+            // After delete() method call this
+            $salesrep->users()->delete();
+        });
+
+    }
 
 
 
@@ -93,37 +138,70 @@ class SalesRep extends Model {
     |--------------------------------------------------------------------------
     */
 
-    public function address()
-    {
-        // return $this->hasOne(Address::class, 'owner_id')->where('model_name', '=', 'SalesRep');
-    }
-
     public function customers()
     {
         return $this->hasMany(Customer::class);
     }
-
-    public function customerorders()
-    {
-        return $this->hasMany(CustomerOrder::class);
-    }
-
 
     public function commissionsettlements()
     {
         return $this->hasMany(CommissionSettlement::class);
     }
 
+    public function users()
+    {
+        return $this->hasMany(SalesRepUser::class, 'sales_rep_id');
+    }
+
+
+    public function customerquotations()
+    {
+        return $this->hasMany(CustomerQuotation::class);
+    }
+    
+    public function customerorders()
+    {
+        return $this->hasMany(CustomerOrder::class);
+    }
+
+    public function customershippingslips()
+    {
+        return $this->hasMany(CustomerShippingSlip::class);
+    }
+
+    public function customerinvoices()
+    {
+        return $this->hasMany(CustomerInvoice::class);
+    }
+    
+    
+    public function customerquotationlines()
+    {
+        return $this->hasMany(CustomerQuotationLine::class);
+    }
+    
+    public function customerorderlines()
+    {
+        return $this->hasMany(CustomerOrderLine::class);
+    }
+
+    public function customershippingsliplines()
+    {
+        return $this->hasMany(CustomerShippingSlipLine::class);
+    }
+
+    public function customerinvoicelines()
+    {
+        return $this->hasMany(CustomerInvoiceLine::class);
+    }
+
+
     /**
      * Get the user record associated with the user.
+     * This function, maybe not used anywhere?
      */
     public function user()
     {
         return $this->hasOne(SalesRepUser::class, 'sales_rep_id');   // ->where('is_principal', 1);
-    }
-
-    public function users()
-    {
-        return $this->hasMany(SalesRepUser::class, 'sales_rep_id');
     }
 }

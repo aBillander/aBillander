@@ -24,6 +24,52 @@ class Tax extends Model {
  //   	'percent' => array('required', 'numeric', 'between:0,100')
     	);
     
+
+    public static function boot()
+    {
+        parent::boot();
+
+
+        static::deleting(function ($tax)
+        {
+            // before delete() method call this
+            $relations = [
+                    'products',
+                    'shippingmethods',
+                    'cartlines',
+
+                    'customerquotationlines',
+                    'customerorderlines',
+                    'customershippingsliplines',
+                    'customerinvoicelines',
+ //                   'warehouseshippingsliplines',
+
+                    'supplierorderlines',
+                    'suppliershippingsliplines',
+                    'supplierinvoicelines',
+            ];
+
+            // load relations
+            $tax->load( $relations );
+
+            // Check Relations
+            foreach ($relations as $relation) {
+                # code...
+                if ( $tax->{$relation}->count() > 0 )
+                    throw new \Exception( l('Tax has :relation', ['relation' => $relation], 'exceptions') );
+            }
+
+        });
+
+        static::deleted(function ($tax)
+        {
+            // After delete() method call this
+            $tax->taxrules()->delete();
+        });
+
+    }
+
+    
     
     /*
     |--------------------------------------------------------------------------
@@ -113,5 +159,52 @@ class Tax extends Model {
     {
         return $this->hasMany(Product::class);
     }
+    
+    public function shippingmethods()
+    {
+        return $this->hasMany(ShippingMethod::class);
+    }
+    
+    public function cartlines()
+    {
+        return $this->hasMany(CartLine::class);
+    }
 	
+    
+    public function customerquotationlines()
+    {
+        return $this->hasMany(CustomerQuotationLine::class);
+    }
+    
+    public function customerorderlines()
+    {
+        return $this->hasMany(CustomerOrderLine::class);
+    }
+
+    public function customershippingsliplines()
+    {
+        return $this->hasMany(CustomerShippingSlipLine::class);
+    }
+
+    public function customerinvoicelines()
+    {
+        return $this->hasMany(CustomerInvoiceLine::class);
+    }
+
+
+    public function supplierorderlines()
+    {
+        return $this->hasMany(SupplierOrderLine::class);
+    }
+
+    public function suppliershippingsliplines()
+    {
+        return $this->hasMany(SupplierShippingSlipLine::class);
+    }
+
+    public function supplierinvoicelines()
+    {
+        return $this->hasMany(SupplierInvoiceLine::class);
+    }
+
 }

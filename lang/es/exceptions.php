@@ -37,6 +37,15 @@ return [
 	// Address
 	'Address has :relation' => 'La Dirección tiene :relation',
 
+	// Taxes
+	'Tax has :relation' => 'El Impuesto tiene :relation',
+
+	// Ecotaxes
+	'Ecotax has :relation' => 'El Eco-Impuesto tiene :relation',
+
+	// Sales Representatives
+	'Sales Representative has :relation' => 'El Agente tiene :relation',
+
 	''     => '',
 	''     => '',
 	''     => '',

@@ -117,7 +117,18 @@ class EcotaxesController extends Controller {
      */
     public function destroy($id)
     {
-        $this->ecotax->findOrFail($id)->delete();
+        $ecotax = $this->ecotax->findOrFail($id);
+
+        try {
+
+            $ecotax->delete();
+            
+        } catch (\Exception $e) {
+
+            return redirect()->back()
+                    ->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts').$e->getMessage());
+            
+        }
 
         return redirect('ecotaxes')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));

@@ -781,7 +781,7 @@ foreach ($pairs as $pair) {
         Route::get( 'import/products/images', 'Import\ImportProductImagesController@import' )->name('products.images.import');
         Route::post('import/products/images', 'Import\ImportProductImagesController@process')->name('products.images.import.process');
         Route::get( 'export/products/images', 'Import\ImportProductImagesController@export' )->name('products.images.export');
-        Route::get( 'export/products/images/delete', 'Import\ImportProductImagesController@deleteAll' )->name('products.images.delete.all');
+        Route::delete( 'export/products/images/delete', 'Import\ImportProductImagesController@deleteAll' )->name('products.images.delete.all');
         Route::get(  'import/products/prices', 'Import\ImportProductPricesController@import' )->name('products.prices.import');
         Route::post( 'import/products/prices', 'Import\ImportProductPricesController@process')->name('products.prices.import.process');
         Route::get(  'export/products/prices', 'Import\ImportProductPricesController@export' )->name('products.prices.export');

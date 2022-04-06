@@ -114,7 +114,10 @@ class ImportProductImagesController extends Controller
 
 
 
-        $params = ['images_folder' => $path];
+        $params = [
+            'images_folder'  => $path, 
+            'replace_images' => $request->input('replace_images', 0)
+        ];
 
 
         try{
@@ -204,16 +207,34 @@ class ImportProductImagesController extends Controller
 
                             $img_path = $this->images_folder.$image_file_name;
 
+                            if ( $params['replace_images'] )
+                            {
+                                # code...
+                                foreach ($product->images as $image) {
+                                    # code...
+
+                                    // Delete file images
+                                    $image->deleteImage();
+
+                                    // Delete now!
+                                    $image->delete();
+                                }
+
+                                $logger->log('INFO', 'Se han borrado {i} imágenes del Producto [:codart] (:reference) :desart .', ['i' => $product->images_count, 'codart' => $product->id, 'reference' => $product->reference, 'desart' => $product->name]);
+
+                                $product->images_count = 0;
+                            }
+
                             // Is featured?
                             if ( array_key_exists('image_is_featured', $data ) )
-                                $is_featured = (int) $data['image_is_featured'];
+                                $is_featured = $product->images_count > 0 ? (int) $data['image_is_featured'] : 1;
                             else
                             if ( $product->images_count == 0 )
                                 $is_featured = 1;
                             else
                                 $is_featured = 0;
 
-                            $image = Image::createForProductFromPath($img_path, ['caption' => $data['image_caption'] ??$product->name, 'position' => $data['image_position'], 'is_featured'=> $is_featured]);
+                            $image = Image::createForProductFromPath($img_path, ['caption' => $data['image_caption'] ??$product->name, 'position' => (int) $data['image_position'], 'is_featured'=> $is_featured]);
                             
                             if ( $image )
                             {

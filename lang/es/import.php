@@ -64,8 +64,12 @@ return [
 	'Images'     => 'Imágenes',
 	'Import Product Images'     => 'Importar Imágenes de Productos',
 	'Delete ALL Images'     => 'Borrar TODAS las Imágenes',
+	'Delete ALL Product Images' => 'Borrar TODAS las Imágenes de Productos',
 	'Images Folder' => 'Carpeta de las Imágenes',
 	'Image Files are located in this Server Folder.'     => 'Los Ficheros de las Imágenes están en esta Carpeta del Servidor.',
+	'Replace current Images?' => '¿Reemplazar las imágenes actuales?',
+	'Current images will be deleted.' => 'Las imagenes actuales se borrarán.',
+	'New images will be added.' => 'Las imagenes nuevas se añadirán.',
 	'Export Headers'     => 'Exportar Cabeceras',
 
 	'Prices'     => 'Precios',

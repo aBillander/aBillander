@@ -38,6 +38,7 @@ return [
 	'Unable to update this record &#58&#58 (:id) '               =>  'No se ha podido actualizar el registro solicitado &#58&#58 (:id) ',
 	'Unable to load this record &#58&#58 (:id) '                 =>  'No se ha podido encontrar el registro solicitado &#58&#58 (:id) ',
 	'The operation you are trying to do is high risk and cannot be undone.' => 'La operación que intenta hacer es de alto riesgo y no puede deshacerse.',
+	'Are you sure?' => '¿Está seguro?',
 	'Document has no Lines'                                      =>  'El Documento no contiene Líneas',
 	'Document amount should be more than: :amount'               =>  'El Importe del Documento debe ser superior a: :amount',
 	'Document is on-hold'                                      =>  'El Documento está en espera',

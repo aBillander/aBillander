@@ -21,6 +21,24 @@
      <div class="form-group col-lg-1 col-md-1 col-sm-1">
      </div>
 
+     <div class="form-group col-lg-5 col-md-5 col-sm-5" id="div-replace_images">
+       {!! Form::label('replace_images', l('Replace current Images?'), ['class' => 'control-label']) !!}
+       <div>
+         <div class="radio-inline">
+           <label>
+             {!! Form::radio('replace_images', '1', false, ['id' => 'replace_images_on']) !!}
+             {!! l('Yes', [], 'layouts') !!}. <span style="font-weight: normal;">{!! l('Current images will be deleted.') !!}</span>
+           </label>
+         </div>
+         <div xclass="radio-inline">
+           <label>
+             {!! Form::radio('replace_images', '0', true, ['id' => 'replace_images_off']) !!}
+             {!! l('No', [], 'layouts') !!}. <span style="font-weight: normal;">{!! l('New images will be added.') !!}</span>
+           </label>
+         </div>
+       </div>
+      </div>
+
 </div>
 <div class="row">
 

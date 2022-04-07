@@ -73,19 +73,6 @@ class ImportCustomersController extends Controller
     public function import()
     {
         return view('imports.customers');
-/*
-		$country = $this->country->findOrFail($id);
-		
-		return view('countries.edit', compact('country'));
-
-        $customer_orders = $this->customerOrder
-                            ->with('customer')
-                            ->with('currency')
-                            ->with('paymentmethod')
-                            ->orderBy('id', 'desc')->get();
-
-        return view('customer_orders.index', compact('customer_orders'));
-*/        
     }
 
     public function process(Request $request)
@@ -547,15 +534,15 @@ if ($country) {
                                 
                             }
 
-                            $logger->log("INFO", "El Cliente ".$data['reference_external'] ." se ha creado (".$customer->id.")");
+                            $logger->log("INFO", "El Cliente ".$customer->name_fiscal ." se ha creado (".$customer->id.")");
 
                             $i_created++;
 
                         } else {
 
-                            if ( !$customer )
+                            // if ( !$customer )
 
-                            $logger->log("INFO", "El Cliente ".$data[$customer_index] ." no existe y debe crearse");
+                            // $logger->log("INFO", "El Cliente ".$data[$customer_index] ." no existe y debe crearse");
 
                         }
 

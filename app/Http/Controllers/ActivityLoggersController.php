@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\ActivityLogger;
 use App\Models\Configuration;
 
+use App\Helpers\Exports\ArrayExport;
 use Excel;
 
 class ActivityLoggersController extends Controller
@@ -192,7 +193,7 @@ class ActivityLoggersController extends Controller
                         ->orderBy('id', 'desc')
                         ->get();
 
-                        // Initialize the array which will be passed into the Excel generator.
+        // Initialize the array which will be passed into the Excel generator.
         $data = []; 
 
         // Define the Excel spreadsheet headers
@@ -216,26 +217,18 @@ class ActivityLoggersController extends Controller
             $data[] = $row;
         }
 
-        $sheetName = 'Activity LOG' ;
+        $styles = [];
+
+        $sheetTitle = 'Activity LOG';
+
+        $export = (new ArrayExport($data, $styles))->setTitle($sheetTitle);
 
         $id = $activitylogger->id;
 
+        $sheetFileName = 'Activity_Logger_'.$id;
+
         // Generate and return the spreadsheet
-        Excel::create('Activity_Logger_'.$id, function($excel) use ($id, $sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

@@ -790,6 +790,10 @@ foreach ($pairs as $pair) {
         Route::post('import/customers', 'Import\ImportCustomersController@process')->name('customers.import.process');
         Route::get( 'export/customers', 'Import\ImportCustomersController@export' )->name('customers.export');
 
+        Route::get( 'import/customerbankaccounts', 'Import\ImportCustomerBankAccountsController@import' )->name('customerbankaccounts.import');
+        Route::post('import/customerbankaccounts', 'Import\ImportCustomerBankAccountsController@process')->name('customerbankaccounts.import.process');
+        Route::get( 'export/customerbankaccounts', 'Import\ImportCustomerBankAccountsController@export' )->name('customerbankaccounts.export');
+
         Route::get( 'import/customerusers', 'Import\ImportCustomerUsersController@import' )->name('customerusers.import');
         Route::post('import/customerusers', 'Import\ImportCustomerUsersController@process')->name('customerusers.import.process');
         Route::get( 'export/customerusers', 'Import\ImportCustomerUsersController@export' )->name('customerusers.export');

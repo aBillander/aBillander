@@ -2,16 +2,16 @@
 @include('errors.list')
 --}}
 
-{!! Form::open(array('route' => array('customerusers.import.process'), 'files' => true)) !!}
+{!! Form::open(array('route' => array('customerbankaccounts.import.process'), 'files' => true)) !!}
 
-<div class="panel panel-warning" id="panel_import_customers">
+<div class="panel panel-success" id="panel_import_customers">
    <div class="panel-heading">
-      <h3 class="panel-title">{{ l('Import ABCC Users File') }}</h3>
+      <h3 class="panel-title">{{ l('Import Customer Bank Accounts File') }}</h3>
    </div>
    <div class="panel-body">
 
 
-          @include('imports._form_upload_customer_users')   
+          @include('imports._form_upload_customer_bank_accounts')   
 
    </div>
 

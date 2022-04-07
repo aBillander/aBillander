@@ -13,6 +13,8 @@ use App\Models\PaymentMethod;
 use App\Models\PriceList;
 use App\Models\ShippingMethod;
 use App\Models\State;
+use App\Helpers\Exports\ArrayExport;
+use App\Helpers\Imports\ArrayImport;
 use Excel;
 use Illuminate\Http\Request;
 
@@ -97,49 +99,15 @@ class ImportCustomersController extends Controller
 
         $rules = [
                 'data_file' => 'required | max:8000',
-                'extension' => 'in:csv,xlsx,xls,ods', // all working except for ods
+                'extension' => 'in:csv,xlsx,xls,ods',
         ];
 
         $this->validate($request->merge( $extra_data ), $rules);
-
-/*
-        $data_file = $request->file('data_file');
-
-        $data_file_full = $request->file('data_file')->getRealPath();   // /tmp/phpNJt6Fl
-
-        $ext    = $data_file->getClientOriginalExtension();
-*/
-
-/*
-        abi_r($data_file);
-        abi_r($data_file_full);
-        abi_r($ext, true);
-*/
-
-/*
-        \Validator::make(
-            [
-                'document' => $data_file,
-                'format'   => $ext
-            ],[
-                'document' => 'required',
-                'format'   => 'in:csv,xlsx,xls,ods' // all working except for ods
-            ]
-        )->passOrDie();
-*/
-
-        // Avaiable fields
-        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
-        // $columns = \DB::getSchemaBuilder()->getColumnListing( self::$table );
-
-//        abi_r($columns);
-
-
         
 
         // Start Logger
         $logger = ActivityLogger::setup( 'Import Customers', __METHOD__ )
-                    ->backTo( route('customers.import') );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+                    ->backTo( route('customers.import') );
 
 
         $logger->empty();
@@ -155,6 +123,7 @@ class ImportCustomersController extends Controller
         $params = ['simulate' => $request->input('simulate', 0)];
 
         // Truncate table
+        if ( ! $params['simulate'] )
         if ( $truncate > 0 ) {
 
             $nbr = Customer::count();
@@ -169,13 +138,13 @@ class ImportCustomersController extends Controller
             // $collection = Address::where('addressable_type', "App\\Customer")->get(['id']);
             // Address::destroy($collection->toArray());
 
-            \DB::table('addresses')->where('addressable_type', "App\\Customer")->delete();
+            \DB::table('addresses')->where('addressable_type', Customer::class)->delete();
 
             // Note: This solution is for resetting the auto_increment of the table without truncating the table itself
             $max = \DB::table('addresses')->max('id') + 1; 
             \DB::statement("ALTER TABLE addresses AUTO_INCREMENT = $max");
 
-            $logger->log("INFO", "Se han borrado todos los Clientes antes de la Importación. En total {nbr} Clientes.", ['nbr' => $nbr]);
+            $logger->log("INFO", "Se han borrado todos los Clientes y sus Direcciones antes de la Importación. En total {nbr} Clientes.", ['nbr' => $nbr]);
         }
 
 
@@ -196,36 +165,6 @@ class ImportCustomersController extends Controller
 
         return redirect('activityloggers/'.$logger->id)
                 ->with('success', l('Se han cargado los Clientes desde el Fichero: <strong>:file</strong> .', ['file' => $file]));
-
-
-//        abi_r('Se han cargado: '.$i.' productos');
-
-
-
-        // See: https://www.google.com/search?client=ubuntu&channel=fs&q=laravel-excel+%22Serialization+of+%27Illuminate%5CHttp%5CUploadedFile%27+is+not+allowed%22&ie=utf-8&oe=utf-8
-        // https://laracasts.com/discuss/channels/laravel/serialization-of-illuminatehttpuploadedfile-is-not-allowed-on-queue
-
-        // See: https://github.com/LaravelDaily/Laravel-Import-CSV-Demo/blob/master/app/Http/Controllers/ImportController.php
-        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
-/*
-        Excel::filter('chunk')->load('file.csv')->chunk(250, function($results)
-        {
-                foreach($results as $row)
-                {
-                    // do stuff
-                }
-        });
-
-        Excel::filter('chunk')->load(database_path('seeds/csv/users.csv'))->chunk(250, function($results) {
-            foreach ($results as $row) {
-                $user = User::create([
-                    'username' => $row->username,
-                    // other fields
-                ]);
-            }
-        });
-*/
-        // See: https://www.youtube.com/watch?v=z_AhZ2j5sI8  Modificar datos importados
     }
 
 
@@ -236,28 +175,13 @@ class ImportCustomersController extends Controller
      */
     protected function processFile( $file, $logger, $params = [] )
     {
+        // Get data as an array
+        $worksheet = Excel::toCollection(new ArrayImport, $file);
 
-        // 
-        // See: https://www.youtube.com/watch?v=rWjj9Slg1og
-        // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
-        Excel::filter('chunk')->selectSheetsByIndex(0)->load( $file )->chunk(250, function ($reader) use ( $logger, $params )
-        {
-            //
-            // Remember: spread sheet .xlsx format only!!
-            //
-            
- /*           $reader->each(function ($sheet){
-                // ::firstOrCreate($sheet->toArray);
-                abi_r($sheet);
-            });
+        // abi_r($worksheet->first(), true);
 
-            $reader->each(function($sheet) {
-                // Loop through all rows
-                $sheet->each(function($row) {
-                    // Loop through all columns
-                });
-            });
-*/
+        $reader = $worksheet->first();    // First sheet in worksheet
+
 
 // Process reader STARTS
 
@@ -268,13 +192,7 @@ class ImportCustomersController extends Controller
             $i_created = 0;
             $i_updated = 0;
             $i_ok = 0;
-            $max_id = 2000;
-
-            // Custom
-            $state_names = [];
-            if (file_exists(__DIR__.'/FSOL_provincias.php')) {
-                $state_names = include __DIR__.'/FSOL_provincias.php';
-            }
+            $max_id = 1000;
 
 
             if(!empty($reader) && $reader->count()) {
@@ -322,12 +240,12 @@ class ImportCustomersController extends Controller
                     $customer_index = 'id';
                     if ( isset( $data['id'] ) && $data['id'] > 0 )
                     {
-                        // Ok. Product should exist
+                        // Ok. Customer should exist
                         ;
                     }
                     else if ( isset($data['reference_external']) && $data['reference_external'] )
                     {
-                        // Ok. Product does not exist and comes from an external system
+                        // Ok. Customer does not exist and comes from an external system
 
                         if ( isset( $data['id'] ) )
                              unset( $data['id'] );
@@ -336,7 +254,7 @@ class ImportCustomersController extends Controller
                     }
                     else
                     {
-                        // Ok. Product does not exist
+                        // Ok. Customer does not exist
 
                         $data['id'] = '';
                     }
@@ -484,17 +402,7 @@ if ($country) {
                     // State
                     if ( !array_key_exists('state_id', $data) ) 
                     {
-                        // Guess
-                        $data['state_id'] = 0;
-                        if ( array_key_exists('STATE_NAME', $data) ) 
-                        {
-                        
-                            if ( array_key_exists($data['STATE_NAME'], $state_names) )
-                                $data['state_id'] = $state_names[$data['STATE_NAME']];
-                            else
-                                if ( array_key_exists(strtoupper($data['STATE_NAME']), $state_names) )
-                                    $data['state_id'] = strtoupper($state_names[$data['STATE_NAME']]);
-                        }
+                        // 
                     }
                     if ( !$country->hasState( $data['state_id'] ) )
                         $logger->log("ERROR", "Cliente ".$item.":<br />" . "El campo 'state_id' es inválido o no corresponde con el país: " . ($data['state_id'] ?? $data['STATE_NAME'] ?? ''));
@@ -691,9 +599,7 @@ if ($country) {
 
             $logger->log('INFO', 'Se han procesado {i} Clientes.', ['i' => $i]);
 
-// Process reader          
-    
-        }, false);      // should not queue $shouldQueue
+// Process reader ENDS
 
     }
 
@@ -723,11 +629,18 @@ if ($country) {
         $data = [];  
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'reference_external', 'accounting_id', 'webshop_id', 'name_fiscal', 'name_commercial', 'identification', 'sales_equalization', 
+        $headers = [ 'id', 'reference_external', 'accounting_id', 'webshop_id', 'name_fiscal', 'name_commercial', 
+                    'website', 'identification', 'vat_regime', 'sales_equalization', 
+
+                    'discount_percent', 'discount_ppd_percent', 'payment_days', 'no_payment_month', 
+                    'is_invoiceable', 'invoice_by_shipping_address', 'automatic_invoice', 'cc_addresses', 
+
                     'customer_group_id', 'CUSTOMER_GROUP_NAME', 'price_list_id', 'PRICE_LIST_NAME', 
                     'payment_method_id', 'PAYMENT_METHOD_NAME', 'shipping_method_id', 'SHIPPING_METHOD_NAME', 
-                    'outstanding_amount_allowed', 'notes', 'allow_login', 'blocked', 'active', 
+                    'outstanding_amount_allowed', 'notes', 'allow_login', 'accept_einvoice', 'blocked', 'active', 
                     'currency_id', 'language_id', 
+
+                    'invoice_sequence_id', 'invoice_template_id', 'order_template_id', 'shipping_slip_template_id', 
 
                     'address1', 'address2', 'postcode', 'city', 'state_id', 'STATE_NAME', 'country_id', 'COUNTRY_NAME', 
                     'firstname', 'lastname', 'email', 'phone', 'phone_mobile', 'fax', 'sales_rep_id'
@@ -754,26 +667,16 @@ if ($country) {
             $data[] = $row;
         }
 
-        $sheetName = 'Customers' ;
+        $styles = [];
 
-        // abi_r($data, true);
+        $sheetTitle = 'Customers';
+
+        $export = (new ArrayExport($data, $styles))->setTitle($sheetTitle);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Customers', function($excel) use ($sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');           // ->export('pdf');  <= Does not work. See: https://laracasts.com/discuss/channels/general-discussion/dompdf-07-on-maatwebsiteexcel-autoloading-issue
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 /*
@@ -18,22 +19,24 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
  * 
  *    Usage:
  *   
- *    $export = (new ArrayExport($data))->setStyles($styles)->setTitle($title);
+ *    $export = (new ArrayExport($data))->setStyles($styles)->setTitle($title)->setColumnFormats($columnFormats);
  *    // same as: 
- *    $export = new ArrayExport($data, $styles, $title);
+ *    $export = new ArrayExport($data, $styles, $title, $columnFormats);
  *
  */
-class ArrayExport implements FromArray, WithStyles, WithTitle, WithStrictNullComparison, ShouldAutoSize
+class ArrayExport implements FromArray, WithStyles, WithTitle, WithColumnFormatting, WithStrictNullComparison, ShouldAutoSize
 {
     protected $data;
     protected $styles;
     protected $title;
+    protected $columnFormats;
 
-    public function __construct(array $data, array $styles = [], string $title = 'Worksheet')
+    public function __construct(array $data, array $styles = [], string $title = 'Worksheet', array $columnFormats = [])
     {
         $this->data   = $data;
         $this->styles = $styles;
         $this->title  = $title;
+        $this->columnFormats = $columnFormats;
     }
 
     public function array(): array
@@ -70,6 +73,15 @@ class ArrayExport implements FromArray, WithStyles, WithTitle, WithStrictNullCom
         return $this->styles;
     }
 
+
+    public function setTitle(string $title)
+    {
+        
+        $this->title = $title;
+
+        return $this;
+    }
+
     /**
      * @return string
      */
@@ -79,11 +91,26 @@ class ArrayExport implements FromArray, WithStyles, WithTitle, WithStrictNullCom
     }
 
 
-    public function setTitle(string $title)
+    
+    public function setColumnFormats(array $columnFormats = [])
     {
         
-        $this->title = $title;
+        $this->columnFormats = $columnFormats;
 
         return $this;
+
+/*
+        // https://docs.laravel-excel.com/3.1/exports/column-formatting.html
+
+        return [
+            'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'C' => NumberFormat::FORMAT_CURRENCY_EUR_SIMPLE,
+        ];
+*/
+    }
+    
+    public function columnFormats(): array
+    {
+        return $this->columnFormats;
     }
 }

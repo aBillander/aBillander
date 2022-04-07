@@ -243,6 +243,16 @@ class BankAccount extends Model {
         return $this->morphTo();
     }
 
+
+    /**
+     * Get the Customer (if any) that owns the bank account.
+     */
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'bank_accountable_id');
+    }
+
+
     public function sepadirectdebits()
     {
         return $this->hasMany(SepaDirectDebit::class, 'bank_account_id');

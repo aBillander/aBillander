@@ -96,6 +96,10 @@ return [
 	'Delete existing Customers?'     => '¿Eliminar los Clientes existentes?',
 	'Simulation Mode?'     => '¿Modo Simulación?',
 
+	'Bank Accounts' => 'Cuentas Bancarias',
+	'Import Customer Bank Accounts File'      => 'Importar Fichero de Cuentas Bancarias de Clientes',
+	'Delete existing Bank Accounts?' => '¿Eliminar las Cuentas Bancarias existentes?',
+
 	'ABCC Users' => 'Usuarios ABCC',
 	'Import ABCC Users File'     => 'Importar Fichero de Usuarios ABCC',
 	'Delete existing ABCC Users?'     => '¿Eliminar los Usuarios ABCC existentes?',

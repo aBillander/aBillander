@@ -59,6 +59,30 @@ GROUP BY
 
 Route::get('migratethis', function()
 {
+
+	// 2022-04-08
+	$date = '2022-04-08';
+
+
+	DB::statement("ALTER TABLE `contacts` CHANGE `email` `email` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;");
+
+	DB::statement("ALTER TABLE `contacts` CHANGE `address` `address_text` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL;");
+
+	DB::statement("ALTER TABLE `contacts` CHANGE `user_created_by_id` `user_created_by_id` INT(10) UNSIGNED NULL;");
+
+	DB::statement("ALTER TABLE `contacts` ADD `type` varchar(32) NOT NULL DEFAULT 'Employee' AFTER `job_title`;");
+
+	DB::statement("ALTER TABLE `contacts` ADD `is_primary` tinyint not null default '0' AFTER `website`;");
+
+	DB::statement("ALTER TABLE `contacts` CHANGE `party_id` `party_id` INT(10) UNSIGNED NULL;");
+
+	DB::statement("ALTER TABLE `contacts` ADD `address_id`  INT(10) UNSIGNED NULL AFTER `party_id`;");
+	DB::statement("ALTER TABLE `contacts` ADD `customer_id` INT(10) UNSIGNED NULL AFTER `party_id`;");
+
+
+	die('OK - '.$date);
+
+
 	// 2022-03-27
 	$date = '2022-03-27';
 

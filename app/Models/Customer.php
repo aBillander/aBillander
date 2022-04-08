@@ -739,6 +739,12 @@ class Customer extends Model {
 //                   ->where('addresses.addressable_type', Customer::class);
     }
 
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class);
+    }
+
+
     public function currency()
     {
         return $this->belongsTo(Currency::class);

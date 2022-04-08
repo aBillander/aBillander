@@ -164,13 +164,15 @@ class CustomersController extends Controller
     {
         $sequenceList = Sequence::listFor( CustomerInvoice::class );
 
-        $customer = $this->customer->with('addresses', 'address', 'address.country', 'address.state', 'bankaccount')->findOrFail($id); 
+        $customer = $this->customer->with('addresses', 'address', 'address.country', 'address.state', 'bankaccount', 'contacts')->findOrFail($id); 
 
         $aBook       = $customer->addresses;
         $mainAddressIndex = -1;
         $aBookCount = $aBook->count();
 
         $bankaccount = $customer->bankaccount;
+
+        $contacts = $customer->contacts;
 
         // Dates (cuen)
         if ($bankaccount)
@@ -202,7 +204,7 @@ class CustomersController extends Controller
             }
 
             // Issue Warning!
-            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'modelList', 'default_model'))
+            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'modelList', 'default_model'))
                 ->with('warning', l('You need one Address at list, for Customer (:id) :name', ['id' => $customer->id, 'name' => $customer->name_fiscal]));
         };
 
@@ -227,7 +229,7 @@ class CustomersController extends Controller
 
             $mainAddressIndex = 0;
 
-            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'sequenceList', 'modelList', 'default_model'))
+            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'sequenceList', 'modelList', 'default_model'))
                 ->with('warning', $warning);
 
         } else {
@@ -272,7 +274,7 @@ class CustomersController extends Controller
 
 //        abi_r( $bankaccount );die();
 
-        return view('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'sequenceList', 'modelList', 'default_model'))
+        return view('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'sequenceList', 'modelList', 'default_model'))
                 ->with('warning', $warning);
     }
 

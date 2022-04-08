@@ -436,6 +436,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 //        Route::resource('addresses', 'AddressesController');
         Route::resource('customers.addresses', 'CustomerAddressesController');
 
+        Route::resource('customers.contacts', 'CustomerContactsController');
+
         Route::post('customers/{id}/attachment',         'CustomersController@attachmentStore'  )->name('customers.attachment.store'  );
         Route::get( 'customers/{id}/attachment/{aid}',   'CustomersController@attachmentShow'   )->name('customers.attachment.show'   );
         Route::delete('customers/{id}/attachment/{aid}', 'CustomersController@attachmentDestroy')->name('customers.attachment.destroy');

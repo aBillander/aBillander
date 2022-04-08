@@ -19,6 +19,64 @@ use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientExcept
 /* ********************************************************** */
 
 
+Route::get('/con', function () {
+    \DB::enableQueryLog(); // Enable query log
+
+    $cba = \App\Models\Customer::
+                      where('id', 768)
+                      ->with('contacts')
+                      ->first();
+//                    ->toSql();
+
+    abi_r($cba);
+
+    abi_toSql($cba->contacts());
+
+    dd(\DB::getQueryLog()); // Show results of log
+
+
+    die();
+
+    $cba = \App\Models\Contact::
+                      where('id', 1)
+                      ->with('address')
+                      ->first();
+//                    ->toSql();
+
+    abi_r($cba);
+
+    abi_toSql($cba->address());
+
+    dd(\DB::getQueryLog()); // Show results of log
+
+
+});
+
+
+/* ********************************************************** */
+
+
+Route::get('/cba', function () {
+    \DB::enableQueryLog(); // Enable query log
+
+    $cba = \App\Models\BankAccount::
+                      where('id', 2)
+                      ->with('bankaccountable')->first();
+//                    ->toSql();
+
+    // die();
+
+    abi_r($cba->bankaccountable()->toSql());
+
+    dd(\DB::getQueryLog()); // Show results of log
+
+
+});
+
+
+/* ********************************************************** */
+
+
 Route::get('/w2', function () {
     // Este almacén se creó sin dirección, y da error el listado de almacenes; hay que borrar el registro
     $lines2 = \App\Models\Warehouse::

@@ -25,6 +25,7 @@ return [
 	*/
 
 	'Contacts - Create' => 'Contactos - Crear',
+	'Owned by' => 'Pertenece a',
 	'New Contact'     => 'Nuevo Contacto',
 	'Contact Name'     => 'Nombre del Contacto',
 

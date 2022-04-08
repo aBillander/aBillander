@@ -269,4 +269,16 @@ return [
 
 	'Contacts'     => 'Contactos',
 	'Commercial Actions' => 'Acciones Comerciales',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Customers Language Lines :: Contacts
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Is primary?' => '¿Principal?',
 ];

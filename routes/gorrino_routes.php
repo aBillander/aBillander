@@ -60,9 +60,30 @@ GROUP BY
 Route::get('migratethis', function()
 {
 
+	// 2022-04-09
+	$date = '2022-04-09';
+
+	DB::statement("drop table if exists `action_types`;");
+
+	DB::statement("create table `action_types` (`id` int unsigned not null auto_increment primary key, `alias` varchar(16) not null, `name` varchar(64) not null, `description` text null, `active` tinyint not null default '1', `position` int unsigned not null default '0', `created_at` timestamp null, `updated_at` timestamp null, `deleted_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci';");
+
+	DB::statement("INSERT INTO `action_types` (`id`, `alias`, `name`, `description`, `active`, `position`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'CALL', 'Llamar por teléfono', NULL, 1, 0, NULL, NULL, NULL),
+(2, 'MEET', 'Reunión', NULL, 1, 0, NULL, NULL, NULL),
+(3, 'MEET-WEB', 'Reunión online', NULL, 1, 0, NULL, NULL, NULL);");
+
+	DB::statement("drop table if exists `actions`;");
+
+	DB::statement("create table `actions` (`id` int unsigned not null auto_increment primary key, `name` varchar(255) not null, `description` text null, `status` varchar(32) not null default 'pending', `priority` varchar(32) not null default 'low', `start_date` datetime null, `due_date` datetime null, `finish_date` datetime null, `results` text null, `position` int unsigned not null default '0', `user_created_by_id` int unsigned null, `user_assigned_to_id` int unsigned null, `action_type_id` int unsigned not null, `sales_rep_id` int unsigned null, `contact_id` int unsigned null, `customer_id` int unsigned null, `lead_id` int unsigned null, `created_at` timestamp null, `updated_at` timestamp null) default character set utf8mb4 collate 'utf8mb4_unicode_ci'");
+
+	die('OK - '.$date);
+
+
 	// 2022-04-08
 	$date = '2022-04-08';
 
+
+	DB::statement("ALTER TABLE `contacts` CHANGE `type` `type` VARCHAR(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT 'Employee';");
 
 	DB::statement("ALTER TABLE `contacts` CHANGE `email` `email` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;");
 

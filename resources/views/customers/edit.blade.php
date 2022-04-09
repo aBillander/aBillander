@@ -247,7 +247,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       {
          $("#panel_actions").show();
          $("#b_actions").addClass('active');
-         getCustomerActions();
+         // getCustomerActions();
       }
       else if(window.location.hash.substring(1) == 'orders')
       {

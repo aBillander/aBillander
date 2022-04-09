@@ -173,6 +173,7 @@ class CustomersController extends Controller
         $bankaccount = $customer->bankaccount;
 
         $contacts = $customer->contacts;
+        $actions  = $customer->actions()->whereDate('created_at', '>', \Carbon\Carbon::now()->subDays(30))->orderByDesc('created_at');
 
         // Dates (cuen)
         if ($bankaccount)
@@ -204,7 +205,7 @@ class CustomersController extends Controller
             }
 
             // Issue Warning!
-            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'modelList', 'default_model'))
+            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'modelList', 'default_model'))
                 ->with('warning', l('You need one Address at list, for Customer (:id) :name', ['id' => $customer->id, 'name' => $customer->name_fiscal]));
         };
 
@@ -229,7 +230,7 @@ class CustomersController extends Controller
 
             $mainAddressIndex = 0;
 
-            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'sequenceList', 'modelList', 'default_model'))
+            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'sequenceList', 'modelList', 'default_model'))
                 ->with('warning', $warning);
 
         } else {
@@ -274,7 +275,7 @@ class CustomersController extends Controller
 
 //        abi_r( $bankaccount );die();
 
-        return view('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'sequenceList', 'modelList', 'default_model'))
+        return view('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'sequenceList', 'modelList', 'default_model'))
                 ->with('warning', $warning);
     }
 

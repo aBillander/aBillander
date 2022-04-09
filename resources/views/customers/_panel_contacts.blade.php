@@ -139,25 +139,12 @@
     </div>
 
 </div>
+
 <!-- Contacts ENDS -->
 
 
                </div>
-
-                  @if ( $contacts->count()>1 )
-               <div class="panel-footer text-right">
-                  <input type="hidden" value="contacts" name="tab_name" id="tab_name">
-                  <button class="btn xbtn-sm btn-info" type="submit" onclick="this.disabled=true;this.form.submit();">
-                     <i class="fa fa-hdd-o"></i>
-                     &nbsp; {{l('Save & Complete', [], 'layouts')}}
-                  </button>
-               </div>
-                  @endif
-
             </div>
-
-
-
 
 </div>
 

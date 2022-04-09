@@ -788,6 +788,12 @@ class Customer extends Model {
     }
 
 
+    public function actions()
+    {
+        return $this->hasMany(Action::class);
+    }
+
+
     public function currency()
     {
         return $this->belongsTo(Currency::class);

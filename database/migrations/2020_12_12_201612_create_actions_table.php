@@ -13,11 +13,12 @@ class CreateActionsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('lead_lines');
+
         Schema::create('actions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->nullable(false);
             $table->text('description')->nullable();
-            $table->string('type', 32)->nullable(false)->default('');   // Phone call, online meeting, face-to-face meeting, etc.
             $table->string('status', 32)->nullable(false)->default('pending');
             $table->string('priority', 32)->nullable(false)->default('low');    // low, medium, high
             
@@ -29,8 +30,9 @@ class CreateActionsTable extends Migration
 
             $table->integer('position')->unsigned()->default(0);
 
-            $table->integer('user_created_by_id')->unsigned();
+            $table->integer('user_created_by_id')->unsigned()->nullable();
             $table->integer('user_assigned_to_id')->unsigned()->nullable();
+            $table->integer('action_type_id')->unsigned()->nullable(false);   // Phone call, online meeting, face-to-face meeting, etc.
 
             $table->integer('sales_rep_id')->unsigned()->nullable();
             $table->integer('contact_id')->unsigned()->nullable();

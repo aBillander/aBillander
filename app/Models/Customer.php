@@ -285,6 +285,49 @@ class Customer extends Model {
 
             return $list;
     }
+    
+
+    public function getPrimaryContact()
+    { 
+        // If no featured contact, GET one, anyway
+        $contact = $this->contacts()->orderBy('is_primary', 'desc')->first();
+
+        // if ($contact) return $contact;
+
+        // If no featured contact, RETURN one, anyway
+        // return new Image();
+
+        return $contact;
+    }
+
+    public function setPrimaryContact( Contact $contact )
+    { 
+        $featured = $contact->id;
+
+        $this->load('contacts');
+
+        $contacts = $this->contacts;
+
+        $contacts->map(function ($item, $key) use ($featured) {
+            if ($item->id == $featured) {
+                if (!$item->is_primary) {
+                    $item->is_primary = 1;
+                    $item->save();
+                }
+            } else {
+                if ($item->is_primary) {
+                    $item->is_primary = 0;
+                    $item->save();
+                }
+
+            }
+
+            return $item;
+        });
+
+
+        return true;
+    }
 
 
     /*

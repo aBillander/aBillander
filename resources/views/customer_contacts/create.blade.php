@@ -28,3 +28,21 @@
 </div>
 
 @endsection
+
+@section('scripts')    @parent
+
+<script type="text/javascript">
+
+
+    $(document).ready(function() 
+    {
+
+        // Set sensible defaut
+        $( "#address_id" ).val( '{{ old('address_id', $customer->invoicing_address_id) }}' );
+
+
+    });
+
+</script>
+
+@endsection

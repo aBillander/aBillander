@@ -40,10 +40,17 @@ class CustomerContactsController extends  Controller
      */
     public function create($customerId, Request $request)
     {
-        $customer = $this->customer->findOrFail($customerId);
+        $customer = $this->customer
+                         ->with('addresses')
+                         ->findOrFail($customerId);
+        
         $back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
-        return view('customer_contacts.create', compact('customer', 'back_route'));
+        $contact_typeList = Contact::getTypeList();
+
+        $customer_addressList = $customer->getAddressList();
+
+        return view('customer_contacts.create', compact('customer', 'back_route', 'contact_typeList', 'customer_addressList'));
     }
 
     /**
@@ -54,7 +61,9 @@ class CustomerContactsController extends  Controller
      */
     public function store($customerId, Request $request)
     {
-        $customer = $this->customer->findOrFail($customerId);
+        $customer = $this->customer
+                         ->with('contacts')
+                         ->findOrFail($customerId);
         $back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
         $this->validate($request, Contact::$rules);
@@ -62,6 +71,10 @@ class CustomerContactsController extends  Controller
         $contact = $this->contact->create($request->all());
 
         $customer->contacts()->save($contact);
+
+        if ($request->input('is_primary') || ($customer->contacts()->count() == 1)) {
+            $customer->setPrimaryContact($contact);
+        }
 
         return redirect($back_route)
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $contact->id], 'layouts') . $request->input('alias'));
@@ -86,11 +99,18 @@ class CustomerContactsController extends  Controller
      */
     public function edit($customerId, $id, Request $request)
     {
-        $customer = $this->customer->findOrFail($customerId);
+        $customer = $this->customer
+                         ->with('addresses')
+                         ->findOrFail($customerId);
         $contact = $this->contact->findOrFail($id);
+        
         $back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
-        return view('customer_contacts.edit', compact('customer', 'contact', 'back_route'));
+        $contact_typeList = Contact::getTypeList();
+
+        $customer_addressList = $customer->getAddressList();
+
+        return view('customer_contacts.edit', compact('customer', 'contact', 'back_route', 'contact_typeList', 'customer_addressList'));
     }
 
     /**
@@ -102,12 +122,18 @@ class CustomerContactsController extends  Controller
      */
     public function update($customerId, $id, Request $request)
     {
-        $contact = $this->contact->findOrFail($id);
+        $contact = $this->contact
+                         ->with('customer')
+                         ->findOrFail($id);
         $back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
         $this->validate($request, Contact::$rules);
 
         $contact->update($request->all());
+
+        if ($request->input('is_primary') || ($customer->contacts()->count() == 1)) {
+            $contact->customer->setPrimaryContact($contact);
+        }
 
         return redirect($back_route)
             ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $contact->id], 'layouts') . $request->input('alias'));

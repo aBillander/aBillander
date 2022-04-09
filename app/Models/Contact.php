@@ -51,7 +51,7 @@ class Contact extends Model
     {
             $list = [];
             foreach (self::$types as $type) {
-                $list[$type] = l(get_called_class().'.'.$type, [], 'appmultilang');
+                $list[$type] = l(get_called_class().'.'.$type, [], 'contacts');
             }
 
             return $list;
@@ -59,7 +59,10 @@ class Contact extends Model
 
     public function getTypeNameAttribute()
     {
-            return l(get_called_class().'.'.$this->type, 'appmultilang');
+            if ( !$this->type )
+                return $this->type;
+
+            return l(get_called_class().'.'.$this->type, 'contacts');
     }
 
 

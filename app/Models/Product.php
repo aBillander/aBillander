@@ -1107,6 +1107,8 @@ class Product extends Model {
     { 
         $featured = $image->id;
 
+        $this->load('images');
+
         $images = $this->images;
 
         $images->map(function ($item, $key) use ($featured) {

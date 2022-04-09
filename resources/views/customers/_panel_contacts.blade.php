@@ -42,8 +42,13 @@
             @foreach ($contacts as $contact)
             <tr>
                 <td>{{ $contact->id }}</td>
-                <td>{{ $contact->firstname }} {{ $contact->lastname }}<br />
-                    <span class="text-info"><em>{{ $contact->job_title }}</em></span>
+                <td>{{ $contact->firstname }} {{ $contact->lastname }}
+@if($contact->job_title)
+                    <br /><span class="text-info"><em>{{ $contact->job_title }}</em></span>
+@endif
+@if($contact->type)
+                    <br /><span class="text-danger"><em>{{ $contact->type_name }}</em></span>
+@endif
                 </td>
                 <td>
                     {{ $contact->phone }}<br />{{ $contact->phone_mobile }}
@@ -121,6 +126,9 @@
         </tbody>
     </table>
     @else
+            <a href="{{ URL::to('customers/' . $customer->id . '/contacts/create') . '?back_route=' . urlencode('customers/' . $customer->id . '/edit#contacts') }}" class="btn btn-sm btn-success pull-right" 
+                    title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>
+        
     <div class="alert alert-warning alert-block">
         <i class="fa fa-warning"></i>
         {{l('No records found', [], 'layouts')}}

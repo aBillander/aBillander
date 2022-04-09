@@ -18,7 +18,7 @@ class CreateContactsTable extends Migration
             $table->string('firstname', 32)->nullable(false);            // Contact information
             $table->string('lastname', 32)->nullable();
             $table->string('job_title')->nullable();
-            $table->string('type', 32)->nullable(false)->default('Employee');   // Use case example: manager, secretary, etc.
+            $table->string('type', 32)->nullable()->default('Employee');   // Use case example: manager, secretary, etc.
             $table->string('email')->nullable();
 
             $table->string('phone', 32)->nullable();

@@ -206,7 +206,7 @@ class ImportProductPricesController extends Controller
                         unset($data['tax_id']);
                     }
 
-                    if ( $data['tax_id'] ?? 0 )
+                    if ( !($data['tax_id'] ?? 0) )
                     {
                         $logger->log("ERROR", "El Producto ".$item." no se actualizará porque hay errores.");
 

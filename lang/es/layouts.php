@@ -234,6 +234,7 @@ return [
 
 	'microCRM'     => '&micro;CRM',
 	'Dashboard' => 'Tablero',
+	'Customers Dashboard' => 'Tablero Clientes',
 	'Parties' => 'Terceros',
 	'Leads' => 'Oportunidades',
 	'Contacts' => 'Contactos',

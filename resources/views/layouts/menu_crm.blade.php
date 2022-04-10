@@ -5,8 +5,14 @@
                     <ul class="dropdown-menu" role="menu">
                          <li>
                             <a href="{{ URL::to('crm/home') }}">
-                                 <i class="fa fa-dashboard text-info"></i> 
+                                 <i class="fa fa-dashboard text-danger"></i> 
                                  {{l('Dashboard', [], 'layouts')}}
+                            </a>
+                        </li>
+                         <li>
+                            <a href="{{ URL::to('crm/home') }}">
+                                 <i class="fa fa-dashboard text-info"></i> 
+                                 {{l('Customers Dashboard', [], 'layouts')}}
                             </a>
                         </li>
                         <li class="divider"></li>

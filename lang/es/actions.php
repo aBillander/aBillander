@@ -61,8 +61,8 @@ return [
 	|
 	*/
 
-	'Action - Edit'     => 'Acciones Comerciales - Modificar',
-	'Edit Action Line'     => 'Modificar Acción Comercial',
+	'Actions - Edit'     => 'Acciones Comerciales - Modificar',
+	'Edit Action'     => 'Modificar Acción Comercial',
 	''     => '',
 	''     => '',
 	''     => '',

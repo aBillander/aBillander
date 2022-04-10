@@ -80,6 +80,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-address-book"></i>
                &nbsp; {{ l('Address Book') }}
             </a>
+
+@if ( AbiConfiguration::isTrue('ENABLE_MCRM') )
             <a id="b_contacts" href="#contacts" class="list-group-item" xstyle="background-color: #fcf8e3; color: #c09853;">
                <i class="fa fa-users"></i>
                &nbsp;{{ l('Contacts') }}
@@ -88,6 +90,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-tasks"></i>
                &nbsp;{{ l('Commercial Actions') }}
             </a>
+@endif
+
             <!-- a id="b_specialprices" href="#specialprices" class="list-group-item">
                <i class="fa fa-list-alt"></i>
                &nbsp; Precios Especiales

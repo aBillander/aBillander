@@ -173,7 +173,7 @@ class CustomersController extends Controller
         $bankaccount = $customer->bankaccount;
 
         $contacts = $customer->contacts;
-        $actions  = $customer->actions()->whereDate('created_at', '>', \Carbon\Carbon::now()->subDays(30))->orderByDesc('created_at');
+        $actions  = $customer->actions()->whereDate('created_at', '>', \Carbon\Carbon::now()->subDays(30))->orderByDesc('created_at')->get();
 
         // Dates (cuen)
         if ($bankaccount)

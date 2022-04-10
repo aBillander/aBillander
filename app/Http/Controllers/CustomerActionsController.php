@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Models\Customer;
 use App\Models\Action;
+use App\Models\ActionType;
+use App\Models\Customer;
+use App\Models\SalesRep;
+use App\Models\User;
+use App\Traits\DateFormFormatterTrait;
+use Auth;
+use Illuminate\Http\Request;
 
 class CustomerActionsController extends  Controller
 {
-
+   use DateFormFormatterTrait;
 
    protected $customer;
    protected $action;
@@ -45,16 +48,22 @@ class CustomerActionsController extends  Controller
     public function create($customerId, Request $request)
     {
         $customer = $this->customer
-                         ->with('actions')
+                         ->with('contacts')
                          ->findOrFail($customerId);
         
         $back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
-        $action_typeList = Action::getTypeList();
+        $statusList = Action::getStatusList();
 
-        $customer_addressList = $customer->getAddressList();
+        $action_typeList = ActionType::pluck('alias', 'id')->toArray();
 
-        return view('customer_actions.create', compact('customer', 'back_route', 'action_typeList', 'customer_addressList'));
+        $customer_contactList = $customer->contacts->pluck('full_name', 'id')->toArray();
+
+        $priorityList = Action::getPriorityList();
+
+        $salesrepList = SalesRep::pluck('alias', 'id')->toArray();
+
+        return view('customer_actions.create', compact('customer', 'back_route', 'statusList', 'action_typeList', 'customer_contactList', 'priorityList', 'salesrepList'));
     }
 
     /**
@@ -65,6 +74,9 @@ class CustomerActionsController extends  Controller
      */
     public function store($customerId, Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['start_date', 'due_date', 'finish_date'], $request );
+
         $customer = $this->customer
                          ->with('actions')
                          ->findOrFail($customerId);
@@ -72,13 +84,14 @@ class CustomerActionsController extends  Controller
 
         $this->validate($request, Action::$rules);
 
+        $request->merge(['user_created_by_id' => Auth::id()]);
+
+        // Handy conversions
+        if ( !$request->input('position') ) $request->merge( ['position' => 0  ] );
+
         $action = $this->action->create($request->all());
 
         $customer->actions()->save($action);
-
-        if ($request->input('is_primary') || ($customer->actions()->count() == 1)) {
-            $customer->setPrimaryAction($action);
-        }
 
         return redirect($back_route)
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $action->id], 'layouts') . $request->input('alias'));
@@ -103,18 +116,35 @@ class CustomerActionsController extends  Controller
      */
     public function edit($customerId, $id, Request $request)
     {
-        $customer = $this->customer
-                         ->with('actions')
-                         ->findOrFail($customerId);
-        $action = $this->action->findOrFail($id);
+        $action = $this->action
+                            ->with('customer')
+                            ->with('actiontype')
+                            ->with('contact')
+                            ->with('salesrep')
+                            ->whereHas('customer', function($q) use ($customerId) {
+                                $q->where('id', $customerId);
+                            })
+                            ->findOrFail($id);
         
+        $customer = $action->customer;
+
         $back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
-        $action_typeList = Action::getTypeList();
+        $statusList = Action::getStatusList();
 
-        $customer_addressList = $customer->getAddressList();
+        $action_typeList = ActionType::pluck('alias', 'id')->toArray();
 
-        return view('customer_actions.edit', compact('customer', 'action', 'back_route', 'action_typeList', 'customer_addressList'));
+        $customer_contactList = $customer->contacts->pluck('full_name', 'id')->toArray();
+
+        $priorityList = Action::getPriorityList();
+
+        $salesrepList = SalesRep::pluck('alias', 'id')->toArray();
+
+
+        // Dates (cuen)
+        $this->addFormDates( ['start_date', 'due_date', 'finish_date'], $action );
+
+        return view('customer_actions.edit', compact('customer', 'action', 'back_route', 'statusList', 'action_typeList', 'customer_contactList', 'priorityList', 'salesrepList'));
     }
 
     /**
@@ -126,18 +156,21 @@ class CustomerActionsController extends  Controller
      */
     public function update($customerId, $id, Request $request)
     {
+        // Dates (cuen)
+        $this->mergeFormDates( ['start_date', 'due_date', 'finish_date'], $request );
+
         $action = $this->action
-                         ->with('customer')
-                         ->findOrFail($id);
+//                            ->with('customer')
+                            ->whereHas('customer', function($q) use ($customerId) {
+                                $q->where('id', $customerId);
+                            })
+                            ->findOrFail($id);
+        
         $back_route = $request->has('back_route') ? urldecode($request->input('back_route')) : '' ;
 
         $this->validate($request, Action::$rules);
 
         $action->update($request->all());
-
-        if ($request->input('is_primary') || ($customer->actions()->count() == 1)) {
-            $action->customer->setPrimaryAction($action);
-        }
 
         return redirect($back_route)
             ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $action->id], 'layouts') . $request->input('alias'));

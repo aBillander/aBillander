@@ -71,10 +71,16 @@ class SalesRep extends Model {
 
 
     // Get the full name of a SalesRep instance using Eloquent accessors
+    public function getFullNameAttribute()
+    {
+        return $this->firstname.' '.$this->lastname;
+
+    }
     
+    // Alias
     public function getNameAttribute() 
     {
-        return $this->firstname . ' ' . $this->lastname;
+        return $this->full_name;
     }
     
     public function getCommission( Product $product = null, Customer $customer = null ) 

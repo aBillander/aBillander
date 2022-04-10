@@ -53,7 +53,7 @@ class Action extends Model
             $list = [];
             foreach (static::$statuses as $status) {
                 // $list[$status] = l(get_called_class().'.'.$status, [], 'appmultilang');
-                $list[$status] = l(get_called_class().'.'.$status, 'leadlines');
+                $list[$status] = l(get_called_class().'.'.$status, 'actions');
                 // alternative => $list[$status] = l(static::class.'.'.$status, [], 'appmultilang');
             }
 
@@ -63,7 +63,7 @@ class Action extends Model
     public static function getStatusName( $status )
     {
             // return l(get_called_class().'.'.$status, [], 'appmultilang');
-            return l(get_called_class().'.'.$status, 'leadlines');
+            return l(get_called_class().'.'.$status, 'actions');
     }
 
     public static function isStatus( $status )
@@ -74,7 +74,7 @@ class Action extends Model
     public function getStatusNameAttribute()
     {
             // return l(get_called_class().'.'.$this->status, 'appmultilang');
-            return l(get_called_class().'.'.$this->status, 'leadlines');
+            return l(get_called_class().'.'.$this->status, 'actions');
     }
 
 

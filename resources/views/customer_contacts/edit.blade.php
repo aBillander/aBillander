@@ -16,7 +16,7 @@
 
         		@include('errors.list')
 
-				{!! Form::model($contact, array('method' => 'PATCH', 'route' => array('customers.contacts.update', $customer->id, $contact->id), 'name' => 'update_address', 'class' => 'form')) !!}
+				{!! Form::model($contact, array('method' => 'PATCH', 'route' => array('customers.contacts.update', $customer->id, $contact->id), 'name' => 'update_contact', 'class' => 'form')) !!}
 
          			@include('customer_contacts._form')
 

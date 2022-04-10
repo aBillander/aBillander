@@ -4,32 +4,33 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Leads Language Lines :: index
+	| Actions Language Lines :: index
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Lead' => 'Oportunidad',
-	'Leads' => 'Oportunidades',
-	'Back to Leads'     => 'Volver a Oportunidades',
-	'Lead Lines' => 'Líneas de Oportunidad',
+	'Action' => 'Acción Comercial',
+	'Actions' => 'Acciones Comerciales',
+	'Back to Actions'     => 'Volver a Acciones Comerciales',
 
 	/*
 	|--------------------------------------------------------------------------
-	| Leads Language Lines :: create
+	| Actions Language Lines :: create
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Lead Lines - Create' => 'Líneas de Oportunidades - Crear',
-	'New Lead Line'     => 'Nueva Línea de Oportunidad',
+	'Actions - Create' => 'Acciones Comerciales - Crear',
+	'Owned by' => 'Pertenece a',
+	'New Action'     => 'Nueva de Acción Comercial',
 
-	'Lead Line Name'     => 'Nombre de la Línea de Oportunidad',
+	'Action Name'     => 'Nombre de la Acción Comercial',
 	'Name'     => 'Nombre',
+	'Priority' => 'Prioridad',
 	'Description' => 'Descripción',
 
 	'Start Date' => 'Fecha de Inicio',
@@ -39,12 +40,12 @@ return [
 	'Due' => 'Vencimiento',
 	'Finish' => 'Terminación',
 
+	'Action type' => 'Tipo de Acción',
+	'Contact' => 'Contacto',
+
 	'Results' => 'Resultados',
 	'Assigned to' => 'Asignado a',
 	'Party'     => 'Tercero',
-
-	'App\Models\LeadLine.open' => 'Abierto',
-	'App\Models\LeadLine.completed' => 'Terminado',
 
 	'Position'     => 'Posición',
 
@@ -53,20 +54,50 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| Leads Language Lines :: edit
+	| Actions Language Lines :: edit
 	|--------------------------------------------------------------------------
 	|
 	| .
 	|
 	*/
 
-	'Lead Lines - Edit'     => 'Líneas de Oportunidades - Modificar',
-	'Edit Lead Line'     => 'Modificar Línea de Oportunidad',
+	'Action - Edit'     => 'Acciones Comerciales - Modificar',
+	'Edit Action Line'     => 'Modificar Acción Comercial',
 	''     => '',
 	''     => '',
 	''     => '',
 	''     => '',
 	''     => '',
 	''     => '',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Priorities
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\Models\Action.low' => 'Baja',
+    'App\Models\Action.medium' => 'Media',
+    'App\Models\Action.high' => 'Alta',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Statuses
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\Models\Action.not_started' => 'No iniciado',
+    'App\Models\Action.in_progress' => 'En proceso',
+    'App\Models\Action.completed' => 'Terminado',
+    'App\Models\Action.pending_input' => 'En espera',
+    'App\Models\Action.deferred' => 'Aplazado',
 
 ];

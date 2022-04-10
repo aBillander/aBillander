@@ -71,6 +71,8 @@ class Contact extends Model
         return $this->firstname.' '.$this->lastname;
 
     }
+
+    
     /*
     |--------------------------------------------------------------------------
     | Relationships

@@ -255,4 +255,42 @@ return [
 	'Invoice by Shipping Address?' => '¿Facturar por Dirección de Envío?',
 	'One Invoice per Shipping Address' => 'Una Factura por Dirección de Envío',
 	'One Invoice per Shipping Slip and Shipping Address' => 'Una Factura por Albarán y Dirección de Envío',
+
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Customers Language Lines :: VAT Regime List
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Contacts'     => 'Contactos',
+	'Commercial Actions' => 'Acciones Comerciales',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Customers Language Lines :: Contacts
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'Is primary?' => '¿Principal?',
+
+
+	/*
+	|--------------------------------------------------------------------------
+	| Customers Language Lines :: Actions
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'last :days days' => 'últimos :days días',
 ];

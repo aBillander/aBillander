@@ -289,6 +289,7 @@ return [
 	'View Document'     => 'Ver Documento',
 	'View'     => 'Ver',
 	'View more'     => 'Ver más',
+	'View all'     => 'Ver todo',
 	'Edit'     => 'Modificar',
 	'Undo'     => 'Deshacer',
 	'Apply'     => 'Aplicar',

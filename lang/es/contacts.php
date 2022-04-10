@@ -25,8 +25,12 @@ return [
 	*/
 
 	'Contacts - Create' => 'Contactos - Crear',
+	'Owned by' => 'Pertenece a',
 	'New Contact'     => 'Nuevo Contacto',
 	'Contact Name'     => 'Nombre del Contacto',
+
+	'Type' => 'Tipo',
+	'Is primary?' => '¿Principal?',
 
 	'Fiscal Name'     => 'Nombre Fiscal',
 	'Commercial Name'     => 'Nombre Comercial',
@@ -47,7 +51,7 @@ return [
 
 	'First Name' => 'Nombre',
 	'Last Name' => 'Apellidos',
-	'Job Title' => 'Título',
+	'Job Title' => 'Título / Cargo',
 
 	'Party'     => 'Tercero',
 
@@ -78,4 +82,21 @@ return [
 	'Add New Contact' => 'Añadir Nuevo Contacto',
 	'Back to Parties' => 'Volver a Terceros',
 
+
+	/*
+	|--------------------------------------------------------------------------
+	| Contact Types
+	|--------------------------------------------------------------------------
+	|
+	| .
+	|
+	*/
+
+	'App\Models\Contact.Employee' => 'Empleado',
+    'App\Models\Contact.Manager' => 'Directivo',
+    'App\Models\Contact.Secretary' => 'Secretaria',
+    'App\Models\Contact.Technician' => 'Técnico',
+    'App\Models\Contact.Engineer' => 'Ingeniero',
+    'App\Models\Contact.Researcher' => 'Investigador',
+    'App\Models\Contact.Warehouse Keeper' => 'Almacenero',
 ];

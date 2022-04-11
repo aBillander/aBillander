@@ -7,6 +7,9 @@
                </h4><br -->
               <div xclass="page-header">
                   <h3>
+
+                <a class="btn xbtn-sm btn-navy pull-right" href="{{ URL::to($model_path.'/' . $document->id . '/pdf?template='.\App\Configuration::getInt('DEF_PICKING_TEMPLATE')) }}" xtitle="{{l('Show Preview', [], 'layouts')}}" target="_blank" style="margin-right: 72px;"><i class="fa fa-file-code-o"></i> Albarán Picking</a>
+
                       <span style="color: #dd4814;">{{l('Stock Availability')}}</span> <!-- span style="color: #cccccc;">/</span>  -->
                        
                   </h3><br>        

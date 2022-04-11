@@ -85,7 +85,7 @@
                       <li><a href="{{ route('productionsheet.vouchers', [$sheet->id]) }}"><i class="fa fa-credit-card text-info"></i> {{ l('Customer Vouchers') }}</a></li>
 
                       <li class="divider"></li>
-                      <li><a href="{{ route('productionsheet.tourline', [$sheet->id]) }}"><img src="{{ \App\Models\TourlineExcel::getTourlineLogoUrl( ) }}" height="20" /> &nbsp;{{l('Hoja de Envío')}}</a></li>
+                      <li><a href="{{ route('productionsheet.tourline', [$sheet->id]) }}"><img src="{{ \App\Helpers\TourlineExcel::getTourlineLogoUrl( ) }}" height="20" /> &nbsp;{{l('Hoja de Envío')}}</a></li>
                       <li><a href="{{ route('productionsheet.deliveryroute', [$sheet->id, 1]) }}"><i class="fa fa-map-o"></i> {{l('Hoja de Reparto')}}: Sevilla</a></li>
 
                       <li class="divider"></li>

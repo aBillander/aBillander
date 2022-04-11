@@ -8,8 +8,6 @@ use App\Models\Configuration;
 use App\Models\ProductionSheet;
 use App\Models\DeliveryRoute;
 
-use Excel;
-
 class ProductionSheetsDeliveryRoutesController extends Controller
 {
    protected $productionSheet;

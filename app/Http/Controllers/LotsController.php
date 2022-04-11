@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Exports\ArrayExport;
 use App\Models\Configuration;
 use App\Models\Context;
 use App\Models\Lot;
@@ -13,6 +14,8 @@ use App\Traits\DateFormFormatterTrait;
 use App\Traits\ModelAttachmentControllerTrait;
 use Excel;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class LotsController extends Controller
 {
@@ -675,7 +678,7 @@ if ( $sections != 'allocations' )
 //            $total_weight   += $lot->getWeight();
         }
 
-        $data[] = [];
+        $data[] = [''];
 
 //        $data[] = ['', '', '', 'TOTAL:', $totat_quantity, '', 'TOTAL:', $total_weight, '', '', '', ''];
 }
@@ -724,8 +727,47 @@ if ( $sections != 'movements' )
 //            $total_weight   += $lot->getWeight();
         }
 
-        $data[] = [];
+        $data[] = [''];
 }
+
+
+
+        $nbr  = $lines_so_far + 1;
+        $nbr3 = $lines_so_far + 3;
+
+        $n = count($data);
+        $m = $n - 1;
+
+        $styles = [
+            'A2:F2'    => ['font' => ['bold' => true]],
+            'A5:L5'    => ['font' => ['bold' => true]],
+            'A8:L8'    => ['font' => ['bold' => true]],
+//            "C$n:C$n"  => ['font' => ['bold' => true, 'italic' => true]],
+            "A$nbr:L$nbr"    => ['font' => ['bold' => true]],
+            "A$nbr3:L$nbr3"  => ['font' => ['bold' => true]],
+            "A$n:L$n"        => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+            'A' => NumberFormat::FORMAT_TEXT,
+//            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+//            'D' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:D1', 'A2:D2', 'A3:D3', "A$nbr:D$nbr"];
+
+        $sheetTitle = 'Movimientos';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $lot->reference.' - '.l('Lot Stock Movements', 'lots');
+
+        // Generate and return the spreadsheet
+        return Excel::download($export, $sheetFileName.'.xlsx');
+
+
+
+
 
 
 

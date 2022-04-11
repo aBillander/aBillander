@@ -17,7 +17,6 @@ use App\Models\WorkCenter;
 use App\Traits\DateFormFormatterTrait;
 use App\Traits\ModelAttachmentControllerTrait;
 use App\Traits\ProductionOrderLotFormsControllerTrait;
-use Excel;
 use Form, DB;
 use Illuminate\Http\Request;
 

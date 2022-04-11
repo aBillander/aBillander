@@ -3,14 +3,13 @@
 namespace App\Helpers\Exports;
 
 use Maatwebsite\Excel\Concerns\FromArray;
-
-use Maatwebsite\Excel\Concerns\WithStrictNullComparison;    // you want your 0 values to be actual 0 values in your Excel sheet instead of null (empty cells)
-
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 /*
@@ -19,24 +18,27 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
  * 
  *    Usage:
  *   
- *    $export = (new ArrayExport($data))->setStyles($styles)->setTitle($title)->setColumnFormats($columnFormats);
+ *    $export = (new ArrayExport($data))
+ *                  ->setStyles($styles)->setTitle($title)->setColumnFormats($columnFormats)->setMerges($merges);
  *    // same as: 
- *    $export = new ArrayExport($data, $styles, $title, $columnFormats);
+ *    $export = new ArrayExport($data, $styles, $title, $columnFormats, $merges);
  *
  */
-class ArrayExport implements FromArray, WithStyles, WithTitle, WithColumnFormatting, WithStrictNullComparison, ShouldAutoSize
+class ArrayExport implements FromArray, WithStyles, WithTitle, WithColumnFormatting, WithStrictNullComparison, ShouldAutoSize,  WithEvents
 {
     protected $data;
     protected $styles;
     protected $title;
     protected $columnFormats;
+    protected $merges;
 
-    public function __construct(array $data, array $styles = [], string $title = 'Worksheet', array $columnFormats = [])
+    public function __construct(array $data, array $styles = [], string $title = 'Worksheet', array $columnFormats = [], array $merges = [])
     {
         $this->data   = $data;
         $this->styles = $styles;
         $this->title  = $title;
         $this->columnFormats = $columnFormats;
+        $this->merges = $merges;
     }
 
     public function array(): array
@@ -112,5 +114,38 @@ class ArrayExport implements FromArray, WithStyles, WithTitle, WithColumnFormatt
     public function columnFormats(): array
     {
         return $this->columnFormats;
+    }
+
+
+
+    /**
+     * @return array
+     */
+    public function registerEvents(): array
+    {
+        return [
+            // Handle by a closure.
+            AfterSheet::class => function(AfterSheet $event) {
+                foreach ($this->merges as $merge) {
+                    // code...
+                    $event->sheet->getDelegate()->mergeCells($merge);
+                }
+            },
+            
+            // Array callable, refering to a static method.
+//            BeforeWriting::class => [self::class, 'beforeWriting'],
+            
+            // Using a class with an __invoke method.
+//            BeforeSheet::class => new BeforeSheetHandler()
+        ];
+    }
+
+
+    public function setMerges(array $merges = [])
+    {
+        
+        $this->merges = $merges;
+
+        return $this;
     }
 }

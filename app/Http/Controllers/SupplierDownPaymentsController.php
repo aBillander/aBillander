@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\SupplierPaymentBounced;
 use App\Events\SupplierPaymentReceived;
+use App\Helpers\Exports\ArrayExport;
 use App\Models\Bank;
 use App\Models\Configuration;
 use App\Models\Context;
@@ -17,6 +18,8 @@ use App\Traits\DateFormFormatterTrait;
 use App\Traits\ModelAttachmentControllerTrait;
 use Excel;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class SupplierDownPaymentsController extends Controller
 {
@@ -594,53 +597,31 @@ class SupplierDownPaymentsController extends Controller
         $data[] = ['', '', 'Total:', $total_amount * 1.0];
 
 
-        $sheetName = 'Anticipos a Proveedores' ;
+        $n = count($data);
+        $m = $n - 1;
 
-        // abi_r($data, true);
+        $styles = [
+            'A6:R6'    => ['font' => ['bold' => true]],
+//            "C$n:C$n"  => ['font' => ['bold' => true, 'italic' => true]],
+            "D$n:D$n"  => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+//            'B' => NumberFormat::FORMAT_TEXT,
+//            'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'D' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:C1', 'A2:C2', 'A3:C3', 'A4:C4'];
+
+        $sheetTitle = 'Anticipos a Proveedores';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Anticipos_a_Proveedores', function($excel) use ($sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:C1');
-                $sheet->mergeCells('A2:C2');
-                $sheet->mergeCells('A3:C3');
-                $sheet->mergeCells('A4:C4');
-                
-                $sheet->getStyle('A6:R6')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-                    'B' => 'dd/mm/yyyy',
-//                    'E' => '0.00%',
-                    'D' => '0.00',
-//                    'F' => '@',
-                ));
-                
-                $n = count($data);
-                $m = $n - 1;
-                $sheet->getStyle("D$n:D$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

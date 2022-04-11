@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\SalesRepCenter;
 
-use App\Http\Controllers\Controller;
+use App\Helpers\Exports\ArrayExport;
 use App\Models\Address;
 use App\Models\Configuration;
 use App\Models\Context;
@@ -13,7 +13,8 @@ use App\Traits\DateFormFormatterTrait;
 use Auth;
 use Excel;
 use Illuminate\Http\Request;
-use View;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class AbsrcWarehousesController extends Controller
 {
@@ -276,58 +277,27 @@ class AbsrcWarehousesController extends Controller
         }
 
 
-        $sheetName = 'Productos en Almacén' ;
+        $styles = [
+            'A2:C2'    => ['font' => ['bold' => true]],
+            'A6:D6'    => ['font' => ['bold' => true]],
+        ];
 
-        // abi_r($data, true);
+        $columnFormats = [
+            'B' => NumberFormat::FORMAT_TEXT,
+//            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'H' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:C1', 'A2:C2', 'A3:C3', 'A4:C4'];
+
+        $sheetTitle = 'Productos en Almacén';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Productos en Almacén', function($excel) use ($sheetName, $data) {
-
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:C1');
-                $sheet->mergeCells('A2:C2');
-                $sheet->mergeCells('A3:C3');
-                $sheet->mergeCells('A4:C4');
-                
-                $sheet->getStyle('A2:C2')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-                
-                $sheet->getStyle('A6:D6')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-//                    'F' => 'dd/mm/yyyy',
-//                    'G' => 'dd/mm/yyyy',
-//                    'E' => '0.00%',
-                    'H' => '0.00',
-//                    'F' => '@',
-                ));
-                
-                $n = count($data);
-                $m = $n - 1;
-                $sheet->getStyle("H$n:H$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
 	}
 

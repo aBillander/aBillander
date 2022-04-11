@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\StockMovementException;
-use App\Http\Controllers\Controller;
+use App\Helpers\Exports\ArrayExport;
 use App\Models\Combination;
 use App\Models\Configuration;
 use App\Models\Context;
@@ -13,6 +13,8 @@ use App\Models\StockMovement;
 use App\Traits\DateFormFormatterTrait;
 use Excel;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use View, Cookie;
 
 class StockMovementsController extends Controller 
@@ -280,12 +282,42 @@ class StockMovementsController extends Controller
                           ->get();
 
         // Limit number of records
-        if ( ($count=$mvts->count()) > 1000 )
+        if ( ($count=$mvts->count()) > 1500 )
         	return redirect()->back()
 					->with('error', l('Too many Records for this Query &#58&#58 (:id) ', ['id' => $count], 'layouts'));
 
         // Initialize the array which will be passed into the Excel generator.
         $data = []; 
+
+        if ( $request->input('date_from_form') && $request->input('date_to_form') )
+        {
+            $ribbon = 'entre ' . $request->input('date_from_form') . ' y ' . $request->input('date_to_form');
+
+        } else
+
+        if ( !$request->input('date_from_form') && $request->input('date_to_form') )
+        {
+            $ribbon = 'hasta ' . $request->input('date_to_form');
+
+        } else
+
+        if ( $request->input('date_from_form') && !$request->input('date_to_form') )
+        {
+            $ribbon = 'desde ' . $request->input('date_from_form');
+
+        } else
+
+        if ( !$request->input('date_from_form') && !$request->input('date_to_form') )
+        {
+            $ribbon = 'todas';
+
+        }
+
+        // Sheet Header Report Data
+        $data[] = [Context::getContext()->company->name_fiscal];
+        $data[] = ['Movimientos de Stock -::- '.date('d M Y H:i:s'), '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];		//, date('d M Y H:i:s')];
+        $data[] = ['Fechas: ' . $ribbon];
+        $data[] = [''];
 
         // Define the Excel spreadsheet headers
         $headers = [ 
@@ -317,6 +349,33 @@ class StockMovementsController extends Controller
 
             $data[] = $row;
         }
+
+
+        $styles = [
+            'A5:AC5'    => ['font' => ['bold' => true]],
+//            "C$n:C$n"  => ['font' => ['bold' => true, 'italic' => true]],
+//            "D$n:D$n"  => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+//            'B' => NumberFormat::FORMAT_TEXT,
+//            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+//            'D' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:C1', 'A2:C2', 'A3:C3', 'A4:C4'];
+
+        $sheetTitle = 'Movimientos de Stock';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $sheetTitle;
+
+        // Generate and return the spreadsheet
+        return Excel::download($export, $sheetFileName.'.xlsx');
+
+
+
 
         $sheetName = 'Stock Movements' ;
 

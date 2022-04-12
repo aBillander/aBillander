@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Action;
 use App\Models\ActionType;
+use App\Models\Configuration;
 use App\Models\Customer;
 use App\Models\SalesRep;
 use App\Models\User;
@@ -31,13 +32,37 @@ class CustomerActionsController extends  Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($customerId)
-    {        
-        $customer = $this->customer
-                         ->with('actions')
-                         ->findOrFail($customerId);
+    public function index($customerId, Request $request)
+    {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
 
-        abi_r($customer->actions);
+        $items_per_page = intval($request->input('items_per_page', Configuration::getInt('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
+        
+        $customer = $this->customer->findOrFail($customerId);
+
+        $actions = $this->action
+                    ->whereHas('customer', function ($query) use ($customerId) {
+                            $query->where('id', $customerId);
+                        })
+                    ->filter( $request->all() )
+                    ->with('actiontype')
+                    ->with('salesrep')
+                    ->with('contact')
+                    ->orderBy('due_date', 'desc');
+
+        $actions = $actions->paginate( $items_per_page );
+
+        $actions->setPath('actions');
+
+        $statusList = Action::getStatusList();
+
+        $action_typeList = ActionType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
+
+        return view('customer_actions.index_by_customer', compact('customer', 'actions', 'statusList', 'action_typeList', 'items_per_page'));
     }
 
     /**
@@ -200,5 +225,38 @@ class CustomerActionsController extends  Controller
         
         return redirect( $back_route )
             ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts') );
+    }
+
+
+    /* **************************************************************************************** */
+
+
+    public function dashboard(Request $request)
+    {
+        // Dates (cuen)
+        // $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
+        $items_per_page = intval($request->input('items_per_page', Configuration::getInt('DEF_ITEMS_PERPAGE')));
+        if ( !($items_per_page >= 0) ) 
+            $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
+
+        $actions = $this->action
+                    ->filter( $request->all() )
+                    ->with('actiontype')
+                    ->with('customer')
+                    ->with('salesrep')
+                    ->with('contact')
+                    ->orderBy('due_date', 'desc');
+
+        $actions = $actions->paginate( $items_per_page );
+
+        $actions->setPath('dashboard');
+
+        $statusList = Action::getStatusList();
+
+        $action_typeList = ActionType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+
+
+        return view('customer_actions.index', compact('actions', 'statusList', 'action_typeList', 'items_per_page'));
     }
 }

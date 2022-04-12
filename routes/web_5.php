@@ -438,6 +438,9 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::resource('customers.contacts', 'CustomerContactsController');
         Route::resource('customers.actions' , 'CustomerActionsController' );
+        Route::get('customers/actions/dashboard' , 'CustomerActionsController@dashboard' )->name('customers.actions.dashboard');
+
+        Route::resource('actiontypes', 'ActionTypesController');
 
         Route::post('customers/{id}/attachment',         'CustomersController@attachmentStore'  )->name('customers.attachment.store'  );
         Route::get( 'customers/{id}/attachment/{aid}',   'CustomersController@attachmentShow'   )->name('customers.attachment.show'   );

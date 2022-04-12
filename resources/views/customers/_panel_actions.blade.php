@@ -111,7 +111,7 @@
                     <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
                             href="{{ URL::to('customers/'.$customer->id.'/actions/' . $action->id . '?back_route=' . urlencode('customers/' . $customer->id . '/edit#actions') ) }}" 
                             data-content="{{l('You are going to delete a record. Are you sure?', [], 'layouts')}}" 
-                            data-title="{{ l('Contacts') }} :: ({{$action->id}}) {{ $action->full_name }} " 
+                            data-title="{{ l('Commercial Actions') }} :: ({{$action->id}}) {{ $action->name }} " 
                             onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
 
                     @else

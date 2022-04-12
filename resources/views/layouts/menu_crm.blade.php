@@ -10,7 +10,7 @@
                             </a>
                         </li>
                          <li>
-                            <a href="{{ URL::to('crm/home') }}">
+                            <a href="{{ URL::to('customers/actions/dashboard') }}">
                                  <i class="fa fa-dashboard text-info"></i> 
                                  {{l('Customers Dashboard', [], 'layouts')}}
                             </a>

@@ -13,6 +13,7 @@ return [
 
 	'Action' => 'Acción Comercial',
 	'Actions' => 'Acciones Comerciales',
+	'Customer Actions' => 'Acciones Comerciales',
 	'Back to Actions'     => 'Volver a Acciones Comerciales',
 
 	/*
@@ -32,6 +33,7 @@ return [
 	'Name'     => 'Nombre',
 	'Priority' => 'Prioridad',
 	'Description' => 'Descripción',
+	'Customer' => 'Cliente',
 
 	'Start Date' => 'Fecha de Inicio',
 	'Due Date' => 'Fecha de Vencimiento',

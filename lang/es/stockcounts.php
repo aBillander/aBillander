@@ -25,11 +25,7 @@ return [
 	'Stock Count Lines'     => 'Líneas de Inventario',
 	'Process Stock Count'     => 'Procesar Inventario',
 	'You are going to UPDATE the Stock of Products in Warehouse <i><u>:ws</u></i>. Are you sure?' => 'Está a punto de ACTUALIZAR el Stock de Productos en el Almacén <i><u>:ws</u></i>. ¿Está seguro?',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
+
+	'Something went wrong. The stack trace is printed below:'     => 'Algo salió mal. El informe detallado se muestra a continuación:',
 
 ];

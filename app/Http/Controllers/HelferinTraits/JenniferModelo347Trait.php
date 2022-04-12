@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
+use App\Helpers\Exports\ArrayExport;
 use App\Models\Configuration;
 use App\Models\Context;
 use App\Models\Customer;
-use App\Models\Modelo347;
 use App\Models\Product;
+use App\Helpers\Modelo347;
 use App\Helpers\Tools;
 use Carbon\Carbon;
 use Excel;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 trait JenniferModelo347Trait
 {
@@ -250,72 +253,45 @@ foreach ($customers as $customer) {
 
 //        $i = count($data);
 
-        $sheetName = 'Acumulados 347';
-
         $nbr_years = 0;
 
+
+        $n = 5+1+$suppliers_count+2;
+
+        $n1 = 5+1+$suppliers_count;
+        $m1 = $n1;    //  - 3;
+
+        $n2 = count($data);
+        $m2 = $n2;    //  - 3;
+
+        $styles = [
+            'A5:L5'    => ['font' => ['bold' => true]],
+            "A$n:L$n"  => ['font' => ['bold' => true]],
+            "E$m1:F$n1"  => ['font' => ['bold' => true]],
+            "E$m2:F$n2"  => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+            'A' => NumberFormat::FORMAT_TEXT,
+//            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'F' => NumberFormat::FORMAT_NUMBER_00,
+            'I' => NumberFormat::FORMAT_NUMBER_00,
+            'J' => NumberFormat::FORMAT_NUMBER_00,
+            'K' => NumberFormat::FORMAT_NUMBER_00,
+            'L' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:C1', 'A2:C2', 'A3:C3'];
+
+        $sheetTitle = 'Acumulados 347';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = 'Acumulados 347 - '.$mod347_year;
+
         // Generate and return the spreadsheet
-        Excel::create('Acumulados 347 - '.$mod347_year, function($excel) use ($sheetName, $data, $nbr_years, $suppliers_count) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data, $nbr_years, $suppliers_count) {
-                
-                $sheet->mergeCells('A1:C1');
-                $sheet->mergeCells('A2:C2');
-                $sheet->mergeCells('A3:C3');
-
-                // $w = count($data[5+1]);
-
-                $sheet->getStyle('A5:L5')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $n = 5+1+$suppliers_count+2;
-                $sheet->getStyle("A$n:L$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-//                    'B' => 'dd/mm/yyyy',
-//                    'C' => 'dd/mm/yyyy',
-                    'A' => '@',
-                    'F' => '0.00',
-                    'I' => '0.00',
-                    'J' => '0.00',
-                    'K' => '0.00',
-                    'L' => '0.00',
-
-                ));
-                
-                $n = 5+1+$suppliers_count;
-                $m = $n;    //  - 3;
-                $sheet->getStyle("E$m:F$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-                
-                $n = count($data);
-                $m = $n;    //  - 3;
-                $sheet->getStyle("E$m:F$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
     }
 
 
@@ -329,7 +305,7 @@ foreach ($customers as $customer) {
         $mod347 = new Modelo347( $mod347_year );
 
         // Attached file stuff
-        $data = $mod347->getCustomerInvoicesAttachment($customer_id, true);
+        return $mod347->getCustomerInvoicesAttachment($customer_id, true);
     }   
 
 
@@ -338,7 +314,7 @@ foreach ($customers as $customer) {
         $mod347 = new Modelo347( $mod347_year );
 
         // Attached file stuff
-        $data = $mod347->getSupplierInvoicesAttachment($supplier_id, true);
+        return $mod347->getSupplierInvoicesAttachment($supplier_id, true);
     }
 
 

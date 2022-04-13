@@ -33,11 +33,11 @@ trait JenniferCustomerInvoicesA3
         $this->mergeFormDates( ['invoices_date_from', 'invoices_date_to'], $request );
 
         $date_from = $request->input('invoices_date_from')
-                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('invoices_date_from'))
+                     ? Carbon::createFromFormat('Y-m-d', $request->input('invoices_date_from'))
                      : null;
         
         $date_to   = $request->input('invoices_date_to'  )
-                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('invoices_date_to'  ))
+                     ? Carbon::createFromFormat('Y-m-d', $request->input('invoices_date_to'  ))
                      : null;
         
         // $invoices_report_format = $request->input('invoices_report_format');

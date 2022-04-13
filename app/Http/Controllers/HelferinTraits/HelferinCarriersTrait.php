@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
+use App\Helpers\Exports\ArrayExport;
 use App\Models\Carrier;
 use App\Models\Context;
 use App\Models\CustomerShippingSlip;
+use Carbon\Carbon;
 use Excel;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 trait HelferinCarriersTrait
 {
@@ -17,11 +21,11 @@ trait HelferinCarriersTrait
         $this->mergeFormDates( ['carriers_date_from', 'carriers_date_to'], $request );
 
         $date_from = $request->input('carriers_date_from')
-                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('carriers_date_from'))->startOfDay()
+                     ? Carbon::createFromFormat('Y-m-d', $request->input('carriers_date_from'))->startOfDay()
                      : null;
         
         $date_to   = $request->input('carriers_date_to'  )
-                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('carriers_date_to'  ))->endOfDay()
+                     ? Carbon::createFromFormat('Y-m-d', $request->input('carriers_date_to'  ))->endOfDay()
                      : null;
 
         //             abi_r($date_from.' - '.$date_to);die();
@@ -115,7 +119,7 @@ trait HelferinCarriersTrait
                 $row[] = $document->document_reference;
                 $row[] = abi_date_short($document->document_date);
                 $row[] = $document->shipment_status_name;
-                $row[] = $document->carrier->name;
+                $row[] = optional($document->carrier)->name;
                 $row[] = (int) $document->number_of_packages;
                 $row[] = (float) $document->weight;
                 $row[] = (float) $document->volume;
@@ -126,58 +130,28 @@ trait HelferinCarriersTrait
 
         }
 
-        $sheetName = 'Albaranes ' . $request->input('carriers_date_from') . ' ' . $request->input('carriers_date_to');
+
+        $styles = [
+            'A4:I4'    => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+            'A' => NumberFormat::FORMAT_TEXT,
+//            'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'F' => NumberFormat::FORMAT_NUMBER_00,
+            'G' => '0.000',
+        ];
+
+        $merges = ['A1:C1', 'A2:C2'];
+
+        $sheetTitle = 'Transportistas_' . $request->input('carriers_date_from') . '_' . $request->input('carriers_date_to');
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Albaranes', function($excel) use ($sheetName, $data) {
-
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:C1');
-                $sheet->mergeCells('A2:C2');
-
-                $sheet->getStyle('A4:I4')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                // https://hotexamples.com/examples/maatwebsite.excel.classes/LaravelExcelWorksheet/-/php-laravelexcelworksheet-class-examples.html
-                // Won't work:
-//                $sheet->getStyle('G5:G999')->applyFromArray([
-//                    'horizontal' => 3,      // PHPExcel_Style_Alignment::HORIZONTAL_RIGHT
-//                ]);
-
-//                $sheet->getStyle('G5:G999')->applyFromArray([
-//                    'alignment' => [
-//                        'horizontal' => 3,
-//                    ]
-//                ]);
-
-                $sheet->setColumnFormat(array(
-//                    'B' => 'dd/mm/yyyy',
-//                    'C' => 'dd/mm/yyyy',
-                    'A' => '@',
-//                    'C' => '0.00',
-                    'F' => '0.00',
-                    'G' => '0.000',
-
-                ));
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-
-        return redirect()->back()
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
     }
 

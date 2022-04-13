@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
+use App\Helpers\Exports\ArrayExport;
 use App\Models\Context;
 use App\Models\Customer;
 use App\Models\Payment;
+use Carbon\Carbon;
 use Excel;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 trait HelferinCustomerVouchersTrait
 {
@@ -17,11 +21,11 @@ trait HelferinCustomerVouchersTrait
         $this->mergeFormDates( ['customer_vouchers_date_from', 'customer_vouchers_date_to'], $request );
 
         $date_from = $request->input('customer_vouchers_date_from')
-                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('customer_vouchers_date_from'))->startOfDay()
+                     ? Carbon::createFromFormat('Y-m-d', $request->input('customer_vouchers_date_from'))->startOfDay()
                      : null;
         
         $date_to   = $request->input('customer_vouchers_date_to'  )
-                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('customer_vouchers_date_to'  ))->endOfDay()
+                     ? Carbon::createFromFormat('Y-m-d', $request->input('customer_vouchers_date_to'  ))->endOfDay()
                      : null;
 
         //             abi_r($date_from.' - '.$date_to);die();
@@ -121,45 +125,28 @@ trait HelferinCustomerVouchersTrait
 
         }
 
-        $sheetName = 'Recibos de Clientes';
+
+
+        $styles = [
+            'A4:L4'    => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+            'A' => NumberFormat::FORMAT_TEXT,
+//            'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'F' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:C1', 'A2:C2'];
+
+        $sheetTitle = 'Recibos de Clientes';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Recibos de Clientes', function($excel) use ($sheetName, $data) {
-
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:C1');
-                $sheet->mergeCells('A2:C2');
-
-                $sheet->getStyle('A4:L4')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-//                    'B' => 'dd/mm/yyyy',
-//                    'C' => 'dd/mm/yyyy',
-                    'A' => '@',
-//                    'C' => '0.00',
-                    'F' => '0.00',
-
-                ));
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-
-        return redirect()->back()
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
     }
 

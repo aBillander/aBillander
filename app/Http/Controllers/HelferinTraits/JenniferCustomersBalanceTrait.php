@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
+use App\Helpers\Exports\ArrayExport;
 use App\Models\Configuration;
 use App\Models\Context;
 use App\Models\Customer;
@@ -9,15 +10,12 @@ use App\Models\Payment;
 use Carbon\Carbon;
 use Excel;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-trait JenniferCustomersBalance
+trait JenniferCustomersBalanceTrait
 {
 
-    /**
-     * Redirect to Model 347 dashboard.
-     *
-     * @return 
-     */
     public function reportCustomersBalance(Request $request)
     {
         // abi_r($request->all());
@@ -210,86 +208,42 @@ if( $customer_id > 0 ){
 }
 
 
-        // Continue to generate spreadsheet
-        $sheetName = 'Saldo de Clientes';
+        $styles = [
+            'A4:E4'    => ['font' => ['bold' => true]],
+        ];
+
+        $n = $n1;
+        $styles[ "D$n:E$n" ] = ['font' => ['bold' => true]];
+
+        $n = $n1+2;
+        $styles[ "A$n:D$n" ] = ['font' => ['bold' => true]];
+
+        $merges = ['A1:C1', 'A2:C2', "A$n:C$n"];
+
+        $n = $n1+4;
+        $styles[ "A$n:Q$n" ] = ['font' => ['bold' => true]];
+
+        $n = count($data);
+        $m = $n - 3;
+        $styles[ "I$n:J$n" ] = ['font' => ['bold' => true]];
+
+
+        $columnFormats = [
+//            'B' => NumberFormat::FORMAT_TEXT,
+//            'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+//            'D' => NumberFormat::FORMAT_NUMBER_00,
+        ];
 
         $suffix = Carbon::createFromFormat('Y-m-d', $request->input('balance_date_to'  ));
+        $sheetTitle = 'Saldo de Clientes '.$suffix;
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Saldo de Clientes '.$suffix, function($excel) use ($sheetName, $data, $n1) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data, $n1) {
-                
-                $sheet->mergeCells('A1:C1');
-                $sheet->mergeCells('A2:C2');
-
-                $sheet->getStyle('A4:E4')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-//                    'B' => 'dd/mm/yyyy',
-//                    'C' => 'dd/mm/yyyy',
-//                    'A' => '@',
-//                    'C' => '0.00',
-                    'D' => '0.00',
-
-                ));
-
-                $n = $n1;
-                $sheet->getStyle("D$n:E$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $n = $n1+2;
-                $sheet->mergeCells("A$n:C$n");
-                $sheet->getStyle("A$n:D$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $n = $n1+4;
-                $sheet->getStyle("A$n:Q$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-                
-                $n = count($data);
-                $m = $n - 3;
-                $sheet->getStyle("I$n:J$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-
-
-
-        // abi_r($customers);die();
-
-
-        // abi_r($request->all(), true);
-
-
-        return redirect()->back()
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
     }
 
 

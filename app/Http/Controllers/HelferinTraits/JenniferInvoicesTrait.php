@@ -2,33 +2,23 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
+use App\Helpers\Exports\ArrayExport;
 use App\Models\Configuration;
 use App\Models\Context;
-use App\Models\Customer;
 use App\Models\CustomerInvoice;
-use App\Models\Payment;
 use App\Models\Tax;
 use App\Models\TaxRule;
 use Carbon\Carbon;
 use Excel;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-trait JenniferCustomerInvoicesA3
+trait JenniferInvoicesTrait
 {
 
-    /**
-     * Export Invoices to A3 Accounting.
-     * 
-     *      $invoices_report_format = 'a3'
-     *
-     * @return 
-     */
-    public function reportCustomerInvoicesA3(Request $request)
+    public function reportInvoices(Request $request)
     {
-        // return redirect()->back()
-        //        ->with('error', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
-        
-
         // Dates (cuen)
         $this->mergeFormDates( ['invoices_date_from', 'invoices_date_to'], $request );
 
@@ -40,9 +30,12 @@ trait JenniferCustomerInvoicesA3
                      ? Carbon::createFromFormat('Y-m-d', $request->input('invoices_date_to'  ))
                      : null;
         
-        // $invoices_report_format = $request->input('invoices_report_format');
-        // Should be:
-        $invoices_report_format = 'a3';
+        $invoices_report_format = $request->input('invoices_report_format');
+
+        if ( $invoices_report_format == 'a3' )
+        {
+            return $this->reportCustomerInvoicesA3( $request );
+        }
 
         // Customer?
         $customer_id = (int) $request->input('invoices_customer_id', 0);
@@ -108,7 +101,7 @@ trait JenniferCustomerInvoicesA3
 
         // Sheet Header Report Data
         $data[] = [Context::getContext()->company->name_fiscal];
-        $data[] = ['A3 Contabilidad :: Facturas de ' . $customer_ribbon . ', ' . $ribbon, '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Facturas de ' . $customer_ribbon . ', ' . $ribbon, '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
         // All Taxes
@@ -117,26 +110,32 @@ trait JenniferCustomerInvoicesA3
 
 
         // Define the Excel spreadsheet headers
-        $header_names = ['Número', 'Fecha', 'NIF', 'ID Contabilidad', 'Cliente', 'Base', 'Tipo '.Configuration::get('CUSTOMER_INVOICE_TAX_LABEL'), Configuration::get('CUSTOMER_INVOICE_TAX_LABEL')];
+        $header_names = ['Número', 'Fecha', 'NIF', 'ID', 'Cliente', 'Estado', 'Forma de Pago', 'Base', 'IVA', 'Rec', 'Total'];
+
+        // Add more headers
+        if ( $invoices_report_format != 'compact')
+        foreach ( $alltaxes as $alltax )
+        {
+            $header_names[] = 'Base IVA '.$alltax->percent;
+            $header_names[] = 'IVA '.$alltax->percent;
+            $header_names[] = 'RE '.$alltax->equalization_percent;
+        }
 
         $data[] = $header_names;
 
         $sub_totals = [];
 
-//  $invoices_report_format == 'compact'
-//  =>
+if ( $invoices_report_format == 'compact') {
 
         foreach ($documents as $document) {
             $row = [];
-/*
             $row[] = $document->document_reference;
             $row[] = abi_date_short($document->document_date);
             $row[] = $document->customer->identification;
-            $row[] = $document->customer->accounting_id;
+            $row[] = $document->customer->id;
             $row[] = $document->customer->name_fiscal;
-
-            $row[] = '';
-            $row[] = '';
+            $row[] = $document->payment_status;
+            $row[] = $document->paymentmethod->name;
             $row[] = $document->total_tax_excl * 1.0;
             $row[] = 0.0;
             $row[] = 0.0;
@@ -144,11 +143,9 @@ trait JenniferCustomerInvoicesA3
 
             $i = count($data);
             $data[] = $row;
-*/
-            // Taxes breakout
-            $totals = $document->totals( 'accounting' );
 
-            // abi_r($row);abi_r('*****************************');abi_r($totals);die();
+            // Taxes breakout
+            $totals = $document->totals();
 
             foreach ( $alltaxes as $alltax )
             {
@@ -158,19 +155,20 @@ trait JenniferCustomerInvoicesA3
                 $re  = $total['tax_lines']->where('tax_rule_type', 'sales_equalization')->first();
 
                 $row = [];
-                $row[] = $document->document_reference;
-                $row[] = abi_date_short($document->document_date);
-                $row[] = $document->customer->identification;
-                $row[] = $document->customer->accounting_id;
-                $row[] = $document->customer->name_fiscal;
-                $row[] = $iva->taxable_base * 1.0;
+                $row[] = '';
+                $row[] = '';
+                $row[] = '';
+                $row[] = '';
+                $row[] = '';
+                $row[] = '';
                 $row[] = $alltax->percent / 100.0;
+                $row[] = $iva->taxable_base * 1.0;
                 $row[] = $iva->total_line_tax * 1.0;
-//                $row[] = optional($re)->total_line_tax ?? 0.0;
-//                $row[] = '';
+                $row[] = optional($re)->total_line_tax ?? 0.0;
+                $row[] = '';
     
                 $data[] = $row;
-/*
+
                 $data[$i][6+2] += $iva->total_line_tax;
                 $data[$i][7+2] += optional($re)->total_line_tax ?? 0.0;
 
@@ -186,13 +184,79 @@ trait JenniferCustomerInvoicesA3
                     $sub_totals[$alltax->id]['iva']     = $iva->total_line_tax;
                     $sub_totals[$alltax->id]['re']      = optional($re)->total_line_tax ?? 0.0;
                 }
-*/
+
                 // abi_r($sub_totals);
             }
 
         }   // Document loop ends here
 
+} else {
 
+        foreach ($documents as $document) {
+            $row = [];
+            $row[] = $document->document_reference;
+            $row[] = Date::dateTimeToExcel($document->document_date);
+            $row[] = $document->customer->identification;
+            $row[] = $document->customer->id;
+            $row[] = $document->customer->name_fiscal;
+            $row[] = $document->payment_status_name;
+            $row[] = $document->paymentmethod->name;
+            $row[] = $document->total_tax_excl * 1.0;
+            $row[] = 0.0;
+            $row[] = 0.0;
+            $row[] = $document->total_tax_incl * 1.0;
+
+            $i = count($data);
+            // $data[] = $row;
+
+            // Taxes breakout
+            $totals = $document->totals();
+
+            foreach ( $alltaxes as $alltax )
+            {
+                if ( !( $total = $totals->where('tax_id', $alltax->id)->first() ) ) 
+                {
+                    // Empty Group
+                    $row[] = '';
+                    $row[] = '';
+                    $row[] = '';
+
+                    continue;
+                }
+                
+                $iva = $total['tax_lines']->where('tax_rule_type', 'sales')->first();
+                $re  = $total['tax_lines']->where('tax_rule_type', 'sales_equalization')->first();
+
+                $row[] = $iva->taxable_base * 1.0;
+                $row[] = $iva->total_line_tax * 1.0;
+                $row[] = optional($re)->total_line_tax ?? 0.0;
+    
+                // $data[] = $row;
+
+                $row[6+2] += $iva->total_line_tax;
+                $row[7+2] += optional($re)->total_line_tax ?? 0.0;
+
+                if ( array_key_exists($alltax->id, $sub_totals) )
+                {
+                    $sub_totals[$alltax->id]['base']    += $iva->taxable_base;
+                    $sub_totals[$alltax->id]['iva']     += $iva->total_line_tax;
+                    $sub_totals[$alltax->id]['re']      += optional($re)->total_line_tax ?? 0.0;
+                } else {
+                    $sub_totals[$alltax->id] = [];
+                    $sub_totals[$alltax->id]['percent'] = $alltax->percent;
+                    $sub_totals[$alltax->id]['base']    = $iva->taxable_base;
+                    $sub_totals[$alltax->id]['iva']     = $iva->total_line_tax;
+                    $sub_totals[$alltax->id]['re']      = optional($re)->total_line_tax ?? 0.0;
+                }
+
+                // abi_r($sub_totals);
+            }
+
+            $data[] = $row;
+
+        }   // Document loop ends here
+
+}
 
 
 
@@ -207,71 +271,39 @@ trait JenniferCustomerInvoicesA3
             $re += $value['re'];
         }
 
-//        $data[] = [''];
-//        $data[] = ['', '', '', '', '', '', 'Total:', $base * 1.0, $iva * 1.0, $re * 1.0, ($base + $iva + $re) * 1.0];
+        $data[] = [''];
+        $data[] = ['', '', '', '', '', '', 'Total:', $base * 1.0, $iva * 1.0, $re * 1.0, ($base + $iva + $re) * 1.0];
 
-        $fileName  = 'Facturas_A3 ' . $request->input('invoices_date_from') . ' ' . $request->input('invoices_date_to');
-        $sheetName = 'Facturas A3';
+
+        $n = count($data);
+        $m = $n - 1 - count($sub_totals);
+
+        $styles = [
+            'A4:U4'    => ['font' => ['bold' => true]],
+            "E$m:K$n"  => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+//            'A' => NumberFormat::FORMAT_TEXT,
+            'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,       
+            'G' => NumberFormat::FORMAT_PERCENTAGE_00,
+            'H' => NumberFormat::FORMAT_NUMBER_00,
+            'I' => NumberFormat::FORMAT_NUMBER_00,
+            'J' => NumberFormat::FORMAT_NUMBER_00,
+            'K' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:C1', 'A2:C2'];
+
+        $sheetTitle = 'Facturas_' . $request->input('invoices_date_from') . '_' . $request->input('invoices_date_to');
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create($fileName , function($excel) use ($sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:C1');
-                $sheet->mergeCells('A2:C2');
-                
-                $sheet->getStyle('A4:U4')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-                    'B' => 'dd/mm/yyyy',
-//                    'E' => '0.00%',
-                    'F' => '0.0000 €',
-                    'G' => '0.00%',
-                    'H' => '0.0000 €',
-//                    'I' => '0.0000',
-//                    'J' => '0.0000',
-//                    'K' => '0.0000',
-//                    'F' => '@',
-                ));
-/*                
-                $n = count($data);
-                $m = $n - 3;
-                $sheet->getStyle("E$m:K$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-*/
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-
-
-
-
-        // abi_r($request->all(), true);
-
-
-        return redirect()->back()
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
     }
-
-
-
-/* ********************************************************************************************* */    
-
 
 }

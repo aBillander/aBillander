@@ -3,44 +3,43 @@
 namespace App\Http\Controllers\HelferinTraits;
 
 use App\Helpers\Exports\ArrayExport;
+use App\Helpers\Tools;
+use App\Models\Category;
 use App\Models\Configuration;
 use App\Models\Context;
 use App\Models\Customer;
-use App\Models\CustomerShippingSlipLine;
-use App\Models\Product;
-use App\Helpers\Tools;
 use Carbon\Carbon;
 use Excel;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-trait ReportsABCProductSalesTrait
+trait ReportsCategorySalesTrait
 {
 
     /**
-     * ABC Product Sales Report (ABC Analysis).
+     * Category Sales Report.
      *
      * @return Spread Sheet download
      */
-    public function reportABCProductSales(Request $request)
+    public function reportCategorySales(Request $request)
     {
         // abi_r(Carbon::now()->month);die();
 
-        $product_sales_month_from = $request->input('abc_product_sales_month_from', 1);
+        $category_sales_month_from = $request->input('category_sales_month_from', 1);
         
-        $product_sales_month_to   = $request->input('abc_product_sales_month_to', Carbon::now()->month );
+        $category_sales_month_to   = $request->input('category_sales_month_to', Carbon::now()->month );
 
-        $nbr_years = $request->input('abc_product_sales_years_to_compare', 1);
+        $nbr_years = $request->input('category_sales_years_to_compare', 1);
 
-        $document_total_tax = $request->input('abc_product_sales_value', 'total_tax_incl');
+        $document_total_tax = $request->input('category_sales_value', 'total_tax_incl');
 
         if ( !in_array($document_total_tax, ['total_tax_incl', 'total_tax_excl']) )
             $document_total_tax = 'total_tax_incl';
  
-        $customer_id = $request->input('abc_product_sales_customer_id', 0);
-
-        $model = $request->input('abc_product_sales_model', Configuration::get('RECENT_SALES_CLASS'));
+        $customer_id = $request->input('category_sales_customer_id', 0);
+ 
+        $model = $request->input('category_sales_model', Configuration::get('RECENT_SALES_CLASS'));
 
         // calculate dates
         // http://zetcode.com/php/carbon/
@@ -48,8 +47,8 @@ trait ReportsABCProductSalesTrait
         // Current year
         $current_year = Carbon::now()->year;
         $first_year = Carbon::now()->year - $nbr_years;
-        $month_from = $product_sales_month_from;
-        $month_to   = $product_sales_month_to;
+        $month_from = $category_sales_month_from;
+        $month_to   = $category_sales_month_to;
         $date_from = Carbon::create($first_year, $month_from, 1)->startOfDay();
         $date_to   = Carbon::create($first_year, $month_to  , 1)->endOfMonth()->endOfDay();
 
@@ -82,35 +81,41 @@ trait ReportsABCProductSalesTrait
         // Wanna dance, Honey Bunny?
 
         
-        // All Products. Lets see:
-        $products = Product::select('id', 'name', 'reference')  // , 'measure_unit_id')
+        // All categories. Lets see:
+        $categories = Category::select('id', 'name')  // , 'measure_unit_id')
+                            ->where('parent_id', '>', 0)    // Only "children"
 //                            ->with('measureunit')
-//                            ->orderBy('reference', 'asc')
+                            ->orderBy('name', 'asc')
 //                            ->take(4)
                             ->get();
 
-        // abi_r($products->count(), true);
+        // abi_r($categories->count(), true);
 
 $k=0;
 // Nice! Lets move on and retrieve Documents
-foreach ($products as $product) {
+foreach ($categories as $category) {
         # code...
         // Initialize
-//        $product-> = 0.0;
+//        $category-> = 0.0;
 
-    $product_date_from = $date_from->copy();
-    $product_date_to   = $date_to->copy();
+    $category_id = $category->id;
+
+    $category_date_from = $date_from->copy();
+    $category_date_to   = $date_to->copy();
 
     foreach ($list_of_years as $year) {
 
-        // abi_r($product->name);
-        // abi_r($product_date_from);
-        // abi_r($product_date_to);
+        // abi_r($category->name);
+        // abi_r($category_date_from);
+        // abi_r($category_date_to);
 
-        $product->{$year} = $class::
+        $category->{$year} = $class::
                           where('line_type', 'product')
-                        ->where('product_id', $product->id)
-                        ->whereHas('document', function ($query) use ( $customer_id, $product_date_from, $product_date_to, $document_reference_date, $is_invoiceable_flag) {
+                        ->whereHas('product', function ($query) use ( $category_id ) {
+
+                                $query->where('category_id', $category_id);
+                        })
+                        ->whereHas('document', function ($query) use ( $customer_id, $category_date_from, $category_date_to, $document_reference_date, $is_invoiceable_flag) {
 
                                 // Closed Documents only
                                 $query->where($document_reference_date, '!=', null);
@@ -122,43 +127,39 @@ foreach ($products as $product) {
                                 if ( $is_invoiceable_flag )
                                     $query->where('is_invoiceable', '>', 0);
 
-                                if ( $product_date_from )
-                                    $query->where($document_reference_date, '>=', $product_date_from);
+                                if ( $category_date_from )
+                                    $query->where($document_reference_date, '>=', $category_date_from);
                                 
-                                if ( $product_date_to )
-                                    $query->where($document_reference_date, '<=', $product_date_to);
+                                if ( $category_date_to )
+                                    $query->where($document_reference_date, '<=', $category_date_to);
                         })
                         ->sum($document_total_tax);
 
-        $product_date_from->addYear();
-        $product_date_to->addYear();
+        $category_date_from->addYear();
+        $category_date_to->addYear();
 
     }
     $k++;
     // if ($k==4) break;
 }
 // die();
-// abi_r($products, true);
+// abi_r($categories, true);
         // Lets get dirty!!
         // See: https://laraveldaily.com/laravel-excel-export-formatting-and-styling-cells/
-
-        // ABC Sorting
-        $theYear = $list_of_years[0];
-        $products = $products->SortByDesc($theYear);
-
-        $abc_total = $products->sum($theYear);
 
 
         // Initialize the array which will be passed into the Excel generator.
         $data = [];
 
-        $customer_label = 'todos';
+        $customer_label = (int) $customer_id > 0
+                        ? Customer::findOrFail($customer_id)->name_regular
+                        : 'todos';
 
         // Sheet Header Report Data
         $data[] = [Context::getContext()->company->name_fiscal];
 
         $row = [];
-        $row[] = 'Análisis ABC de Productos ('.l($model).') ';
+        $row[] = 'Listado de Ventas comparativas por Categoría ('.l($model).') ';
         foreach ($list_of_years as $year) {
             // $row[] = '';
         }
@@ -171,18 +172,16 @@ foreach ($products as $product) {
         $ribbon = $document_total_tax == 'total_tax_incl' ?
                                             'Ventas son con Impuestos incluidos.' :
                                             'Ventas son sin Impuestos.';
-        // $data[] = [ 'Listado de Ventas comparativas por Producto ('.l($model).') ', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
-        $data[] = ['Meses: desde '.$selectorMonthList[$product_sales_month_from].' hasta '.$selectorMonthList[$product_sales_month_to].'. '.$ribbon];
+        // $data[] = [ 'Listado de Ventas comparativas por categoryo ('.l($model).') ', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
+        $data[] = ['Meses: desde '.$selectorMonthList[$category_sales_month_from].' hasta '.$selectorMonthList[$category_sales_month_to].'. '.$ribbon];
         $data[] = [''];
 
 
         // Define the Excel spreadsheet headers
-        $header_names = ['Referencia', 'Nombre', ];
+        $header_names = ['ID', 'Nombre', ];
         foreach ($list_of_years as $year) {
             $header_names[] = 'Año '.$year;
         }
-        $header_names[] = 'Contribución (%)';
-        $header_names[] = 'Acumulado (%)';
 
         $data[] = $header_names;
 
@@ -195,20 +194,17 @@ foreach ($products as $product) {
             $totals[$year] = 0.0;
         }
 
-        foreach ($products as $product) 
+        foreach ($categories as $category) 
         {
                 $row = [];
-                $row[] = (string) $product->reference;
-                $row[] = (string) $product->name;
+                $row[] = $category->id;
+                $row[] = (string) $category->name;
 
                 foreach ($list_of_years as $year) {
-                    $row[] = (float) $product->{$year};
+                    $row[] = (float) $category->{$year};
 
-                    $totals[$year] += (float) $product->{$year};
+                    $totals[$year] += (float) $category->{$year};
                 }
-
-                $row[] = abi_safe_division($product->{$theYear}, $abc_total) * 100.0;
-                $row[] = abi_safe_division($totals[$theYear], $abc_total) * 100.0;
     
                 $data[] = $row;
 
@@ -230,7 +226,6 @@ foreach ($products as $product) {
 //        $i = count($data);
 
 
-
         $styles = [];
 
         $w = count($data[5+1]);
@@ -245,7 +240,6 @@ foreach ($products as $product) {
 //            'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
             'C' => NumberFormat::FORMAT_NUMBER_00,
             'D' => NumberFormat::FORMAT_NUMBER_00,
-            'E' => NumberFormat::FORMAT_NUMBER_00,
         ];
 
         $mergeThis = 'C2:'.chr(ord('C') + $nbr_years).'2';
@@ -256,7 +250,7 @@ foreach ($products as $product) {
 
         $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
 
-        $sheetFileName = 'ABC_Ventas_Productos';
+        $sheetFileName = 'Ventas_Categorias-' . l($model);
 
         // Generate and return the spreadsheet
         return Excel::download($export, $sheetFileName.'.xlsx');

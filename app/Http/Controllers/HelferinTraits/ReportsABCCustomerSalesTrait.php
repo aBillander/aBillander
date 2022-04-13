@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
+use App\Helpers\Exports\ArrayExport;
 use App\Models\Configuration;
 use App\Models\Context;
 use App\Models\Customer;
@@ -11,6 +12,8 @@ use App\Helpers\Tools;
 use Carbon\Carbon;
 use Excel;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 trait ReportsABCCustomerSalesTrait
 {
@@ -182,7 +185,7 @@ foreach ($customers as $customer) {
         // Define the Excel spreadsheet headers
         $header_names = ['ID', 'Referencia', 'Nombre', ];
         foreach ($list_of_years as $year) {
-            $header_names[] = $year;
+            $header_names[] = 'Año '.$year;
         }
         $header_names[] = 'Contribución (%)';
         $header_names[] = 'Acumulado (%)';
@@ -202,7 +205,7 @@ foreach ($customers as $customer) {
         {
                 $row = [];
                 $row[] = $customer->id;
-                $row[] = (string) $customer->reference_external;
+                $row[] = '';    // (string) $customer->reference_external;
                 $row[] = (string) $customer->name_regular;
 
                 foreach ($list_of_years as $year) {
@@ -211,8 +214,8 @@ foreach ($customers as $customer) {
                     $totals[$year] += (float) $customer->{$year};
                 }
 
-                $row[] = ($customer->{$theYear} / $abc_total) * 100.0;
-                $row[] = ($totals[$theYear] / $abc_total) * 100.0;
+                $row[] = abi_safe_division($customer->{$theYear}, $abc_total) * 100.0;
+                $row[] = abi_safe_division($totals[$theYear], $abc_total) * 100.0;
 
                 $data[] = $row;
 
@@ -234,55 +237,42 @@ foreach ($customers as $customer) {
 
 //        $i = count($data);
 
-        $sheetName = 'Ventas ' . l($model);
+
+        $styles = [];
+
+        $w = count($data[5+1]);
+        $styles[ 'A6:'.chr(ord('A') + $w - 1).'6' ] = ['font' => ['bold' => true]];
+
+        $n = count($data);
+        $m = $n;    //  - 3;
+        $styles[ "C$m:".chr(ord('A') + $w - 1)."$n" ] = ['font' => ['bold' => true]];
+
+        $columnFormats = [
+            'A' => NumberFormat::FORMAT_TEXT,
+//            'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'D' => NumberFormat::FORMAT_NUMBER_00,
+            'E' => NumberFormat::FORMAT_NUMBER_00,
+            'F' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:C1', 'A2:C2', 'A3:C3', 'A4:C4'];
+        if ($nbr_years>1)
+        {
+            $mergeThis = 'D2:'.chr(ord('D') + $nbr_years).'2';
+            // https://stackoverflow.com/questions/39314048/increment-letters-like-number-by-certain-value-in-php
+
+            $merges[] = $mergeThis;
+        }
+
+        $sheetTitle = 'Ventas ' . l($model);
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = 'ABC_Ventas_Clientes';
 
         // Generate and return the spreadsheet
-        Excel::create('ABC_Ventas_Clientes', function($excel) use ($sheetName, $data, $nbr_years) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data, $nbr_years) {
-                
-                $sheet->mergeCells('A1:C1');
-                $sheet->mergeCells('A2:C2');
-                $sheet->mergeCells('D2:'.chr(ord('D') + $nbr_years).'2');   // https://stackoverflow.com/questions/39314048/increment-letters-like-number-by-certain-value-in-php
-                $sheet->mergeCells('A3:C3');
-                $sheet->mergeCells('A4:C4');
-
-                $w = count($data[5+1]);
-
-                $sheet->getStyle('A6:'.chr(ord('A') + $w - 1).'6')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-//                    'B' => 'dd/mm/yyyy',
-//                    'C' => 'dd/mm/yyyy',
-                    'A' => '@',
-                    'D' => '0.00',
-                    'E' => '0.00',
-                    'F' => '0.00',
-
-                ));
-                
-                $n = count($data);
-                $m = $n;    //  - 3;
-                $sheet->getStyle("C$m:".chr(ord('A') + $w - 1)."$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
     }
 
 }

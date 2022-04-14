@@ -372,6 +372,8 @@ class CustomersController extends Controller
 
         $bankaccount = $customer->bankaccount;
 
+        $request->session()->flash('tabName', $section);
+
         $this->validate($request, BankAccount::$rules);
 
         if ( $bankaccount )

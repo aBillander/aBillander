@@ -78,31 +78,6 @@
                                  {{l('Price Rules', [], 'layouts')}}
                             </a>
                         </li>
-@if ( AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
                         <li class="divider"></li>
-                         <li>
-                            <a href="{{ URL::to('abccbillboard/edit') }}">
-                                 <!-- img src="{{ asset('assets/theme/new-badge-20.png') }}" --> 
-                                 &nbsp; {{l('ABCC Billboard', [], 'layouts')}}
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-@endif
-                         <li>
-                            <a href="{{ URL::to('shippingmethods') }}">
-                                 {{l('Shipping Methods', [], 'layouts')}}
-                            </a>
-                        </li>
-                         <li>
-                            <a href="{{ URL::to('carriers') }}">
-                                 {{l('Carriers', [], 'layouts')}}
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                         <li>
-                            <a href="{{ URL::to('salesreps') }}">
-                                 {{l('Sales Representatives', [], 'layouts')}}
-                            </a>
-                        </li>
                     </ul>
                 </li>

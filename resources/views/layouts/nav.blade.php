@@ -44,6 +44,8 @@
 
                     @include('layouts/menu_crm')
 
+                    @include('layouts/menu_commercial')
+
                     @include('layouts/menu_sales')
 
                     @include('layouts/menu_mfg')

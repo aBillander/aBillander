@@ -81,7 +81,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                &nbsp; {{ l('Address Book') }}
             </a>
 
-@if ( AbiConfiguration::isTrue('ENABLE_MCRM') )
+@if ( 1 || AbiConfiguration::isTrue('ENABLE_MCRM') )
             <a id="b_contacts" href="#contacts" class="list-group-item" xstyle="background-color: #fcf8e3; color: #c09853;">
                <i class="fa fa-users"></i>
                &nbsp;{{ l('Contacts') }}

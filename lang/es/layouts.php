@@ -211,7 +211,7 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
-	| La ExtraNatural :: layout
+	| Common Language Lines :: extended layout
 	|--------------------------------------------------------------------------
 	|
 	| .
@@ -238,6 +238,9 @@ return [
 	'Parties' => 'Terceros',
 	'Leads' => 'Oportunidades',
 	'Contacts' => 'Contactos',
+
+	'Commercial / CRM' => 'Comercial / CRM',
+	'Action Types' => 'Tipos de Acción Comercial',
 	
 
 

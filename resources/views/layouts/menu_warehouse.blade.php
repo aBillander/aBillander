@@ -83,5 +83,6 @@
                                  {{l('Assembly Orders', [], 'layouts')}}
                             </a>
                         </li>
+                        <li class="divider"></li>
                     </ul>
                 </li>

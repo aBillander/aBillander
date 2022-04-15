@@ -11,7 +11,6 @@ use App\Models\CustomerOrderLine as DocumentLine;
 use App\Models\CustomerOrderLineTax as DocumentLineTax;
 
 use App\Models\ProductionSheet;
-use App\Models\DocumentAscription;
 
 use App\Models\Configuration;
 use App\Models\Sequence;

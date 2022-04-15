@@ -9,7 +9,7 @@ use App\Models\CustomerInvoice;
 use App\Models\CustomerInvoiceLine;
 use App\Models\CustomerInvoiceLineTax;
 use App\Models\CustomerShippingSlip;
-use App\Models\DocumentAscription;
+use App\Helpers\DocumentAscription;
 use App\Models\Tax;
 
 trait CustomerShippingSlipInvoiceableTrait

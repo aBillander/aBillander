@@ -14,7 +14,6 @@ use App\Models\CustomerOrderLineTax;
 use App\Models\CustomerShippingSlip as Document;
 use App\Models\CustomerShippingSlipLine as DocumentLine;
 use App\Models\CustomerShippingSlipLineTax as DocumentLineTax;
-use App\Models\DocumentAscription;
 use App\Models\ProductionSheet;
 use App\Models\Sequence;
 use App\Models\ShippingMethod;

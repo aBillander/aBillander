@@ -7,7 +7,7 @@ use App\Models\CustomerInvoiceLine;
 use App\Models\CustomerInvoiceLineTax;
 
 use App\Models\Configuration;
-use App\Models\DocumentAscription;
+use App\Helpers\DocumentAscription;
 
 trait BillableInvoiceableTrait
 {

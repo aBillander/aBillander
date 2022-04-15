@@ -20,7 +20,7 @@ use App\Models\CustomerQuotationLine as DocumentLine;
 use App\Models\CustomerShippingSlip;
 use App\Models\CustomerShippingSlipLine;
 use App\Models\CustomerShippingSlipLineTax;
-use App\Models\DocumentAscription;
+use App\Helpers\DocumentAscription;
 use App\Models\Product;
 use App\Models\SalesRep;
 use App\Models\Sequence;

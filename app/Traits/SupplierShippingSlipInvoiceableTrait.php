@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use App\Models\ActivityLogger;
 use App\Models\Configuration;
-use App\Models\DocumentAscription;
+use App\Helpers\DocumentAscription;
 use App\Models\Supplier;
 use App\Models\SupplierInvoice;
 use App\Models\SupplierInvoiceLine;

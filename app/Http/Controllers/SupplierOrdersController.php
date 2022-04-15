@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\SupplierOrderConfirmed;
 use App\Models\Configuration;
 use App\Models\Context;
-use App\Models\DocumentAscription;
+use App\Helpers\DocumentAscription;
 use App\Models\MeasureUnit;
 use App\Models\Sequence;
 use App\Models\Supplier;

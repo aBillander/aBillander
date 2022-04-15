@@ -917,6 +917,9 @@ class CustomerShippingSlipsController extends BillableController
             'status'        => 'closed', 
         ];
 
+        if ( $document->payment_method_id )
+            $params['payment_method_id'] = $document->payment_method_id;
+
         // abi_r($params, true);
         
         return $this->invoiceDocumentList( [$id], $params );
@@ -1005,7 +1008,10 @@ class CustomerShippingSlipsController extends BillableController
 //            'carrier_id' => $this->carrier_id,
             'sales_rep_id' => $customer->sales_rep_id,
             'currency_id' => $customer->currency->id,
-            'payment_method_id' => $customer->getPaymentMethodId(),
+            'payment_method_id' => 
+                (isset($params['payment_method_id']) && $params['payment_method_id']) 
+                    ? $params['payment_method_id']
+                    : $customer->getPaymentMethodId(),
             'template_id' => $params['template_id'],
         ];
 

@@ -18,7 +18,6 @@ use App\Models\CustomerShippingSlipLineTax;
 use App\Models\CustomerInvoice as Document;
 use App\Models\CustomerInvoiceLine as DocumentLine;
 use App\Models\CustomerInvoiceLineTax as DocumentLineTax;
-use App\Models\DocumentAscription;
 
 use App\Models\Configuration;
 use App\Models\Sequence;

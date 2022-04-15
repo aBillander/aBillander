@@ -13,7 +13,7 @@ use App\Models\CustomerOrderLineTax as DocumentLineTax;
 use App\Models\CustomerShippingSlip;
 use App\Models\CustomerShippingSlipLine;
 use App\Models\CustomerShippingSlipLineTax;
-use App\Models\DocumentAscription;
+use App\Helpers\DocumentAscription;
 use App\Models\Sequence;
 use App\Models\ShippingMethod;
 use App\Models\Template;

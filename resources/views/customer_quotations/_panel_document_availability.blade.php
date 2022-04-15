@@ -102,13 +102,13 @@
 
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('order_template_id') ? 'has-error' : '' }}">
             {{ l('Template') }}
-            {!! Form::select('order_template_id', $templateList, null, array('class' => 'form-control', 'id' => 'order_template_id')) !!}
+            {!! Form::select('order_template_id', $templateList, old('order_template_id', AbiConfiguration::getInt('DEF_CUSTOMER_ORDER_TEMPLATE')), array('class' => 'form-control', 'id' => 'order_template_id')) !!}
             {!! $errors->first('order_template_id', '<span class="help-block">:message</span>') !!}
          </div>
 
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('order_sequence_id') ? 'has-error' : '' }}">
             {{ l('Sequence') }}
-            {!! Form::select('order_sequence_id', $sequenceList, old('order_sequence_id'), array('class' => 'form-control', 'id' => 'order_sequence_id')) !!}
+            {!! Form::select('order_sequence_id', $sequenceList, old('order_sequence_id', AbiConfiguration::getInt('DEF_CUSTOMER_ORDER_SEQUENCE')), array('class' => 'form-control', 'id' => 'order_sequence_id')) !!}
             {!! $errors->first('order_sequence_id', '<span class="help-block">:message</span>') !!}
          </div>
 

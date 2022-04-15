@@ -15,6 +15,19 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
+            
+            // ABCC routes
+            if ( $request->routeIs('abcc.*') ) {
+                return route('customer.login');
+            }
+            
+            // ABSRC routes
+            if ( $request->routeIs('absrc.*') ) {
+                return route('salesrep.login');
+            }
+
+
+            // Default route
             return route('login');
         }
     }

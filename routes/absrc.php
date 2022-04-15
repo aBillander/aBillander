@@ -65,7 +65,7 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 
     // Sales Reps routes here
 
-    Route::group(['prefix' => 'absrc', 'namespace' => '\SalesRepCenter'], function ()
+    Route::group(['prefix' => 'absrc', 'namespace' => 'SalesRepCenter'], function ()
     {
         // Ajax Search
         Route::get('ajax/customer_lookup', 'AbsrcCustomersController@ajaxCustomerSearch')->name('absrc.ajax.customerLookup');

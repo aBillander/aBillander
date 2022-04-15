@@ -28,32 +28,36 @@ class RedirectIfAuthenticated
 //                return redirect(RouteServiceProvider::HOME);
 //            }
             
-            // Customers
-            if ( $guard == 'customer' ) {
-                return redirect()->route('customer.dashboard');
-            }
-            
-            // Sales Reps
-            if ( $guard == 'salesrep' ) {
-                return redirect()->route('salesrep.dashboard');
-            }
-            
-            // Regular Users
-            if ( $guard == 'web' ) {
-                $home_page = Auth::user()->home_page;
-
-                if ( $home_page == '/' ) 
-                    $home_page ='/home';
-                
-                if ( checkRoute( $home_page ) ) 
-                {
-                    return redirect( $home_page );
-                
-                } else {
-                    return redirect('/home');
+            if (Auth::guard($guard)->check()) {
+                // Customers
+                if ( $guard == 'customer' ) {
+                    return redirect()->route('customer.dashboard');
                 }
-            }
-        }
+                
+                // Sales Reps
+                if ( $guard == 'salesrep' ) {
+                    return redirect()->route('salesrep.dashboard');
+                }
+                
+                // Regular Users
+                if ( $guard == 'web' ) {
+                    $home_page = Auth::user()->home_page;
+
+                    if ( $home_page == '/' ) 
+                        $home_page ='/home';
+                    
+                    if ( checkRoute( $home_page ) ) 
+                    {
+                        return redirect( $home_page );
+                    
+                    } else {
+                        return redirect('/home');
+                    }
+                }
+
+            }   // End if (Auth::guard($guard)->check())
+
+        }   // End foreach
 
 /* What is this for? =>
 

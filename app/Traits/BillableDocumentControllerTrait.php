@@ -209,6 +209,9 @@ die();
         $t = $document->template ?? 
              Template::find( Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_TEMPLATE') );
 
+        if ( $request->has('template') )
+            $t = Template::find( $request->input('template') );
+
         if ( !$t )
             return redirect()->back()
                 ->with('error', l('Unable to load PDF Document &#58&#58 (:id) ', ['id' => $document->id], 'layouts').'Document template not found.');
@@ -261,7 +264,7 @@ die();
         if ($request->has('screen')) return view($template, compact('document', 'company'));
 
 
-        if ( $request->has('preview') ) 
+        if ( $request->has('preview') || $request->has('template') ) 
         {
             //
         } else {

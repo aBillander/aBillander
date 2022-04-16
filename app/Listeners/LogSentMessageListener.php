@@ -2,12 +2,15 @@
 
 namespace App\Listeners;
 
+use App\Models\EmailLog;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Events\MessageSent;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-use Carbon\Carbon;
-use App\Models\EmailLog;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Part\DataPart;
 
 class LogSentMessageListener
 {
@@ -22,9 +25,9 @@ class LogSentMessageListener
     }
 
     /**
-     * Handle the event.
+     * Handle the actual logging.
      *
-     * @param  Event  $event
+     * @param  MessageSent $event
      * @return void
      */
     public function handle( MessageSent $event )
@@ -35,32 +38,19 @@ class LogSentMessageListener
 
         $message = $event->message;
 
-        // Attachments
-        $files = [];
-         /** @var \Swift_Mime_MimeEntity $child */
-         foreach ($message->getChildren() as $child) {
-             if (null !== ($disposition = $child->getHeaders()->get('content-disposition'))) {
-                 /** @var \Swift_Mime_Headers_ParameterizedHeader $disposition */
-                 $files[] = $disposition->getParameter('filename');
-             }
-         }
+        // See: https://github.com/shvetsgroup/laravel-email-database-log/blob/master/src/ShvetsGroup/LaravelEmailDatabaseLog/EmailLogger.php
 
-/*
-        $attachments = [];
-        foreach ($message->getChildren() as $child) {
-            $attachments[] = $child->getFilename();
-        }
-*/
+
         $emaillog = EmailLog::create([
             'from' => $this->formatAddressField($message, 'From'),
             'to' => $this->formatAddressField($message, 'To'),
             'cc' => $this->formatAddressField($message, 'Cc'),
             'bcc' => $this->formatAddressField($message, 'Bcc'),
             'subject' => $message->getSubject(),
-            'body' => $message->getBody(),
-            'headers' => (string)$message->getHeaders(),
-            'attachments' => count( $files ) ? implode("\n\n", $files) : null,
-            'created_at' => Carbon::now(),
+            'body' => $message->getBody()->bodyToString(),
+            'headers' => $message->getHeaders()->toString(),
+            'attachments' => $this->saveAttachments($message),
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
 
  //           'userable_id' => \Auth::id(),
         ]);
@@ -72,33 +62,41 @@ class LogSentMessageListener
         } else {
             //
             $emaillog->userable_id = 0;
-            $emaillog->userable_type = 'App\User';
+            $emaillog->userable_type = User::class;
             $emaillog->save();
         }
     }
+
     /**
      * Format address strings for sender, to, cc, bcc.
      *
-     * @param $message
-     * @param $field
+     * @param Email $message
+     * @param string $field
      * @return null|string
      */
-    function formatAddressField($message, $field)
+    function formatAddressField(Email $message, string $field): ?string
     {
         $headers = $message->getHeaders();
-        if (!$headers->has($field)) {
+
+        return $headers->get($field)?->getBodyAsString();
+    }
+
+
+    /**
+     * Collect all attachments and format them as strings.
+     *
+     * @param Email $message
+     * @return string|null
+     */
+    protected function saveAttachments(Email $message): ?string
+    {
+        if (empty($message->getAttachments())) {
             return null;
         }
-        $mailboxes = $headers->get($field)->getFieldBodyModel();
-        $strings = [];
-        foreach ($mailboxes as $email => $name) {
-            $mailboxStr = $email;
-            if (null !== $name) {
-                $mailboxStr = $name . ' <' . $mailboxStr . '>';
-            }
-            $strings[] = $mailboxStr;
-        }
-        return implode(', ', $strings);
+
+        return collect($message->getAttachments())
+            ->map(fn(DataPart $part) => $part->toString())
+            ->implode("\n\n");
     }
 
 }

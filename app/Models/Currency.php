@@ -45,7 +45,7 @@ class Currency extends Model {
 
     public function getSignPrintableAttribute()
     {
-        if ($this->iso_code == 'EUR') return "&euro;";
+        // if ($this->iso_code == 'EUR') return "&euro;";
 
         return $this->sign;
     }

@@ -11,7 +11,6 @@ use App\Product;
 use App\Image;
 use App\Combination;
 use App\Tax;
-use App\Price;
 use App\ActivityLogger;
 
 // use \aBillander\WooConnect\WooProduct;

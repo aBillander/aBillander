@@ -374,29 +374,5 @@ class StockMovementsController extends Controller
         // Generate and return the spreadsheet
         return Excel::download($export, $sheetFileName.'.xlsx');
 
-
-
-
-        $sheetName = 'Stock Movements' ;
-
-        // abi_r($data, true);
-
-        // Generate and return the spreadsheet
-        Excel::create('Stock_Movements', function($excel) use ($sheetName, $data) {
-
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

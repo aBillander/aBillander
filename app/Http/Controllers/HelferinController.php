@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Calculator;
 use App\Http\Controllers\HelferinTraits\HelferinCarriersTrait;
 use App\Http\Controllers\HelferinTraits\HelferinCustomerInvoicesTrait;
 use App\Http\Controllers\HelferinTraits\HelferinCustomerVouchersTrait;

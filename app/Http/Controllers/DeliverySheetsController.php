@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class DeliverySheetsController extends Controller
 {
+   protected $deliverysheet;
+
+   public function __construct(DeliverySheet $deliverysheet)
+   {
+        $this->deliverysheet = $deliverysheet;
+   }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +21,9 @@ class DeliverySheetsController extends Controller
      */
     public function index()
     {
-        //
+        $deliverysheets = $this->deliverysheet->orderBy('id', 'desc')->get();
+
+        return view('delivery_sheets.index', compact('deliverysheets'));
     }
 
     /**

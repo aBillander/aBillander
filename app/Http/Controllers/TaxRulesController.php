@@ -42,8 +42,9 @@ class TaxRulesController extends Controller {
      */
     public function create($taxId)
     {
-        $tax = $this->tax->findOrFail($taxId);
-        return view('tax_rules.create', compact('tax'));
+        $tax = $this->tax->with('taxrules')->findOrFail($taxId);
+        $position = $tax->taxrules->max('position') + 10;
+        return view('tax_rules.create', compact('tax', 'position'));
     }
 
     /**

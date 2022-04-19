@@ -15,6 +15,8 @@ class PricesAndQuantities extends TransformsRequest
         'price',
         'cost',
         'quantity',
+        'weight',
+        'volume',
         'amount',
         'dispatch',
     ];

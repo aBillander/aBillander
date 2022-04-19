@@ -6,6 +6,15 @@
                    {{l('Stock Availability')}}
                </h4><br -->
               <div xclass="page-header">
+
+    <div class="pull-right" style="padding-top: 4px;">
+
+@if( \App\Helpers\AsignaExcel::getAsignaId() == $document->carrier_id )
+        <a href="{{ route('customershippingslips.asigna', [$document->id]) }}" class="btn xbtn-sm btn-blue" title="{{l('Hoja Asigna :: CSV')}}" xstyle="margin-right: 32px;"><img src="{{ \App\Helpers\AsignaExcel::getCarrierLogoUrl( ) }}" height="20" style="background: white" /> &nbsp;<i><b>{{l('Hoja de Envío')}}</b></i></a>
+@endif
+
+    </div>
+
                   <h3>
                       <span style="color: #dd4814;">{{l('Stock Availability')}}</span> <!-- span style="color: #cccccc;">/</span>  -->
                        

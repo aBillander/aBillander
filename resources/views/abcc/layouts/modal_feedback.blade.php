@@ -63,9 +63,9 @@
 
            $.post("{{ route('abcc.contact') }}", $(this).serialize(), function(data){
 
-              if (data == 'ERROR') {
+              if (data.status == 'ERROR') {
                  $("#error").addClass("alert alert-danger");
-                 $("#error").html('<a class="close" data-dismiss="alert" href="#">×</a><li class="error">{{ l('There was an error. Your message could not be sent.', [], 'layouts') }}</li>');
+                 $("#error").html('<a class="close" data-dismiss="alert" href="#">×</a><li class="error">{{ l('There was an error. Your message could not be sent.', [], 'layouts') }}</li><li class="error">'+data.message+'</li>');
               } else {
                   // Reset form
                   $("#notes").val('');

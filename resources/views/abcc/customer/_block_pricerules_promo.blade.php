@@ -54,7 +54,7 @@
                        data-content="{{ nl2p($rule->product->description_short) }} <br /> {{ nl2p($rule->product->description) }} " 
                        data-title="{{ l('Product Images') }} :: {{ $rule->product->name }} " 
                        data-caption="({{$img->filename}}) {{ $img->caption }} " 
-                       data-id="{{ $product->id }}" 
+                       data-id="{{ $rule->product->id }}" 
                        onClick="return false;" title="{{l('View Image', 'abcc/catalogue')}}">
   
                         {{ $rule->product->reference }}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\SalesRepCenter;
 
+use App\Http\Controllers\Controller;
 use App\Helpers\Exports\ArrayExport;
 use App\Models\Bank;
 use App\Models\Cheque;

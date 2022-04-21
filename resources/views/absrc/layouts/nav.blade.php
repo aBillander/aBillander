@@ -49,6 +49,11 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-shopping-bag"></i> {{l('Sales', [], 'absrc/layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                          <li>
+                            <a href="{{ route('absrc.quotations.index') }}">
+                                 {{l('Quotations', [], 'absrc/layouts')}}
+                            </a>
+                        </li>
+                         <li>
                             <a href="{{ route('absrc.orders.index') }}">
                                  {{l('Orders', [], 'absrc/layouts')}}
                             </a>

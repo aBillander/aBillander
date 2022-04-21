@@ -137,6 +137,10 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 
         $pairs = [
                 [
+                    'controller' => 'AbsrcCustomerQuotationsController',
+                    'path' => 'quotations',
+                ],
+                [
                     'controller' => 'AbsrcCustomerOrdersController',
                     'path' => 'orders',
                 ],

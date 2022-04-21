@@ -63,6 +63,7 @@ return [
 	'Inventory Count'     => 'Inventario de Almacén',
 	'Inventory Adjustments'     => 'Regularización de Almacén',
 
+	'Quotations' => 'Presupuestos',
 	'Orders'     => 'Pedidos',
 	'Shipping Slips'     => 'Albaranes',
 	'Invoices'     => 'Facturas',

@@ -15,12 +15,12 @@
 Route::get('migratethis_gmdis', function()
 {
 	
-	// 2022-01-14
-//	$date = '2022-01-14';
+	// 2022-04-19
+	$date = '2022-04-19';
 
-//  \App\Configuration::updateValue('MRP_ONORDER_WITHOUT_REORDER', 1);
+  \App\Configuration::updateValue('ASIGNA_CARRIER_ID', 2);
 
-//  die('OK - '.$date);
+  die('OK - '.$date);
 
 });
 

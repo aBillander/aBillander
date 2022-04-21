@@ -8,6 +8,14 @@
 
 <div>{!! $user_message !!}</div>
 
+@if( $customer_user ?? null )
+
+			<br /><br />
+			<hr />
+			Enviado por: {{ $customer_user->getFullName() }}<br />
+			{{ $customer_user->email }}
+@endif
+
 {{--
 		<div>
 			Adjunto les enviamos la factura de referencia.<br /><br />

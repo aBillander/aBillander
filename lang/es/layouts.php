@@ -67,7 +67,7 @@ return [
 
 	'You SHOULD define a System wide Default Value for this Model.' => 'Para este Modelo DEBE definir un Valor por Defecto que se usará en toda la Aplicación.',
 
-	'This function is not available &#58&#58 (:id) ' => 'Esta función no está diosponible &#58&#58 (:id) ',
+	'This function is not available &#58&#58 (:id) ' => 'Esta función no está disponible &#58&#58 (:id) ',
 
 	'No records selected. ' => 'No se han seleccionado registros. ',
 	'No action is taken &#58&#58 (:id) ' => 'No se ha realizado ninguna acción &#58&#58 (:id) ',

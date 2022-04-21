@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Configuration;
-use App\CustomerUser;
 use App\Http\Controllers\Controller;
+use App\Models\CustomerUser;
 use App\Models\Language;
 use Auth;
 use Illuminate\Http\Request;

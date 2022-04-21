@@ -5,6 +5,7 @@ namespace App\Helpers\Exports;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 use Maatwebsite\Excel\Concerns\WithStyles;
@@ -24,21 +25,23 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
  *    $export = new ArrayExport($data, $styles, $title, $columnFormats, $merges);
  *
  */
-class ArrayExport implements FromArray, WithStyles, WithTitle, WithColumnFormatting, WithStrictNullComparison, ShouldAutoSize,  WithEvents
+class ArrayExport implements FromArray, WithStyles, WithTitle, WithColumnFormatting, WithStrictNullComparison, ShouldAutoSize, WithEvents, WithCustomCsvSettings
 {
     protected $data;
     protected $styles;
     protected $title;
     protected $columnFormats;
     protected $merges;
+    protected $csvSettings;
 
-    public function __construct(array $data, array $styles = [], string $title = 'Worksheet', array $columnFormats = [], array $merges = [])
+    public function __construct(array $data, array $styles = [], string $title = 'Worksheet', array $columnFormats = [], array $merges = [], array $csvSettings = [])
     {
         $this->data   = $data;
         $this->styles = $styles;
         $this->title  = $title;
         $this->columnFormats = $columnFormats;
         $this->merges = $merges;
+        $this->csvSettings = $csvSettings;
     }
 
     public function array(): array
@@ -147,5 +150,26 @@ class ArrayExport implements FromArray, WithStyles, WithTitle, WithColumnFormatt
         $this->merges = $merges;
 
         return $this;
+    }
+
+
+    public function setCsvSettings(array $csvSettings = [])
+    {
+        
+        $this->csvSettings = $csvSettings;
+
+        return $this;
+    }
+
+    public function getCsvSettings(): array
+    {
+        return $this->csvSettings;
+/*
+        return [
+            'delimiter' => ';',
+            'use_bom' => false,
+            'output_encoding' => 'ISO-8859-1',
+        ];
+*/
     }
 }

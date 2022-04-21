@@ -25,12 +25,13 @@
 
 	    if ( file_exists($env_dir.$env_file) )
 	    {
-	        try {
-	        	$dotenv = new \Dotenv\Dotenv($env_dir, $env_file);
-	        	$dotenv->load();
+	        // https://github.com/vlucas/phpdotenv
+	    	  try {
+		        	$dotenv = \Dotenv\Dotenv::createImmutable($env_dir, $env_file);
+		        	$dotenv->load();
 	        	
 	        } catch (\Exception $e) {
-	        	// echo $e->getMessage();
+	        		// echo $e->getMessage();
 	        }
 	    }
 

@@ -63,6 +63,10 @@ class SetGuestContextMiddleware {
         }
 		Context::getContext()->language   = $language;
 
+		// Extract the subdomain from URL.
+    	list($subdomain) = explode('.', $request->getHost(), 2);
+		Context::getContext()->tenant = $subdomain;
+
 		// Not really "the controller", but enough to retrieve translation files
 		Context::getContext()->controller = $request->segment(1);
 		if ($request->segment(3) == 'options' ) Context::getContext()->controller = $request->segment(3);

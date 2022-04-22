@@ -1080,7 +1080,7 @@ class Cart extends Model implements ShippableInterface
 
     public function invoicingaddress()
     {
-        return $this->belongsTo(Address, 'invoicing_address_id');
+        return $this->belongsTo(Address::class, 'invoicing_address_id');
     }
 
     // Alias function

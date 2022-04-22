@@ -101,6 +101,11 @@
                       editDocumentServiceLine( $(this) );
                       break;
 
+                  case 'comment':
+                      
+                      editDocumentCommentLine( $(this) );
+                      break;
+
                   default:
                       // Not good to reach this point
                       return false;

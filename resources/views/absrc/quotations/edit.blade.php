@@ -15,6 +15,11 @@
                     <i class="fa fa-lock"></i>
                 </button>
 
+    @if ( $document->uncloseable )
+
+                <a class="btn btn-sm btn-danger" href="{{ URL::to($model_path.'/' . $document->id . '/unclose') }}" title="{{l('Unclose Document', 'layouts')}}">&nbsp;<i class="fa fa-unlock"></i>&nbsp;{{l('Unclose', 'layouts')}}</a>
+    @endif
+
 @else
 
                 <button type="button" class="btn btn-sm alert-success" title="{{l('Document is not closed', 'layouts')}}" style="margin-right: 16px">
@@ -29,11 +34,21 @@
                 <a class="btn btn-sm btn-grey" href="{{ URL::to($model_url.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 @endif
 
+@if ( $document->status != 'closed' )
 @if ($document->onhold>0)
                 <a class="btn btn-sm btn-danger" href="{{ URL::to($model_url.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Unset on-hold', 'layouts')}}"><i class="fa fa-toggle-off"></i></a>
 @else
                 <a class="btn btn-sm alert-info" href="{{ URL::to($model_url.'/' . $document->id . '/onhold/toggle') }}" title="{{l('Set on-hold', 'layouts')}}"><i class="fa fa-toggle-on"></i></a>
 @endif
+@endif
+
+                @if( $document->deletable )
+                <a class="btn btn-sm btn-danger delete-item" data-html="false" data-toggle="modal" 
+                    href="{{ URL::to($model_path.'/' . $document->id ) }}" 
+                    data-content="{{l('You are going to PERMANENTLY delete a record. Are you sure?', [], 'layouts')}}" 
+                    data-title="{{ l('Documents') }} :: ({{$document->id}}) {{ $document->document_reference }} " 
+                    onClick="return false;" title="{{l('Delete', [], 'layouts')}}"><i class="fa fa-trash-o"></i></a>
+                @endif
 
 
                 <div class="btn-group">
@@ -41,7 +56,7 @@
                     <ul class="dropdown-menu  pull-right">
                       <li><a href="{{ URL::to($model_url.'') }}">{{l('Back to Documents')}}</a></li>
                       <!-- li><a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Group Shipping Slips')}}</a></li -->
-                      <li><a href="{{ route('absrc.customer.orders', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Orders', 'layouts')}}</a></li>
+                      <li><a href="{{ route('absrc.customer.quotations', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Quotations', 'layouts')}}</a></li>
                       <!-- li class="divider"></li -->
                       <!-- li><a href="#">Separated link</a></li -->
                     </ul>

@@ -590,7 +590,7 @@
     
                         getProductData( $('#line_product_id').val(), $('#line_combination_id').val() );
     
-                        getProductPriceData( $('#line_product_id').val(), $('#line_combination_id').val(), $("#customer_id").val() );
+//                        getProductPriceData( $('#line_product_id').val(), $('#line_combination_id').val(), $("#customer_id").val() );
                     }
 
                     return false;
@@ -684,6 +684,7 @@
         }
 
 
+{{--
         function getProductPriceData( product_id, combination_id, customer_id ) {
             var token = "{{ csrf_token() }}";
            
@@ -719,7 +720,7 @@
                 }
             });
         }
-
+--}}
 
 
     </script>
@@ -752,7 +753,7 @@ function get_currency_rate(currency_id)
 
    $.ajax({
       type: 'POST',
-      url: '{{ route('currencies.ajax.rateLookup') }}',
+      url: '{{ route('absrc.currencies.ajax.rateLookup') }}',
       dataType: 'html',
       data: pload,
       success: function(data) {

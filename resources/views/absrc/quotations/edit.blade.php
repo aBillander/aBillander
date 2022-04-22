@@ -7,7 +7,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="page-header">
-            <div class="pull-right">{{ $view_path }}
+            <div class="pull-right">
 
 @if ( $document->status == 'closed' )
 

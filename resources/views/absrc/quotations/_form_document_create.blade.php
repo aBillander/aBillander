@@ -405,6 +405,14 @@ function get_currency_rate(currency_id)
       dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
+
+  $(function() {
+    $( "#valid_until_date_form" ).datepicker({
+      showOtherMonths: true,
+      selectOtherMonths: true,
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
+    });
+  });
   
 </script>
 

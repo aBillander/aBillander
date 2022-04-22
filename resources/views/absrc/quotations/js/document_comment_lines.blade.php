@@ -375,7 +375,7 @@
                         $('#line_sales_equalization').show();
                     }
 
-                    calculate_comment_price( );
+                    // calculate_comment_price( );
 
                     $('#line_sales_rep_id').val( result.sales_rep_id );
                     $('#line_commission_percent').val( result.commission_percent );

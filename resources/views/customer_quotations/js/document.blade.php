@@ -428,6 +428,11 @@
             var url = "{{ route($model_path.'.updateline', ['']) }}/"+id;
             var token = "{{ csrf_token() }}";
 
+            var store_mode = '';
+
+//            if (clicked.name  == 'modal_document_line_productSubmitAsIs')
+                store_mode = 'asis';
+
             if ( id == '' )
                 url = "{{ route($model_path.'.storeline', [$document->id]) }}";
 //            else
@@ -435,6 +440,7 @@
 
             var payload = { 
                               document_id : {{ $document->id }},
+                              store_mode : store_mode,
                               line_sort_order : $('#line_sort_order').val(),
                               line_type : $('#line_type').val(),
                               product_id : $('#line_product_id').val(),

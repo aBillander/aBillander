@@ -118,6 +118,8 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 
         Route::get('customerusers/{customer}/getuser', 'AbsrcCustomerUsersController@getUser')->name('absrc.customeruser.getuser');
 
+        Route::post('customers/{id}/bankaccount', 'AbsrcCustomersController@updateBankAccount')->name('absrc.customers.bankaccount');
+
         Route::get('customers/{id}/getpricerules',         'AbsrcCustomersController@getPriceRules')->name('absrc.customer.getpricerules');
 
         Route::get('customers/{id}/product/{productid}/consumption', 'AbsrcCustomersController@productConsumption' )->name('absrc.customer.product.consumption');

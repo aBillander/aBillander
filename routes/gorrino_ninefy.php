@@ -14,6 +14,20 @@
 
 Route::get('ninefy', function()
 {
+	// 2022-04-21
+	$date = '2022-04-21';
+
+	// Table stock_movements
+	$models = ['StockCountLine', 'CustomerShippingSlipLine', 'CustomerInvoiceLine', 'SupplierShippingSlipLine', 'WarehouseShippingSlipLine', 'AssemblyOrder', 'AssemblyOrderLine'];
+	foreach ($models as $model) {
+		// code...
+		Illuminate\Support\Facades\DB::statement("UPDATE `stock_movements` SET `stockmovementable_type` = 'App\\\\Models\\\\".$model."' WHERE `stockmovementable_type` = 'App\\\\".$model."';");
+
+		abi_r("UPDATE `stock_movements` SET `stockmovementable_type` = 'App\\\\Models\\\\".$model."' WHERE `stockmovementable_type` = 'App\\\\".$model."';");
+	}	
+
+	die('OK - '.$date);
+  
 
 	// Table addresses
 	$models = ['Company', 'Customer', 'Supplier', 'Warehouse'];

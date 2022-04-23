@@ -169,7 +169,7 @@
 
     $("body").on('click', ".calculate_iban", function() {
 
-            var url = "{{ route('bankaccounts.iban.calculate') }}";
+            var url = "{{ route('absrc.bankaccounts.iban.calculate') }}";
             var token = "{{ csrf_token() }}";
 
             var payload = { 

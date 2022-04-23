@@ -124,6 +124,8 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 
         Route::get('customers/{id}/product/{productid}/consumption', 'AbsrcCustomersController@productConsumption' )->name('absrc.customer.product.consumption');
 
+        Route::post('bankaccounts/iban/calculate', 'AbsrcBankAccountsController@ibanCalculate')->name('absrc.bankaccounts.iban.calculate' );
+
 /*        Route::resource('customers', 'CustomersController');
         Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customerorders.create.withcustomer');
         Route::get('customers/ajax/name_lookup', array('uses' => 'CustomersController@ajaxCustomerSearch', 'as' => 'customers.ajax.nameLookup'));

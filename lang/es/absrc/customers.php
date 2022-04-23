@@ -173,4 +173,20 @@ return [
 
 	'Product consumption' => 'Consumo del Producto',
 	'Customer Final Price'     => 'Precio Final',
+
+	'Bank Accounts'     => 'Cuentas Bancarias',
+	'Bank Name'     => 'Nombre del Banco',
+	'Bank Account Code' => 'Código Cuenta Cliente',
+	'Bank code' => 'Entidad',
+	'Bank Branch code'  => 'Oficina',
+	'Control'  => 'Control',
+	'Account' => 'Cuenta',
+	'Calculate Iban' => 'Calcular Iban',
+	'Iban' => 'Iban',
+	'To make it more readable, you can enter spaces.' => 'Para que sea mas legible, puede introducir espacios.',
+	'Swift' => 'Swift',
+	'Mandate (for automatic payment remittances)' => 'Mandato (para Remesas de pago automático)',
+	'Mandate Reference' => 'Referencia única',
+	'You can use Customer Identification (only letters and digits) plus space plus Mandate Date.' => 'Puede usar el NIF/CIF del Cliente, más un espacio, más la Fecha del Mandato.',
+	'Mandate Date' => 'Fecha de Firma',
 ];

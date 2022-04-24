@@ -172,6 +172,7 @@ foreach ($pairs as $pair) {
         Route::get($path.'/line/searchproduct',        $controller.'@searchProduct' )->name($routepath.'.searchproduct');
         Route::get($path.'/line/searchservice',        $controller.'@searchService' )->name($routepath.'.searchservice');
         Route::get($path.'/line/getproduct',           $controller.'@getProduct'    )->name($routepath.'.getproduct');
+        Route::get($path.'/line/getproduct/prices',    $controller.'@getProductPrices')->name($routepath.'.getproduct.prices');
 
         // ?? Maybe only for Invoices ??
         Route::get($path.'/{id}/getpayments',          $controller.'@getDocumentPayments' )->name($routepath.'.getpayments');

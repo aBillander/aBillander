@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use App\Helpers\Price;
+use App\Traits\ModelAttachmentableTrait;
+use App\Traits\ViewFormatterTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-use App\Traits\ViewFormatterTrait;
-use App\Traits\ModelAttachmentableTrait;
 
 class Supplier extends Model {
 

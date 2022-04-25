@@ -11,7 +11,7 @@
 <div class="page-header">
     <div class="pull-right" xstyle="padding-top: 4px;">
 
-@if ( $directdebit->status != "closed" && ( $directdebit->nbrItems() != 0 ) )
+@if ( $directdebit->status == "pending" && ( $directdebit->nbrItems() != 0 ) )
         <a id="download_btn" href="{{ route('sepasp.directdebit.xml', $directdebit->id) }}" class="btn btn-success magick" style="margin-right: 22px;"><i class="fa fa-file-code-o"></i> &nbsp;{{ l('SEPA XML file') }}</a>
 @endif
 
@@ -45,6 +45,10 @@
               <button type="button" class="btn btn-sm alert-warning" title="{{l('XML file at:')}} &nbsp;{{ abi_date_short($directdebit->validation_date) }}">
                   <i class="fa fa-hand-spock-o"></i> {{$directdebit->status_name}}
               </button>
+
+        <a href="{{ route('sepasp.directdebit.unconfirm', [$directdebit->id]) }}" class="btn btn-xs btn-danger" 
+        title="{{l('Undo', 'layouts')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
+
 @endif
 @if ( $directdebit->status == "closed" )
               <button type="button" class="btn btn-sm alert-success" title="{{l('')}}">

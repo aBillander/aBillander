@@ -12,6 +12,21 @@
                </div><!-- div class="panel-body" -->
 
 
+	   <div class="panel-footer text-right">
+
+	    	<a class="btn xbtn-sm btn-success" style="margin-right: 36px;" href="{{ URL::to($model_path.'/' . $document->id . '/reload/commissions') }}" title="{{l('Update Commissions')}}"><i class="fa fa-refresh"></i> {{l('Update Commissions')}}</a>
+
+@if ( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
+
+	    	<a class="btn xbtn-sm btn-success" style="margin-right: 36px;" href="{{ URL::to($model_path.'/' . $document->id . '/reload/ecotaxes') }}" title="{{l('Update Line Ecotaxes')}}"><i class="fa fa-refresh"></i> {{l('Update Line Ecotaxes')}}</a>
+
+@endif
+
+	    	<a class="btn xbtn-sm btn-success" href="{{ URL::to($model_path.'/' . $document->id . '/reload/costs') }}" title="{{l('Update Cost Prices')}}"><i class="fa fa-refresh"></i> {{l('Update Cost Prices')}}</a>
+
+	   </div>
+
+
 <!-- Profitability ENDS -->
 
 
@@ -72,10 +87,40 @@
 			}).done(function(data){
 				panel.html(data);
 				panel.removeClass('loading');
+
+                $("[data-toggle=popover]").popover();
+
 			});
                  
 		}
 
+
+{{--
+
+		// See: https://stackoverflow.com/questions/20705905/bootstrap-3-jquery-event-for-active-tab-change
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+		  var target = $(e.target).attr("href") // activated tab
+		  if (target == '#tab3default')
+		  {
+		  		getOrderProfit();
+		  }
+		  /*
+		  if ($(target).is(':empty')) {
+		    $.ajax({
+		      type: "GET",
+		      url: "/article/",
+		      error: function(data){
+		        alert("There was a problem");
+		      },
+		      success: function(data){
+		        $(target).html(data);
+		      }
+		  })
+		 }
+		 */
+		});
+
+--}}
 
 </script>
 @endsection

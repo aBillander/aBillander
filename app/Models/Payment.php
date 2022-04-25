@@ -317,6 +317,11 @@ class Payment extends Model {
 
                 return $query->whereHas('customerinvoice', function ($query) use ($sales_rep_id) {
                                     $query->where('sales_rep_id', $sales_rep_id);
+
+                                    // $query->whereHas('customer', function ($query) use ($sales_rep_id) {
+                                    //     //
+                                    //     $query->where('sales_rep_id', $sales_rep_id);
+                                    // } );
                                 } );
         }
 

@@ -190,10 +190,12 @@
 
             <td>{{ $action->priority_name }}</td>
 @php
+    $due_warn = '';
+
     if ( !$action->finish_date )
     {
         // $start_warn = ($action->start_date < Carbon\Carbon::now()) ? : '';
-        $due_warn   = ($action->due_date < Carbon\Carbon::now()) ? 'danger': '';
+        $due_warn = ($action->due_date < Carbon\Carbon::now()) ? 'danger': '';
     }
 @endphp
             <td>{{ abi_date_short($action->start_date) }}<br />{{ abi_date_short($action->finish_date) }}</td>

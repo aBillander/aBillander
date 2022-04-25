@@ -159,6 +159,7 @@ return [
 	'Quick Add Lines'     => 'Entrada rápida de Líneas',
 	'Add Product'     => 'Añadir Producto',
 	'Add Service'     => 'Añadir Servicio',
+	'Add Text Line'     => 'Añadir Línea de Texto',
 	'Product name' => 'Producto',
 	'Reference'     => 'Referencia',
 	'Measure Unit' => 'Unidad de Medida',

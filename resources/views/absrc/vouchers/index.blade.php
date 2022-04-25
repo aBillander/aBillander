@@ -137,6 +137,7 @@
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
 			<th>{{l('Invoice')}}</th>
+      <th>{{l('Invoice Date')}}</th>
 			<th>{{l('Customer')}}</th>
 			<th>{{l('Subject')}}</th>
 			<th>{{l('Due Date')}}</th>
@@ -160,6 +161,7 @@
 			<td>{{ $payment->id }}</td>
 			<td>
           <a href="{{ route('absrc.invoice.pdf',  ['invoiceKey' => optional($payment->customerinvoice)->secure_key]) }}" title="{{l('Show', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->document_reference ?? '' }}</a></td>
+      <td>{{ abi_date_short(optional($payment->customerinvoice)->document_date) }}</td>
 			<td>
           <a href="{{ URL::to('absrc/customers/' . optional(optional($payment->customerInvoice)->customer)->id . '/edit') }}" title="{{l('Show Customer')}}" target="_blank">{{ $payment->customerInvoice->customer->name_regular ?? '' }}</a></td>
 			<td>{{ $payment->name }}</td>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SalesRepCenter;
 
 use App\Http\Controllers\Controller;
 use App\Models\Address;
+use App\Models\BankAccount;
 use App\Models\Configuration;
 use App\Models\Context;
 use App\Models\Currency;
@@ -24,14 +25,17 @@ use App\Models\SalesRepUser;
 use App\Models\Sequence;
 use App\Models\ShippingMethod;
 use App\Models\Template;
+use App\Traits\DateFormFormatterTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Mail;
 use Validator;
 
-class AbsrcCustomersController extends Controller {
+class AbsrcCustomersController extends Controller
+{
 
+   use DateFormFormatterTrait;
 
    protected $customer, $address;
 
@@ -174,7 +178,7 @@ class AbsrcCustomersController extends Controller {
         try {
             $customer = $this->customer
                              ->ofSalesRep()
-                             ->with('addresses', 'address', 'address.country', 'address.state')
+                             ->with('addresses', 'address', 'address.country', 'address.state', 'bankaccount', 'contacts')
                              ->findOrFail($id); 
 
         } catch(ModelNotFoundException $e) {
@@ -186,6 +190,15 @@ class AbsrcCustomersController extends Controller {
         $aBook       = $customer->addresses;
         $mainAddressIndex = -1;
         $aBookCount = $aBook->count();
+
+        $bankaccount = $customer->bankaccount;
+
+        $contacts = $customer->contacts;
+        $actions  = $customer->actions()->whereDate('created_at', '>', \Carbon\Carbon::now()->subDays(30))->orderByDesc('created_at')->get();
+
+        // Dates (cuen)
+        if ($bankaccount)
+            $this->addFormDates( ['mandate_date'], $bankaccount );
 
         if ( !($aBookCount>0) )
         {
@@ -201,7 +214,7 @@ class AbsrcCustomersController extends Controller {
             }
 
             // Issue Warning!
-            return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex'))
+            return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions'))
                 ->with('warning', l('You need one Address at list, for Customer (:id) :name', ['id' => $customer->id, 'name' => $customer->name_fiscal]));
         };
 
@@ -236,7 +249,7 @@ class AbsrcCustomersController extends Controller {
 
             $mainAddressIndex = 0;
 
-            return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'sequenceList', 'invoices_templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'customer_groupList', 'price_listList', 'shipping_methodList'))
+            return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'sequenceList', 'invoices_templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'customer_groupList', 'price_listList', 'shipping_methodList'))
                 ->with('warning', $warning);
 
         } else {
@@ -279,7 +292,7 @@ class AbsrcCustomersController extends Controller {
 
 //        abi_r($sequenceList1, true);
 
-        return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'sequenceList', 'invoices_templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'customer_groupList', 'price_listList', 'shipping_methodList'))
+        return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'sequenceList', 'invoices_templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'customer_groupList', 'price_listList', 'shipping_methodList'))
                 ->with('warning', $warning);
     }
 
@@ -355,6 +368,47 @@ class AbsrcCustomersController extends Controller {
         else
             return redirect('absrc/customers')
                 ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $request->input('name_commercial'));
+
+    }
+
+    /**
+     * Update Bank Account in storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function updateBankAccount($id, Request $request)
+    {
+        // Dates (cuen)
+        $this->mergeFormDates( ['mandate_date'], $request );
+
+        $section = '#bankaccounts';
+
+//        abi_r(Customer::$rules, true);
+
+        $customer = $this->customer->with('bankaccount')->findOrFail($id);
+
+        $bankaccount = $customer->bankaccount;
+
+        $request->session()->flash('tabName', $section);
+
+        $this->validate($request, BankAccount::$rules);
+
+        if ( $bankaccount )
+        {
+            // Update
+            $bankaccount->update($request->all());
+        } else {
+            // Create
+            $bankaccount = BankAccount::create($request->all());
+            $customer->bankaccounts()->save($bankaccount);
+
+            $customer->bank_account_id = $bankaccount->id;
+            $customer->save();
+        }
+
+        return redirect('absrc/customers/'.$customer->id.'/edit'.$section)
+            ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $customer->name_commercial);
 
     }
 

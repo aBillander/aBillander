@@ -53,8 +53,8 @@ class CustomerShippingSlipsAsignaController extends Controller
             $row['Albaran'] = $document->document_reference;   // Document reference
 
             $row['Bultos']  = $document->number_of_packages != 0 ? $document->number_of_packages : 1;
-            $row['Kilos']   = rtrim(str_replace('.', ',', strval($document->weight) ), '0');
-            $row['Volumen'] = rtrim(str_replace('.', ',', strval($document->volume) ), '0');
+            $row['Kilos']   = AsignaExcel::formatNumber($document->weight);
+            $row['Volumen'] = AsignaExcel::formatNumber($document->volume);
 
             $recipient_name = (string) $document->shippingaddress->name_commercial;
 

@@ -20,6 +20,8 @@ Route::group([
     Route::get( 'directdebits/voucher/{id}/add', 'SepaDirectDebitsController@addVoucherForm')->name('sepasp.directdebit.add.voucher.form');
     Route::post('directdebits/voucher/add',      'SepaDirectDebitsController@addVoucher'    )->name('sepasp.directdebit.add.voucher'     );
 
+    Route::get( 'directdebits/{id}/unconfirm', 'SepaDirectDebitsController@unConfirm')->name('sepasp.directdebit.unconfirm');
+
 
 
 

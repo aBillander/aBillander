@@ -335,7 +335,7 @@ class SepaDirectDebitsController extends Controller
         $voucher = $this->payment->findOrFail($id);
 
         $sdds = $this->directdebit->with('bankaccount')
-                                ->where('status', 'pending')->orWhere('status', 'confirmed')
+                                ->where('status', 'pending')    // ->orWhere('status', 'confirmed')
                                 ->orderBy('document_date', 'desc')->orderBy('id', 'desc')
                                 ->get();
 
@@ -359,7 +359,9 @@ class SepaDirectDebitsController extends Controller
 
         $voucher = $this->payment->findOrFail($voucher_id);
 
-        $sdd = $this->directdebit->findOrFail($sdd_id);
+        $sdd = $this->directdebit
+                        ->where('status', 'pending')    // Add voucher only if status == 'pending'
+                        ->findOrFail($sdd_id);
 
         // Do add vouchers, now!
         $sdd->vouchers()->save($voucher);
@@ -382,5 +384,18 @@ class SepaDirectDebitsController extends Controller
 
         return redirect()->back()
                 ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $voucher_id], 'layouts') );
+    }
+
+
+    public function unConfirm($id)
+    {
+        // return 'OK - '.$id;
+
+        $directdebit = $this->directdebit->findOrFail($id);
+
+        $directdebit->unconfirm();
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $directdebit->document_reference);
     }
 }

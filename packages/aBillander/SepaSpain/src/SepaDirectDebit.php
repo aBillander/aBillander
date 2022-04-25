@@ -138,6 +138,23 @@ class SepaDirectDebit extends Model
         return true;
     }
 
+    public function unconfirm()
+    {
+        // Can I?
+        if ( $this->status != 'confirmed' ) return false;
+
+        // onhold?
+        if ( $this->onhold ) return false;
+
+
+        $this->status = 'pending';
+        $this->validation_date = null;
+
+        $this->save();
+
+        return true;
+    }
+
     public function close()
     {
         // Can I ...?

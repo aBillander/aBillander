@@ -76,4 +76,14 @@ class AsignaExcel {
         // Asigna Logo Url
         return self::getCarrierLogoUrl();
     }
+
+    public static function formatNumber( $value ) 
+    {
+        $val = rtrim(str_replace('.', ',', strval($value) ), '0');
+
+        if ( substr($val, -1) == ',' )
+            $val = $val . '0';
+
+        return $val;
+    }
 }

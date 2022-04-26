@@ -151,6 +151,32 @@
 </div>
 
 
+<div class=" form-group col-lg-2 col-md-2 col-sm-2" id="div-is_invoiceable">
+     {!! Form::label('is_invoiceable', l('Is Invoiceable?'), ['class' => 'control-label']) !!}
+     <div>
+       <div class="radio-inline">
+         <label>
+           {!! Form::radio('is_invoiceable', '1', false, ['id' => 'is_invoiceable_on']) !!}
+           {!! l('Yes', [], 'layouts') !!}
+         </label>
+       </div>
+       <div class="radio-inline">
+         <label>
+           {!! Form::radio('is_invoiceable', '0', false, ['id' => 'is_invoiceable_off']) !!}
+           {!! l('No', [], 'layouts') !!}
+         </label>
+       </div>
+       <div class="radio-inline">
+         <label>
+           {!! Form::radio('is_invoiceable', '-1', true, ['id' => 'is_invoiceable_all']) !!}
+           {!! l('All', [], 'layouts') !!}
+         </label>
+       </div>
+     </div>
+</div>
+
+
+
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
 {!! link_to_route($model_path.'.index', l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}

@@ -186,6 +186,15 @@ return [
 
 	'Bank Accounts'     => 'Cuentas Bancarias',
 	'Bank Name'     => 'Nombre del Banco',
+	'Bank Account Code' => 'Código Cuenta Cliente',
+	'Bank code' => 'Entidad',
+	'Bank Branch code'  => 'Oficina',
+	'Control'  => 'Control',
+	'Account' => 'Cuenta',
+	'Calculate Iban' => 'Calcular Iban',
+	'Iban' => 'Iban',
+	'To make it more readable, you can enter spaces.' => 'Para que sea mas legible, puede introducir espacios.',
+	'Swift' => 'Swift',
 
 	'View Cart'     => 'Ver Carrito',
 	'Add New User' => 'Nuevo Usuario para este Proveedor',

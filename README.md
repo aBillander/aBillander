@@ -23,13 +23,20 @@ The **aBillander Project** is an Invoicing and Inventory System for SME's powere
 
 ## ab://ander/Status
 
-> Production ready: three Companies have used aBillander for more than 1 year now.
+> Production ready: three Companies have used aBillander for more than 2 years now.
 
 > More implementations needed (main goal for year 2022).
 
-> Working on upgrade to Laravel 9.x (branch **ninette**).
-
 > Contributors are welcome.
+
+
+## ab://ander/Branches
+
+> Use branch *master* with Laravel 9.x.
+
+> Branch *ninette* is intended for development.
+
+> Use branch *service* with Laravel 5.5 (deprecated).
 
 
 ## ab://ander/Roadmap/Milestones
@@ -42,7 +49,7 @@ The **aBillander Project** is an Invoicing and Inventory System for SME's powere
 
 > SDG3: **Manufacturing enhancements** .
 
-> SDG4: **Refactor Sales Representative Center** .
+> SDG4: **POS integration** .
 
 > SDG5: **Products with Combinations** .
 

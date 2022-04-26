@@ -413,7 +413,7 @@
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group  hidden ">
       <label class="col-lg-4 control-label">{!! l('ENABLE_FSOL_CONNECTOR.name') !!}</label>
       <div class="col-lg-8">
         <div class="radio">

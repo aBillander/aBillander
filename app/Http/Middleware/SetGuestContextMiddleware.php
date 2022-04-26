@@ -4,13 +4,13 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-use App\Configuration;
-use App\Company;
-use App\Context;
-use App\Language;
+use App\Models\Configuration;
+use App\Models\Company;
+use App\Models\Context;
+use App\Models\Language;
 
 use Auth;
-use App\User;
+use App\Models\User;
 use Config, App;
 use Request, Cookie;
 
@@ -62,6 +62,10 @@ class SetGuestContextMiddleware {
             Context::getContext()->theme = Configuration::get('USE_CUSTOM_THEME');
         }
 		Context::getContext()->language   = $language;
+
+		// Extract the subdomain from URL.
+    	list($subdomain) = explode('.', $request->getHost(), 2);
+		Context::getContext()->tenant = $subdomain;
 
 		// Not really "the controller", but enough to retrieve translation files
 		Context::getContext()->controller = $request->segment(1);

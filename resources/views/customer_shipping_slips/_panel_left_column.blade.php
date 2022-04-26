@@ -111,7 +111,20 @@
                 {{l('Customer Group')}}:<br /> {{ $customer->customergroup->name ?? '-' }}
               </li>
               <li class="list-group-item">
-                {{l('Price List')}}:<br /> {{ $customer->pricelist->name ?? '-' }}
+                {{l('Price List')}}:<br />
+                @if( $customer->currentpricelist() )
+                  <a href="{{ URL::to('pricelists/' . $customer->currentpricelist()->id . '/pricelistlines') }}" title="{{l('View Document', 'layouts')}}" target="_new">
+                    {{ $customer->currentpricelist()->name }}
+                  </a>
+
+                        <a class="btn btn-xs btn-warning" href="{{ URL::to('pricelists/' . $customer->currentpricelist()->id . '/pricelistlines') }}" title="{{l('View Document', 'layouts')}}" target="_new"><i class="fa fa-external-link"></i></a>
+
+                  @if( ! $customer->price_list_id )
+                      <span class="text-warning">({{l('Group Price List')}})</span>
+                  @endif
+                @else
+                  -
+                @endif
               </li>
               <li class="list-group-item">
                 {{l('Sales Representative')}}:<br />
@@ -144,7 +157,7 @@
           </div>
 @endif
 
-    @if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') && ($document->production_sheet_id > 0) )
+    @if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') && ($document->production_sheet_id > 0) )
 
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">
@@ -165,7 +178,7 @@ background-color: #325d88; border-color: #772953;">
                       <a href="{{ URL::to('productionsheets/' . $document->production_sheet_id) }}" title="{{l('View Document', 'layouts')}}" target="_blank">
 
                           
-                            <span class="btn btn-xs btn-grey">#{{ $document->production_sheet_id }} ({{ abi_date_form_short( \App\ProductionSheet::find($document->production_sheet_id)->due_date ) }})</span> 
+                            <span class="btn btn-xs btn-grey">#{{ $document->production_sheet_id }} ({{ abi_date_form_short( \App\Models\ProductionSheet::find($document->production_sheet_id)->due_date ) }})</span> 
 
                       </a> 
 

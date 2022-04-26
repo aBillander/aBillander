@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\CustomerCenter;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use App\Models\Configuration;
+use App\Models\ContactMessage;
+use App\Models\Context;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\ContactMessage as ContactMessage;
 use View, Mail;
 
 class AbccContactMessagesController extends Controller {
@@ -74,10 +73,10 @@ class AbccContactMessagesController extends Controller {
 
 		if ( !stripos( $body, '<br' ) ) $body = nl2br($body);
 
-		$to_email = \App\Configuration::get('ABCC_EMAIL');
-		$to_name  = \App\Configuration::get('ABCC_EMAIL_NAME');
+		$to_email = Configuration::get('ABCC_EMAIL')      ?: config('mail.from.address');
+		$to_name  = Configuration::get('ABCC_EMAIL_NAME') ?: config('mail.from.name'   );
 
-		$from_email = $request->input('email') ? $request->input('email') : $to_email ;
+		$from_email = $to_email;	// Not allowed by server: $request->input('email') ? $request->input('email') : $to_email ;
 		$from_name  = $request->input('name' ) ? $request->input('name' ) : $to_name  ;
 		// dd($from_email);
 
@@ -86,9 +85,10 @@ class AbccContactMessagesController extends Controller {
 			$template_vars = [
 	            'user_message' => $body,
 	            'customer' => $customer,
+	            'customer_user' => Auth::user(),
 	    		];
 
-			$send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.abcc.new_customer_message',
+			$send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.abcc.new_customer_message',
 		        $template_vars, function($message) use ( $to_email, $to_name, $from_email, $from_name )
 		    {
 		        $message->from( $from_email, $from_name );			// Pone en email from la dirección de GMail desde la que se envía
@@ -97,11 +97,17 @@ class AbccContactMessagesController extends Controller {
 		        $message->to(   $to_email  , $to_name   )->subject( l(' :_> New Customer Message [Customer Center]') );
 		    });
 		}
-		catch(Exception $e){
-		    	return 'ERROR';
+		catch( \Symfony\Component\Mailer\Exception\TransportException $e){
+		    	return response( [
+		    		'status' => 'ERROR',
+		    		'message' => $e->getMessage(),
+		    	] );
 		}
 
-		return 'OK';
+		return response( [
+		    		'status' => 'OK',
+		    		'message' => '',
+		    	] );
 	}
 
 	/**

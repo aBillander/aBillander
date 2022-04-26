@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Configuration;
-use App\ProductionSheet;
+use App\Helpers\Exports\ArrayExport;
+use App\Models\Configuration;
+use App\Models\ProductionSheet;
 
-use App\TourlineExcel;
+use App\Helpers\TourlineExcel;
 
 use Excel;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class ProductionSheetsTourlineController extends Controller
 {
@@ -117,24 +120,14 @@ class ProductionSheetsTourlineController extends Controller
 
         }
 
-        $sheetName = 'Tourline' ;
+        $sheetTitle = 'Tourline';
+
+        $export = (new ArrayExport($data))->setTitle($sheetTitle);
+
+        $sheetFileName = 'Tourline_Hoja_Produccion_'.$sheet->due_date;
 
         // Generate and return the spreadsheet
-        Excel::create('Tourline_Hoja_Produccion_'.$sheet->due_date, function($excel) use ($id, $sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

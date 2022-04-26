@@ -8,6 +8,9 @@
     <div class="col-md-12">
         <div class="page-header">
             <div class="pull-right">
+        <a href="{{ route('customers.export') }}" class="btn xbtn-sm btn-grey" style="margin-right: 21px" 
+                title="{{l('Export Headers')}}"><i class="fa fa-file-excel-o"></i> {{l('Export Headers')}}</a>
+
                 <a href="{{ URL::to('customers') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Customers') }}</a>
             </div>
             <h2><a href="{{ URL::to('customers') }}">{{ l('Customers') }}</a> <span style="color: #cccccc;">/</span> {{ l('Import') }}</h2>
@@ -23,6 +26,10 @@
             <a id="b_main_data" href="{{ route('customers.import') }}" class="list-group-item active">
                <i class="fa fa-asterisk"></i>
                &nbsp; {{ l('Customers') }}
+            </a>
+            <a id="b_sales" href="{{ route('customerbankaccounts.import') }}" class="list-group-item">
+               <i class="fa fa-credit-card"></i>
+               &nbsp; {{ l('Bank Accounts') }}
             </a>
             <a id="b_purchases" href="{{ route('customerusers.import') }}" class="list-group-item">
                <i class="fa fa-shopping-cart"></i>

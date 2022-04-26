@@ -22,7 +22,7 @@
 					@endif
 
 					<form class="form-horizontal" role="form" method="POST" action="{{ route('login') }}">
-						{{ csrf_field() }}
+						@csrf
 
 						<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
 							<label class="col-md-4 control-label">{{ l('E-Mail Address', [], 'layouts') }}</label>
@@ -54,7 +54,7 @@
 							<div class="col-md-6 col-md-offset-4">
 								<div class="checkbox">
 									<label>
-										<input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> {{ l('Remember Me', [], 'layouts') }}
+										<input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }} id="remember_me"> {{ l('Remember Me', [], 'layouts') }}
 									</label>
 								</div>
 							</div>
@@ -65,10 +65,11 @@
 								<button type="submit" class="btn btn-primary">{{l('Login', [], 'layouts')}}</button>
 
 
+                @if (Route::has('password.request'))
 
 								<a class="btn btn-link" href="{{ route('password.request') }}">{{ l('Forgot Your Password?', [], 'layouts') }}</a>
 
-
+                @endif
 
 							</div>
 						</div>

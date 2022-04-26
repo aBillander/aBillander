@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Lead;
-use App\LeadLine;
-use App\User;
+use App\Models\Lead;
+use App\Models\LeadLine;
+use App\Models\User;
 
 use Auth;
 
@@ -90,7 +90,7 @@ class LeadLinesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\LeadLine  $leadLine
+     * @param  \App\Models\LeadLine  $leadLine
      * @return \Illuminate\Http\Response
      */
     public function show($leadId, $id)
@@ -101,7 +101,7 @@ class LeadLinesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\LeadLine  $leadLine
+     * @param  \App\Models\LeadLine  $leadLine
      * @return \Illuminate\Http\Response
      */
     public function edit($leadId, $id)
@@ -132,7 +132,7 @@ class LeadLinesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\LeadLine  $leadLine
+     * @param  \App\Models\LeadLine  $leadLine
      * @return \Illuminate\Http\Response
      */
     public function update($leadId, $id, Request $request)
@@ -157,7 +157,7 @@ class LeadLinesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\LeadLine  $leadLine
+     * @param  \App\Models\LeadLine  $leadLine
      * @return \Illuminate\Http\Response
      */
     public function destroy(LeadLine $leadLine)

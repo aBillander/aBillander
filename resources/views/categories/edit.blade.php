@@ -32,7 +32,7 @@
                &nbsp; {{ l('Main Data') }}
             </a>
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
             <a id="b_internet" href="#internet" class="list-group-item">
                <i class="fa fa-cloud"></i>
                &nbsp; {{ l('Web Shop') }}
@@ -47,7 +47,7 @@
           @include('categories._panel_main_data')
 
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
 
           @include('categories._panel_webshop')
 

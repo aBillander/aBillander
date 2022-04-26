@@ -8,7 +8,7 @@
     <div class="modal-content">
       <div class="modal-header alert-info">
         <button class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="detailModalLabel">{{ l('New Customer Cheque Detail') }} :: <span class="lead well well-sm alert-warning">{{$cheque->document_number}}</span> {{ \App\Currency::viewMoneyWithSign($cheque->amount, $cheque->currency) }}</h4>
+        <h4 class="modal-title" id="detailModalLabel">{{ l('New Customer Cheque Detail') }} :: <span class="lead well well-sm alert-warning">{{$cheque->document_number}}</span> {{ \App\Models\Currency::viewMoneyWithSign($cheque->amount, $cheque->currency) }}</h4>
       </div>
 
       <form id="cheque_payment_details">

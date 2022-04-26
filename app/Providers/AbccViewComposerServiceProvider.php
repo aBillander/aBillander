@@ -2,8 +2,35 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Models\Carrier;
+use App\Models\Category;
+use App\Models\Company;
+use App\Models\Configuration;
+use App\Models\Country;
+use App\Models\Currency;
+use App\Models\CustomerGroup;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerOrder;
+use App\Models\CustomerShippingSlip;
+use App\Models\Language;
+use App\Models\Manufacturer;
+use App\Models\MeasureUnit;
+use App\Models\PaymentMethod;
+use App\Models\PriceList;
+use App\Models\Product;
+use App\Models\ProductionSheet;
+use App\Models\SalesRep;
+use App\Models\Sequence;
+use App\Models\ShippingMethod;
+use App\Models\StockMovement;
+use App\Models\Supplier;
+use App\Models\Tax;
+use App\Models\TaxRule;
+use App\Models\Template;
+use App\Models\Warehouse;
+use App\Models\WorkCenter;
 use DB;
+use Illuminate\Support\ServiceProvider;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,9 +55,9 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		// Categories
 		view()->composer(array('abcc.catalogue.index'), function($view) {
 		    
-		    if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
+		    if ( Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
 		    	$tree = [];
-		    	$categories =  \App\Category::where('parent_id', '=', '0')
+		    	$categories =  Category::where('parent_id', '=', '0')
                                             ->IsPublished()
                                             ->with('children')
                                             ->orderby('name', 'asc')
@@ -46,8 +73,8 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		    	$view->with('categoryList', $tree);
 
 		    } else {
-		    	// abi_r(\App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray(), true);
-		    	$view->with('categoryList', \App\Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray());
+		    	// abi_r(Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray(), true);
+		    	$view->with('categoryList', Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray());
 		    }
 		    
 		});
@@ -55,14 +82,14 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		// Manufacturers
 		view()->composer(array('abcc.catalogue.index'), function($view) {
 		    
-		    $view->with('manufacturerList', \App\Manufacturer::pluck('name', 'id')->toArray());
+		    $view->with('manufacturerList', Manufacturer::pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Countries
 		view()->composer(array('abcc.addresses._form'), function($view) {
 		    
-		    $view->with('countryList', \App\Country::orderby('name', 'asc')->pluck('name', 'id')->toArray());
+		    $view->with('countryList', Country::orderby('name', 'asc')->pluck('name', 'id')->toArray());
 		    
 		});
 	}
@@ -75,14 +102,14 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		// Languages
 		view()->composer(array('users.create', 'users.edit', 'suppliers._form', 'companies._form'), function($view) {
 		    
-		    $view->with('languageList', \App\Language::pluck('name', 'id')->toArray());
+		    $view->with('languageList', Language::pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Measure Unit types
 		view()->composer(array('measure_units._form'), function($view) {
 
-		    $list = \App\MeasureUnit::getTypeList();
+		    $list = MeasureUnit::getTypeList();
 
 		    $view->with('measureunit_typeList', $list);
 		    
@@ -91,70 +118,70 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		// Document Types
 		view()->composer(array('sequences.index', 'sequences.create', 'sequences.edit'), function($view) {
 		    
-		    $view->with('document_typeList', \App\Sequence::documentList());
+		    $view->with('document_typeList', Sequence::documentList());
 		    
 		});
 
 		//Templateable Document Types
 		view()->composer(array('templates.index', 'templates.create', 'templates.edit'), function($view) {
 		    
-		    $view->with('templateable_document_typeList', \App\Template::documentList());
+		    $view->with('templateable_document_typeList', Template::documentList());
 		    
 		});
 
 		// Languages
 		view()->composer(array('users.create', 'users.edit', 'configuration_keys.key_group_2'), function($view) {
 		    
-		    $view->with('languageList', \App\Language::pluck('name', 'id')->toArray());
+		    $view->with('languageList', Language::pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Measure Units
 		view()->composer(array('products.index', 'products.create', 'products._panel_main_data', 'product_boms._panel_create_bom', 'product_boms._panel_bom', 'ingredients.index', 'ingredients.create', 'ingredients._panel_main_data', 'configuration_keys.key_group_2'), function($view) {
 		    
-		    $view->with('measure_unitList', \App\MeasureUnit::pluck('name', 'id')->toArray());
+		    $view->with('measure_unitList', MeasureUnit::pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Work Centers
 		view()->composer(array('products._panel_manufacturing', 'production_sheets._panel_customer_orders', 'production_sheets._modal_production_order_form', 'production_sheets._modal_production_order_edit'), function($view) {
 		    
-		    $view->with('work_centerList', \App\WorkCenter::pluck('name', 'id')->toArray());
+		    $view->with('work_centerList', WorkCenter::pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Suppliers
 		view()->composer(array('products._panel_purchases'), function($view) {
 		    
-		    $view->with('supplierList', \App\Supplier::pluck('name_fiscal', 'id')->toArray());
+		    $view->with('supplierList', Supplier::pluck('name_fiscal', 'id')->toArray());
 		    
 		});
 
 		// Payment Methods
 		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'customer_groups.create', 'customer_groups.edit', 'configuration_keys.key_group_2', 'suppliers._form'), function($view) {
 		    
-		    $view->with('payment_methodList', \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray());
+		    $view->with('payment_methodList', PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Currencies
 		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'companies._form', 'price_lists._form', 'customer_groups.create', 'customer_groups.edit', 'stock_movements.create', 'configuration_keys.key_group_2', 'suppliers._form'), function($view) {
 		    
-		    $view->with('currencyList', \App\Currency::pluck('name', 'id')->toArray());
+		    $view->with('currencyList', Currency::pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Sales Representatives
 		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
 		    
-		    $view->with('salesrepList', \App\SalesRep::pluck('alias', 'id')->toArray());
+		    $view->with('salesrepList', SalesRep::pluck('alias', 'id')->toArray());
 		    
 		});
 
 		// Warehouses
 		view()->composer(array('products.create', 'stock_movements.index', 'stock_movements.create', 'stock_counts._form', 'stock_adjustments.create', 'configuration_keys.key_group_2', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
 /*		    
-		    $whList = \App\Warehouse::with('address')->get();
+		    $whList = Warehouse::with('address')->get();
 
 		    $list = [];
 		    foreach ($whList as $wh) {
@@ -163,9 +190,9 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 
 		    $view->with('warehouseList', $list);
 */
-		    // $view->with('warehouseList', \App\Warehouse::pluck('name', 'id')->toArray());
-//		    $whList = \App\Warehouse::select('id', DB::raw("concat('[', alias, '] ', notes) as full_name"))->pluck('full_name', 'id')->toArray();
-		    $whList = \App\Warehouse::select('id', DB::raw("concat('[', alias, '] ', name) as full_name"))->pluck('full_name', 'id')->toArray();
+		    // $view->with('warehouseList', Warehouse::pluck('name', 'id')->toArray());
+//		    $whList = Warehouse::select('id', DB::raw("concat('[', alias, '] ', notes) as full_name"))->pluck('full_name', 'id')->toArray();
+		    $whList = Warehouse::select('id', DB::raw("concat('[', alias, '] ', name) as full_name"))->pluck('full_name', 'id')->toArray();
 		    $view->with('warehouseList', $whList);
 		    
 		});
@@ -173,61 +200,61 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		// Carriers
 		view()->composer(array('shipping_methods._form'), function($view) {
 		    
-		    $view->with('carrierList', \App\Carrier::pluck('name', 'id')->toArray());
+		    $view->with('carrierList', Carrier::pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Shipping Methods
 		view()->composer(array('customers.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'configuration_keys.key_group_2'), function($view) {
 		    
-		    $view->with('shipping_methodList', \App\ShippingMethod::pluck('name', 'id')->toArray());
+		    $view->with('shipping_methodList', ShippingMethod::pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Companiers
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {
 		    
-		    $view->with('companyList', \App\Company::pluck('name_fiscal', 'id')->toArray());
+		    $view->with('companyList', Company::pluck('name_fiscal', 'id')->toArray());
 		    
 		});
 
 		// Customer Groups
 		view()->composer(array('customers.index', 'customers.edit'), function($view) {
 		    
-		    $view->with('customer_groupList', \App\CustomerGroup::pluck('name', 'id')->toArray());
+		    $view->with('customer_groupList', CustomerGroup::pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Taxes
 		view()->composer(array('customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit', 'products.create', 'products.edit', 'configuration_keys.key_group_2'), function($view) {
 		    
-		    $view->with('taxList', \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray());
+		    $view->with('taxList', Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray());
 		    
 		});
 
 		view()->composer(array('products.create', 'products.edit', 'price_list_lines.edit', 'customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
 
 		    // https://laracasts.com/discuss/channels/eloquent/eloquent-model-lists-id-and-a-custom-accessor-field
-		    $view->with('taxpercentList', \Arr::pluck(\App\Tax::all(), 'percent', 'id'));
+		    $view->with('taxpercentList', \Arr::pluck(Tax::all(), 'percent', 'id'));
 		    
 		});
 
 		view()->composer(array('customer_orders.create', 'customer_orders.edit', 'customer_invoices.create', 'customer_invoices.edit'), function($view) {
 /*
-		    $list = \App\Tax::select(
+		    $list = Tax::select(
 //		        \DB::raw("(percent + extra_percent) AS percent, id")
 		        \DB::raw("(percent) AS percent, id")
 		    )->pluck('percent', 'id');
 
 		    $view->with('taxeqpercentList', $list);
 */		    
-		    $view->with('taxpercentList', \Arr::pluck(\App\Tax::all(), 'percent', 'id'));
+		    $view->with('taxpercentList', \Arr::pluck(Tax::all(), 'percent', 'id'));
 		});
 
 		// Tax Rule types
 		view()->composer(array('tax_rules._form', 'tax_rules.index'), function($view) {
 
-		    $list = \App\TaxRule::getTypeList();
+		    $list = TaxRule::getTypeList();
 
 		    $view->with('tax_rule_typeList', $list);
 		});
@@ -235,14 +262,14 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		// Price Lists
 		view()->composer(array('customers.edit', 'customer_groups.create', 'customer_groups.edit'), function($view) {
 		    
-		    $view->with('price_listList', \App\PriceList::pluck('name', 'id')->toArray());
+		    $view->with('price_listList', PriceList::pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Price List types
 		view()->composer(array('price_lists._form', 'price_lists.index'), function($view) {
 
-		    $list = \App\PriceList::getTypeList();
+		    $list = PriceList::getTypeList();
 
 		    $view->with('price_list_typeList', $list);
 		});
@@ -251,21 +278,21 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		view()->composer(array('products._form_create'), function($view) {
 /*		    
 		    $list = [];
-		    foreach (\App\Product::$types as $type) {
+		    foreach (Product::$types as $type) {
 		    	$list[$type] = l($type, [], 'appmultilang');
 		    }
 */
-		    $list = \App\Product::getTypeList();
+		    $list = Product::getTypeList();
 
 		    $view->with('product_typeList', $list);
-		    // $view->with('warehouseList', \App\Warehouse::pluck('name', 'id')->toArray());
+		    // $view->with('warehouseList', Warehouse::pluck('name', 'id')->toArray());
 		    
 		});
 
 		// Product procurement types
 		view()->composer(array('products.index', 'products._form_create', 'products._panel_main_data'), function($view) {
 
-		    $list1 = \App\Product::getProcurementTypeList();
+		    $list1 = Product::getProcurementTypeList();
 
 		    $view->with('product_procurementtypeList', $list1);
 		    
@@ -274,7 +301,7 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		// Stock Movement Types
 		view()->composer(array('stock_movements.index', 'stock_movements.create'), function($view) {
 		    
-		    $view->with('movement_typeList', \App\StockMovement::stockmovementList());
+		    $view->with('movement_typeList', StockMovement::stockmovementList());
 		    
 		});
 
@@ -283,21 +310,21 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		// Customer Orders Sequencess
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {
 		    
-		    $view->with('orders_sequenceList', \App\Sequence::listFor( \App\CustomerOrder::class ));
+		    $view->with('orders_sequenceList', Sequence::listFor( CustomerOrder::class ));
 		    
 		});
 		
 		// Customer Shipping Slips Sequencess
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {
 		    
-		    $view->with('shipping_slips_sequenceList', \App\Sequence::listFor( \App\CustomerShippingSlip::class ));
+		    $view->with('shipping_slips_sequenceList', Sequence::listFor( CustomerShippingSlip::class ));
 		    
 		});
 		
 		// Customer Invoices Sequencess
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {
 		    
-		    $view->with('invoices_sequenceList', \App\Sequence::listFor( \App\CustomerInvoice::class ));
+		    $view->with('invoices_sequenceList', Sequence::listFor( CustomerInvoice::class ));
 		    
 		});
 
@@ -306,14 +333,14 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		// Customer Shipping Slips Template
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {
 		    
-		    $view->with('shipping_slips_templateList', \App\Template::listFor( \App\CustomerShippingSlip::class ));
+		    $view->with('shipping_slips_templateList', Template::listFor( CustomerShippingSlip::class ));
 		    
 		});
 
 		// Customer Invoices Template
 		view()->composer(array('configuration_keys.key_group_2'), function($view) {
 		    
-		    $view->with('invoices_templateList', \App\Template::listFor( \App\CustomerInvoice::class ));
+		    $view->with('invoices_templateList', Template::listFor( CustomerInvoice::class ));
 		    
 		});
 		
@@ -339,7 +366,7 @@ class AbccViewComposerServiceProvider extends ServiceProvider {
 		// Available Production Sheets
 		view()->composer(array('customer_orders.index',  'production_sheets._modal_customer_order_move'), function($view) {
 		    
-		    $availableProductionSheets = \App\ProductionSheet::isOpen()->orderBy('due_date', 'asc')->pluck('due_date', 'id')->toArray();
+		    $availableProductionSheets = ProductionSheet::isOpen()->orderBy('due_date', 'asc')->pluck('due_date', 'id')->toArray();
 
 		    array_walk( $availableProductionSheets, function (&$v, $k) { $v = abi_date_form_short($v); } );
 

@@ -1,0 +1,4 @@
+vendor/
+composer.lock
+package-skeleton-laravel-main/
+

@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\SalesRepCenter;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
-use App\SalesRepUser;
-use App\SalesRep;
+use App\Models\SalesRepUser;
+use App\Models\SalesRep;
 
-use App\PriceRule;
-use App\Configuration;
+use App\Models\PriceRule;
+use App\Models\Configuration;
 
 use App\Traits\DateFormFormatterTrait;
 

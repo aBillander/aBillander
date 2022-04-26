@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
+
 use App\Http\Controllers\Controller;
-
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\CurrencyConversionRate;
 use Illuminate\Http\Request;
-
-use App\Currency;
-use App\Configuration;
-
 use View;
 
 class CurrenciesController extends Controller {
@@ -58,7 +57,7 @@ class CurrenciesController extends Controller {
 
 		$currency = $this->currency->create($request->all());
 
-		\App\CurrencyConversionRate::create([
+		CurrencyConversionRate::create([
 				'date' => \Carbon\Carbon::now(), 
 				'currency_id' => $currency->id, 
 				'conversion_rate' => $currency->conversion_rate, 
@@ -110,8 +109,8 @@ class CurrenciesController extends Controller {
 
 		$currency->update($request->all());
 
-		if ( $currency->id != \App\Context::getContext()->currency->id )
-			\App\CurrencyConversionRate::create([
+		if ( $currency->id != Context::getContext()->currency->id )
+			CurrencyConversionRate::create([
 					'date' => \Carbon\Carbon::now(), 
 					'currency_id' => $currency->id, 
 					'conversion_rate' => $currency->conversion_rate, 
@@ -150,7 +149,7 @@ class CurrenciesController extends Controller {
 	{
 		$currency = $this->currency->findOrFail($id);
 
-		$ccrs = \App\CurrencyConversionRate::where('currency_id', '=', $currency->id)->with('user')->orderBy('date', 'desc')->get();
+		$ccrs = CurrencyConversionRate::where('currency_id', '=', $currency->id)->with('user')->orderBy('date', 'desc')->get();
 
         return view('currencies.exchange', compact('currency', 'ccrs'));
 	}

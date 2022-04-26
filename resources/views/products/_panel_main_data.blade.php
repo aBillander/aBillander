@@ -62,8 +62,8 @@
                   
                   <div class="form-group col-lg-2 col-md-2 col-sm-2">
                      {{ l('Product type') }}
-                     <div class="form-control">{{ \App\Product::getTypeName($product->product_type) }}</div>
-                     {{-- !! Form::text('product_type_name', \App\Product::getTypeName($product->product_type), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !! --}}
+                     <div class="form-control">{{ \App\Models\Product::getTypeName($product->product_type) }}</div>
+                     {{-- !! Form::text('product_type_name', \App\Models\Product::getTypeName($product->product_type), array('class' => 'form-control', 'onfocus' => 'this.blur()')) !! --}}
                   </div>
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('procurement_type') ? 'has-error' : '' }}"">
@@ -186,7 +186,7 @@ border-left:1px solid #e95420;">
                      {!! $errors->first('weight', '<span class="help-block">:message</span>') !!}
                   </div>
 
-@if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if ( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('ecotax_id') ? 'has-error' : '' }}">
                     {{ l('Eco-Tax') }}
                     {!! Form::select('ecotax_id', array('' => l('-- Please, select --', [], 'layouts')) + $ecotaxList, null, array('class' => 'form-control')) !!}
@@ -309,7 +309,7 @@ border-left:1px solid #e95420;">
 {{-- Date Picker --}}
 
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
 
@@ -317,7 +317,7 @@ border-left:1px solid #e95420;">
     $( "#new_since_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 

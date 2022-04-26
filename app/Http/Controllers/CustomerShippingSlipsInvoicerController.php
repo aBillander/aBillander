@@ -2,25 +2,19 @@
 
 namespace App\Http\Controllers;
 
-// use App\Http\Requests;
-
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use App\Customer;
-use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
-
-use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-use App\CustomerInvoiceLineTax;
-use App\DocumentAscription;
-
-use App\Configuration;
-use App\Sequence;
-use App\Template;
-
+use App\Models\Configuration;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerInvoiceLineTax;
+use App\Models\CustomerShippingSlip;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\ActivityLogger;
+use App\Models\Sequence;
+use App\Models\Template;
 use App\Traits\DateFormFormatterTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class CustomerShippingSlipsInvoicerController
 {
@@ -125,7 +119,7 @@ class CustomerShippingSlipsInvoicerController
 
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Automatic Invoice Customer Shipping Slips', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Automatic Invoice Customer Shipping Slips', __METHOD__ )
                     ->backTo( route('customershippingslips.invoicer.create') );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 

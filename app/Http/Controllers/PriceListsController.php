@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use App\Models\ActivityLogger;
+use App\Models\Configuration;
+use App\Models\PriceList;
+use App\Models\Product;
 use Illuminate\Http\Request;
-
-use App\PriceList as PriceList;
 use View;
 
 class PriceListsController extends Controller {
@@ -53,11 +53,11 @@ class PriceListsController extends Controller {
 
 		$pricelist = $this->pricelist->create($request->all());
 
-		if ( \App\Configuration::get('NEW_PRICE_LIST_POPULATE') ) {
+		if ( Configuration::get('NEW_PRICE_LIST_POPULATE') ) {
 
 			// Calculate prices for this Price List
 			// ToDo: make chunck by chunck
-			$products = \App\Product::get();
+			$products = Product::get();
 	
 	        foreach ($products as $product) {
 	
@@ -149,7 +149,7 @@ class PriceListsController extends Controller {
         $name = '['.$pricelist->id.'] '.$pricelist->name;
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Set Price List Prices as Default Product Prices', __METHOD__ );
+        $logger = ActivityLogger::setup( 'Set Price List Prices as Default Product Prices', __METHOD__ );
 
         $logger->empty();
         $logger->start();

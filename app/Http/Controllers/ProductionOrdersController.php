@@ -2,26 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\WarehouseShippingSlipPrinted;
+use App\Helpers\FilenameSanitizer;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
-use App\Context;
-use App\Configuration;
-use App\WorkCenter;
-use App\Warehouse;
-use App\Product;
-
-use App\ProductionOrder;
-use App\ProductionOrderLine;
-
-use Form, DB;
-
-use Excel;
-
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Product;
+use App\Models\ProductionOrder;
+use App\Models\ProductionOrderLine;
+use App\Models\ProductionSheet;
+use App\Models\Template;
+use App\Models\Warehouse;
+use App\Models\WorkCenter;
 use App\Traits\DateFormFormatterTrait;
 use App\Traits\ModelAttachmentControllerTrait;
-
 use App\Traits\ProductionOrderLotFormsControllerTrait;
+use Form, DB;
+use Illuminate\Http\Request;
 
 class ProductionOrdersController extends Controller
 {
@@ -60,7 +57,7 @@ class ProductionOrdersController extends Controller
 // See: https://stackoverflow.com/questions/18861186/eloquent-eager-load-order-by
                       
 
-        $orders = $orders->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $orders = $orders->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $orders->setPath('productionorders');     // Customize the URI used by the paginator
 
@@ -91,7 +88,7 @@ class ProductionOrdersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ProductionOrder  $productionorder
+     * @param  \App\Models\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
     public function show(ProductionOrder $productionorder)
@@ -102,7 +99,7 @@ class ProductionOrdersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ProductionOrder  $productionorder
+     * @param  \App\Models\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
     public function edit(ProductionOrder $productionorder, Request $request)
@@ -129,7 +126,7 @@ class ProductionOrdersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ProductionOrder  $productionorder
+     * @param  \App\Models\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, ProductionOrder $productionorder)
@@ -194,7 +191,7 @@ class ProductionOrdersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ProductionOrder  $productionorder
+     * @param  \App\Models\ProductionOrder  $productionorder
      * @return \Illuminate\Http\Response
      */
     public function destroy(ProductionOrder $productionorder)
@@ -304,7 +301,7 @@ class ProductionOrdersController extends Controller
 
     public function productionsheetEdit(Request $request, $id)
     {
-        $order = \App\ProductionOrder::findOrFail($id);
+        $order = ProductionOrder::findOrFail($id);
 
         $need_update = !( $order->planned_quantity == $request->input('planned_quantity') );
 
@@ -329,7 +326,7 @@ class ProductionOrdersController extends Controller
 
     public function productionsheetDelete(Request $request, $id)
     {
-        $order = \App\ProductionOrder::findOrFail($id);
+        $order = ProductionOrder::findOrFail($id);
 
         $order->deleteWithLines();
 /*
@@ -356,7 +353,7 @@ class ProductionOrdersController extends Controller
      */
     public function getOrder($id)
     {
-        $order = \App\ProductionOrder::with('ProductionOrderLines')
+        $order = ProductionOrder::with('ProductionOrderLines')
                         ->with('ProductionOrderLines.product')
                         ->with('ProductionOrderLines.product.measureunit')
                         ->findOrFail($id);
@@ -386,14 +383,14 @@ class ProductionOrdersController extends Controller
             $search_assemblies = true;
         }
 
-        $products = \App\Product::select('id', 'name', 'reference', 'work_center_id', 'manufacturing_batch_size', 'measure_unit_id')
+        $products = Product::select('id', 'name', 'reference', 'work_center_id', 'manufacturing_batch_size', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
                                 ->isManufactured( !$search_parts )
 //                                ->isPartItem( $search_parts )     <= Any product can be a part of a BOM
                                 ->IsAssembly( $search_assemblies )
                                 ->with('measureunit')
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 /*
         $data = [];
@@ -418,7 +415,7 @@ class ProductionOrdersController extends Controller
 
 
 
-        $sheet = \App\ProductionSheet::with('productionorders')->findOrFail( $data['production_sheet_id'] );
+        $sheet = ProductionSheet::with('productionorders')->findOrFail( $data['production_sheet_id'] );
         $pID = $data['product_id'];
 
         $needle = $sheet->productionorders->first(function($item) use ($pID) {
@@ -430,7 +427,7 @@ class ProductionOrdersController extends Controller
             if ($needle) return ['status' => 'ERROR', 'message' => 'No se puede crear una Orden de Fabricación para este Producto porque ya existe una.'];
 
         // So far, so good:
-        $order = \App\ProductionOrder::createWithLines( $data );
+        $order = ProductionOrder::createWithLines( $data );
 
         if ($order) return ['status' => 'OK'];
 
@@ -707,7 +704,7 @@ class ProductionOrdersController extends Controller
 */
         // Recent Sales
         $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
-        $class = '\App\\'.$model.'Line';
+        $class = '\\App\\Models\\'.$model.'Line';
         $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
         $tableLines = \Str::snake($model).'_lines';
@@ -1150,14 +1147,11 @@ class ProductionOrdersController extends Controller
                      ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         }
 
-        // abi_r($document->hasManyThrough('App\CustomerInvoiceLineTax', 'App\CustomerInvoiceLine'), true);
-
-        // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-        $company = \App\Context::getContext()->company;
+        $company = Context::getContext()->company;
 
         // Template
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE') );
+             Template::find( Configuration::getInt('DEF_WAREHOUSE_SHIPPING_SLIP_TEMPLATE') );
 
         if ( !$t )
             return redirect()->route('warehouseshippingslips.edit', $id)
@@ -1193,7 +1187,7 @@ class ProductionOrdersController extends Controller
         // Lets try another strategy
         if ( $document->document_reference ) {
             //
-            $sanitizer = new \App\FilenameSanitizer( $document->document_reference );
+            $sanitizer = new FilenameSanitizer( $document->document_reference );
 
             $sanitizer->stripPhp()
                 ->stripRiskyCharacters()
@@ -1214,7 +1208,7 @@ class ProductionOrdersController extends Controller
             //
         } else {
             // Dispatch event
-            event( new \App\Events\WarehouseShippingSlipPrinted( $document ) );
+            event( new WarehouseShippingSlipPrinted( $document ) );
         }
     
 
@@ -1254,13 +1248,13 @@ class ProductionOrdersController extends Controller
 
 
 
-        // $company = \App\Company::find( intval(Configuration::get('DEF_COMPANY')) );
-        $company = \App\Context::getContext()->company;
+        // $company = \App\Models\Company::find( intval(Configuration::get('DEF_COMPANY')) );
+        $company = Context::getContext()->company;
 
         // Template
         // $seq_id = $this->sequence_id > 0 ? $this->sequence_id : Configuration::get('DEF_'.strtoupper( $this->getClassSnakeCase() ).'_SEQUENCE');
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_'.strtoupper( 'WarehouseShippingSlip' ).'_TEMPLATE') );
+             Template::find( Configuration::getInt('DEF_'.strtoupper( 'WarehouseShippingSlip' ).'_TEMPLATE') );
 
         if ( !$t )
             return redirect()->back()

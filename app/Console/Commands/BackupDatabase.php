@@ -39,22 +39,32 @@ class BackupDatabase extends Command
     {
         parent::__construct();
 
+        // https://www.google.com/search?q=laravel+artisan+command+to+backup+database+with+simfony+Process+class
+        // https://learn2torials.com/a/laravel-weekly-mysql-backup
+
+        if (!\is_dir( \storage_path( abi_tenant_db_backups_path() ) )) {
+              \mkdir( \storage_path( abi_tenant_db_backups_path() ) );
+        }
+
         $date = str_replace( [' ', ':'], '_', \Carbon\Carbon::now()->toDateTimeString() );
+
+        $file = storage_path( abi_tenant_db_backups_path() ) . '/backup_'.config('database.connections.mysql.database').'_'.$date.'.sql';
 
             try {
                 // This can fail because:
                 // The Process class relies on proc_open, which is not available on your PHP installation.
 
-                $this->process = new Process(sprintf(
-                    "mysqldump -u%s -p'%s' -h%s -P%s %s > %s",
-                    config('database.connections.mysql.username'),
-                    config('database.connections.mysql.password'),
-                    config('database.connections.mysql.host'),
-                    config('database.connections.mysql.port'),
+                $this->process = new Process([
+                    'mysqldump',
+                    '--user='     . config('database.connections.mysql.username'),
+                    '--password=' . config('database.connections.mysql.password'),
+                    '--host='     . config('database.connections.mysql.host'),
+                    '--port='     . config('database.connections.mysql.port'),
+
                     config('database.connections.mysql.database'),
-        //            storage_path('backups/backup_'.config('database.connections.mysql.database').'_'.$date.'.sql')
-                    storage_path( abi_tenant_db_backups_path() ) . '/backup_'.config('database.connections.mysql.database').'_'.$date.'.sql'
-                ));
+
+                    '--result-file=' . $file,
+                ]);
             }
             catch (\Exception $e) {
                 // $this->error("The Process class can not be instantiated.\n\n" . $e->getMessage());
@@ -73,13 +83,13 @@ class BackupDatabase extends Command
         try {
             $this->process->mustRun();
 
-            $this->info(l('The backup has been proceed successfully.', 'layouts'));
+            $this->info(l('The database backup has been proceed successfully.', 'layouts'));
         } catch (ProcessFailedException $exception) {
             
-            $this->error(l('Error: The backup process has been failed.', 'layouts')."\n\n" . $exception->getMessage());
+            $this->error(l('Error: The database backup process has been failed.', 'layouts')."\n\n" . $exception->getMessage());
         }
           catch (\Throwable $exception) {
-            $this->error(l('Error: The backup process has been failed.', 'layouts')."\n\n" .  $exception->getMessage());
+            $this->error(l('Error: The database backup process has been failed.', 'layouts')."\n\n" .  $exception->getMessage());
         }
     }
 }

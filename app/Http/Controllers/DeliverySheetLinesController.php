@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\DeliverySheetLine;
+use App\Models\DeliverySheetLine;
 use Illuminate\Http\Request;
 
 class DeliverySheetLinesController extends Controller
@@ -41,7 +41,7 @@ class DeliverySheetLinesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\DeliverySheetLine  $deliverysheetline
+     * @param  \App\Models\DeliverySheetLine  $deliverysheetline
      * @return \Illuminate\Http\Response
      */
     public function show(DeliverySheetLine $deliverysheetline)
@@ -52,7 +52,7 @@ class DeliverySheetLinesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\DeliverySheetLine  $deliverysheetline
+     * @param  \App\Models\DeliverySheetLine  $deliverysheetline
      * @return \Illuminate\Http\Response
      */
     public function edit(DeliverySheetLine $deliverysheetline)
@@ -64,7 +64,7 @@ class DeliverySheetLinesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\DeliverySheetLine  $deliverysheetline
+     * @param  \App\Models\DeliverySheetLine  $deliverysheetline
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, DeliverySheetLine $deliverysheetline)
@@ -75,7 +75,7 @@ class DeliverySheetLinesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\DeliverySheetLine  $deliverysheetline
+     * @param  \App\Models\DeliverySheetLine  $deliverysheetline
      * @return \Illuminate\Http\Response
      */
     public function destroy(DeliverySheetLine $deliverysheetline)

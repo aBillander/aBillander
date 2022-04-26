@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\ActivityLogger;
+use App\Models\Category;
+use App\Models\Configuration;
+use App\Helpers\Exports\ArrayExport;
+use App\Helpers\Imports\ArrayImport;
+use Excel;
 use Illuminate\Http\Request;
 
-use App\Category;
-
-use Excel;
+// use App\Helpers\Imports\CategoriesImport;
 
 class ImportCategoriesController extends Controller
 {
@@ -130,11 +133,15 @@ class ImportCategoriesController extends Controller
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Categories', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Import Categories', __METHOD__ )
                     ->backTo( route('categories.import') );        // 'Import Categories :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
-        $logger->empty();
+        if ( $request->input('empty_log', 0) ) 
+        {
+            $logger->empty();
+        }
+
         $logger->start();
 
         $file = $request->file('data_file')->getClientOriginalName();   // . '.' . $request->file('data_file')->getClientOriginalExtension();
@@ -173,36 +180,6 @@ class ImportCategoriesController extends Controller
 
         return redirect('activityloggers/'.$logger->id)
                 ->with('success', l('Se han cargado las Categorías desde el Fichero: <strong>:file</strong> .', ['file' => $file]));
-
-
-//        abi_r('Se han cargado: '.$i.' categoryos');
-
-
-
-        // See: https://www.google.com/search?client=ubuntu&channel=fs&q=laravel-excel+%22Serialization+of+%27Illuminate%5CHttp%5CUploadedFile%27+is+not+allowed%22&ie=utf-8&oe=utf-8
-        // https://laracasts.com/discuss/channels/laravel/serialization-of-illuminatehttpuploadedfile-is-not-allowed-on-queue
-
-        // See: https://github.com/LaravelDaily/Laravel-Import-CSV-Demo/blob/master/app/Http/Controllers/ImportController.php
-        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
-/*
-        Excel::filter('chunk')->load('file.csv')->chunk(250, function($results)
-        {
-                foreach($results as $row)
-                {
-                    // do stuff
-                }
-        });
-
-        Excel::filter('chunk')->load(database_path('seeds/csv/users.csv'))->chunk(250, function($results) {
-            foreach ($results as $row) {
-                $user = User::create([
-                    'username' => $row->username,
-                    // other fields
-                ]);
-            }
-        });
-*/
-        // See: https://www.youtube.com/watch?v=z_AhZ2j5sI8  Modificar datos importados
     }
 
 
@@ -211,27 +188,18 @@ class ImportCategoriesController extends Controller
      *
      * @return 
      */
-    protected function processFile( $file, $logger )
+    protected function processFile( $file, $logger, $params = [] )
     {
+        // $reader = Excel::toArray(new CategoriesImport( $logger ), $file);
+        // Excel::import(new CategoriesImport( $logger )), $file);
 
-        // 
-        // See: https://www.youtube.com/watch?v=rWjj9Slg1og
-        // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
-        Excel::filter('chunk')->selectSheetsByIndex(0)->load( $file )->chunk(250, function ($reader) use ( $logger )
-        {
-            
- /*           $reader->each(function ($sheet){
-                // ::firstOrCreate($sheet->toArray);
-                abi_r($sheet);
-            });
+        // Get data as an array
+        $worksheet = Excel::toCollection(new ArrayImport, $file);
 
-            $reader->each(function($sheet) {
-                // Loop through all rows
-                $sheet->each(function($row) {
-                    // Loop through all columns
-                });
-            });
-*/
+        // abi_r($worksheet->first(), true);
+
+        $reader = $worksheet->first();    // First sheet in worksheet
+
 
 // Process reader STARTS
 
@@ -248,7 +216,7 @@ class ImportCategoriesController extends Controller
                 foreach($reader as $row)
                 {
                     // do stuff
-                    // if ($i > $max_id) break;
+                    if ($i > $max_id) break;
 
                     // Prepare data
                     $data = $row->toArray();
@@ -258,7 +226,7 @@ class ImportCategoriesController extends Controller
                     // Some Poor Man checks:
                     if ( array_key_exists('id', $data)) {
                         $data['id'] = intval( $data['id'] );
-                        if ( $data['id'] <= 0 ) unset( $data['id'] );
+                        if ( $data['id'] <= 0 ) $data['id'] = NULL;
                     }
 
                     $data['publish_to_web'] = intval( $data['publish_to_web'] ) > 0 ? 1 : 0;
@@ -280,13 +248,13 @@ class ImportCategoriesController extends Controller
                     {
                         if (  array_key_exists('parent_REFERENCE_EXTERNAL', $data) ) 
                         {
-                            if ( $category = \App\Category::where('reference_external', $data['parent_REFERENCE_EXTERNAL'])->first())
+                            if ( $category = Category::where('reference_external', $data['parent_REFERENCE_EXTERNAL'])->first())
                                 $data['parent_id'] = $category_id;
                             else
                                 $logger->log("ERROR", "Categoría ".$item.":<br />" . "El campo 'parent_REFERENCE_EXTERNAL' es inválido: " . ($data['parent_REFERENCE_EXTERNAL'] ?? ''));
                         }
                     } else {
-                        if ( $category = \App\Category::find($data['parent_id']))
+                        if ( $category = Category::find($data['parent_id']))
                                 ;
                             else{
                                 $logger->log("ERROR", "Categoría ".$item.":<br />" . "El campo 'parent_id' es inválido: " . ($data['parent_id'] ?? ''));
@@ -295,7 +263,7 @@ class ImportCategoriesController extends Controller
                     }
 
 
-                    if ( \App\Configuration::isFalse('ALLOW_PRODUCT_SUBCATEGORIES') && ( $data['parent_id'] > 0 ) )
+                    if ( Configuration::isFalse('ALLOW_PRODUCT_SUBCATEGORIES') && ( $data['parent_id'] > 0 ) )
                     {
 
                             $logger->log("ERROR", "La Categoría ".$item." no se cargará porque no está permitido el uso de Subcategorías.");
@@ -313,7 +281,7 @@ class ImportCategoriesController extends Controller
                         
                         // Create Category
                         // $category = $this->category->create( $data );
-                        $category = $this->category->create( $data );
+                        $category = $this->category->updateOrCreate( ['id' => $data['id']], $data );
 
                         $i_ok++;
 
@@ -340,9 +308,7 @@ class ImportCategoriesController extends Controller
 
             $logger->log('INFO', 'Se han procesado {i} Categorías.', ['i' => $i]);
 
-// Process reader          
-    
-        }, false);      // should not queue $shouldQueue
+// Process reader ENDS
 
     }
 
@@ -360,36 +326,20 @@ class ImportCategoriesController extends Controller
 //                          ->orderBy('name', 'asc')
                           ->get();
 
-/*        $pricelist = $this->pricelist
-                    ->with('pricelistlines')
-                    ->with('pricelistlines.category')
-                    ->findOrFail($id);
-
-        $pricelist  = $this->pricelist->findOrFail($id);
-        $lines = $this->pricelistline
-                        ->select('price_list_lines.*', 'categories.id', 'categories.reference', 'categories.name')
-//                        ->with('category')
-                        ->where('price_list_id', $id)
-                        ->join('categories', 'categories.id', '=', 'price_list_lines.category_id')       // Get field to order by
-                        ->orderBy('categories.reference', 'asc')
-                        ->get();
-*/
-
         // Initialize the array which will be passed into the Excel generator.
         $data = []; 
 
         // Define the Excel spreadsheet headers
         $headers = [ 'id', 'name', 'description', 'position', 'publish_to_web', 'webshop_id', 'reference_external', 
                      'active', 'parent_id',
-//                    'position', 'is_root', 
         ];
 
         $data[] = $headers;
 
         // Convert each member of the returned collection into an array,
-        // and append it to the payments array.
+        // and append it to the $data array.
         foreach ($categories as $category) {
-            // $data[] = $line->toArray();
+
             $row = [];
             foreach ($headers as $header)
             {
@@ -400,26 +350,16 @@ class ImportCategoriesController extends Controller
             $data[] = $row;
         }
 
-        $sheetName = 'Categories' ;
+        $styles = [];
 
-        // abi_r($data, true);
+        $sheetTitle = 'Categories';
+
+        $export = (new ArrayExport($data, $styles))->setTitle($sheetTitle);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Categories', function($excel) use ($sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

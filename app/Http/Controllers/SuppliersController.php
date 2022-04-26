@@ -2,24 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use App\Models\Address;
+use App\Models\BankAccount;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Product;
+use App\Models\Sequence;
+use App\Models\Supplier;
+use App\Models\SupplierInvoice;
+use App\Models\SupplierOrder;
+use App\Traits\ModelAttachmentControllerTrait;
 use Illuminate\Http\Request;
 use Validator;
-
 use View, Mail;
-
-use App\Supplier;
-use App\Address;
-use App\BankAccount;
-
-use App\SupplierOrder;
-use App\Product;
-
-use App\Configuration;
-
-use App\Traits\ModelAttachmentControllerTrait;
 
 class SuppliersController extends Controller
 {
@@ -147,7 +143,7 @@ class SuppliersController extends Controller
 	 */
 	public function edit($id)
 	{
-        $sequenceList = \App\Sequence::listFor( \App\SupplierInvoice::class );
+        $sequenceList = Sequence::listFor( SupplierInvoice::class );
 
 		$supplier = $this->supplier->with('addresses', 'address')->findOrFail($id);
 
@@ -180,7 +176,7 @@ class SuppliersController extends Controller
 
             $rules['invoicing_address_id'] = 'exists:addresses,id,addressable_id,'.intval($id);
             if ($input['shipping_address_id']>0)
-//                $rules['shipping_address_id'] = 'exists:addresses,id,addressable_type,\\App\\Supplier|exists:addresses,id,addressable_id,'.intval($id);
+//                $rules['shipping_address_id'] = 'exists:addresses,id,addressable_type,\\App\\Models\\Supplier|exists:addresses,id,addressable_id,'.intval($id);
                 $rules['shipping_address_id'] = 'exists:addresses,id,addressable_id,'.intval($id);
             else
                 $input['shipping_address_id'] = 0;
@@ -431,7 +427,7 @@ class SuppliersController extends Controller
             'notes' => '',
             'notes_to_supplier' => '',
 
-            'user_id'              => \App\Context::getContext()->user->id,
+            'user_id'              => Context::getContext()->user->id,
             'sequence_id'          => Configuration::getInt('DEF_SUPPLIER_ORDER_SEQUENCE'),
             'template_id'          => Configuration::getInt('DEF_SUPPLIER_ORDER_TEMPLATE'),
             'document_discount_percent' => (float) optional($supplier)->discount_percent,

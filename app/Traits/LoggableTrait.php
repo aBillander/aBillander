@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Models\ActivityLogger;
+
 trait LoggableTrait
 {
     // Logger to send messages
@@ -31,7 +33,7 @@ trait LoggableTrait
         if ( !$name)      $name      = self::loggerName();
         if ( !$signature) $signature = self::loggerSignature();
 
-        return \App\ActivityLogger::setup( $name, $signature, $back_to );
+        return ActivityLogger::setup( $name, $signature, $back_to );
     }
 
     /**

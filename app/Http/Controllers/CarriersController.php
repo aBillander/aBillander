@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Models\Carrier;
+use App\Models\Configuration;
 use Illuminate\Http\Request;
-
-use App\Carrier;
 use View;
 
 class CarriersController extends Controller {
@@ -168,7 +167,7 @@ class CarriersController extends Controller {
             $carriers = $this->carrier
             						->where(   'name',  'LIKE', '%'.$search.'%' )
                                     ->orWhere( 'alias', 'LIKE', '%'.$search.'%' )
-                                    ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                     ->get();
 
             return response()->json( $carriers );

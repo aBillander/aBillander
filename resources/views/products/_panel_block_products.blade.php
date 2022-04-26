@@ -33,7 +33,7 @@
             <!-- th>{{ l('Cost Price') }}</th -->
             <th>{{ l('Customer Price') }}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
-                        data-content="{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                        data-content="{{ AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') ?
                                     l('Prices are entered inclusive of tax', [], 'appmultilang') :
                                     l('Prices are entered exclusive of tax', [], 'appmultilang') }}">
                     <i class="fa fa-question-circle abi-help"></i>
@@ -57,8 +57,8 @@
                 @else {{ $product->reference }}
                 @endif</td>
 
-      <td>{{ \App\Product::getProcurementTypeName($product->procurement_type) }}<br />
-        <span class="text-info">{{ \App\Product::getMrpTypeName($product->mrp_type) }}</span>
+      <td>{{ \App\Models\Product::getProcurementTypeName($product->procurement_type) }}<br />
+        <span class="text-info">{{ \App\Models\Product::getMrpTypeName($product->mrp_type) }}</span>
 
       </td>
 
@@ -68,13 +68,13 @@
 @endphp
 @if ($img)
               <a class="view-image" data-html="false" data-toggle="modal" 
-                     href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
+                     href="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
                      data-content="{{l('You are going to view a record. Are you sure?')}}" 
                      data-title="{{ l('Product Images') }} :: {{ $product->name }} " 
                      data-caption="({{$img->filename}}) {{ $img->caption }} " 
                      onClick="return false;" title="{{l('View Image')}}">
 
-                      <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+                      <img src="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
               </a>
 @endif
       </td>
@@ -106,7 +106,7 @@
                  </a>
                 @endif</td>
             <td class="text-center">@if ($product->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif
-                                    @if( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && $product->webshop_id )
+                                    @if( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && $product->webshop_id )
                                         <i class="fa fa-wordpress text-info" title="{{ l('Publish to web?') }}: {{l('Yes', [], 'layouts')}}"></i>
                                     @endif
             </td>

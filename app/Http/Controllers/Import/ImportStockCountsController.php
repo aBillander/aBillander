@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\StockCount;
-use App\StockCountLine;
-use App\Product;
-
+use App\Models\ActivityLogger;
+use App\Models\Configuration;
+use App\Models\Product;
+use App\Models\StockCount;
+use App\Models\StockCountLine;
+use App\Helpers\Exports\ArrayExport;
+use App\Helpers\Imports\ArrayImport;
 use Excel;
+use Illuminate\Http\Request;
 
 class ImportStockCountsController extends Controller
 {
@@ -93,19 +94,6 @@ class ImportStockCountsController extends Controller
         $stockcount = $this->stockcount->findOrFail($id);
 
         return view('imports.stock_counts', compact('stockcount'));
-/*
-		$country = $this->country->findOrFail($id);
-		
-		return view('countries.edit', compact('country'));
-
-        $customer_orders = $this->customerOrder
-                            ->with('customer')
-                            ->with('currency')
-                            ->with('paymentmethod')
-                            ->orderBy('id', 'desc')->get();
-
-        return view('customer_orders.index', compact('customer_orders'));
-*/        
     }
 
     public function process(Request $request, $id)
@@ -162,8 +150,8 @@ class ImportStockCountsController extends Controller
         $name = '['.$stockcount->id.'] '.$stockcount->name;
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Stock Count', __METHOD__ )
-                    ->backTo( route('stockcounts.stockcountlines.index', [$stockcount->id]) );        // 'Import Customers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        $logger = ActivityLogger::setup( 'Import Stock Count', __METHOD__ )
+                    ->backTo( route('stockcounts.stockcountlines.index', [$stockcount->id]) );
 
 
         if ( $request->input('empty_log', 0) ) 
@@ -219,36 +207,6 @@ class ImportStockCountsController extends Controller
 
         return redirect('activityloggers/'.$logger->id)
                 ->with('success', l('Se ha cargado el Recuento de Stock :name desde el Fichero: <strong>:file</strong> .', ['name' => $name, 'file' => $file]));
-
-
-//        abi_r('Se han cargado: '.$i.' productos');
-
-
-
-        // See: https://www.google.com/search?client=ubuntu&channel=fs&q=laravel-excel+%22Serialization+of+%27Illuminate%5CHttp%5CUploadedFile%27+is+not+allowed%22&ie=utf-8&oe=utf-8
-        // https://laracasts.com/discuss/channels/laravel/serialization-of-illuminatehttpuploadedfile-is-not-allowed-on-queue
-
-        // See: https://github.com/LaravelDaily/Laravel-Import-CSV-Demo/blob/master/app/Http/Controllers/ImportController.php
-        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
-/*
-        Excel::filter('chunk')->load('file.csv')->chunk(250, function($results)
-        {
-                foreach($results as $row)
-                {
-                    // do stuff
-                }
-        });
-
-        Excel::filter('chunk')->load(database_path('seeds/csv/users.csv'))->chunk(250, function($results) {
-            foreach ($results as $row) {
-                $user = User::create([
-                    'username' => $row->username,
-                    // other fields
-                ]);
-            }
-        });
-*/
-        // See: https://www.youtube.com/watch?v=z_AhZ2j5sI8  Modificar datos importados
     }
 
 
@@ -259,27 +217,13 @@ class ImportStockCountsController extends Controller
      */
     protected function processFile( $file, $logger, $params = [] )
     {
-        $i_total = 0;
-        $i_total_ok = 0;
+        // Get data as an array
+        $worksheet = Excel::toCollection(new ArrayImport, $file);
 
-        // 
-        // See: https://www.youtube.com/watch?v=rWjj9Slg1og
-        // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
-        Excel::filter('chunk')->load( $file )->chunk(250, function ($reader) use ( $logger, $params, &$i_total, &$i_total_ok )
-        {
-            
- /*           $reader->each(function ($sheet){
-                // ::firstOrCreate($sheet->toArray);
-                abi_r($sheet);
-            });
+        // abi_r($worksheet->first(), true);
 
-            $reader->each(function($sheet) {
-                // Loop through all rows
-                $sheet->each(function($row) {
-                    // Loop through all columns
-                });
-            });
-*/
+        $reader = $worksheet->first();    // First sheet in worksheet
+
 
 // Process reader STARTS
 
@@ -311,12 +255,11 @@ class ImportStockCountsController extends Controller
                     // Prepare data
                     $data = $row->toArray();
 
-                    $item = implode(', ', $data);
+                    // $item = implode(', ', $data);
                     // $item = str_replace('=', ':', http_build_query($data, null, ', '));
-                    // $item = http_build_query($data, null, ', ');
+                    $item = http_build_query($data, null, ', ');
 
                     // Some Poor Man checks: 
-
                     if ( intval($data['stock_count_id']) != $stock_count_id ) {
                         
                         $logger->log("ERROR", 'La fila <span class="log-ERROR-format">('.$item.')</span> no corresponde al Recuento de Stock <span class="log-showoff-format">'.$name.'</span>');
@@ -324,6 +267,11 @@ class ImportStockCountsController extends Controller
                         $i++;
                         continue;
                     }
+
+                    // Need rounding?
+//                    if ( $decimal_places >= 0 ) {
+//                        $data['price'] = round($data['price'], $decimal_places);
+//                    }
 
                     // Get Product
                     $product = null;
@@ -346,7 +294,7 @@ class ImportStockCountsController extends Controller
                             // Cost Price
                             if ( array_key_exists('cost_price', $data) )
                             {
-                                if (  $data['cost_price'] === NULL || trim($data['cost_price']) === '' ) 
+                                if ( floatval( trim($data['cost_price']) ) <= 0.0 ) 
                                 {
                                     // Use current
                                     $data['cost_price'] = $product->cost_price;
@@ -361,13 +309,12 @@ class ImportStockCountsController extends Controller
                             // Cost Average
                             if ( array_key_exists('cost_average', $data) )
                             {
-                                if (  $data['cost_average'] === NULL || trim($data['cost_average']) === '' ) 
+                                if ( ! (($data['cost_average']=(float) $data['cost_average']) > 0) ) 
                                 {
                                     // Use current
                                     $data['cost_average'] = $product->cost_average;
-                                } else {
-                                    $data['cost_average'] = floatval( trim($data['cost_average']) );
                                 }
+
                             } else {
                                 // Use current
                                 $data['cost_average'] = $product->cost_average;
@@ -376,7 +323,7 @@ class ImportStockCountsController extends Controller
                             // Last Purchase Price
                             if ( array_key_exists('last_purchase_price', $data) )
                             {
-                                if (  $data['last_purchase_price'] === NULL || trim($data['last_purchase_price']) === '' ) 
+                                if ( floatval( trim($data['last_purchase_price']) ) <= 0.0 ) 
                                 {
                                     // Use current
                                     $data['last_purchase_price'] = $product->last_purchase_price;
@@ -447,20 +394,11 @@ class ImportStockCountsController extends Controller
                 $logger->log('WARNING', 'No se encontraton datos de Recuento de Stock en el fichero.');
             }
 
-            $i_total += $i;
-            $i_total_ok += $i_ok;
-
             $logger->log('INFO', 'Se han creado / actualizado {i} Líneas de Recuento de Stock.', ['i' => $i_ok]);
 
             $logger->log('INFO', 'Se han procesado {i} Líneas de Recuento de Stock.', ['i' => $i]);
 
-// Process reader          
-    
-        }, false);      // should not queue $shouldQueue
-
-        $logger->log('INFO', 'Se han creado / actualizado {i} Líneas de Recuento de Stock en total.', ['i' => $i_total_ok]);
-
-        $logger->log('INFO', 'Se han procesado {i} Líneas de Recuento de Stock en total.', ['i' => $i_total]);
+// Process reader ENDS
 
     }
 
@@ -472,7 +410,7 @@ class ImportStockCountsController extends Controller
      */
     public function export($id)
     {
-        \App\Configuration::updateValue('EXPORT_DECIMAL_SEPARATOR', ',');
+//        Configuration::updateValue('EXPORT_DECIMAL_SEPARATOR', ',');
         
 /*        $stockcount = $this->stockcount
                     ->with('stockcountlines')
@@ -493,7 +431,9 @@ class ImportStockCountsController extends Controller
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $data[] = [ 'product_id', 'reference', 'NOMBRE', 'quantity', 'cost_price', 'cost_average', 'last_purchase_price', 'stock_count_id', 'stock_count_NAME' ];
+        $headers = [ 'product_id', 'reference', 'NOMBRE', 'quantity', 'cost_price', 'cost_average', 'last_purchase_price', 'stock_count_id', 'stock_count_NAME' ];
+
+        $data[] = $headers;
 
         // Convert each member of the returned collection into an array,
         // and append it to the payments array.
@@ -512,24 +452,16 @@ class ImportStockCountsController extends Controller
             ];
         }
 
-        $sheetName = $stockcount->warehouse->alias.' - '.$stockcount->warehouse->name;
+        $styles = [];
+
+        $sheetTitle = $stockcount->warehouse->alias.' - '.$stockcount->warehouse->name;
+
+        $export = (new ArrayExport($data, $styles))->setTitle($sheetTitle);
+
+        $sheetFileName = 'Stock_Count_'.$id.'_'.$stockcount->warehouse->alias;
 
         // Generate and return the spreadsheet
-        Excel::create('Stock_Count_'.$id.'_'.$stockcount->warehouse->alias, function($excel) use ($id, $sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Stock Count file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

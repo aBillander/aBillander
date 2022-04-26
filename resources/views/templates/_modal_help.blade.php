@@ -75,7 +75,7 @@
     <p>// Get Template</p>
     <p></p>
     <p>$t = $document->template ?? </p>
-    <p> &nbsp;  &nbsp;  &nbsp;  &nbsp; \App\Template::find( Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE') );</p>
+    <p> &nbsp;  &nbsp;  &nbsp;  &nbsp; \App\Models\Template::find( Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE') );</p>
     <p></p>
     <p>$template = $t->folder.snake_case( \Str::plural( 'CustomerInvoice' ) ).'.'.$t->file_name.'.'.$t->file_name;</p>
     <p></p>

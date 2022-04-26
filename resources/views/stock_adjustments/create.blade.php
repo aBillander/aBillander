@@ -24,7 +24,7 @@
     </div>
     <div class="form-group col-lg-4 col-md-4 col-sm-4">
         {!! Form::label('warehouse_id', l('Warehouse')) !!}
-        {!! Form::select('warehouse_id', $warehouseList, \App\Configuration::get('DEF_WAREHOUSE'), array('class' => 'form-control')) !!}
+        {!! Form::select('warehouse_id', $warehouseList, AbiConfiguration::get('DEF_WAREHOUSE'), array('class' => 'form-control')) !!}
     </div>
         {!! Form::hidden('movement_type_id', '0', array('id' => 'movement_type_id')) !!}
 </div>
@@ -76,7 +76,7 @@
     </div>
 
     <div class="form-group col-lg-4 col-md-4 col-sm-4">
-       {!! Form::label('cost_average', l('Average Cost Price')) !!} <span class="badge" style="background-color: #3a87ad;">{{ \App\Context::getContext()->currency->iso_code }}</span>
+       {!! Form::label('cost_average', l('Average Cost Price')) !!} <span class="badge" style="background-color: #3a87ad;">{{ AbiContext::getContext()->currency->iso_code }}</span>
        {!! Form::text('cost_average', null, array('class' => 'form-control', 'id' => 'cost_average')) !!}
     </div>
 </div>
@@ -112,14 +112,14 @@
 
 
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(function() {
     $( "#date" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 </script>

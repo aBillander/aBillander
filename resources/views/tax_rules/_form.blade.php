@@ -3,7 +3,7 @@
 
       <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('country_id') ? 'has-error' : '' }}">
         {!! Form::label('country_id', l('Country')) !!}
-        {!! Form::select('country_id', array('0' => l('-- All --')) + $countryList, null, array('class' => 'form-control', 'id' => 'country_id')) !!}
+        {!! Form::select('country_id', $countryList, null, array('class' => 'form-control', 'id' => 'country_id')) !!}
         {!! $errors->first('country_id', '<span class="help-block">:message</span>') !!}
       </div>
       <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('state_id') ? 'has-error' : '' }}">
@@ -51,7 +51,7 @@
                                     data-content="{{ l('Use multiples of 10. Use other values to interpolate.') }}">
                       <i class="fa fa-question-circle abi-help"></i>
                </a>
-        {!! Form::text('position', null, array('class' => 'form-control')) !!}
+        {!! Form::text('position', null, array('class' => 'form-control', 'id' => 'position')) !!}
         {!! $errors->first('position', '<span class="help-block">:message</span>') !!}
     </div>
 </div>
@@ -80,7 +80,7 @@
 
         // Select default country
         if ( !($('input[name="name"]').val().length > 0) ) {
-            var def_countryID = {{ \App\Configuration::get('DEF_COUNTRY') }};
+            var def_countryID = {{ AbiConfiguration::get('DEF_COUNTRY') }};
 
             $('select[name="country_id"]').val(def_countryID).change();
         }

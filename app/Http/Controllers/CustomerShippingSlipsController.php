@@ -2,28 +2,31 @@
 
 namespace App\Http\Controllers;
 
-// use App\Http\Requests;
-
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use App\Customer;
-use App\CustomerShippingSlip as Document;
-use App\CustomerShippingSlipLine as DocumentLine;
-
-use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-use App\CustomerInvoiceLineTax;
-use App\DocumentAscription;
-
-use App\ShippingMethod;
-
-use App\Configuration;
-use App\Sequence;
-use App\Template;
-use App\MeasureUnit;
-
 use App\Events\CustomerShippingSlipConfirmed;
+use App\Helpers\DocumentAscription;
+use App\Helpers\Price;
+use App\Models\ActivityLogger;
+use App\Models\Combination;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerInvoiceLineTax;
+use App\Models\CustomerShippingSlip as Document;
+use App\Models\CustomerShippingSlip;
+use App\Models\CustomerShippingSlipLine as DocumentLine;
+use App\Models\MeasureUnit;
+use App\Models\PaymentMethod;
+use App\Models\Product;
+use App\Models\SalesRep;
+use App\Models\Sequence;
+use App\Models\ShippingMethod;
+use App\Models\Tax;
+use App\Models\Template;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class CustomerShippingSlipsController extends BillableController
 {
@@ -91,11 +94,11 @@ class CustomerShippingSlipsController extends BillableController
         if ( !($items_per_page >= 0) ) 
             $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
 
-        $sequenceList = Sequence::listFor( 'App\\CustomerInvoice' );
+        $sequenceList = Sequence::listFor( CustomerInvoice::class );
 
-        $templateList = Template::listFor( 'App\\CustomerInvoice' );
+        $templateList = Template::listFor( CustomerInvoice::class );
 
-        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $payment_methodList = PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
         $customer = $this->customer->findOrFail($id);
 
@@ -203,7 +206,7 @@ class CustomerShippingSlipsController extends BillableController
 //        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
 //        $doc_id = $seq->getNextDocumentId();
 
-        $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+        $extradata = [  'user_id'              => Context::getContext()->user->id,
 
                         'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
 
@@ -247,7 +250,7 @@ class CustomerShippingSlipsController extends BillableController
     /**
      * Display the specified resource.
      *
-     * @param  \App\CustomerShippingSlip  $customershippingslip
+     * @param  \App\Models\CustomerShippingSlip  $customershippingslip
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -258,7 +261,7 @@ class CustomerShippingSlipsController extends BillableController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CustomerShippingSlip  $customershippingslip
+     * @param  \App\Models\CustomerShippingSlip  $customershippingslip
      * @return \Illuminate\Http\Response
      */
     public function edit($id, Request $request)
@@ -312,7 +315,7 @@ class CustomerShippingSlipsController extends BillableController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CustomerShippingSlip  $customershippingslip
+     * @param  \App\Models\CustomerShippingSlip  $customershippingslip
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Document $customershippingslip)
@@ -434,7 +437,7 @@ class CustomerShippingSlipsController extends BillableController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CustomerShippingSlip  $customershippingslip
+     * @param  \App\Models\CustomerShippingSlip  $customershippingslip
      * @return \Illuminate\Http\Response
      */
     public function destroy($id, Request $request)
@@ -793,11 +796,11 @@ class CustomerShippingSlipsController extends BillableController
         if ( !($items_per_page >= 0) ) 
             $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
 
-        $sequenceList = Sequence::listFor( 'App\\CustomerInvoice' );
+        $sequenceList = Sequence::listFor( CustomerInvoice::class );
 
-        $templateList = Template::listFor( 'App\\CustomerInvoice' );
+        $templateList = Template::listFor( CustomerInvoice::class );
 
-        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $payment_methodList = PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
         $statusList = CustomerInvoice::getStatusList();
 
@@ -852,7 +855,7 @@ class CustomerShippingSlipsController extends BillableController
 
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Invoice Customer Shipping Slips', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Invoice Customer Shipping Slips', __METHOD__ )
                     ->backTo( route('customer.invoiceable.shippingslips', $params['customer_id']) );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -876,7 +879,7 @@ class CustomerShippingSlipsController extends BillableController
         $params['logger'] = $logger;
 
 
-        $invoice = \App\CustomerShippingSlip::invoiceDocumentList( $document_list, $params );
+        $invoice = CustomerShippingSlip::invoiceDocumentList( $document_list, $params );
 
 
 
@@ -913,6 +916,9 @@ class CustomerShippingSlipsController extends BillableController
             
             'status'        => 'closed', 
         ];
+
+        if ( $document->payment_method_id )
+            $params['payment_method_id'] = $document->payment_method_id;
 
         // abi_r($params, true);
         
@@ -1002,7 +1008,10 @@ class CustomerShippingSlipsController extends BillableController
 //            'carrier_id' => $this->carrier_id,
             'sales_rep_id' => $customer->sales_rep_id,
             'currency_id' => $customer->currency->id,
-            'payment_method_id' => $customer->getPaymentMethodId(),
+            'payment_method_id' => 
+                (isset($params['payment_method_id']) && $params['payment_method_id']) 
+                    ? $params['payment_method_id']
+                    : $customer->getPaymentMethodId(),
             'template_id' => $params['template_id'],
         ];
 
@@ -1282,7 +1291,7 @@ class CustomerShippingSlipsController extends BillableController
             'type' => 'traceability',
             ];
 
-        $link = \App\DocumentAscription::where( $link_data )->first();
+        $link = DocumentAscription::where( $link_data )->first();
 
         $link->delete();
 
@@ -1320,30 +1329,30 @@ class CustomerShippingSlipsController extends BillableController
         $combination_id  = $request->input('combination_id', 0);
         $customer_id     = $request->input('customer_id');
         $sales_rep_id    = $request->input('sales_rep_id', 0);
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 
 //        return "$product_id, $combination_id, $customer_id, $currency_id";
 
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->find(intval($combination_id));
+            $combination = Combination::with('product')->with('product.tax')->find(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::with('tax')->find(intval($product_id));
+            $product = Product::with('tax')->find(intval($product_id));
         }
 
-        $customer = \App\Customer::find(intval($customer_id));
+        $customer = Customer::find(intval($customer_id));
 
         $sales_rep = null;
         if ($sales_rep_id>0)
-            $sales_rep = \App\SalesRep::find(intval($sales_rep_id));
+            $sales_rep = SalesRep::find(intval($sales_rep_id));
         if (!$sales_rep)
             $sales_rep = (object) ['id' => 0, 'commission_percent' => 0.0]; 
         
-        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
-                    \App\Context::getContext()->currency :
-                    \App\Currency::find(intval($currency_id));
+        $currency = ($currency_id == Context::getContext()->currency->id) ?
+                    Context::getContext()->currency :
+                    Currency::find(intval($currency_id));
 
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
@@ -1407,7 +1416,7 @@ class CustomerShippingSlipsController extends BillableController
         $other_json      = $request->input('other_json');
         $customer_id     = $request->input('customer_id');
         $sales_rep_id    = $request->input('sales_rep_id', 0);
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 
 //        return "$product_id, $combination_id, $customer_id, $currency_id";
 
@@ -1417,17 +1426,17 @@ class CustomerShippingSlipsController extends BillableController
             $product = $other_json;
         }
 
-        $customer = \App\Customer::find(intval($customer_id));
+        $customer = Customer::find(intval($customer_id));
 
         $sales_rep = null;
         if ($sales_rep_id>0)
-            $sales_rep = \App\SalesRep::find(intval($sales_rep_id));
+            $sales_rep = SalesRep::find(intval($sales_rep_id));
         if (!$sales_rep)
             $sales_rep = (object) ['id' => 0, 'commission_percent' => 0.0]; 
         
-        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
-                    \App\Context::getContext()->currency :
-                    \App\Currency::find(intval($currency_id));
+        $currency = ($currency_id == Context::getContext()->currency->id) ?
+                    Context::getContext()->currency :
+                    Currency::find(intval($currency_id));
 
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
@@ -1436,12 +1445,12 @@ class CustomerShippingSlipsController extends BillableController
             return '';
         }
 
-        $tax = \App\Tax::find($product->tax_id);
+        $tax = Tax::find($product->tax_id);
 
         // Calculate price per $customer_id now!
         $amount_is_tax_inc = Configuration::get('PRICES_ENTERED_WITH_TAX');
         $amount = $amount_is_tax_inc ? $product->price_tax_inc : $product->price;
-        $price = new \App\Price( $amount, $amount_is_tax_inc, $currency );
+        $price = new Price( $amount, $amount_is_tax_inc, $currency );
         $tax_percent = $tax->getFirstRule()->percent;
         $price->applyTaxPercent( $tax_percent );
 

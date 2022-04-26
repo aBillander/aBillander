@@ -15,12 +15,12 @@ use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientExcept
 
 use aBillander\WooConnect\WooOrder;
 
-use App\Configuration;
-use App\Customer;
-use App\CustomerOrder;
-use App\Country;
-use App\State;
-use App\ShippingMethod;
+use App\Models\Configuration;
+use App\Models\Customer;
+use App\Models\CustomerOrder;
+use App\Models\Country;
+use App\Models\State;
+use App\Models\ShippingMethod;
 
 use App\Traits\DateFormFormatterTrait;
 
@@ -109,6 +109,13 @@ class WooOrdersController extends Controller
 
         try {
 
+/*
+			$objects = WooCommerce::get('orders', $params);
+
+			$results = json_decode(json_encode($objects), true);
+*/
+
+			// API.php (public function get) was "gorrino fixed". So:
 			$results = WooCommerce::get('orders', $params);
 
 		}
@@ -135,6 +142,8 @@ class WooOrdersController extends Controller
 		$total = WooCommerce::totalResults();
 
 		$orders = collect($results);
+
+//		abi_r($results);abi_r('*************************');abi_r($orders);die();
 
 		// Allready imported? Let's see deeply
 		$first = $orders->first()["id"];
@@ -238,10 +247,10 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 		// https://www.tychesoftwares.com/add-new-column-woocommerce-orders-page/
 /*
 		try {
-			$wc_currency = \App\Currency::findOrFail( intval(\App\Configuration::get('WOOC_DEF_CURRENCY')) );
+			$wc_currency = Currency::findOrFail( intval(Configuration::get('WOOC_DEF_CURRENCY')) );
 		} catch (ModelNotFoundException $ex) {
 			// If Currency does not found. Not any good here...
-			$wc_currency = \App\Context::getContext()->currency;	// Or fallback to Configuration::get('DEF_CURRENCY')
+			$wc_currency = Context::getContext()->currency;	// Or fallback to Configuration::get('DEF_CURRENCY')
 		}
 
 		$params = [

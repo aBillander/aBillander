@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Supplier;
-use App\Address;
+use App\Models\Supplier;
+use App\Models\Address;
 
 class SupplierAddressesController extends  Controller
 {
@@ -70,7 +69,7 @@ class SupplierAddressesController extends  Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function show($supplierId, $id)
@@ -81,7 +80,7 @@ class SupplierAddressesController extends  Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function edit($supplierId, $id, Request $request)
@@ -97,7 +96,7 @@ class SupplierAddressesController extends  Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function update($supplierId, $id, Request $request)
@@ -116,7 +115,7 @@ class SupplierAddressesController extends  Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function destroy($supplierId, $id, Request $request)

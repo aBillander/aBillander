@@ -154,14 +154,14 @@ table.border td {
 		<div id="invoice">
 			<div class="col-md-6">
 				<h1 class="uppercase">
-				@if ($img = \App\Context::getContext()->company->company_logo)
-					<img src="{{ URL::to( \App\Company::imagesPath() . $img ) }}" class="img-responsive thumbnail">
+				@if ($img = AbiContext::getContext()->company->company_logo)
+					<img src="{{ URL::to( AbiCompany::imagesPath() . $img ) }}" class="img-responsive thumbnail">
 				@endif
 				</h1>
 			</div>
 			
 			<div class="col-md-2">
-				<span class="label label-info ">{{ \App\SupplierInvoice::getStatusList()[ $cinvoice->status ] }}</span>
+				<span class="label label-info ">{{ \App\Models\SupplierInvoice::getStatusList()[ $cinvoice->status ] }}</span>
 			</div>
 			
 			<div class="col-md-4">
@@ -257,7 +257,7 @@ table.border td {
 								</td>
 								
 								<td class="small">
-									{{ \App\Tax::find($line->tax_id)->percent }} %
+									{{ \App\Models\Tax::find($line->tax_id)->percent }} %
 								</td>
 								
 								<td class="small">
@@ -446,7 +446,7 @@ table.border td {
 		<tr>
 			<td>{{ $payment->id }}</td>
 			<td>{{ $payment->name }}</td>
-			<td @if( !$payment->payment_date AND ( \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $payment->due_date) < \Carbon\Carbon::now() ) ) class="danger" @endif>
+			<td @if( !$payment->payment_date AND ( \Carbon\Carbon::createFromFormat( AbiContext::getContext()->language->date_format_lite, $payment->due_date) < \Carbon\Carbon::now() ) ) class="danger" @endif>
 				{{ $payment->due_date }}</td>
 			<td>{{ $payment->payment_date }}</td>
 			<td>{{ $payment->amount }}</td>

@@ -1,11 +1,11 @@
-<?php namespace App\Http\Controllers;
+<?php
 
-use App\Http\Requests;
+namespace App\Http\Controllers;
+
 use App\Http\Controllers\Controller;
-
+use App\Models\Configuration;
+use App\Models\ContactMessage;
 use Illuminate\Http\Request;
-
-use App\ContactMessage as ContactMessage;
 use View, Mail;
 
 class ContactMessagesController extends Controller {
@@ -66,8 +66,8 @@ class ContactMessagesController extends Controller {
 
 		if ( !stripos( $body, '<br' ) ) $body = nl2br($body);
 
-		$to_email = \App\Configuration::get('SUPPORT_CENTER_EMAIL');
-		$to_name  = \App\Configuration::get('SUPPORT_CENTER_NAME');
+		$to_email = Configuration::get('SUPPORT_CENTER_EMAIL');
+		$to_name  = Configuration::get('SUPPORT_CENTER_NAME');
 
 		$from_email = $request->input('email') ? $request->input('email') : $to_email ;
 		$from_name  = $request->input('name' ) ? $request->input('name' ) : $to_name  ;

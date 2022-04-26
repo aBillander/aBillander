@@ -14,7 +14,7 @@
 <div class="row">
     <div class="form-group col-lg-4 col-md-4 col-sm-4">
         {!! Form::label('warehouse_id', l('Warehouse')) !!}
-        {!! Form::select('warehouse_id', $warehouseList, \App\Configuration::get('DEF_WAREHOUSE'), array('class' => 'form-control')) !!}
+        {!! Form::select('warehouse_id', $warehouseList, AbiConfiguration::get('DEF_WAREHOUSE'), array('class' => 'form-control')) !!}
     </div>
     <div class="form-group col-lg-6 col-md-6 col-sm-6" id="div-initial_inventory">
      {!! Form::label('initial_inventory', l('Initial Inventory?'), ['class' => 'control-label']) !!}
@@ -46,6 +46,11 @@
   {!! Form::submit(l('Save', [], 'layouts'), array('class' => 'btn btn-success')) !!}
   {!! link_to_route('stockcounts.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
 
+@if ( $with_lines ?? false)
+
+  <a class="pull-right btn xbtn-xs btn-blue" href="{{ URL::to('stockcounts/' . $stockcount->id . '/stockcountlines') }}"><i class="fa fa-folder-open-o"></i> &nbsp;{{l('Stock Count Lines')}}</a>
+
+@endif
 
 
 @section('scripts')
@@ -55,14 +60,14 @@
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(function() {
     $( "#document_date" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 </script>

@@ -21,7 +21,7 @@
 
                 <a href="{{ route('products.measureunits.index', [$product->id]) }}" class="btn btn-success"><i class="fa fa-th-list"></i> {{ l('Measure Units', 'layouts') }}</a>
                 
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+@if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') )
 
                 <a class="btn btn-warning show-product-boms" onClick="return false;"><i class="fa fa-link"></i> {{ l('BOMs') }}</a>
 
@@ -56,7 +56,7 @@
                &nbsp; {{ l('Stocks') }}
             </a>
 
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+@if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') )
 
     @if ( ($product->procurement_type == 'manufacture') || ($product->procurement_type == 'assembly') )
 
@@ -70,7 +70,7 @@
 @endif
 
 
-@if ( \App\Configuration::isTrue('ENABLE_COMBINATIONS') &&  
+@if ( AbiConfiguration::isTrue('ENABLE_COMBINATIONS') &&  
       ($product->product_type == 'simple') || ($product->product_type == 'combinable') )
 
             <a id="b_combinations" href="#combinations" class="list-group-item">
@@ -102,7 +102,7 @@
                &nbsp; {{ l('Attachments', 'layouts') }}
             </a>
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
 
             <a id="b_internet" href="#internet" class="list-group-item">
                <i class="fa fa-cloud"></i>
@@ -118,7 +118,7 @@
   $img = $product->getFeaturedImage()
 @endphp
 @if ( $img )
-            <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() .  $img->filename . '-medium_default' . '.' .  $img->extension ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
+            <img src="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() .  $img->filename . '-medium_default' . '.' .  $img->extension ) . '?'. 'time='. time() }}" class="img-responsive center-block" style="border: 1px solid #dddddd;">
 @endif
          </div>
 
@@ -129,7 +129,7 @@
           @include('products._panel_main_data')
 
 
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+@if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') )
 
           @include('products._panel_manufacturing')
 
@@ -151,7 +151,7 @@
           @include('products._panel_inventory')
 
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
 
           @include('products._panel_webshop')
 
@@ -294,13 +294,13 @@
 <script>
     CKEDITOR.replace( 'description' );
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
 
     CKEDITOR.replace( 'description_short' );
 
 @endif
 
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+@if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') )
 
     CKEDITOR.replace( 'route_notes' );
 

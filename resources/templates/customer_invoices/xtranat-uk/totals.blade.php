@@ -19,8 +19,8 @@
 
 @php
 
-$alltaxes = \App\Tax::get()->sortByDesc('percent');
-$alltax_rules = \App\TaxRule::get();
+$alltaxes = \App\Models\Tax::get()->sortByDesc('percent');
+$alltax_rules = \App\Models\TaxRule::get();
 
 $totals = $document->totals();
 
@@ -35,7 +35,7 @@ $totals = $document->totals();
 					<th>Discount {{ $document->document_discount_percent != 0 ? '('.$document->as_percentable($document->document_discount_percent).'%)' : '' }}</th>
 					<th>Prompt Payment {{ $document->document_ppd_percent != 0 ? '('.$document->as_percentable($document->document_ppd_percent).'%)' : ''  }}</th>
 					<th>Net</th>
-					<th>{!! \App\Configuration::get('CUSTOMER_INVOICE_TAX_LABEL') !!}</th>
+					<th>{!! AbiConfiguration::get('CUSTOMER_INVOICE_TAX_LABEL') !!}</th>
 					<!-- th>Tipo</th -->
 					<th></th>
 					<th></th>

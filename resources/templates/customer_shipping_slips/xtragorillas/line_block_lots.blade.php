@@ -1,5 +1,5 @@
 
-@if ( \App\Configuration::isTrue('PRINT_LOT_NUMBER_ON_DOCUMENTS') )
+@if ( AbiConfiguration::isTrue('PRINT_LOT_NUMBER_ON_DOCUMENTS') )
 
 @if ($line->lotitems->count() > 1)
 		<table>

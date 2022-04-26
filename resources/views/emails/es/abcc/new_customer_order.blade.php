@@ -300,7 +300,7 @@ class="woocommerce-Price-currencySymbol">€</span></span></td>
                                                     left;">
                                                     <span
                                                       class="woocommerce-Price-amount
-                                                      amount"><strong>{{ \App\Currency::viewMoneyWithSign($document_total, $document->currency) }}</strong></span> <small
+                                                      amount"><strong>{{ \App\Models\Currency::viewMoneyWithSign($document_total, $document->currency) }}</strong></span> <small
                                                       class="includes_tax">(incluye Impuesto)</small>
                                                   </td>
                                                 </tr>

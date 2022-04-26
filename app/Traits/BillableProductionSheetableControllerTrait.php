@@ -5,17 +5,16 @@ namespace App\Traits;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-use App\Customer;
-use App\CustomerOrder as Document;
-use App\CustomerOrderLine as DocumentLine;
-use App\CustomerOrderLineTax as DocumentLineTax;
+use App\Models\Customer;
+use App\Models\CustomerOrder as Document;
+use App\Models\CustomerOrderLine as DocumentLine;
+use App\Models\CustomerOrderLineTax as DocumentLineTax;
 
-use App\ProductionSheet;
-use App\DocumentAscription;
+use App\Models\ProductionSheet;
 
-use App\Configuration;
-use App\Sequence;
-use App\Template;
+use App\Models\Configuration;
+use App\Models\Sequence;
+use App\Models\Template;
 
 trait BillableProductionSheetableControllerTrait
 {

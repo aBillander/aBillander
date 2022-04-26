@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
+use App\Events\CustomerRegistered;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+use App\Models\Address;
+use App\Models\Configuration;
+use App\Models\Country;
+use App\Models\Customer;
+use App\Models\CustomerUser;
+use App\Models\Language;
+use App\Models\State;
+use App\Models\User;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-// use Illuminate\Auth\Events\Registered;
-use Illuminate\Foundation\Auth\RegistersUsers;
-
-use App\Events\CustomerRegistered;
-
-use App\Customer;
-use App\Address;
-use App\CustomerUser;
+use Illuminate\Support\Facades\Validator;
 
 class SalesRepRegisterController extends Controller
 {
@@ -50,11 +51,11 @@ class SalesRepRegisterController extends Controller
 
     public function showRegistrationForm()
     {
-      $languages = \App\Language::orderBy('name')->get();
+      $languages = Language::orderBy('name')->get();
 
-      $countryList = \App\Country::where('id', \App\Configuration::getInt('DEF_COUNTRY'))->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+      $countryList = Country::where('id', Configuration::getInt('DEF_COUNTRY'))->orderby('name', 'asc')->pluck('name', 'id')->toArray();
 
-      $stateList = \App\State::where('country_id', \App\Configuration::getInt('DEF_COUNTRY'))->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+      $stateList = State::where('country_id', Configuration::getInt('DEF_COUNTRY'))->orderby('name', 'asc')->pluck('name', 'id')->toArray();
 
       // ToDo: remember language using cookie :: echo Request::cookie('user_language');
 
@@ -130,7 +131,7 @@ class SalesRepRegisterController extends Controller
         return Validator::make($data, [
 //            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:customer_users',
-//            'password' => 'required|string|min:6|confirmed',
+//            'password' => 'required|string|min:8|confirmed',
         ]);
     }
 
@@ -138,7 +139,7 @@ class SalesRepRegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return User
      */
     protected function create(array $data)
     {
@@ -155,7 +156,7 @@ class SalesRepRegisterController extends Controller
      * Create a new Customer instance.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return User
      */
     protected function createCustomer(Request $request)
     {
@@ -163,7 +164,7 @@ class SalesRepRegisterController extends Controller
         // Prepare address data
         $address = $request->input('address');
 
-        $request->merge( ['outstanding_amount_allowed' => \App\Configuration::get('DEF_OUTSTANDING_AMOUNT')] );
+        $request->merge( ['outstanding_amount_allowed' => Configuration::get('DEF_OUTSTANDING_AMOUNT')] );
 
         if ( !$request->input('address.name_commercial') ) {
 
@@ -183,9 +184,9 @@ class SalesRepRegisterController extends Controller
 
 //        $this->validate($request, Address::related_rules());
 
-        if ( !$request->has('language_id') ) $request->merge( ['language_id' => \App\Configuration::get('DEF_LANGUAGE')] );
+        if ( !$request->has('language_id') ) $request->merge( ['language_id' => Configuration::get('DEF_LANGUAGE')] );
 
-        if ( !$request->has('currency_id') ) $request->merge( ['currency_id' => \App\Configuration::get('DEF_CURRENCY')] );
+        if ( !$request->has('currency_id') ) $request->merge( ['currency_id' => Configuration::get('DEF_CURRENCY')] );
 
         if ( !$request->has('payment_days') ) $request->merge( ['payment_days' => null] );
 
@@ -215,7 +216,7 @@ class SalesRepRegisterController extends Controller
      * Create a new CustomerUser instance.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return User
      */
     protected function createUser(Request $request)
     {

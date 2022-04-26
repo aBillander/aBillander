@@ -8,7 +8,7 @@
 </div>
 <div class="form-group col-lg-3 col-md-3 col-sm-3">
     {!! Form::label('status_name', l('Status', [], 'layouts')) !!}
-    <div class="form-control" style="background-color: #f9f9f9;">{{ \App\Payment::getStatusName($payment->status) }}</div>
+    <div class="form-control" style="background-color: #f9f9f9;">{{ \App\Models\Payment::getStatusName($payment->status) }}</div>
     {!! Form::hidden('status', null, array('id' => 'status')) !!}
 </div>
 </div>
@@ -66,7 +66,7 @@ background-color: #f9f9f9;">{{ $payment->amount }}</div>
     {!! l('Amount must be greater than 0 and not greater than :value', ['value' => $payment->amount]) !!}
 </div>
 
-<div class="row" @if( $payment->currency_id == \App\Context::getContext()->currency->id ) style="display: none;" @endif>
+<div class="row" @if( $payment->currency_id == AbiContext::getContext()->currency->id ) style="display: none;" @endif>
 <div class="form-group col-lg-4 col-md-4 col-sm-4">
     {{ l('Currency') }}
     {!! Form::text('currency[name]', null, array('class' => 'form-control', 'onfocus' => 'this.blur()')) !!}

@@ -17,7 +17,7 @@
 |--------------------------------------------------------------------------
 */
 
-function niceQuantity( $val = 0.0, $decimalPlaces = 0 )
+function xniceQuantity( $val = 0.0, $decimalPlaces = 0 )
 {
     $data = floatval( $val );
 

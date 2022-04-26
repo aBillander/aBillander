@@ -18,7 +18,7 @@ $reference_30100 = $name_30100 = '';
 
   @foreach ($sheet->productionorders->whereIn('product_reference', $keys_30100) as $order)
   @php
-    $product = \App\Product::find( $order->product_id );
+    $product = \App\Models\Product::find( $order->product_id );
   @endphp
 
 

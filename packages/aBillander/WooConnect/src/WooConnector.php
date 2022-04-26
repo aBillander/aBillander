@@ -5,8 +5,9 @@ namespace aBillander\WooConnect;
 // use Illuminate\Database\Eloquent\Model;
 // use Illuminate\Database\Eloquent\SoftDeletes;
 
-use WooCommerce;
+use App\Models\Configuration;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
+use WooCommerce;
 
 class WooConnector {    // extends Model {
 
@@ -128,7 +129,7 @@ class WooConnector {    // extends Model {
     public static function getWooConfigurations()
     {
         if ( !isset(self::$woo_settings) )
-            self::$woo_settings = json_decode(\App\Configuration::get('WOOC_CONFIGURATIONS_CACHE'), true);
+            self::$woo_settings = json_decode(Configuration::get('WOOC_CONFIGURATIONS_CACHE'), true);
 
         return self::$woo_settings;
     }
@@ -166,7 +167,7 @@ class WooConnector {    // extends Model {
         // Do the Mambo!!!
         $params = [
 //          'dp'   => 6,        // WooCommerce serve store some values rounded. Not useful this option. Use WooCommerce API default instead: 2 decimal places
-            'dp'   => \App\Configuration::get('WOOC_DECIMAL_PLACES'),
+            'dp'   => Configuration::get('WOOC_DECIMAL_PLACES'),
         ];
 
         // Get Order fromm WooCommerce Shop

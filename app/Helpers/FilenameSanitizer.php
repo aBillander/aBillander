@@ -25,7 +25,7 @@ var_dump($sanitizer->getFilename());
 
  */
 
-namespace App;
+namespace App\Helpers;
 
 class FilenameSanitizer // implements FilenameSanitizerInterface
 {

@@ -20,7 +20,7 @@ $reference_20001 = $name_20001 = $reference_20101 ='';
 
   @foreach ($sheet->productionorders->whereIn('product_reference', $family['references']) as $order)
   @php
-    $product = \App\Product::find( $order->product_id );
+    $product = \App\Models\Product::find( $order->product_id );
   @endphp
 
 
@@ -57,7 +57,7 @@ foreach ($lines_20101 as $line)
 
   @foreach ($sheet->productionorders->whereIn('product_reference', $family['assemblies']) as $order)
   @php
-    $product = \App\Product::find( $order->product_id );
+    $product = \App\Models\Product::find( $order->product_id );
   @endphp
 
 

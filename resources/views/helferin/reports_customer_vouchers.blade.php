@@ -98,7 +98,7 @@
     $( "#customer_vouchers_date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -106,7 +106,7 @@
     $( "#customer_vouchers_date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 

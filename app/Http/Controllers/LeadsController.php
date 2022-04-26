@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Party;
-use App\Lead;
-use App\User;
+use App\Models\Party;
+use App\Models\Lead;
+use App\Models\User;
 
 use Auth;
 
@@ -132,7 +132,7 @@ class LeadsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Lead  $lead
+     * @param  \App\Models\Lead  $lead
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -143,7 +143,7 @@ class LeadsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Lead  $lead
+     * @param  \App\Models\Lead  $lead
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -168,7 +168,7 @@ class LeadsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Lead  $lead
+     * @param  \App\Models\Lead  $lead
      * @return \Illuminate\Http\Response
      */
     public function update($id, Request $request)
@@ -191,7 +191,7 @@ class LeadsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Lead  $lead
+     * @param  \App\Models\Lead  $lead
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

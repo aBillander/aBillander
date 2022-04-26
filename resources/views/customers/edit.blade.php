@@ -80,6 +80,18 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-address-book"></i>
                &nbsp; {{ l('Address Book') }}
             </a>
+
+@if ( 1 || AbiConfiguration::isTrue('ENABLE_MCRM') )
+            <a id="b_contacts" href="#contacts" class="list-group-item" xstyle="background-color: #fcf8e3; color: #c09853;">
+               <i class="fa fa-users"></i>
+               &nbsp;{{ l('Contacts') }}
+            </a>
+            <a id="b_actions" href="#actions" class="list-group-item" xstyle="background-color: #fcf8e3; color: #c09853;">
+               <i class="fa fa-tasks"></i>
+               &nbsp;{{ l('Commercial Actions') }}
+            </a>
+@endif
+
             <!-- a id="b_specialprices" href="#specialprices" class="list-group-item">
                <i class="fa fa-list-alt"></i>
                &nbsp; Precios Especiales
@@ -109,7 +121,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                &nbsp; {{ l('Statistics') }}
             </a -->
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
 
             <a id="b_customerusers" href="#customerusers" class="list-group-item">
                <i class="fa fa-bolt"></i>
@@ -118,7 +130,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
 @endif
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
 
             <a id="b_webshop" href="#webshop" class="list-group-item">
                <!-- i class="fa fa-cloud"></i -->
@@ -144,6 +156,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
           @include('customers._panel_addressbook')
 
+          @include('customers._panel_contacts')
+
+          @include('customers._panel_actions')
+
           @include('customers._panel_orders')
 
           @include('customers._panel_products')
@@ -155,14 +171,14 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
           @include('customers._panel_statistics')
 --}}
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
 
           @include('customers._panel_customer_users')
 
 @endif
 
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
 
           @include('customers._panel_webshop')
 
@@ -182,6 +198,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#panel_commercial").hide();
       $("#panel_bankaccounts").hide();
       $("#panel_addressbook").hide();
+      $("#panel_contacts").hide();
+      $("#panel_actions").hide();
  //     $("#panel_specialprices").hide();
  //     $("#panel_accounting").hide();
       $("#panel_orders").hide();
@@ -196,6 +214,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       $("#b_commercial").removeClass('active');
       $("#b_bankaccounts").removeClass('active');
       $("#b_addressbook").removeClass('active');
+      $("#b_contacts").removeClass('active');
+      $("#b_actions").removeClass('active');
  //     $("#b_specialprices").removeClass('active');
  //     $("#b_accounting").removeClass('active');
       $("#b_orders").removeClass('active');
@@ -221,6 +241,17 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       {
          $("#panel_addressbook").show();
          $("#b_addressbook").addClass('active');
+      }
+      else if(window.location.hash.substring(1) == 'contacts')
+      {
+         $("#panel_contacts").show();
+         $("#b_contacts").addClass('active');
+      }
+      else if(window.location.hash.substring(1) == 'actions')
+      {
+         $("#panel_actions").show();
+         $("#b_actions").addClass('active');
+         // getCustomerActions();
       }
       else if(window.location.hash.substring(1) == 'orders')
       {
@@ -266,9 +297,18 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       }
       else  
       {
+
+@if( Session::get('tabName') == '#bankaccounts' )
+         $("#panel_bankaccounts").show();
+         $("#b_bankaccounts").addClass('active');
+
+         // Simulate click
+         $("#b_bankaccounts").trigger("click");
+@else
          $("#panel_main").show();
          $("#b_main").addClass('active');
          // document.f_cliente.nombre.focus();
+@endif
       }
 
       // Gracefully scrolls to the top of the page

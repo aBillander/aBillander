@@ -50,6 +50,12 @@
 -->
 {!! link_to_route('pricelists.index', l('Cancel', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
 
+@if ( $with_lines ?? false)
+
+  <a class="pull-right btn xbtn-xs btn-blue" href="{{ URL::to('pricelists/' . $pricelist->id . '/pricelistlines') }}"><i class="fa fa-folder-open-o"></i> &nbsp;{{l('Show Price List Lines')}}</a>
+
+@endif
+
 
 @section('scripts')    @parent
 
@@ -61,7 +67,7 @@
 
         // Select default currency
         if ( !($('select[name="currency_id"]').val() > 0) ) {
-          var def_currencyID = {{ \App\Configuration::get('DEF_CURRENCY') }};
+          var def_currencyID = {{ AbiConfiguration::get('DEF_CURRENCY') }};
 
           $('select[name="currency_id"]').val(def_currencyID);
         }

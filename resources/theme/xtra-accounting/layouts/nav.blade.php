@@ -12,18 +12,18 @@
 
             <!-- Branding Image -->
             <a class="navbar-brand" href="{{ url( Auth::user()->home_page ) }}">
-                @if ( \App\Configuration::isEmpty('HEADER_TITLE') )
-                    <?php $img = \App\Context::getContext()->company->company_logo ?? ''; ?>
+                @if ( AbiConfiguration::isEmpty('HEADER_TITLE') )
+                    <?php $img = AbiContext::getContext()->company->company_logo ?? ''; ?>
                     @if ( Auth::check() && $img )
 
-                        <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
+                        <img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ URL::to( AbiCompany::imagesPath() . $img ) }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;">
 
                         <!-- img class="navbar-brand img-rounded" height="{{ '40' }}" src="{{ asset('assets/theme/images/company_logo.png') }}" style="xposition: absolute; margin-top: -15px; padding: 7px; border-radius: 12px;" -->
                     @else
                         <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span>
                     @endif
                 @else
-                    {!! \App\Configuration::get('HEADER_TITLE') !!}
+                    {!! AbiConfiguration::get('HEADER_TITLE') !!}
                     {{-- <span style="color:#bbb"><i class="fa fa-bolt"></i> Lar<span style="color:#fff">aBillander</span> </span> --}}
                 @endif
             </a>
@@ -59,7 +59,7 @@
                     <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                          <li>
-                            <a href="{{ App\Configuration::get('URL_ABILLANDER_DOCS') }}" target="_blank">
+                            <a href="{{ AbiConfiguration::get('URL_ABILLANDER_DOCS') }}" target="_blank">
                                  {{l('Documentation', [], 'layouts')}}
                             </a>
                         </li>
@@ -67,7 +67,7 @@
 {{--
                             <a data-target="#feedbackForm" data-toggle="modal" onclick="return false;" href="">
 --}}
-                            <a href="{{ App\Configuration::get('URL_ABILLANDER_SUPPORT') }}" target="_blank">
+                            <a href="{{ AbiConfiguration::get('URL_ABILLANDER_SUPPORT') }}" target="_blank">
                                  {{l('Support & feed-back', [], 'layouts')}}
                             </a>
                         </li>

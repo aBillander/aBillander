@@ -12,35 +12,35 @@
                <i class="fa fa-th-large"></i>
                &nbsp; {{ l('Other') }}
             </a>
-@if (\App\Configuration::get('SKU_AUTOGENERATE') )
+@if (AbiConfiguration::get('SKU_AUTOGENERATE') )
             <a id="b_tab_index_4" href="{{ URL::to('configurationkeys?tab_index=4') }}" class="list-group-item @if ($tab_index==4) active @endif">
                <i class="fa fa-bookmark"></i>
                &nbsp; {{ l('Auto-SKU') }}
             </a>
 @endif
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
             <a id="b_tab_index_5" href="{{ URL::to('configurationkeys?tab_index=5') }}" class="list-group-item @if ($tab_index==5) active @endif">
                <i class="fa fa-user-circle"></i>
                &nbsp; {{ l('Customer Center') }}
             </a>
 @endif
 
-@if (\App\Configuration::isTrue('ENABLE_SALESREP_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_SALESREP_CENTER') )
             <a id="b_tab_index_6" href="{{ URL::to('configurationkeys?tab_index=6') }}" class="list-group-item @if ($tab_index==6) active @endif">
                <i class="fa fa-briefcase"></i>
                &nbsp; {{ l('Sales Representative Center') }}
             </a>
 @endif
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
             <a href="{{ route('wooconfigurationkeys.index') }}" class="list-group-item" target="_blank">
                <i class="fa fa-wordpress text-info"></i>
                &nbsp; {{l('WooC link', 'wooc')}}
             </a>
 @endif
 
-@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+@if ( 0 && AbiConfiguration::isTrue('ENABLE_FSOL_CONNECTOR') )
             <a href="{{ route('fsxconfigurationkeys.index') }}" class="list-group-item">
                <i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i>
                &nbsp; {{l('Enlace FactuSOL', 'layouts')}}
@@ -53,8 +53,8 @@
                &nbsp; {{ l('All Keys') }}
             </a>
 
-@if (\App\Configuration::isTrue('DEVELOPER_MODE') )
-            <a id="b_tab_index_none_2" href="" class="list-group-item" style="padding: 3px 15px;">
+@if (AbiConfiguration::isTrue('DEVELOPER_MODE') )
+            <a id="b_tab_index_none_1" href="" class="list-group-item" style="padding: 3px 15px;">
             </a>
             <a href="http://bootswatch.com/3/united/" target="_blank" class="list-group-item">
                - {{ l('Template BS3') }}
@@ -68,6 +68,7 @@
             <a href="http://zetcode.com/php/carbon/" target="_blank" class="list-group-item">
                - {{ l('Carbon') }}
             </a>
+@endif
             <a id="b_tab_index_none_2" href="" class="list-group-item" style="padding: 3px 15px;">
             </a>
             <a href="{{ URL::to('translations') }}" class="list-group-item">
@@ -78,6 +79,11 @@
                <i class="fa fa-wrench"></i>
                &nbsp; {{l('Document templates', [], 'layouts')}}
             </a>
-@endif
+            <a id="b_tab_index_none_3" href="" class="list-group-item" style="padding: 3px 15px;">
+            </a>
+            <a id="b_tab_index_123" href="{{ URL::to('configurationkeys?tab_index=123') }}" class="list-group-item @if ($tab_index==123) active @endif">
+               <i class="fa fa-wrench text-danger"></i>
+               &nbsp; {{l('System Tools')}}
+            </a>
          </div>
       </div>

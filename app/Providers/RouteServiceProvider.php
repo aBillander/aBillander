@@ -2,8 +2,13 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Route;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
+
+use App\Models\Configuration;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -17,143 +22,69 @@ class RouteServiceProvider extends ServiceProvider
     protected $namespace = 'App\Http\Controllers';
 
     /**
+     * The path to the "home" route for your application.
+     *
+     * This is used by Laravel authentication to redirect users after login.
+     *
+     * @var string
+     */
+    public const USERS_HOME = '/home';
+
+    /**
      * Define your route model bindings, pattern filters, etc.
      *
      * @return void
      */
     public function boot()
     {
-        //
+        $this->configureRateLimiting();
 
-        parent::boot();
+        $this->routes(function () {
+            Route::prefix('api')
+                ->middleware('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api.php'));
+
+            Route::middleware('web')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/web.php'));
+
+            // ABCC
+            if ( Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+            Route::middleware('web')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/abcc.php'));
+
+            // ABSRC
+            if ( Configuration::isTrue('ENABLE_SALESREP_CENTER') )
+            Route::middleware('web')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/absrc.php'));
+
+            // mCRM
+            if ( Configuration::isTrue('ENABLE_MCRM') )
+            Route::middleware('web')
+                 ->namespace($this->namespace)
+                 ->group(base_path('routes/web_crm.php'));
+
+            // MFG
+            if ( Configuration::isTrue('ENABLE_MANUFACTURING') )
+            Route::middleware('web')
+                 ->namespace($this->namespace)
+                 ->group(base_path('routes/web_mfg.php'));
+
+        });
     }
 
     /**
-     * Define the routes for the application.
+     * Configure the rate limiters for the application.
      *
      * @return void
      */
-    public function map()
+    protected function configureRateLimiting()
     {
-        $this->mapApiRoutes();
-
-        $this->mapWebRoutes();
-
-        // some other mapping actions
-
-        $this->mapAbccRoutes();
-
-        $this->mapAbsrcRoutes();
-
-        $this->mapCrmRoutes();
-
-        $this->mapMfgRoutes();
-
-    }
-
-    /**
-     * Define the "web" routes for the application.
-     *
-     * These routes all receive session state, CSRF protection, etc.
-     *
-     * @return void
-     */
-    protected function mapWebRoutes()
-    {
-//        Route::domain( env('ABI_DOMAIN') )
-//             ->middleware('web')
-        Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web.php'));
-    }
-
-    /**
-     * Define the "api" routes for the application.
-     *
-     * These routes are typically stateless.
-     *
-     * @return void
-     */
-    protected function mapApiRoutes()
-    {
-        Route::prefix('api')
-             ->middleware('api')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/api.php'));
-    }
-
-    /**
-     * Define the Customer Center routes of the application.
-     *
-     *
-     * @return void
-     */
-    protected function mapAbccRoutes()
-    {
-    /*
-        Route::prefix('v1')  // if you need to specify a route prefix
-            ->middleware('auth:api') // specify here your middlewares
-            ->namespace($this->namespace) // leave it as is
-            / ** the name of your route goes here: ** /
-            ->group(base_path('routes/users.php'));
-    */
-
-        if ( \App\Configuration::isFalse('ENABLE_CUSTOMER_CENTER') ) return;
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/abcc.php'));
-
-        // Maybe need: php artisan config:clear
-    }
-
-    /**
-     * Define the Customer Center routes of the application.
-     *
-     *
-     * @return void
-     */
-    protected function mapAbsrcRoutes()
-    {
-        
-        if ( \App\Configuration::isFalse('ENABLE_SALESREP_CENTER') ) return;
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/absrc.php'));
-
-        // Maybe need: php artisan config:clear
-    }
-
-    /**
-     * Define the CRM routes for the application.
-     *
-     *
-     * @return void
-     */
-    protected function mapCrmRoutes()
-    {
-        
-        if ( \App\Configuration::isFalse('ENABLE_MCRM') ) return;
-
-        Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web_crm.php'));
-    }
-
-    /**
-     * Define the MFG routes for the application.
-     *
-     *
-     * @return void
-     */
-    protected function mapMfgRoutes()
-    {
-        
-        if ( \App\Configuration::isFalse('ENABLE_MANUFACTURING') ) return;
-
-        Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web_mfg.php'));
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
     }
 }

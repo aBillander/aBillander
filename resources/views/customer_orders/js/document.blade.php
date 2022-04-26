@@ -806,7 +806,7 @@
 
 function set_invoicing_address()
 {
-  @if ( \App\Configuration::get('TAX_BASED_ON_SHIPPING_ADDRESS') )
+  @if ( AbiConfiguration::get('TAX_BASED_ON_SHIPPING_ADDRESS') )
 
     var theValue = $('#shipping_address_id').val();
 

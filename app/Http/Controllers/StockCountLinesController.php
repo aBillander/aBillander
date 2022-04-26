@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Configuration;
+use App\Models\Product;
+use App\Models\StockCount;
+use App\Models\StockCountLine;
 use Illuminate\Http\Request;
-
-use App\StockCount;
-use App\StockCountLine;
-use App\Product;
-
-// use App\Traits\BillableControllerTrait;
 
 class StockCountLinesController extends Controller
 {
@@ -42,7 +40,7 @@ class StockCountLinesController extends Controller
                         ->filter( $request->all() )
                         ->orderBy('products.name', 'asc');
 
-        $lines = $lines->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $lines = $lines->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $lines->setPath('stockcountlines');
 
@@ -109,7 +107,7 @@ class StockCountLinesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function show($stockcountId, $id)
@@ -120,7 +118,7 @@ class StockCountLinesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function edit($stockcountId, $id)
@@ -135,7 +133,7 @@ class StockCountLinesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function update($stockcountId, $id, Request $request)
@@ -158,7 +156,7 @@ class StockCountLinesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function destroy($stockcountId, $id)
@@ -180,14 +178,14 @@ class StockCountLinesController extends Controller
     {
         $search = $request->term;
 
-        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
+        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
 //                                ->isManufactured()
 //                                ->qualifyForPriceList( $id )
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 

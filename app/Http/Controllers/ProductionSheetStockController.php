@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Configuration;
-use App\ProductionSheet;
-use App\CustomerOrderLine;
-use App\CustomerShippingSlipLine;
-use App\Product;
-use App\LotItem;
+use App\Models\Configuration;
+use App\Models\ProductionSheet;
+use App\Models\CustomerOrderLine;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\Product;
+use App\Models\LotItem;
 
 class ProductionSheetStockController extends Controller
 {

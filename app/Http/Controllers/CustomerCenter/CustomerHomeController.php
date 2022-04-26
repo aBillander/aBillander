@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\CustomerCenter;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\Language;
 use Illuminate\Http\Request;
 
 class CustomerHomeController extends Controller
@@ -25,7 +25,7 @@ class CustomerHomeController extends Controller
      */
     public function index()
     {
-        $languages = \App\Language::orderBy('name')->get();
+        $languages = Language::orderBy('name')->get();
 
         // ToDo: remember language using cookie :: echo Request::cookie('user_language');
 
@@ -39,7 +39,7 @@ class CustomerHomeController extends Controller
      */
     public function setLanguage($id)
     {
-        $language = \App\Language::findOrFail( $id );
+        $language = Language::findOrFail( $id );
 
         Cookie::queue('user_language', $language->id, 30*24*60);
         

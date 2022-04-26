@@ -65,7 +65,7 @@
             	@else
             		<span>
             	@endif
-            	{{\App\Payment::getStatusName($payment->status)}}</span></td>
+            	{{\App\Models\Payment::getStatusName($payment->status)}}</span></td>
 
 			<td class="text-right button-pad">
               @if ( $directdebit->status == 'pending' )
@@ -182,7 +182,7 @@
 $(document).ready(function() {
 
     // Payment Type = "Remesa"
-    $("#payment_type_id").val("{{ \App\Configuration::getInt("DEF_SEPA_PAYMENT_TYPE") }}");
+    $("#payment_type_id").val("{{ AbiConfiguration::getInt("DEF_SEPA_PAYMENT_TYPE") }}");
 
 });
 
@@ -211,14 +211,14 @@ $("#voucher_lines").on("change", function () {
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(function() {
     $( "#payment_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -227,7 +227,7 @@ $("#voucher_lines").on("change", function () {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -235,7 +235,7 @@ $("#voucher_lines").on("change", function () {
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 

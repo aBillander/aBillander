@@ -127,7 +127,7 @@
             {!! Form::hidden('currency_id', $document->currency_id, array('name' => 'currency_id', 'id' => 'currency_id')) !!}
          </div>
 
-    @if( $document->currency_id != \App\Configuration::get('DEF_CURRENCY') )
+    @if( $document->currency_id != AbiConfiguration::get('DEF_CURRENCY') )
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_conversion_rate') ? 'has-error' : '' }}">
             {{ l('Conversion Rate') }}
             <div  class="input-group">
@@ -154,7 +154,7 @@
          </div>
 
 
-    @if( $document->currency_id != \App\Configuration::get('DEF_CURRENCY') )
+    @if( $document->currency_id != AbiConfiguration::get('DEF_CURRENCY') )
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_conversion_rate') ? 'has-error' : '' }}">
             {{ l('Conversion Rate') }}
             <div  class="input-group">

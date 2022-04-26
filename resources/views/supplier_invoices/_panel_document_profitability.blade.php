@@ -64,7 +64,7 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                 {{ $line->name }}</td>
                 <td class="text-right" title="{{ $ecotax }}">{{ $line->as_priceable( $line->unit_final_price - $ecotax ) }}</td>
                 <td class="text-right">{{ $line->as_price('cost_price') }}</td>
-                <td class="text-right">{{ $line->as_percentable( \App\Calculator::margin( $line->cost_price, $line->unit_final_price - $ecotax, $document->currency ) ) }}</td>
+                <td class="text-right">{{ $line->as_percentable( \App\Helpers\Calculator::margin( $line->cost_price, $line->unit_final_price - $ecotax, $document->currency ) ) }}</td>
                 <td class="text-right">{{ $line->as_priceable( ( $line->unit_final_price - $ecotax - $line->cost_price )*$line->quantity ) }}</td>
 
 
@@ -99,7 +99,7 @@ $ecotax = optional( optional($line->product)->ecotax)->amount ?? 0.0;
                   <h3>
                       <span style="color: #dd4814;">{{l('Cost-Benefit Analysis')}}</span> 
 
-                    @if ( \App\Configuration::get('INCLUDE_SHIPPING_COST_IN_PROFIT') > 0 )
+                    @if ( AbiConfiguration::get('INCLUDE_SHIPPING_COST_IN_PROFIT') > 0 )
                       <span class="label label-danger" style="font-size: 55%;">{{ l('Shipping Cost included', [], 'layouts') }}</span>
                     @else
                       <span class="label label-warning" style="font-size: 55%;">{{ l('Shipping Cost excluded', [], 'layouts') }}</span>
@@ -144,7 +144,7 @@ $document_total_discount_percent = $document->document_discount_percent + $docum
                 <td>{{ $document->as_percentable( $document_total_discount_percent ) }}</td>
                 <td>{{ $document->as_priceable($document->total_revenue_with_discount) }}</td>
                 <td class="text-right">{{ $document->as_priceable($document->total_cost_price) }}</td>
-                <td class="text-right">{{ $document->as_percentable( \App\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount, $document->currency ) ) }}</td>
+                <td class="text-right">{{ $document->as_percentable( \App\Helpers\Calculator::margin( $document->total_cost_price, $document->total_revenue_with_discount, $document->currency ) ) }}</td>
                 <td class="text-right">{{ $document->as_priceable( $document->total_revenue_with_discount - $document->total_cost_price ) }}</td>
 
 
@@ -166,7 +166,7 @@ $document_total_discount_percent = $document->document_discount_percent + $docum
                <br>
 
                <b>{{l('Margin')}}</b>: 
-                    {{ \App\Configuration::get('MARGIN_METHOD') == 'CST' ?
+                    {{ AbiConfiguration::get('MARGIN_METHOD') == 'CST' ?
                           l('Margin calculation is based on Cost Price', [], 'layouts') :
                           l('Margin calculation is based on Sales Price', [], 'layouts') }}
                <br>
@@ -178,7 +178,7 @@ $document_total_discount_percent = $document->document_discount_percent + $docum
 
 
 
-@if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if ( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
 <div id="panel_document_ecotaxes" class="">
 
     @include($view_path.'._panel_document_ecotaxes')

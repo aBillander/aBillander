@@ -9,7 +9,7 @@
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
 
-        <a href="{{ route('productionsheet.tourline', [$productionSheet->id]) }}" class="btn xbtn-sm btn-blue" title="{{l('Hoja Tourline :: Excel')}}" xstyle="margin-right: 32px;"><img src="{{ \App\TourlineExcel::getTourlineLogoUrl( ) }}" height="20" style="background: white" /> &nbsp;<i><b>{{l('Hoja de Envío')}}</b></i></a>
+        <a href="{{ route('productionsheet.tourline', [$productionSheet->id]) }}" class="btn xbtn-sm btn-blue" title="{{l('Hoja Tourline :: Excel')}}" xstyle="margin-right: 32px;"><img src="{{ \App\Helpers\TourlineExcel::getTourlineLogoUrl( ) }}" height="20" style="background: white" /> &nbsp;<i><b>{{l('Hoja de Envío')}}</b></i></a>
 {{--
         <button  name="b_search_filter" id="b_search_filter" class="btn xbtn-sm btn-success" type="button" title="{{l('Filter Records', [], 'layouts')}}" style="margin-left: 32px; ">
            <i class="fa fa-filter"></i>
@@ -457,7 +457,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', 'l
 
 
 
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+@if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') )
 
 @if ($model_path=='customerorders')
 
@@ -559,7 +559,7 @@ $(document).ready(function() {
 {{-- Date Picker --}}
 
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
 
@@ -567,7 +567,7 @@ $(document).ready(function() {
     $( "#document_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -575,7 +575,7 @@ $(document).ready(function() {
     $( "#delivery_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -583,7 +583,7 @@ $(document).ready(function() {
     $( "#order_document_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
  /* 
@@ -591,7 +591,7 @@ $(document).ready(function() {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -599,7 +599,7 @@ $(document).ready(function() {
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 */  

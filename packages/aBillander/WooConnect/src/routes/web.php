@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\ActivityLogger;
+
 // github.com/gocanto/gocanyo-pkg
 
 
@@ -156,7 +158,7 @@ Route::post('wooc/webhook/order/created', function()
 
 	// Step 1: Log (ActivityLogger)
     // Start Logger
-    $logger = \App\ActivityLogger::setup( 'WooCommerce Webhook Delivery', 'WooC Order Created' );
+    $logger = ActivityLogger::setup( 'WooCommerce Webhook Delivery', 'WooC Order Created' );
     
     if ( $HashSignature != $hookSignature )
     {

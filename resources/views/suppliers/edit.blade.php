@@ -79,7 +79,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-dashboard"></i>
                &nbsp; {{ l('Commercial') }}
             </a>
-            <a id="" href="{{ route('suppliers.supplierpricelistlines.index', $supplier->id) }}" class="list-group-item">
+            <a id="" href="{{ route('suppliers.supplierpricelistlines.index', $supplier->id) }}" class="list-group-item  hidden ">
                <i class="fa fa-gavel text-success"></i>
                &nbsp; {{ l('Price List') }}
             </a>

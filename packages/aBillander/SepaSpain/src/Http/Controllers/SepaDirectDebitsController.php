@@ -2,22 +2,19 @@
 
 namespace aBillander\SepaSpain\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Configuration;
-use App\Sequence;
-use App\Currency;
-use App\Payment;
-
-use App\Traits\ViewFormatterTrait;
-use App\Traits\DateFormFormatterTrait;
-
-use aBillander\SepaSpain\SepaDirectDebit;
-
 use AbcAeffchen\SepaUtilities\SepaUtilities;
 use AbcAeffchen\Sephpa\SephpaDirectDebit;
+use App\Http\Controllers\Controller;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Payment;
+use App\Models\PaymentType;
+use App\Models\Sequence;
+use App\Traits\DateFormFormatterTrait;
+use App\Traits\ViewFormatterTrait;
+use Illuminate\Http\Request;
+use aBillander\SepaSpain\SepaDirectDebit;
 
 class SepaDirectDebitsController extends Controller
 {
@@ -46,7 +43,7 @@ class SepaDirectDebitsController extends Controller
     {
         $sdds = $this->directdebit->with('bankaccount')->orderBy('document_date', 'desc')->orderBy('id', 'desc');
 
-        $sdds = $sdds->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $sdds = $sdds->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $sdds->setPath('directdebits');
 
@@ -70,13 +67,11 @@ class SepaDirectDebitsController extends Controller
 
 		$sepa_sp_schemeList = SepaDirectDebit::getSchemeList();
 
-		$bank_accountList = \App\Context::getContext()->company->bankaccounts->pluck('bank_name', 'id')->toArray();
-
-        $default_bank_account_id = \App\Context::getContext()->company->bank_account_id;
+		$bank_accountList = Context::getContext()->company->bankaccounts->pluck('bank_name', 'id')->toArray();
 
         // $document_date = abi_date_short( \Carbon\Carbon::now() );
 
-		return view('sepa_es::direct_debits.create', compact('sepa_sp_schemeList', 'bank_accountList', 'sequenceList', 'default_bank_account_id'));
+		return view('sepa_es::direct_debits.create', compact('sepa_sp_schemeList', 'bank_accountList', 'sequenceList'));
 	}
 
 	/**
@@ -94,7 +89,7 @@ class SepaDirectDebitsController extends Controller
 
         $this->validate($request, $rules);
 
-        $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+        $extradata = [  'user_id'              => Context::getContext()->user->id,
 
  //                       'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
 
@@ -153,7 +148,7 @@ class SepaDirectDebitsController extends Controller
 
         // Sequence
         $seq_id = $sdds->sequence_id;
-        $seq = \App\Sequence::find( $seq_id );
+        $seq = Sequence::find( $seq_id );
         $doc_id = $seq->getNextDocumentId();
 
 //        $sdds->sequence_id = $seq_id;
@@ -220,7 +215,7 @@ class SepaDirectDebitsController extends Controller
 	{
         $directdebit = $this->directdebit->findOrFail($id);
 
-        $payment_typeList = \App\PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $payment_typeList = PaymentType::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
         return view('sepa_es::direct_debits.show', compact('directdebit', 'payment_typeList'));
 	}
@@ -241,7 +236,7 @@ class SepaDirectDebitsController extends Controller
 
         $sepa_sp_schemeList = SepaDirectDebit::getSchemeList();
 
-        $bank_accountList = \App\Context::getContext()->company->bankaccounts->pluck('bank_name', 'id')->toArray();
+        $bank_accountList = Context::getContext()->company->bankaccounts->pluck('bank_name', 'id')->toArray();
 
         // $document_date = abi_date_short( \Carbon\Carbon::now() );
 
@@ -268,13 +263,6 @@ class SepaDirectDebitsController extends Controller
         $this->validate($request, $rules);
 
         $directdebit->update($request->all());
-
-        // Bank Account
-        $bankaccount = $directdebit->bankaccount;
-        $directdebit->iban  = $bankaccount->iban;
-        $directdebit->swift = $bankaccount->swift;
-
-        $directdebit->save();
 
         return redirect()->route('sepasp.directdebits.show', $id)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $directdebit->document_reference);
@@ -331,7 +319,7 @@ class SepaDirectDebitsController extends Controller
         // return $directDebitFile->download();
         $creDtTm  = $directdebit->document_date->format('Y-m-d\TH:i:s');
         $filename = 'Remesa_' . $directdebit->document_reference . '_' . $creDtTm . '_SEPA_' .$directdebit->scheme . '' . '.xml';
-        $creId    = $directdebit->calculateCreditorID( \App\Context::getContext()->company, $directdebit->bankaccount );
+        $creId    = $directdebit->calculateCreditorID( Context::getContext()->company, $directdebit->bankaccount );
 
         // Play nice with barryvdh/laravel-DebugBar
         // https://github.com/barryvdh/laravel-debugbar/issues/621
@@ -347,7 +335,7 @@ class SepaDirectDebitsController extends Controller
         $voucher = $this->payment->findOrFail($id);
 
         $sdds = $this->directdebit->with('bankaccount')
-                                ->where('status', 'pending')->orWhere('status', 'confirmed')
+                                ->where('status', 'pending')    // ->orWhere('status', 'confirmed')
                                 ->orderBy('document_date', 'desc')->orderBy('id', 'desc')
                                 ->get();
 
@@ -371,7 +359,9 @@ class SepaDirectDebitsController extends Controller
 
         $voucher = $this->payment->findOrFail($voucher_id);
 
-        $sdd = $this->directdebit->findOrFail($sdd_id);
+        $sdd = $this->directdebit
+                        ->where('status', 'pending')    // Add voucher only if status == 'pending'
+                        ->findOrFail($sdd_id);
 
         // Do add vouchers, now!
         $sdd->vouchers()->save($voucher);
@@ -394,5 +384,18 @@ class SepaDirectDebitsController extends Controller
 
         return redirect()->back()
                 ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $voucher_id], 'layouts') );
+    }
+
+
+    public function unConfirm($id)
+    {
+        // return 'OK - '.$id;
+
+        $directdebit = $this->directdebit->findOrFail($id);
+
+        $directdebit->unconfirm();
+
+        return redirect()->back()
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $directdebit->document_reference);
     }
 }

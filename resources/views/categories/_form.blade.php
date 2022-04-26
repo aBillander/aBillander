@@ -51,6 +51,15 @@
                        </div>
                      </div>
                    </div>
+
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                    {{ l('Position') }}
+                             <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                                data-content="{{ l('Use multiples of 10. Use other values to interpolate.') }}">
+                                    <i class="fa fa-question-circle abi-help"></i>
+                             </a>
+                    {!! Form::text('position', null, array('class' => 'form-control')) !!}
+                  </div>
         </div>
                 
         <div class="row">

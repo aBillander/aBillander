@@ -155,8 +155,8 @@ table.border td {
 			<div class="col-md-6">
 				<h1 class="uppercase">
 				<!-- 
-				@ if ($img = \App\Context::getContext()->company->company_logo)
-					<img src="{ { URL::to( \App\Company::imagesPath() . $img ) } }" class="img-responsive thumbnail">
+				@ if ($img = AbiContext::getContext()->company->company_logo)
+					<img src="{ { URL::to( AbiCompany::imagesPath() . $img ) } }" class="img-responsive thumbnail">
 				@ endif 
 				-->
 				<img src="http://localhost/aBillander55/public/uploads/company/1510135936.png" class="img-responsive thumbnail">
@@ -164,7 +164,7 @@ table.border td {
 			</div>
 			
 			<div class="col-md-2">
-				<span class="label label-info ">{{ \App\CustomerInvoice::getStatusList()[ $cinvoice->status ] }}</span>
+				<span class="label label-info ">{{ \App\Models\CustomerInvoice::getStatusList()[ $cinvoice->status ] }}</span>
 			</div>
 			
 			<div class="col-md-4">
@@ -260,7 +260,7 @@ table.border td {
 								</td>
 								
 								<td class="small">
-									{{ \App\Tax::find($line->tax_id)->percent }} %
+									{{ \App\Models\Tax::find($line->tax_id)->percent }} %
 								</td>
 								
 								<td class="small">

@@ -1,7 +1,7 @@
 
 @php
 
-// $company = \App\Company::find(2);
+// $company = AbiCompany::find(2);
 
 // espelta
 $qty_10601 = [];
@@ -83,9 +83,9 @@ $qty_20001 = [];
         <td class="header">
 
 
-        @if ($img = \App\Context::getContext()->company->company_logo)
+        @if ($img = AbiContext::getContext()->company->company_logo)
 
-            <img class="ximg-rounded" height="45" style="float:right" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}" >
+            <img class="ximg-rounded" height="45" style="float:right" src="{{ URL::to( AbiCompany::imagesPath() . $img ) }}" >
 
         @endif
 
@@ -109,12 +109,12 @@ $qty_20001 = [];
         <div style="margin-bottom: 0px">&nbsp;</div>
 
 
-@for ($i = 2; $i < ( \App\Configuration::get('ASSEMBLY_GROUPS') ); $i++)
+@for ($i = 2; $i < ( AbiConfiguration::get('ASSEMBLY_GROUPS') ); $i++)
 
 
-        @include('production_sheets.reports.production_orders._section', ['section_icon' => 'cube', 'section_name' => l('Production Orders &#58&#58 Assemblies').' - '. \App\Configuration::get('ASSEMBLY_GROUP_'.$i.'_TAG')])
+        @include('production_sheets.reports.production_orders._section', ['section_icon' => 'cube', 'section_name' => l('Production Orders &#58&#58 Assemblies').' - '. AbiConfiguration::get('ASSEMBLY_GROUP_'.$i.'_TAG')])
 
-        @include('production_sheets.reports.production_orders._block_assemblies_short', ['schedule_sort_order' => \App\Configuration::get('ASSEMBLY_GROUP_'.$i)])
+        @include('production_sheets.reports.production_orders._block_assemblies_short', ['schedule_sort_order' => AbiConfiguration::get('ASSEMBLY_GROUP_'.$i)])
 
 @endfor
 
@@ -167,7 +167,7 @@ $qty_20001 = [];
         <div style="margin-bottom: 0px">&nbsp;</div>
 
 
-@for ($i = 2; $i < ( \App\Configuration::get('ASSEMBLY_GROUPS') ); $i++)        
+@for ($i = 2; $i < ( AbiConfiguration::get('ASSEMBLY_GROUPS') ); $i++)        
 
         <div class="row">
 
@@ -175,10 +175,10 @@ $qty_20001 = [];
 
                 <div class="panel panel-success" id="panel_production_orders_assemblies_{{ $i }}">
                    <div class="panel-heading">
-                      <h3 class="panel-title"><i class="fa fa-cube"></i> &nbsp; {!! l('Production Orders &#58&#58 Assemblies') !!} - <strong>{{ \App\Configuration::get('ASSEMBLY_GROUP_'.$i.'_TAG') }}</strong></h3>
+                      <h3 class="panel-title"><i class="fa fa-cube"></i> &nbsp; {!! l('Production Orders &#58&#58 Assemblies') !!} - <strong>{{ AbiConfiguration::get('ASSEMBLY_GROUP_'.$i.'_TAG') }}</strong></h3>
                    </div>
 
-                        @include('production_sheets.reports.production_orders._block_assemblies', ['schedule_sort_order' => \App\Configuration::get('ASSEMBLY_GROUP_'.$i)])
+                        @include('production_sheets.reports.production_orders._block_assemblies', ['schedule_sort_order' => AbiConfiguration::get('ASSEMBLY_GROUP_'.$i)])
 
                 </div>
             </div>
@@ -196,7 +196,7 @@ $qty_20001 = [];
 
         @includeIf('production_sheets.reports.production_orders._block_custom_short_'.$family['key'], ['procurement_type' => 'manufacture'])
 
-@if ( \App\Configuration::isTrue('MANUFACTURING_PRINT_DEBUG') )
+@if ( AbiConfiguration::isTrue('MANUFACTURING_PRINT_DEBUG') )
 
         <hr />
         Productos: {{ implode(', ', $family['references']) }}<br />

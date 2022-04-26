@@ -31,7 +31,7 @@ return [
     | users are actually retrieved out of your database or other storage
     | mechanisms used by this application to persist your user's data.
     |
-    | Supported: "session", "token"
+    | Supported: "session"
     |
     */
 
@@ -41,27 +41,13 @@ return [
             'provider' => 'users',
         ],
 
-        'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
-        ],
         'customer' => [
             'driver' => 'session',
             'provider' => 'customer_users',
         ],
 
-        'customer-api' => [
-            'driver' => 'token',
-            'provider' => 'customer_users',
-        ],
-
         'salesrep' => [
             'driver' => 'session',
-            'provider' => 'sales_rep_users',
-        ],
-
-        'salesrep-api' => [
-            'driver' => 'token',
             'provider' => 'sales_rep_users',
         ],
     ],
@@ -86,16 +72,17 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\User::class,
+            'model' => App\Models\User::class,
         ],
+
         'customer_users' => [
             'driver' => 'eloquent',
-            'model' => App\CustomerUser::class,
+            'model' => App\Models\CustomerUser::class,
         ],
 
         'sales_rep_users' => [
             'driver' => 'eloquent',
-            'model' => App\SalesRepUser::class,
+            'model' => App\Models\SalesRepUser::class,
         ],
 
         // 'users' => [
@@ -113,7 +100,7 @@ return [
     | than one user table or model in the application and you want to have
     | separate password reset settings based on the specific user types.
     |
-    | The expire time is the number of minutes that the reset token should be
+    | The expire time is the number of minutes that each reset token will be
     | considered valid. This security feature keeps tokens short-lived so
     | they have less time to be guessed. You may change this as needed.
     |
@@ -124,18 +111,35 @@ return [
             'provider' => 'users',
             'table' => 'password_resets',
             'expire' => 60,
+            'throttle' => 60,
         ],
+
         'customer_users' => [
             'provider' => 'customer_users',
             'table' => 'password_resets',
             'expire' => 60,                 // Minutes
+            'throttle' => 60,
         ],
         
         'sales_rep_users' => [
             'provider' => 'sales_rep_users',
             'table' => 'password_resets',
             'expire' => 60,                 // Minutes
+            'throttle' => 60,
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Password Confirmation Timeout
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the amount of seconds before a password confirmation
+    | times out and the user is prompted to re-enter their password via the
+    | confirmation screen. By default, the timeout lasts for three hours.
+    |
+    */
+
+    'password_timeout' => 10800,
 
 ];

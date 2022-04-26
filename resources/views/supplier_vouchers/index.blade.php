@@ -178,7 +178,7 @@
 
 @if ( $payment->currency_conversion_rate != 1.0 )
         <br />
-        <span class="text-warning">{{ \App\Currency::viewMoneyWithSign($payment->amount_currency, $payment->currency) }}</span>
+        <span class="text-warning">{{ \App\Models\Currency::viewMoneyWithSign($payment->amount_currency, $payment->currency) }}</span>
 
 @endif
 
@@ -249,10 +249,10 @@
             	@else
             		<span class="label">
             	@endif
-            	{{\App\Payment::getStatusName($payment->status)}}</span>
+            	{{\App\Models\Payment::getStatusName($payment->status)}}</span>
 
               @if ( $payment->status == 'paid' && !$payment->is_down_payment)
-{{--                @if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') ) --}}
+{{--                @if ( AbiConfiguration::isTrue('ENABLE_CRAZY_IVAN') ) --}}
 
                     <a href="{{ route('suppliervoucher.unpay', [$payment->id]) }}" class="btn btn-xs btn-danger" 
                     title="{{l('Undo', 'layouts')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
@@ -362,7 +362,7 @@ $(document).ready(function() {
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(document).ready(function() {
@@ -391,14 +391,14 @@ $(document).ready(function() {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
 
 
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 

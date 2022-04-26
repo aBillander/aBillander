@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use App\Models\Configuration;
+use App\Models\ShippingMethod;
+use App\Models\Tax;
 use Illuminate\Http\Request;
-
-use App\ShippingMethod;
 use View;
 
 class ShippingMethodsController extends Controller {
@@ -50,11 +49,11 @@ class ShippingMethodsController extends Controller {
 		$shippingmethod = $this->shippingmethod;
 		$shippingmethod->carrier_id = null;
 		$shippingmethod->free_shipping_from = 0.0;
-		$shippingmethod->class_name = 'App\ShippingMethods\\';
+		$shippingmethod->class_name = 'App\\Models\\ShippingMethods\\';
 
 		$billing_typeList = ShippingMethod::getBillingTypeList();
 
-		$taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+		$taxList = Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 
 		return view('shipping_methods.create', compact('shippingmethod', 'billing_typeList', 'taxList'));
 	}
@@ -72,7 +71,7 @@ class ShippingMethodsController extends Controller {
 		$shippingmethod = $this->shippingmethod->create($request->all());
 
 		if ( ShippingMethod::count() == 1 )
-			\App\Configuration::updateValue('DEF_CUSTOMER_PAYMENT_METHOD', $shippingmethod->id);
+			Configuration::updateValue('DEF_CUSTOMER_PAYMENT_METHOD', $shippingmethod->id);
 
 		return redirect('shippingmethods')
 				->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $shippingmethod->id], 'layouts') . $request->input('name'));
@@ -104,7 +103,7 @@ class ShippingMethodsController extends Controller {
 
 		$billing_typeList = ShippingMethod::getBillingTypeList();
 
-		$taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+		$taxList = Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
 		
 		return view('shipping_methods.edit', compact('shippingmethod', 'billing_typeList', 'taxList'));
 	}

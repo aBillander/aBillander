@@ -16,7 +16,7 @@
 
 	    	<a class="btn xbtn-sm btn-success" style="margin-right: 36px;" href="{{ URL::to('productionorders/' . $document->id . '/reload/commissions') }}" title="{{l('Update Commissions')}}"><i class="fa fa-refresh"></i> {{l('Update Commissions')}}</a>
 
-@if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if ( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
 
 	    	<a class="btn xbtn-sm btn-success" style="margin-right: 36px;" href="{{ URL::to('productionorders/' . $document->id . '/reload/ecotaxes') }}" title="{{l('Update Line Ecotaxes')}}"><i class="fa fa-refresh"></i> {{l('Update Line Ecotaxes')}}</a>
 

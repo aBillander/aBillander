@@ -89,7 +89,7 @@
             <th class="text-left">{{l('Cost Price', 'pricelistlines')}}</th>
             <th class="text-left">{{l('Margin (%)', 'pricelistlines')}}
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
-                                    data-content="{{ \App\Configuration::get('MARGIN_METHOD') == 'CST' ?
+                                    data-content="{{ AbiConfiguration::get('MARGIN_METHOD') == 'CST' ?
                                         l('Margin calculation is based on Cost Price', [], 'layouts') :
                                         l('Margin calculation is based on Sales Price', [], 'layouts') }}">
                                 <i class="fa fa-question-circle abi-help"></i>
@@ -109,11 +109,11 @@
 
             <td>= <span class="btn btn-xs btn-grey" style="font-weight: bold;color: #c09853;
 background-color: #fcf8e3;
-border-color: #fbeed5;cursor: default">{{ $line->as_percentable( \App\Calculator::discount( optional($line->product)->price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
+border-color: #fbeed5;cursor: default">{{ $line->as_percentable( \App\Helpers\Calculator::discount( optional($line->product)->price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
             <td>{{ $line->as_priceable(optional($line->product)->cost_price) }}</td>
             <td><span class="btn btn-xs btn-grey" style="font-weight: bold;color: #3a87ad;
 background-color: #d9edf7;
-border-color: #bce8f1;cursor: default">{{ $line->as_percentable( \App\Calculator::margin( optional($line->product)->cost_price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
+border-color: #bce8f1;cursor: default">{{ $line->as_percentable( \App\Helpers\Calculator::margin( optional($line->product)->cost_price, $line->price_tax_exc, $list->currency ) ) }}</span></td>
 
 			<td class="text-right button-pad">
                 @if (  is_null($line->deleted_at))

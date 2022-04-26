@@ -2,6 +2,10 @@
 
 namespace App\Traits;
 
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+
 trait ViewFormatterTrait
 {
     /**
@@ -30,13 +34,13 @@ trait ViewFormatterTrait
         // Last chance
         else 
         {
-            $decimals = intval( \App\Configuration::get('DEF_QUANTITY_DECIMALS') );
+            $decimals = intval( Configuration::get('DEF_QUANTITY_DECIMALS') );
         }
 
 //        // Get decimal places -> decimal_places model property
 //        $decimals = array_key_exists('quantity_decimal_places', $this->attributes) ?
 //        			$this->quantity_decimal_places :
-//        			intval( \App\Configuration::get('DEF_QUANTITY_DECIMALS') );
+//        			intval( Configuration::get('DEF_QUANTITY_DECIMALS') );
         
         $data = number_format($data, $decimals, '.', '');
 
@@ -46,19 +50,19 @@ trait ViewFormatterTrait
     /**
     * Return (string) money field formatted with currency decimal places and currency sign
     */
-    public function as_money( $key = '', \App\Currency $currency = null )
+    public function as_money( $key = '', Currency $currency = null )
     {
         if ( !$key || !array_key_exists($key, $this->attributes) ) return null;
 
         $amount = floatval( $this->{$key} );
 
-        return \App\Currency::viewMoneyWithSign($amount, $currency);
+        return Currency::viewMoneyWithSign($amount, $currency);
     }
 
     /**
     * Return (string) money field formatted with currency decimal places 
     */
-    public function as_money_amount( $key = '', \App\Currency $currency = null )
+    public function as_money_amount( $key = '', Currency $currency = null )
     {
         if ( !$key || !array_key_exists($key, $this->attributes) ) return null;
 
@@ -70,10 +74,10 @@ trait ViewFormatterTrait
             }
         }
 
-        return \App\Currency::viewMoney($amount, $currency);
+        return Currency::viewMoney($amount, $currency);
     }
 
-    public function as_money_amount_with_sign( $key = '', \App\Currency $currency = null )
+    public function as_money_amount_with_sign( $key = '', Currency $currency = null )
     {
         if ( !$key || !array_key_exists($key, $this->attributes) ) return null;
 
@@ -85,20 +89,20 @@ trait ViewFormatterTrait
             }
         }
 
-        return \App\Currency::viewMoneyWithSign($amount, $currency);
+        return Currency::viewMoneyWithSign($amount, $currency);
     }
 
     /**
     * Return (number) money field with currency decimal places
     */
-    public function as_price( $key = '', \App\Currency $currency = null )
+    public function as_price( $key = '', Currency $currency = null )
     {
         if ( !$key || !array_key_exists($key, $this->attributes) ) return null;
 
         $amount = floatval( $this->{$key} );
 
         if (!$currency)
-            $currency = \App\Context::getContext()->currency;
+            $currency = Context::getContext()->currency;
 
         $number = round($amount, $currency->decimalPlaces);
 
@@ -122,7 +126,7 @@ trait ViewFormatterTrait
         // quantity should be float!!
         $data = floatval( $this->{$key} ); // abi_r($data, true);
 
-        if ( !$decimalPlaces ) $decimalPlaces = \App\Configuration::get('DEF_PERCENT_DECIMALS');
+        if ( !$decimalPlaces ) $decimalPlaces = Configuration::get('DEF_PERCENT_DECIMALS');
 
         // abi_r($decimalPlaces, true);
 
@@ -141,7 +145,7 @@ trait ViewFormatterTrait
         // if ( !$key || !\property_exists($this, $key) ) return null;
         $data = floatval( $val ); // abi_r($data, true);
 
-        if ( $decimalPlaces === null ) $decimalPlaces = \App\Configuration::get('DEF_PERCENT_DECIMALS');
+        if ( $decimalPlaces === null ) $decimalPlaces = Configuration::get('DEF_PERCENT_DECIMALS');
 
         // abi_r($decimalPlaces, true);
 
@@ -151,26 +155,26 @@ trait ViewFormatterTrait
         return $number;
     }
 
-    public function as_moneyable( $val = 0.0, \App\Currency $currency = null )
+    public function as_moneyable( $val = 0.0, Currency $currency = null )
     {
         $amount = floatval( $val );
 
-        return \App\Currency::viewMoneyWithSign($amount, $currency);
+        return Currency::viewMoneyWithSign($amount, $currency);
     }
 
-    public function as_money_amountable( $val = 0.0, \App\Currency $currency = null )
+    public function as_money_amountable( $val = 0.0, Currency $currency = null )
     {
         $amount = floatval( $val );
 
-        return \App\Currency::viewMoney($amount, $currency);
+        return Currency::viewMoney($amount, $currency);
     }
 
-    public function as_priceable( $val = 0.0, \App\Currency $currency = null)      // , $round_sup = false )
+    public function as_priceable( $val = 0.0, Currency $currency = null)      // , $round_sup = false )
     {
         $amount = floatval( $val );
 
         if (!$currency)
-            $currency = \App\Context::getContext()->currency;
+            $currency = Context::getContext()->currency;
 
 //        if ( $round_sup ) {
 //            $p = pow(10, $currency->decimalPlaces);
@@ -193,7 +197,7 @@ trait ViewFormatterTrait
         if ( $decimalPlaces === null ) {
             $decimals = array_key_exists('quantity_decimal_places', $this->attributes) ?
                         $this->quantity_decimal_places :
-                        intval( \App\Configuration::get('DEF_QUANTITY_DECIMALS') );
+                        intval( Configuration::get('DEF_QUANTITY_DECIMALS') );
         } else {
             $decimals = $decimalPlaces;
         }
@@ -213,9 +217,9 @@ trait ViewFormatterTrait
         // http://laravel.io/forum/03-11-2014-date-format
         // https://laracasts.com/forum/?p=764-saving-carbon-dates-from-user-input/0
 
-        // if ($format == '') $format = \App\Configuration::get('DATE_FORMAT_SHORT');     
-        if ($format == '') $format = \App\Context::getContext()->language->date_format_lite; // Should take value after User / Environment settings
-        if (!$format) $format = \App\Configuration::get('DATE_FORMAT_SHORT');
+        // if ($format == '') $format = Configuration::get('DATE_FORMAT_SHORT');     
+        if ($format == '') $format = Context::getContext()->language->date_format_lite; // Should take value after User / Environment settings
+        if (!$format) $format = Configuration::get('DATE_FORMAT_SHORT');
         // echo ($format); die();
         // $date = \Carbon\Carbon::createFromFormat($format, $date);    
         // http://laravel.io/forum/03-12-2014-class-carbon-not-found?page=1

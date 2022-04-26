@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
+
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-// use App\Currency as Currency;
-use View;
-
+use App\Models\CustomerInvoice;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use View;
 
 class PdfController extends Controller {
 
@@ -19,7 +16,7 @@ class PdfController extends Controller {
 	public function show($id)
 	{
 		try {
-			$cinvoice = \App\CustomerInvoice::
+			$cinvoice = CustomerInvoice::
 							  with('customer')
 							->with('invoicingAddress')
 							->with('customerInvoiceLines')

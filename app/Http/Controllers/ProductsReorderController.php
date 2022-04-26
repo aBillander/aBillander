@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Configuration;
-
-use App\Product;
-use App\Category;
-use App\Supplier;
-use App\WorkCenter;
-
-use Excel;
-
+use App\Helpers\Exports\ArrayExport;
+use App\Models\Category;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Product;
+use App\Models\Supplier;
+use App\Models\WorkCenter;
 use App\Traits\DateFormFormatterTrait;
+use Excel;
+use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class ProductsReorderController extends Controller
 {
@@ -148,7 +148,7 @@ class ProductsReorderController extends Controller
         // $ribbon6 = $work_center_id < 0 ? '' : ' :: ' . $work_centerList[ $work_center_id ];
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Re-Aprovisionamiento de Productos', '', '', '', '', '', '', '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = ['Centro de Trabajo: '.$ribbon5];
         $data[] = ['Categorías: '.$ribbon1];
@@ -201,64 +201,33 @@ class ProductsReorderController extends Controller
 
         }
 
-        $sheetName = 'Re-Aprovisionamiento';
+
+        $styles = [
+            'A2:A2'    => ['font' => ['bold' => true]],
+            'A3:A3'  => ['font' => ['bold' => true, 'italic' => true]],
+            'A9:O9'  => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+            'B' => NumberFormat::FORMAT_TEXT,
+//            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'C' => NumberFormat::FORMAT_NUMBER,
+            'D' => NumberFormat::FORMAT_NUMBER_00,
+            'E' => NumberFormat::FORMAT_NUMBER_00,
+            'F' => NumberFormat::FORMAT_NUMBER_00,
+            'G' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:B1', 'A2:B2'];
+
+        $sheetTitle = 'Re-Aprovisionamiento';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = 'Re-Aprovisionamiento de Productos';
 
         // Generate and return the spreadsheet
-        Excel::create('Re-Aprovisionamiento de Productos', function($excel) use ($sheetName, $data) {
-
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:B1');
-                $sheet->mergeCells('A2:B2');
-
-                $sheet->getStyle('A2:A2')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->getStyle('A3:A3')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->getStyle('A9:O9')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-//                    'B' => 'dd/mm/yyyy',
-//                    'C' => 'dd/mm/yyyy',
-                    'A' => '@',
-//                    'C' => '0.00',
-                    'C' => '0',
-                    'D' => '0.00',
-                    'E' => '0.00',
-                    'F' => '0.00',
-                    'G' => '0.00',
-
-                ));
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-
-        return redirect()->back()
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
-
-
-        abi_r($data);
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
     }
 }

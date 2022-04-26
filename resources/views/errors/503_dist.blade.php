@@ -1,43 +1,5 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<link href='//fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
+@extends('errors::minimal')
 
-		<style>
-			body {
-				margin: 0;
-				padding: 0;
-				width: 100%;
-				height: 100%;
-				color: #B0BEC5;
-				display: table;
-				font-weight: 100;
-				xfont-family: 'Lato';
-			}
-
-			.container {
-				text-align: center;
-				display: table-cell;
-				vertical-align: middle;
-			}
-
-			.content {
-				text-align: center;
-				display: inline-block;
-			}
-
-			.title {
-				font-size: 72px;
-				margin-bottom: 40px;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-			<div class="content">
-				<div class="title">{{ l('Be right back.', 'layouts') }}</div>
-				<div class="title">Estamos mejorando el sitio.</div>
-			</div>
-		</div>
-	</body>
-</html>
+@section('title', __('Service Unavailable'))
+@section('code', '503')
+@section('message', __('Service Unavailable'))

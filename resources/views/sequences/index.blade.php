@@ -41,13 +41,13 @@
 				<tr>
 					<td>{{ $sequence->id }}</td>
 					<td>{{ $sequence->name }}</td>
-					<td>{{ \App\Sequence::getTypeName($sequence->model_name) }}</td>
+					<td>{{ \App\Models\Sequence::getTypeName($sequence->model_name) }}</td>
 					<td>{{ $sequence->format }}</td>
 					<td>{{ $sequence->next_id }}</td>
 					<td>@if (  is_null($sequence->last_date_used))
 							-
 						@else
-							{{ abi_date_short( $sequence->last_date_used, \App\Context::getContext()->language->date_format_lite ) }}
+							{{ abi_date_short( $sequence->last_date_used, AbiContext::getContext()->language->date_format_lite ) }}
 						@endif
 					</td>
 					<td class="text-center">

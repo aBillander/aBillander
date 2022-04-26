@@ -24,7 +24,7 @@
                 <th class="text-right button-pad"> 
 
         <div class="pull-right" style="padding-top: 4px;">
-            <a href="#" class="btn btn-sm btn-success new-bankaccount" 
+            <a href="#" class="btn btn-sm btn-success new-bankaccount" id="btn-new-bankaccount" 
                      data-target='#myModalBankAccount' data-id="{{ '' }}" data-toggle="modal" onClick="return false;" 
                      data-title="{{ l('New Bank Account') }}"
                     title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Add New', [], 'layouts')}}</a>

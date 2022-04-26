@@ -14,7 +14,7 @@
 			<th>{{l('Last Purchase Price', 'products')}}</th>
 			<th>{{l('Reorder point', 'products')}}</th>
 
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') )
 
 			<th class="text-center">{{l('Lot tracking?', 'products')}}</th>
 @endif
@@ -37,7 +37,7 @@
 			<td>{{ optional($product->purchasemeasureunit)->name }}</td>
 			<td>{{ $product->as_price('last_purchase_price') }}</td>
 			<td>{{ $product->as_quantity('reorder_point') }}</td>
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') )
 			<td class="text-center">@if ($product->lot_tracking) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
 @endif
 			<td class="text-center">@if ($product->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>

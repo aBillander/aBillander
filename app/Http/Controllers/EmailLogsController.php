@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
-use App\Configuration;
-
-use App\EmailLog;
-
+use App\Models\Configuration;
+use App\Models\EmailLog;
 use App\Traits\DateFormFormatterTrait;
 
 class EmailLogsController extends Controller
@@ -72,7 +69,7 @@ class EmailLogsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\ActivityLogger  $activitylogger
+     * @param  \App\Models\ActivityLogger  $activitylogger
      * @return \Illuminate\Http\Response
      */
     public function show(ActivityLogger $activitylogger)
@@ -87,7 +84,7 @@ class EmailLogsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\ActivityLogger  $activitylogger
+     * @param  \App\Models\ActivityLogger  $activitylogger
      * @return \Illuminate\Http\Response
      */
     public function edit(ActivityLogger $activitylogger)
@@ -99,7 +96,7 @@ class EmailLogsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\ActivityLogger  $activitylogger
+     * @param  \App\Models\ActivityLogger  $activitylogger
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, ActivityLogger $activitylogger)
@@ -110,7 +107,7 @@ class EmailLogsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\ActivityLogger  $activitylogger
+     * @param  \App\Models\ActivityLogger  $activitylogger
      * @return \Illuminate\Http\Response
      */
     public function destroy(ActivityLogger $activitylogger)

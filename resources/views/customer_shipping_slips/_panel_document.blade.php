@@ -25,6 +25,11 @@
 
 
                         <h4 style="margin-right: 15px;">
+
+@if( \App\Helpers\AsignaExcel::getAsignaId() == $document->carrier_id )
+        <a href="{{ route('customershippingslips.asigna', [$document->id]) }}" class="label btn-blue" title="{{l('Hoja Asigna :: CSV')}}" style="margin-right: 12px;"><img src="{{ \App\Helpers\AsignaExcel::getCarrierLogoUrl( ) }}" height="20" style="background: white" /> &nbsp;<i><b>{{l('Hoja de Envío')}}</b></i></a>
+@endif
+
                             <span class="label label-warning" title="{{ l('Document Date') }}">{{ $document->document_date_form }}</span> - 
                             <span class="label label-info" title="{{ l('Delivery Date') }}">{{ $document->delivery_date_form ?? ' -- / -- / -- '}}</span>
                         </h4>
@@ -90,7 +95,7 @@
 
     @include($view_path.'.js.document_shipping_cost_line')
 
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') )
 
     @include($view_path.'.js.document_line_lots')
 

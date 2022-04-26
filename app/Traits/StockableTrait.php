@@ -1,15 +1,18 @@
-<?php 
+<?php
 
 namespace App\Traits;
 
-use App\Configuration;
+use App\Models\Configuration;
+use App\Models\Lot;
+use App\Models\Warehouse;
+use App\Models\WarehouseProductLine;
 
 trait StockableTrait
 {
 
     public function getStockByWarehouse( $warehouse_id = null )
     {
-        $line = \App\WarehouseProductLine::
+        $line = WarehouseProductLine::
                           where('product_id', $this->id)
                         ->where('warehouse_id', $warehouse_id)
                         ->first();
@@ -19,7 +22,7 @@ trait StockableTrait
 
     public function getLotStockByWarehouse( $warehouse_id = null )
     {
-        return \App\Lot::
+        return Lot::
                           where('product_id', $this->id)
                         ->where('warehouse_id', $warehouse_id)
 //                        ->where('quantity', '>', 0)
@@ -37,7 +40,7 @@ trait StockableTrait
 
         $this->load(['warehouses']);
 
-    //    $product = \App\Product::find($this->id);
+    //    $product = Product::find($this->id);
 
         $whs = $this->warehouses;
         if ($whs->contains($wh_id)) {
@@ -54,7 +57,7 @@ trait StockableTrait
 
     public function getStock()
     {
-        $warehouses = \App\Warehouse::where('active', '>', 0)->get();
+        $warehouses = Warehouse::where('active', '>', 0)->get();
         $count = 0;
 
         foreach ($warehouses as $warehouse) {
@@ -68,7 +71,7 @@ trait StockableTrait
 
     public function setStockByWarehouse( $warehouse_id = null, $quantity = 0.0 )
     {
-        $line = \App\WarehouseProductLine::
+        $line = WarehouseProductLine::
                           where('product_id', $this->id)
                         ->where('warehouse_id', $warehouse_id)
                         ->first();
@@ -99,11 +102,11 @@ trait StockableTrait
             } else {
 
                 // Check Warehouse
-                $warehouse = \App\Warehouse::find( $warehouse_id );
+                $warehouse = Warehouse::find( $warehouse_id );
 
                 if (!$warehouse) return false;
 
-                \App\WarehouseProductLine::create([
+                WarehouseProductLine::create([
                                 'product_id' => $this->id, 
                                 'quantity' => $quantity, 
                                 'warehouse_id' => $warehouse_id,

@@ -137,6 +137,7 @@
 		<tr>
 			<th class="text-left">{{l('ID', [], 'layouts')}}</th>
 			<th>{{l('Invoice')}}</th>
+      <th>{{l('Invoice Date')}}</th>
 			<th>{{l('Customer')}}</th>
 			<th>{{l('Subject')}}</th>
 			<th>{{l('Due Date')}}</th>
@@ -160,6 +161,7 @@
 			<td>{{ $payment->id }}</td>
 			<td>
           <a href="{{ route('absrc.invoice.pdf',  ['invoiceKey' => optional($payment->customerinvoice)->secure_key]) }}" title="{{l('Show', [], 'layouts')}}" target="_blank">{{ $payment->customerInvoice->document_reference ?? '' }}</a></td>
+      <td>{{ abi_date_short(optional($payment->customerinvoice)->document_date) }}</td>
 			<td>
           <a href="{{ URL::to('absrc/customers/' . optional(optional($payment->customerInvoice)->customer)->id . '/edit') }}" title="{{l('Show Customer')}}" target="_blank">{{ $payment->customerInvoice->customer->name_regular ?? '' }}</a></td>
 			<td>{{ $payment->name }}</td>
@@ -170,7 +172,7 @@
 
       <td class="button-pad">{{ optional($payment->paymenttype)->name }} 
 
-@if( ($payment->payment_type_id == \App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) )
+@if( ($payment->payment_type_id == AbiConfiguration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) )
   @if( $payment->chequedetail )
 
               <a class="btn btn-xs btn-warning" href="{{ URL::to('absrc/cheques/' . $payment->chequedetail->cheque_id . '/edit' ) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
@@ -208,7 +210,7 @@
             	@else
             		<span>
             	@endif
-            	{{\App\Payment::getStatusName($payment->status)}}</span></td>
+            	{{\App\Models\Payment::getStatusName($payment->status)}}</span></td>
 
 
       <td class="text-center">
@@ -291,7 +293,7 @@ $(document).ready(function() {
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(document).ready(function() {
@@ -320,14 +322,14 @@ $(document).ready(function() {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
 
 
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 

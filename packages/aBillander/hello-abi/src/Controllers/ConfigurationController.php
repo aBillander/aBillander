@@ -72,10 +72,10 @@ class ConfigurationController extends Controller
             DB::purge('mysql');
             DB::connection()->getPdo();
 
-            return redirect()->back()->with('success', __('installer::main.config.check_ok'));
+            return back()->with('success', __('installer::main.config.check_ok'));
         }
         catch (\PDOException $e) {
-            return redirect()->back()->with('error', [__('installer::main.config.check_ko'), $e->getMessage()]);
+            return back()->with('error', [__('installer::main.config.check_ko'), $e->getMessage()]);
         }
 
         // return redirect()->route('installer::install');

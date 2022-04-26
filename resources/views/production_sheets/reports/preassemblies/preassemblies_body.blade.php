@@ -19,9 +19,9 @@
         <td class="header">
 
 
-        @if ($img = \App\Context::getContext()->company->company_logo)
+        @if ($img = AbiContext::getContext()->company->company_logo)
 
-            <img class="ximg-rounded" height="45" style="float:right" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}" >
+            <img class="ximg-rounded" height="45" style="float:right" src="{{ URL::to( AbiCompany::imagesPath() . $img ) }}" >
 
         @endif
 
@@ -38,12 +38,12 @@
         <!-- div style="margin-bottom: 0px">&nbsp;</div -->
 
 
-@for ($i = 0; $i < ( \App\Configuration::get('ASSEMBLY_GROUPS') - 1 ); $i++)        
+@for ($i = 0; $i < ( AbiConfiguration::get('ASSEMBLY_GROUPS') - 1 ); $i++)        
 
-        @include('production_sheets.reports.production_orders._section', ['section_icon' => 'cube', 'section_name' =>  l('Production Orders &#58&#58 Assemblies').' - '. \App\Configuration::get('ASSEMBLY_GROUP_'.$i.'_TAG')])
+        @include('production_sheets.reports.production_orders._section', ['section_icon' => 'cube', 'section_name' =>  l('Production Orders &#58&#58 Assemblies').' - '. AbiConfiguration::get('ASSEMBLY_GROUP_'.$i.'_TAG')])
 
 
-        @include('production_sheets.reports.preassemblies._block_production_orders_assemblies', ['schedule_sort_order' => \App\Configuration::get('ASSEMBLY_GROUP_'.$i)])
+        @include('production_sheets.reports.preassemblies._block_production_orders_assemblies', ['schedule_sort_order' => AbiConfiguration::get('ASSEMBLY_GROUP_'.$i)])
 
 
 @endfor

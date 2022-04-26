@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\ActivityLogger;
+use App\Models\Image;
+use App\Models\Product;
+use App\Helpers\Exports\ArrayExport;
+use App\Helpers\Imports\ArrayImport;
+use Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-
-use App\Product;
-
-use Excel;
 
 class ImportProductImagesController extends Controller
 {
@@ -25,7 +26,7 @@ class ImportProductImagesController extends Controller
         $this->customerOrderLine = $customerOrderLine;
    }
 */
-    public static $table = 'products';
+    public static $table = 'images';
 
     public static $column_mask;		// Column fields (?)
 
@@ -71,27 +72,10 @@ class ImportProductImagesController extends Controller
         $images_folder = $this->images_folder;
 
         return view('imports.product_images', compact('images_folder'));
-/*
-		$country = $this->country->findOrFail($id);
-		
-		return view('countries.edit', compact('country'));
-
-        $customer_orders = $this->customerOrder
-                            ->with('customer')
-                            ->with('currency')
-                            ->with('paymentmethod')
-                            ->orderBy('id', 'desc')->get();
-
-        return view('customer_orders.index', compact('customer_orders'));
-*/        
     }
 
     public function process(Request $request)
     {
-        // return redirect()->back()                ->with('info', 'No se ha hecho nada.');
-
-        // dd($request);
-
         $path  = $request->input('images_folder', '');
         if(!File::exists($path)) {
             // path does not exist
@@ -117,7 +101,7 @@ class ImportProductImagesController extends Controller
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Product Images', __METHOD__ )
+        $logger = ActivityLogger::setup( 'Import Product Images', __METHOD__ )
                     ->backTo( route('products.images.import') );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -130,7 +114,10 @@ class ImportProductImagesController extends Controller
 
 
 
-        $params = ['images_folder' => $path];
+        $params = [
+            'images_folder'  => $path, 
+            'replace_images' => $request->input('replace_images', 0)
+        ];
 
 
         try{
@@ -160,42 +147,32 @@ class ImportProductImagesController extends Controller
      */
     protected function processFile( $file, $logger, $params )
     {
+        // $reader = Excel::toArray(new CategoriesImport( $logger ), $file);
+        // Excel::import(new CategoriesImport( $logger )), $file);
 
-        // 
-        // See: https://www.youtube.com/watch?v=rWjj9Slg1og
-        // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
-        Excel::filter('chunk')->selectSheetsByIndex(0)->load( $file )->chunk(250, function ($reader) use ( $logger, $params )
-        {
-            
- /*           $reader->each(function ($sheet){
-                // ::firstOrCreate($sheet->toArray);
-                abi_r($sheet);
-            });
+        // Get data as an array
+        $worksheet = Excel::toCollection(new ArrayImport, $file);
 
-            $reader->each(function($sheet) {
-                // Loop through all rows
-                $sheet->each(function($row) {
-                    // Loop through all columns
-                });
-            });
-*/
+        // abi_r($worksheet->first(), true);
+
+        $reader = $worksheet->first();    // First sheet in worksheet
+
 
 // Process reader STARTS
 
             $i = 0;
             $i_ok = 0;
-            $max_id = 1000;
+            $max_id = 500;
 
 
             if(!empty($reader) && $reader->count()) {
-
                         
                         
 
                 foreach($reader as $row)
                 {
                     // do stuff
-                    // if ($i > $max_id) break;
+                    if ($i > $max_id) break;
 
                     // Prepare data
                     $data = $row->toArray();
@@ -203,18 +180,20 @@ class ImportProductImagesController extends Controller
                     $item = '[<span class="log-showoff-format">'.($data['id'] ?? $data['reference'] ?? '').'</span>] <span class="log-showoff-format">'.$data['image_file_name'].'</span>';
 
                     // Some Poor Man checks:
-                    $data['id'] = intval(trim( $data['id'] ));
-                    $data['reference'] = trim( $data['reference'] );
-
                     $image_file_name = trim( $data['image_file_name'] );
 
+                    // Get Product
                     $product = null;
+                    if ( array_key_exists('product_id', $data) && ($product_id=trim($data['product_id'])) ) {
 
-                    if ($data['id'])
-                        $product = $this->product->where('id', $data['id'])->withCount('images')->first();
-                    else
-                    if ($data['reference'])
-                        $product = $this->product->where('reference', $data['reference'])->withCount('images')->first();
+                        $product = $this->product->withCount('images')->find($product_id);
+
+                    } else
+
+                    if ( array_key_exists('product_reference', $data) && ($reference=trim($data['product_reference'])) ) {
+
+                        $product = $this->product->withCount('images')->where('reference', $reference)->first();
+                    }
 
 
 
@@ -228,18 +207,41 @@ class ImportProductImagesController extends Controller
 
                             $img_path = $this->images_folder.$image_file_name;
 
-                            // Is featured?
-                            if ( ( $data['image_is_featured'] ?? 0 ) ) $is_featured = 1;
-                            else
-                            if ( $product->images_count == 0 ) $is_featured = 1;
-                            else
-                            $is_featured = 0;
+                            if ( $params['replace_images'] )
+                            {
+                                # code...
+                                foreach ($product->images as $image) {
+                                    # code...
 
-                            $image = \App\Image::createForProductFromPath($img_path, ['caption' => $product->name, 'is_featured'=> $is_featured]);
+                                    // Delete file images
+                                    $image->deleteImage();
+
+                                    // Delete now!
+                                    $image->delete();
+                                }
+
+                                $logger->log('INFO', 'Se han borrado {i} imágenes del Producto [:codart] (:reference) :desart .', ['i' => $product->images_count, 'codart' => $product->id, 'reference' => $product->reference, 'desart' => $product->name]);
+
+                                $product->images_count = 0;
+                            }
+
+                            // Is featured?
+                            if ( array_key_exists('image_is_featured', $data ) )
+                                $is_featured = $product->images_count > 0 ? (int) $data['image_is_featured'] : 1;
+                            else
+                            if ( $product->images_count == 0 )
+                                $is_featured = 1;
+                            else
+                                $is_featured = 0;
+
+                            $image = Image::createForProductFromPath($img_path, ['caption' => $data['image_caption'] ??$product->name, 'position' => (int) $data['image_position'], 'is_featured'=> $is_featured]);
                             
                             if ( $image )
                             {
+
                                 $product->images()->save($image);
+
+
 
                                 if ( ($product->images_count > 0) && $image->is_featured )
                                     $product->setFeaturedImage( $image );
@@ -283,9 +285,7 @@ class ImportProductImagesController extends Controller
 
             $logger->log('INFO', 'Se han procesado {i} Productos.', ['i' => $i]);
 
-// Process reader          
-    
-        }, false);      // should not queue $shouldQueue
+// Process reader ENDS
 
     }
 
@@ -297,78 +297,28 @@ class ImportProductImagesController extends Controller
      */
     public function export()
     {
-/*        $products = $this->product
-                          ->with('measureunit')
-//                          ->with('combinations')                                  
-                          ->with('category')
-                          ->with('tax')
-                          ->with('supplier')
-                          ->orderBy('reference', 'asc')
-                          ->get();
-
-        $pricelist = $this->pricelist
-                    ->with('pricelistlines')
-                    ->with('pricelistlines.product')
-                    ->findOrFail($id);
-
-        $pricelist  = $this->pricelist->findOrFail($id);
-        $lines = $this->pricelistline
-                        ->select('price_list_lines.*', 'products.id', 'products.reference', 'products.name')
-//                        ->with('product')
-                        ->where('price_list_id', $id)
-                        ->join('products', 'products.id', '=', 'price_list_lines.product_id')       // Get field to order by
-                        ->orderBy('products.reference', 'asc')
-                        ->get();
-*/
-
         // Initialize the array which will be passed into the Excel generator.
         $data = []; 
 
         // Define the Excel spreadsheet headers
         $headers = [
-                'id', 'reference', 'NAME', 'image_file_name', 'image_is_featured'
+                'product_id', 'product_reference', 'NAME', 'image_file_name', 'image_caption', 'image_position', 'image_is_featured'
         ];
 
         $data[] = $headers;
 
-        // Convert each member of the returned collection into an array,
-        // and append it to the payments array.
-/*        foreach ($products as $product) {
-            // $data[] = $line->toArray();
-            $row = [];
-            foreach ($headers as $header)
-            {
-                $row[$header] = $product->{$header} ?? '';
-            }
-            $row['CATEGORY_NAME']     = $product->category ? $product->category->name : '';
-            $row['TAX_NAME']          = $product->tax ? $product->tax->name : '';
-            $row['MEASURE_UNIT_NAME'] = $product->measureunit ? $product->measureunit->name : '';
-            $row['SUPPLIER_NAME']     = $product->supplier ? $product->supplier->name : '';
 
-            $data[] = $row;
-        }
-*/
-        $sheetName = 'Product Images' ;
+        $styles = [];
 
-        // abi_r($data, true);
+        $sheetTitle = 'Product Images';
+
+        $export = (new ArrayExport($data, $styles))->setTitle($sheetTitle);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('ProductImages', function($excel) use ($sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 
 

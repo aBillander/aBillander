@@ -15,7 +15,7 @@
            &nbsp; {{l('Filter', [], 'layouts')}}
         </button>
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') && 0)
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') && 0)
                 
         <a class="btn btn-sm btn-navy invite-customer" data-html="false" data-toggle="modal" 
                 href="{{ route('customers.invite') }}" 
@@ -154,6 +154,8 @@ padding: 3px 20px;
 line-height: 1.42857143;
                         ">{{l('Add Document', [], 'layouts')}}</li>
                       <li><a href="{{ route('absrc.orders.create.withcustomer', $customer->id) }}">{{l('Order', [], 'layouts')}}</a></li>
+
+                      <li><a href="{{ route('absrc.quotations.create.withcustomer', $customer->id) }}">{{l('Quotation', [], 'layouts')}}</a></li>
 {{--
                       <li class="divider"></li>
                       <li><a href="{{ route('absrc.orders.create.withcustomer', $customer->id) }}">{{l('Order', [], 'layouts')}}</a></li>

@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\ProductionSheet;
+use App\Models\ProductionSheet;
 
-use App\Customer;
-use App\Payment;
-use App\PaymentType;
+use App\Models\Customer;
+use App\Models\Payment;
+use App\Models\PaymentType;
 
-use App\Configuration;
+use App\Models\Configuration;
 
 class ProductionSheetVouchersController extends Controller
 {

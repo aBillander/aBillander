@@ -4,11 +4,12 @@ namespace App\Listeners;
 
 // use App\Events\Registered;
 // use Illuminate\Auth\Events\Registered;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-
 use App\Events\CustomerRegistered;
-
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Todo;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 use Mail;
 
 // https://laracasts.com/discuss/channels/laravel/laravel-events-on-registration
@@ -50,7 +51,7 @@ class NewCustomerRegistered
             'user_id' => $this->customeruser->id,
         ];
 
-        $this->todo = \App\Todo::create($data);
+        $this->todo = Todo::create($data);
 
 
 
@@ -91,16 +92,16 @@ class NewCustomerRegistered
                 );
 
             $data = array(
-                'from'     => \App\Configuration::get('ABCC_EMAIL'),         // config('mail.from.address'  ),
-                'fromName' => \App\Configuration::get('ABCC_EMAIL_NAME'),    // config('mail.from.name'    ),
+                'from'     => Configuration::get('ABCC_EMAIL'),         // config('mail.from.address'  ),
+                'fromName' => Configuration::get('ABCC_EMAIL_NAME'),    // config('mail.from.name'    ),
                 'to'       => $customer->email,         // $cinvoice->customer->address->email,
                 'toName'   => $customer->name_fiscal,    // $cinvoice->customer->name_fiscal,
-                'subject'  => l(' :_> Ha solicita acceso al Centro de Clientes de :company', ['company' => \App\Context::getcontext()->company->name_fiscal]),
+                'subject'  => l(' :_> Ha solicita acceso al Centro de Clientes de :company', ['company' => Context::getcontext()->company->name_fiscal]),
                 );
 
             
 
-            $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.customer_registration_sent', $template_vars, function($message) use ($data)
+            $send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.customer_registration_sent', $template_vars, function($message) use ($data)
             {
                 $message->from($data['from'], $data['fromName']);
 
@@ -137,16 +138,16 @@ class NewCustomerRegistered
                 );
 
             $data = array(
-                'from'     => \App\Configuration::get('ABCC_EMAIL'),         // config('mail.from.address'  ),
-                'fromName' => \App\Configuration::get('ABCC_EMAIL_NAME'),    // config('mail.from.name'    ),
-                'to'       => \App\Configuration::get('ABCC_EMAIL'),         // $cinvoice->customer->address->email,
-                'toName'   => \App\Configuration::get('ABCC_EMAIL_NAME'),    // $cinvoice->customer->name_fiscal,
+                'from'     => Configuration::get('ABCC_EMAIL'),         // config('mail.from.address'  ),
+                'fromName' => Configuration::get('ABCC_EMAIL_NAME'),    // config('mail.from.name'    ),
+                'to'       => Configuration::get('ABCC_EMAIL'),         // $cinvoice->customer->address->email,
+                'toName'   => Configuration::get('ABCC_EMAIL_NAME'),    // $cinvoice->customer->name_fiscal,
                 'subject'  => l(' :_> Un Cliente solicita acceso al Centro de Clientes'),
                 );
 
             
 
-            $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.customer_registration', $template_vars, function($message) use ($data)
+            $send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.customer_registration', $template_vars, function($message) use ($data)
             {
                 $message->from($data['from'], $data['fromName']);
 

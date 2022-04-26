@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace App;
+namespace App\Helpers;
 
 /*
    $Id: class-eggTimer.php v 0.3.19 - RedondoWS $

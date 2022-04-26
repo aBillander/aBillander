@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Configuration;
+use App\Models\Configuration;
 
 use Carbon\Carbon;
 
-use App\Product;
-use App\StockMovement;
+use App\Models\Product;
+use App\Models\StockMovement;
 
 class ChartProductSalesController extends Controller
 {
@@ -65,7 +65,8 @@ class ChartProductSalesController extends Controller
 		// abi_r($orders_dates[0]);abi_r('*********************');
 		if ( ! empty( $orders_dates ) ) {
 			foreach ( $orders_dates as $unformatted_date ) {
-				$date = new \DateTime( $unformatted_date->date );
+//				$date = new \DateTime( $unformatted_date->date );
+				$date = new \DateTime( $unformatted_date );
 				$month_no = $date->format( 'm' );
 				$month_name = l('month.'.$month_no);	//$date->format( 'M' );
 				$month_array[ $month_no ] = $month_name;	// ." ".$date->format( 'Y' );
@@ -87,7 +88,7 @@ class ChartProductSalesController extends Controller
         $model = $this->model;
         if ( !in_array($model, $models) )
             $model = Configuration::get('RECENT_SALES_CLASS');
-        $class = '\App\\'.$model.'Line';
+        $class = '\\App\\Models\\'.$model.'Line';
         $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
 

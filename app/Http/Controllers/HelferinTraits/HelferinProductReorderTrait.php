@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
-use Illuminate\Http\Request;
-
-use App\Product;
-use App\Customer;
-
-use App\CustomerShippingSlipLine;
-
+use App\Helpers\Exports\ArrayExport;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\Product;
 use Excel;
+use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 trait HelferinProductReorderTrait
 {
@@ -18,7 +20,7 @@ trait HelferinProductReorderTrait
     {
         $product_mrptypeList = ['' => l('-- All --', 'layouts')] + Product::getMrpTypeList();
 
-        $default_model = \App\Configuration::get('RECENT_SALES_CLASS');
+        $default_model = Configuration::get('RECENT_SALES_CLASS');
 
         return view('helferin.home_mfg', compact('product_mrptypeList', 'default_model'));
     }
@@ -45,7 +47,7 @@ trait HelferinProductReorderTrait
         $ribbon = 'Planificación: ' . ($mrp_type == '' ? 'todos' : $mrp_type);
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Re-Aprovisionamiento de Productos :: ' . $ribbon, '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [''];
 
@@ -79,49 +81,31 @@ trait HelferinProductReorderTrait
 
         }
 
-        $sheetName = 'Re-Aprovisionamiento';
+
+        $styles = [
+            'A4:I4'    => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+            'A' => NumberFormat::FORMAT_TEXT,
+//            'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'C' => NumberFormat::FORMAT_NUMBER,
+            'D' => NumberFormat::FORMAT_NUMBER_00,
+            'E' => NumberFormat::FORMAT_NUMBER_00,
+            'F' => NumberFormat::FORMAT_NUMBER_00,
+            'G' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:B1', 'A2:B2'];
+
+        $sheetTitle = 'Re-Aprovisionamiento de Productos';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Re-Aprovisionamiento de Productos', function($excel) use ($sheetName, $data) {
-
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:B1');
-                $sheet->mergeCells('A2:B2');
-
-                $sheet->getStyle('A4:I4')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-//                    'B' => 'dd/mm/yyyy',
-//                    'C' => 'dd/mm/yyyy',
-                    'A' => '@',
-//                    'C' => '0.00',
-                    'C' => '0',
-                    'D' => '0.00',
-                    'E' => '0.00',
-                    'F' => '0.00',
-                    'G' => '0.00',
-
-                ));
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-
-        return redirect()->back()
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
     }
 
@@ -167,27 +151,31 @@ trait HelferinProductReorderTrait
             $data[] = $row;
         }
 
-        $sheetName = 'Re-Aprovisionamiento' ;
 
-        // abi_r($data, true);
+
+        $styles = [
+            'A8:Q8'    => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+//            'B' => NumberFormat::FORMAT_TEXT,
+            'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'H' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'I' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'J' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:C1', 'A2:C2', 'A3:C3', 'A4:C4', 'A5:C5', 'A6:C6'];
+
+        $sheetTitle = 'Re-Aprovisionamiento';
+
+        $export = new ArrayExport($data, [], $sheetTitle);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Re-Aprovisionamiento de Productos', function($excel) use ($sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');           // ->export('pdf');  <= Does not work. See: https://laracasts.com/discuss/channels/general-discussion/dompdf-07-on-maatwebsiteexcel-autoloading-issue
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 
 }

@@ -43,7 +43,7 @@
           	$('#autocustomer_name').val('');
           	$('#customer_id').val('');
           	$('#rule_price').val('');
-          	$('#rule_currency_id').val("{{ \App\Configuration::getInt('DEF_CURRENCY')}}");
+          	$('#rule_currency_id').val("{{ AbiConfiguration::getInt('DEF_CURRENCY')}}");
           	$('#from_quantity').val('1');
           	$('#date_from_form').val('');
           	$('#date_to_form').val('');

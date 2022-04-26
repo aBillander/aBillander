@@ -2,22 +2,25 @@
 
 namespace App\Http\Controllers;
 
-// use App\Http\Requests;
-
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use App\Supplier;
-use App\SupplierInvoice;
-use App\SupplierInvoiceLine;
-
-use App\SupplierShippingSlip;
-
-use App\Configuration;
-use App\Sequence;
-use App\PaymentMethod;
-
 use App\Events\SupplierShippingSlipConfirmed;
+use App\Helpers\DocumentAscription;
+use App\Helpers\Price;
+use App\Models\Combination;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\PaymentMethod;
+use App\Models\Product;
+use App\Models\SalesRep;
+use App\Models\Sequence;
+use App\Models\Supplier;
+use App\Models\SupplierInvoice;
+use App\Models\SupplierInvoiceLine;
+use App\Models\SupplierInvoiceLineTax;
+use App\Models\SupplierShippingSlip;
+use App\Models\Tax;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class SupplierInvoicesController extends BillableController
 {
@@ -132,7 +135,7 @@ class SupplierInvoicesController extends BillableController
             return redirect($this->model_path)
                 ->with('error', l('There is not any Sequence for this type of Document &#58&#58 You must create one first', [], 'layouts'));
 
-        $payments = \App\PaymentMethod::count();
+        $payments = PaymentMethod::count();
         if ( !$payments )
             return redirect($this->model_path)
                 ->with('error', l('There is not any Payment Method &#58&#58 You must create one first', [], 'layouts'));
@@ -196,7 +199,7 @@ class SupplierInvoicesController extends BillableController
 //        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
 //        $doc_id = $seq->getNextDocumentId();
 
-        $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+        $extradata = [  'user_id'              => Context::getContext()->user->id,
 
 //                      'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
                         'sequence_id'          => $request->input('sequence_id') ?? $supplier->getInvoiceSequenceId(),
@@ -264,11 +267,11 @@ class SupplierInvoicesController extends BillableController
             $request->merge( array('shipping_address_id' => $request->input('invoicing_address_id')) );
 
         $document_date = $request->input('document_date_form') ?
-                          \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $request->input('document_date_form') ) : 
+                          \Carbon\Carbon::createFromFormat( Context::getContext()->language->date_format_lite, $request->input('document_date_form') ) : 
                           \Carbon\Carbon::now();
         
         $delivery_date = $request->input('delivery_date_form') ?
-                          \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $request->input('delivery_date_form') ) :
+                          \Carbon\Carbon::createFromFormat( Context::getContext()->language->date_format_lite, $request->input('delivery_date_form') ) :
                           null;
 
         $dates = [
@@ -296,7 +299,7 @@ class SupplierInvoicesController extends BillableController
 
         if ( !$document->document_reference )
         if ( $request->input('save_as', 'draft') == 'invoice' ) {
-            $seq = \App\Sequence::find( $request->input('sequence_id') );
+            $seq = Sequence::find( $request->input('sequence_id') );
             $doc_id = $seq->getNextDocumentId();
             $extradata = [  'document_prefix'      => $seq->prefix,
                             'document_id'          => $doc_id,
@@ -335,7 +338,7 @@ class SupplierInvoicesController extends BillableController
 
         // Loop...
 //      $address  = \App\Address::find( $request->input('invoicing_address_id'));
-        $supplier = \App\Supplier::with('address')->find( $document->supplier_id );
+        $supplier = Supplier::with('address')->find( $document->supplier_id );
         $address  = $supplier->address;
 //      $n = intval($request->input('nbrlines', 0));
         $form_lines = $request->input('lines');
@@ -365,11 +368,11 @@ class SupplierInvoicesController extends BillableController
 
             // Calculate Taxes & Totals
             if ($form_lines[$i]['product_id']>0) {
-                $product  = \App\Product::with('tax')->find( $form_lines[$i]['product_id']);
+                $product  = Product::with('tax')->find( $form_lines[$i]['product_id']);
                 $tax = $product->tax;
             } else  {
                 // No database persistance, please!
-                $product  = new \App\Product(['product_type' => 'simple', 'name' => $line->name, 'tax_id' => $line->tax_id]);
+                $product  = new Product(['product_type' => 'simple', 'name' => $line->name, 'tax_id' => $line->tax_id]);
                 $tax = $product->tax;
             }
             $supplier->sales_equalization = $line->sales_equalization;
@@ -383,12 +386,12 @@ class SupplierInvoicesController extends BillableController
             $line->total_tax_incl = 0.0;    // After this, loop to add line taxes
 
             foreach ( $rules as $rule ) {
-                $line_tax = new \App\SupplierInvoiceLineTax();
+                $line_tax = new SupplierInvoiceLineTax();
 
                 $line_tax->name = $tax->name . ' | ' . $rule->name;
                 $line_tax->tax_rule_type = $rule->rule_type;
 
-                $p = \App\Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $document->currency, $document->currency_conversion_rate);
+                $p = Price::create([$base_price, $base_price*(1.0+$rule->percent/100.0)], $document->currency, $document->currency_conversion_rate);
 
                 if ($IKnowBase == false) {
                     $p->applyRounding( );
@@ -425,7 +428,7 @@ class SupplierInvoicesController extends BillableController
 
         }
 
-        $p = \App\Price::create([$total_tax_excl, $total_tax_incl], $document->currency, $document->currency_conversion_rate);
+        $p = Price::create([$total_tax_excl, $total_tax_incl], $document->currency, $document->currency_conversion_rate);
         $p->applyDiscountPercent( $document->document_discount );
 
         $document->total_tax_excl = $p->getPrice();
@@ -454,7 +457,7 @@ class SupplierInvoicesController extends BillableController
                             ->with('payments')
                             ->findOrFail($id);
 
-        $company = \App\Context::getContext()->company;
+        $company = Context::getContext()->company;
 
 //      abi_r($cinvoice, true);
 
@@ -802,7 +805,7 @@ class SupplierInvoicesController extends BillableController
 
         // Set params
         $params = [];
-        $new_invoice = \App\SupplierShippingSlip::addDocumentToInvoice( $document, $invoice, $params );
+        $new_invoice = SupplierShippingSlip::addDocumentToInvoice( $document, $invoice, $params );
 
         if ( !$new_invoice )
             return redirect()->back()
@@ -855,7 +858,7 @@ class SupplierInvoicesController extends BillableController
             'type' => 'traceability',
             ];
 
-        $link = \App\DocumentAscription::where( $link_data )->first();
+        $link = DocumentAscription::where( $link_data )->first();
 
         $link->delete();
 
@@ -896,30 +899,30 @@ class SupplierInvoicesController extends BillableController
         $combination_id  = $request->input('combination_id', 0);
         $supplier_id     = $request->input('supplier_id');
         $sales_rep_id    = $request->input('sales_rep_id', 0);
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 
 //        return "$product_id, $combination_id, $supplier_id, $currency_id";
 
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->find(intval($combination_id));
+            $combination = Combination::with('product')->with('product.tax')->find(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::with('tax')->find(intval($product_id));
+            $product = Product::with('tax')->find(intval($product_id));
         }
 
-        $supplier = \App\Supplier::find(intval($supplier_id));
+        $supplier = Supplier::find(intval($supplier_id));
 
         $sales_rep = null;
         if ($sales_rep_id>0)
-            $sales_rep = \App\SalesRep::find(intval($sales_rep_id));
+            $sales_rep = SalesRep::find(intval($sales_rep_id));
         if (!$sales_rep)
             $sales_rep = (object) ['id' => 0, 'commission_percent' => 0.0]; 
         
-        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
-                    \App\Context::getContext()->currency :
-                    \App\Currency::find(intval($currency_id));
+        $currency = ($currency_id == Context::getContext()->currency->id) ?
+                    Context::getContext()->currency :
+                    Currency::find(intval($currency_id));
 
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
@@ -983,7 +986,7 @@ class SupplierInvoicesController extends BillableController
         $other_json      = $request->input('other_json');
         $supplier_id     = $request->input('supplier_id');
         $sales_rep_id    = $request->input('sales_rep_id', 0);
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 
 //        return "$product_id, $combination_id, $supplier_id, $currency_id";
 
@@ -993,17 +996,17 @@ class SupplierInvoicesController extends BillableController
             $product = $other_json;
         }
 
-        $supplier = \App\Supplier::find(intval($supplier_id));
+        $supplier = Supplier::find(intval($supplier_id));
 
         $sales_rep = null;
         if ($sales_rep_id>0)
-            $sales_rep = \App\SalesRep::find(intval($sales_rep_id));
+            $sales_rep = SalesRep::find(intval($sales_rep_id));
         if (!$sales_rep)
             $sales_rep = (object) ['id' => 0, 'commission_percent' => 0.0]; 
         
-        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
-                    \App\Context::getContext()->currency :
-                    \App\Currency::find(intval($currency_id));
+        $currency = ($currency_id == Context::getContext()->currency->id) ?
+                    Context::getContext()->currency :
+                    Currency::find(intval($currency_id));
 
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
@@ -1012,12 +1015,12 @@ class SupplierInvoicesController extends BillableController
             return '';
         }
 
-        $tax = \App\Tax::find($product->tax_id);
+        $tax = Tax::find($product->tax_id);
 
         // Calculate price per $supplier_id now!
         $amount_is_tax_inc = Configuration::get('PRICES_ENTERED_WITH_TAX');
         $amount = $amount_is_tax_inc ? $product->price_tax_inc : $product->price;
-        $price = new \App\Price( $amount, $amount_is_tax_inc, $currency );
+        $price = new Price( $amount, $amount_is_tax_inc, $currency );
         $tax_percent = $tax->getFirstRule()->percent;
         $price->applyTaxPercent( $tax_percent );
 

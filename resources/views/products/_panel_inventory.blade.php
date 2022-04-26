@@ -10,7 +10,7 @@
                             <li><a href="#tab2default_m" data-toggle="tab">{{ l('Stock Movements') }}</a></li>
                             <li><a href="#tab3default_p" data-toggle="tab">{{ l('Pending Movements') }}</a></li>
 
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') && $product->lot_tracking)
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') && $product->lot_tracking)
 
                             <li><a href="#tab4default_l" data-toggle="tab">{{ l('Lots') }}</a></li>
 
@@ -45,7 +45,7 @@
 
       </div>
 
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') )
 
       <div class="tab-pane fade" id="tab4default_l">
                 

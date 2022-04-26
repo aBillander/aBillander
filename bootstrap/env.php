@@ -1,4 +1,16 @@
 <?php
+
+/*
+|--------------------------------------------------------------------------
+| Poor Man Multi Tennant
+|--------------------------------------------------------------------------
+|
+| https://scotch.io/@stephenafamo/how-to-build-a-multi-tenant-site-with-laravel
+|
+| Required by /public/index.php
+|
+*/
+
 	
 	// Extract the subdomain from URL.
 	list($subdomain) = explode('.', $_SERVER['HTTP_HOST'], 2);
@@ -13,12 +25,13 @@
 
 	    if ( file_exists($env_dir.$env_file) )
 	    {
-	        try {
-	        	$dotenv = new \Dotenv\Dotenv($env_dir, $env_file);
-	        	$dotenv->load();
+	        // https://github.com/vlucas/phpdotenv
+	    	  try {
+		        	$dotenv = \Dotenv\Dotenv::createImmutable($env_dir, $env_file);
+		        	$dotenv->load();
 	        	
-	        } catch (Exception $e) {
-	        	// echo $e->getMessage();
+	        } catch (\Exception $e) {
+	        		// echo $e->getMessage();
 	        }
 	    }
 

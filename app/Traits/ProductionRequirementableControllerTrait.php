@@ -4,15 +4,15 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 
-use App\Product;
-use App\ProductionRequirement;
+use App\Models\Product;
+use App\Models\ProductionRequirement;
 
 trait ProductionRequirementableControllerTrait
 {
     /**
      * Display a listing of the resource.
      *
-     * @param  \App\ProductionSheet  $productionSheet
+     * @param  \App\Models\ProductionSheet  $productionSheet
      * @return \Illuminate\Http\Response
      */
     public function getProductionRequirements($id)

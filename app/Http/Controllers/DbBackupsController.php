@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-// use App\Http\Requests;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use \Artisan;
+use Artisan;
 
-use App\Configuration;
-use App\Tools;
+use App\Helpers\Tools;
+use App\Models\Configuration;
 
 use App\Events\DatabaseBackup;
 

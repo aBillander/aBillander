@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use App\Models\Configuration;
+use App\Models\Currency;
+use App\Models\Product;
+use App\Models\Supplier;
+use App\Models\SupplierPriceListLine;
+use App\Rules\SupplierPriceListLineDuplicated;
+use App\Rules\SupplierPriceListLineQuantity;
 use Illuminate\Http\Request;
-
-use App\Product;
-use App\Supplier;
-use App\SupplierPriceListLine;
-use App\Currency;
 use View;
-
-use App\Configuration;
 
 class SupplierPriceListLinesController extends Controller
 {
@@ -84,13 +82,13 @@ class SupplierPriceListLinesController extends Controller
         $q_rule = [
 
         'from_quantity' => [
-                                new \App\Rules\SupplierPriceListLineQuantity(
+                                new SupplierPriceListLineQuantity(
                                         $request->input('supplier_id'), 
                                         $request->input('product_id'), 
                                         $request->input('currency_id', null)
                                 ),
 
-                                new \App\Rules\SupplierPriceListLineDuplicated(
+                                new SupplierPriceListLineDuplicated(
                                         $request->input('supplier_id'), 
                                         $request->input('product_id'), 
                                         $request->input('currency_id', null)
@@ -246,7 +244,7 @@ class SupplierPriceListLinesController extends Controller
 //                                ->qualifyForPriceList( $id )
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 

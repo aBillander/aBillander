@@ -6,7 +6,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
-use App\Country;
+use App\Models\Country;
 
 class CountriesController extends Controller {
 

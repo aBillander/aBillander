@@ -34,7 +34,7 @@
       <th colspan="2">{{ l('Product Name') }}</th>
       <!-- th>{{ l('Manufacturer') }}</th -->
       <th>
-@if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
+@if( AbiConfiguration::get( 'ABCC_STOCK_SHOW' ) != 'none')
       {{ l('Stock') }}
 @endif
       </th>
@@ -42,14 +42,14 @@
       <th><span class="button-pad">{{ l('Customer Price') }}
            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
                   data-content="{{ l('Prices are exclusive of Tax') }}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
     <br />
     {{ l('Prices are inclusive of Ecotax') }}
 @endif
           ">
               <i class="fa fa-question-circle abi-help"></i>
            </a></span>
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES'))
+@if( AbiConfiguration::isTrue('ENABLE_ECOTAXES'))
     <br /><span class="button-pad text-muted">
     {{ l('Without Ecotax') }}</span>
 @endif</th>
@@ -61,7 +61,7 @@
                  data-container="body" xdata-trigger="focus"
                  data-content="
                       {{ l('Prices are inclusive of Tax') }}
-                 @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+                 @if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
                          <br/>{{ l('Prices are inclusive of Ecotax') }}
                  @endif
                          ">
@@ -92,28 +92,28 @@
 @endphp
 
               <a class="view-image-multiple" data-html="false" data-toggle="modal" 
-                     href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
+                     href="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
                      data-title="{{ $product->name }} " 
                      data-caption="({{$img->filename}}) {{ $img->caption }} " 
                      data-content="{{ nl2p($product->description_short) }} <br /> {{ nl2p($product->description) }} " 
                      data-id="{{ $product->id }}" 
                      onClick="return false;" title="{{l('View Image')}}">
 
-                      <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+                      <img src="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
               </a>
 
       </td>
 
       <td>{{ $product->name }}
-          @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $product->ecotax )
+          @if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') && $product->ecotax )
               <br />
               {{ l('Ecotax: ') }} {{ $product->ecotax->name }} ({{ abi_money( $product->ecotax->amount ) }})
           @endif
       </td>
       <!-- td>{{ optional($product->manufacturer)->name }} {{-- optional($product->category)->name --}}</td -->
       <td>
-@if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
-            @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) == 'amount')
+@if( AbiConfiguration::get( 'ABCC_STOCK_SHOW' ) != 'none')
+            @if( AbiConfiguration::get( 'ABCC_STOCK_SHOW' ) == 'amount')
               <div class="progress progress-striped">
                 <div class="progress-bar progress-bar-{{ $product->stock_badge }}" title="{{ l('stock.badge.'.$product->stock_badge, 'abcc/layouts') }}" style="width: 100%">
                         <span class="badge" style="color: #333333; background-color: #ffffff;">{{ $product->as_quantity('quantity_onhand') }}</span>
@@ -161,7 +161,7 @@
             ) }}</span>
 @endif
 
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $product->ecotax)
+@if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') && $product->ecotax)
     <br /><p class="text-muted">
     {{ $product->as_priceable( 
               $product->getPriceByCustomer( 
@@ -234,7 +234,7 @@ https://stackoverflow.com/questions/25424163/bootstrap-button-dropdown-with-cust
 https://stackoverflow.com/questions/20842578/how-to-combine-a-bootstrap-btn-group-with-an-html-form
 --}}
 
-@if (\App\Configuration::isFalse('ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY') || $product->quantity_onhand > 0)
+@if (AbiConfiguration::isFalse('ABCC_OUT_OF_STOCK_PRODUCTS_NOTIFY') || $product->quantity_onhand > 0)
             <div xclass="form-group">
               <div class="input-group" style="width: 72px;">
 

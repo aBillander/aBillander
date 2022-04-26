@@ -2,16 +2,15 @@
 
 namespace App\Traits;
 
-use App\Supplier;
-
-use App\SupplierShippingSlip;
-
-use App\SupplierInvoice;
-use App\SupplierInvoiceLine;
-use App\SupplierInvoiceLineTax;
-
-use App\Configuration;
-use App\DocumentAscription;
+use App\Models\ActivityLogger;
+use App\Models\Configuration;
+use App\Helpers\DocumentAscription;
+use App\Models\Supplier;
+use App\Models\SupplierInvoice;
+use App\Models\SupplierInvoiceLine;
+use App\Models\SupplierInvoiceLineTax;
+use App\Models\SupplierShippingSlip;
+use App\Models\Tax;
 
 trait SupplierShippingSlipInvoiceableTrait
 {
@@ -33,7 +32,7 @@ trait SupplierShippingSlipInvoiceableTrait
 
         } else {
             // Start a Logger, and propagate
-            $logger = \App\ActivityLogger::setup( 'Invoice Some Shipping Slips', __METHOD__ );
+            $logger = ActivityLogger::setup( 'Invoice Some Shipping Slips', __METHOD__ );
 //                        ->backTo( route('productionsheet.shippingslips', $params['production_sheet_id']) );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -116,7 +115,7 @@ trait SupplierShippingSlipInvoiceableTrait
 
         } else {
             // Start a Logger, and propagate
-            $logger = \App\ActivityLogger::setup( 'Invoice Some Shipping Slips', __METHOD__ );
+            $logger = ActivityLogger::setup( 'Invoice Some Shipping Slips', __METHOD__ );
 //                        ->backTo( route('productionsheet.shippingslips', $params['production_sheet_id']) );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
 
@@ -356,7 +355,7 @@ trait SupplierShippingSlipInvoiceableTrait
         $total_tax_excl = 0;
 
         // Handy:
-        $alltaxes = \App\Tax::get()->sortByDesc('percent');
+        $alltaxes = Tax::get()->sortByDesc('percent');
 
         // Initialize line sort order
         $i = 0;
@@ -645,7 +644,7 @@ if ( ! $testing )
         $supplier = $invoice->supplier;
 
         // Handy:
-        $alltaxes = \App\Tax::get()->sortByDesc('percent');
+        $alltaxes = Tax::get()->sortByDesc('percent');
 
         // Initialize line sort order
         $i_offset = $invoice->getMaxLineSortOrder();

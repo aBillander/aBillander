@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\BOMItem;
+use App\Models\BOMItem;
 use View;
 
 class BOMItemsController extends Controller
@@ -53,7 +53,7 @@ class BOMItemsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\BOMItem  $bOMItem
+     * @param  \App\Models\BOMItem  $bOMItem
      * @return \Illuminate\Http\Response
      */
     public function show(BOMItem $bOMItem)
@@ -64,7 +64,7 @@ class BOMItemsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\BOMItem  $bOMItem
+     * @param  \App\Models\BOMItem  $bOMItem
      * @return \Illuminate\Http\Response
      */
     public function edit(BOMItem $bOMItem)
@@ -76,7 +76,7 @@ class BOMItemsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\BOMItem  $bOMItem
+     * @param  \App\Models\BOMItem  $bOMItem
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, BOMItem $bOMItem)
@@ -87,7 +87,7 @@ class BOMItemsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\BOMItem  $bOMItem
+     * @param  \App\Models\BOMItem  $bOMItem
      * @return \Illuminate\Http\Response
      */
     public function destroy(BOMItem $bOMItem)

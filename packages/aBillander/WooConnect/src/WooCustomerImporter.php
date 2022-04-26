@@ -5,13 +5,13 @@ namespace aBillander\WooConnect;
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
-use App\Context;
-use App\Configuration;
-use App\Customer;
-use App\Address;
-use App\Country;
-use App\State;
-use App\ActivityLogger;
+use App\Models\Context;
+use App\Models\Configuration;
+use App\Models\Customer;
+use App\Models\Address;
+use App\Models\Country;
+use App\Models\State;
+use App\Models\ActivityLogger;
 
 // use \aBillander\WooConnect\WooCustomer;
 
@@ -48,7 +48,7 @@ class WooCustomerImporter {
 
 
         // Start Logger
-//        $this->logger = \App\ActivityLogger::setup( 
+//        $this->logger = ActivityLogger::setup( 
 //            'Import WooCommerce Customers', self::loggerSignature() );			//  :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
 
         $this->logger = self::loggerSetup();

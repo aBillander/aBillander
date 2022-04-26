@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Configuration;
-use App\Context;
-use App\Product;
-use App\ProductionOrderLine as DocumentLine;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Product;
+use App\Models\ProductionOrderLine as DocumentLine;
 
-use App\Lot;
-use App\LotItem;
+use App\Models\Lot;
+use App\Models\LotItem;
 
 use App\Traits\DateFormFormatterTrait;
 

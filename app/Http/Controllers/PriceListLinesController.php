@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use App\Models\Configuration;
+use App\Models\PriceList;
+use App\Models\PriceListLine;
+use App\Models\Product;
 use Illuminate\Http\Request;
-
-use App\PriceList as PriceList;
-use App\PriceListLine as PriceListLine;
 
 class PriceListLinesController extends Controller {
 
@@ -39,7 +38,7 @@ class PriceListLinesController extends Controller {
         				->filter( $request->all() )
                         ->orderBy('products.name', 'asc');
 
-        $lines = $lines->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $lines = $lines->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $lines->setPath('pricelistlines');
 
@@ -157,14 +156,14 @@ class PriceListLinesController extends Controller {
     {
         $search = $request->term;
 
-        $products = \App\Product::select('id', 'name', 'reference', 'measure_unit_id')
+        $products = Product::select('id', 'name', 'reference', 'measure_unit_id')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'reference', 'LIKE', '%'.$search.'%' )
                                 ->IsSaleable()
                                 ->qualifyForPriceList( $id )
 //                                ->with('measureunit')
 //                                ->toSql();
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 
 

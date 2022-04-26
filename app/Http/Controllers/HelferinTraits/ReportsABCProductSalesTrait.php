@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
-use Illuminate\Http\Request;
-
-use App\Configuration;
-
-use App\Product;
-use App\Customer;
-
-use App\CustomerShippingSlipLine;
-
-use App\Tools;
-
+use App\Helpers\Exports\ArrayExport;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\Product;
+use App\Helpers\Tools;
 use Carbon\Carbon;
-
 use Excel;
+use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 trait ReportsABCProductSalesTrait
 {
@@ -70,7 +68,7 @@ trait ReportsABCProductSalesTrait
         $models = $this->models;
         if ( !in_array($model, $models) )
             $model = Configuration::get('RECENT_SALES_CLASS');
-        $class = '\App\\'.$model.'Line';
+        $class = '\\App\\Models\\'.$model.'Line';
         $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
 
@@ -157,7 +155,7 @@ foreach ($products as $product) {
         $customer_label = 'todos';
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
 
         $row = [];
         $row[] = 'Análisis ABC de Productos ('.l($model).') ';
@@ -181,7 +179,7 @@ foreach ($products as $product) {
         // Define the Excel spreadsheet headers
         $header_names = ['Referencia', 'Nombre', ];
         foreach ($list_of_years as $year) {
-            $header_names[] = $year;
+            $header_names[] = 'Año '.$year;
         }
         $header_names[] = 'Contribución (%)';
         $header_names[] = 'Acumulado (%)';
@@ -209,8 +207,8 @@ foreach ($products as $product) {
                     $totals[$year] += (float) $product->{$year};
                 }
 
-                $row[] = ($product->{$theYear} / $abc_total) * 100.0;
-                $row[] = ($totals[$theYear] / $abc_total) * 100.0;
+                $row[] = abi_safe_division($product->{$theYear}, $abc_total) * 100.0;
+                $row[] = abi_safe_division($totals[$theYear], $abc_total) * 100.0;
     
                 $data[] = $row;
 
@@ -231,55 +229,38 @@ foreach ($products as $product) {
 
 //        $i = count($data);
 
-        $sheetName = 'Ventas ' . l($model);
+
+
+        $styles = [];
+
+        $w = count($data[5+1]);
+        $styles[ 'A6:'.chr(ord('A') + $w - 1).'6' ] = ['font' => ['bold' => true]];
+
+        $n = count($data);
+        $m = $n;    //  - 3;
+        $styles[ "B$m:".chr(ord('A') + $w - 1)."$n" ] = ['font' => ['bold' => true]];
+
+        $columnFormats = [
+            'A' => NumberFormat::FORMAT_TEXT,
+//            'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'C' => NumberFormat::FORMAT_NUMBER_00,
+            'D' => NumberFormat::FORMAT_NUMBER_00,
+            'E' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $mergeThis = 'C2:'.chr(ord('C') + $nbr_years).'2';
+        // https://stackoverflow.com/questions/39314048/increment-letters-like-number-by-certain-value-in-php
+        $merges = ['A1:B1', 'A2:B2', 'A3:B3', 'A4:B4', $mergeThis];
+
+        $sheetTitle = 'Ventas ' . l($model);
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = 'ABC_Ventas_Productos';
 
         // Generate and return the spreadsheet
-        Excel::create('ABC_Ventas_Productos', function($excel) use ($sheetName, $data, $nbr_years) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data, $nbr_years) {
-                
-                $sheet->mergeCells('A1:B1');
-                $sheet->mergeCells('A2:B2');
-                $sheet->mergeCells('C2:'.chr(ord('C') + $nbr_years).'2');   // https://stackoverflow.com/questions/39314048/increment-letters-like-number-by-certain-value-in-php
-                $sheet->mergeCells('A3:B3');
-                $sheet->mergeCells('A4:B4');
-
-                $w = count($data[5+1]);
-
-                $sheet->getStyle('A6:'.chr(ord('A') + $w - 1).'6')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-//                    'B' => 'dd/mm/yyyy',
-//                    'C' => 'dd/mm/yyyy',
-                    'A' => '@',
-                    'C' => '0.00',
-                    'D' => '0.00',
-                    'E' => '0.00',
-
-                ));
-                
-                $n = count($data);
-                $m = $n;    //  - 3;
-                $sheet->getStyle("B$m:".chr(ord('A') + $w - 1)."$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
     }
 
 }

@@ -1,0 +1,102 @@
+
+https://laravel.com/docs/5.5/packages
+
+https://laravelpackage.com/#composer-packagist
+
+
+https://wisdmlabs.com/blog/create-package-laravel/
+
+https://medium.com/cafe24-ph-blog/build-your-own-laravel-package-in-10-minutes-using-composer-867e8ef875dd
+
+https://devdojo.com/devdojo/how-to-create-a-laravel-package
+
+https://dev.to/gauravmak/step-by-step-guide-to-laravel-package-development-4nj1
+
+https://www.youtube.com/watch?v=dw3q74QP9M8
+
+https://www.youtube.com/watch?v=Hr8Zc2Zkcjg
+
+https://www.bugsnag.com/blog/designing-laravel-packages
+
+// Series:
+https://www.youtube.com/watch?v=IZUXntnPx9A&list=PLpzy7FIRqpGBQ_aqz_hXDBch1aAA-lmgu&index=18
+
+https://www.larashout.com/laravel-package-development-part-2-adding-service-provider
+
+
+1.- Create a Folder Structure
+
+packages
+    wisdmlabs
+        todolist
+            src
+
+2.- Create the Composer File
+
+composer init
+
+3.- Load the Package from the Main “composer.json” File
+
+Add the namespace of our package in “autoload > psr-4”
+
+4.- Create a Service Provider for Package
+
+php artisan make:provider TodolistServiceProvider
+
+    packages
+        wisdmlabs
+            todolist
+                src
+                    TodolistServiceProvider.php
+
+change the namespace of the file to “wisdmlabs\todolist“.
+we need to our service provider in the file “config/app.php“.
+
+5.- Create the Migration
+
+php artisan make:migration create_task_table --create=tasks
+
+move this migration to “packages/wisdmlabs/todolist/src/migrations/*_create_task_table.php“.
+
+6.- Create the Model for the Table
+
+php artisan make:model Task 
+
+Move to providers/wisdmlabs/todolist/src/Task.php. don’t forget to change the namespace of the file to “wisdmlabs\todolist”.
+
+7.- 
+
+10.- Update the Service Provider to Load the Package
+
+    public function boot()
+    {
+        $this->loadRoutesFrom(__DIR__.'/routes.php');
+        $this->loadMigrationsFrom(__DIR__.'/migrations');
+        $this->loadViewsFrom(__DIR__.'/views', 'todolist');
+        $this->publishes([
+            __DIR__.'/views' => base_path('resources/views/wisdmlabs/todolist'),
+        ]);
+    }
+
+    /**
+     * Register the application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->make('wisdmLabs\todolist\TodolistController');
+    }
+
+
+php artisan vendor:publish --tag=wisdmlabs\todolist\TodolistServiceProvider  
+
+The above command will create the folder of your package under the views folder “/resources/views/wissdmlabs/todolist/”. Now, a user can change the view of the screen.
+
+    views
+        wisdmlabs
+            todolist
+                app.blade.php
+                list.blade.php
+
+11.- Updating the Package “composer.json” if needed

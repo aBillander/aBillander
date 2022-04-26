@@ -28,6 +28,10 @@
                <i class="fa fa-asterisk"></i>
                &nbsp; {{ l('Customers') }}
             </a>
+            <a id="b_sales" href="{{ route('customerbankaccounts.import') }}" class="list-group-item">
+               <i class="fa fa-credit-card"></i>
+               &nbsp; {{ l('Bank Accounts') }}
+            </a>
             <a id="b_purchases" href="{{ route('customerusers.import') }}" class="list-group-item active">
                <i class="fa fa-shopping-cart"></i>
                &nbsp; {{ l('ABCC Users') }}

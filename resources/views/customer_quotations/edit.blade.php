@@ -64,11 +64,11 @@
 {{--
 @if ( $document->status != 'draft' && $document->status != 'canceled')
                       <li class="divider"></li>
-                      <li><a href="{{ route('customerorder.single.order', [$document->id]) }}"><i class="fa {{ \App\CustomerOrder::getBadge('i_class') }} text-success"></i> {{l('Make Order')}}</a></li>
+                      <li><a href="{{ route('customerorder.single.order', [$document->id]) }}"><i class="fa {{ \App\Models\CustomerOrder::getBadge('i_class') }} text-success"></i> {{l('Make Order')}}</a></li>
 @endif
 --}}
 
-@if ( \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
+@if ( AbiConfiguration::isTrue('ENABLE_CRAZY_IVAN') )
                       <li class="divider"></li>
                       <li><a href="{{ route($model_path.'.change.customer', [$document->id]) }}"><i class="fa fa-exclamation-triangle text-danger"></i> {{l('Change Customer', 'customerdocuments')}}</a></li>
 @endif

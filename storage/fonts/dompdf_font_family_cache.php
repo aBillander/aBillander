@@ -1,4 +1,5 @@
-<?php return array (
+<?php return function ($fontDir, $rootDir) {
+return array (
   'sans-serif' => array(
     'normal' => $rootDir . '/lib/fonts/Helvetica',
     'bold' => $rootDir . '/lib/fonts/Helvetica-Bold',
@@ -78,15 +79,16 @@
     'normal' => $rootDir . '/lib/fonts/DejaVuSerif',
   ),
   'open sans' => array(
-    'normal' => $fontDir . '/open-sans-normal_a32da215612cdbd93b93eb74bcab3b40',
-    'bold' => $fontDir . '/open-sans-bold_ec66c4851b9656cec2800868fb6ca4a3',
-    'italic' => $fontDir . '/open-sans-italic_e1ed1c78d201fe6255daee12e8820a6d',
-    'bold_italic' => $fontDir . '/open-sans-bold-italic_c1583238aa915ad7e56d544a3a5f8f4e',
+    'normal' => $fontDir . '/open_sans_normal_a32da215612cdbd93b93eb74bcab3b40',
+    'bold' => $fontDir . '/open_sans_bold_ec66c4851b9656cec2800868fb6ca4a3',
+    'italic' => $fontDir . '/open_sans_italic_e1ed1c78d201fe6255daee12e8820a6d',
+    'bold_italic' => $fontDir . '/open_sans_bold_italic_c1583238aa915ad7e56d544a3a5f8f4e',
   ),
   'fontawesome' => array(
-    'normal' => $fontDir . '/fontawesome-normal_10d837014ecd7d6149bf5359c2d9f6f2',
+    'normal' => $fontDir . '/fontawesome_normal_5b65db67e3f81d7dd745c6eaa9965cbc',
   ),
   'glyphicons halflings' => array(
     'normal' => $fontDir . '/glyphicons-halflings-normal_57191f539ff021a0c0929b92fc5a6824',
   ),
-) ?>
+);
+}; ?>

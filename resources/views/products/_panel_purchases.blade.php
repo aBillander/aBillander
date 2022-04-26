@@ -43,11 +43,11 @@
                      {!! $errors->first('cost_price', '<span class="help-block">:message</span>') !!}
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3">
-                     {{ l('Average Cost Price') }} <span class="badge" style="background-color: #3a87ad;">{{ \App\Context::getContext()->currency->iso_code }}</span>
+                     {{ l('Average Cost Price') }} <span class="badge" style="background-color: #3a87ad;">{{ AbiContext::getContext()->currency->iso_code }}</span>
                      {!! Form::text('cost_average', null, array('class' => 'form-control', 'id' => 'cost_average', 'onfocus' => 'this.blur()')) !!}
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3">
-                     {{ l('Last Purchase Price') }} <span class="badge" style="background-color: #3a87ad;">{{ \App\Context::getContext()->currency->iso_code }}</span>
+                     {{ l('Last Purchase Price') }} <span class="badge" style="background-color: #3a87ad;">{{ AbiContext::getContext()->currency->iso_code }}</span>
                      {!! Form::text('last_purchase_price', null, array('class' => 'form-control', 'id' => 'last_purchase_price', 'onfocus' => 'this.blur()')) !!}
                   </div>
 

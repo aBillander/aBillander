@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Product as Product;
+use App\Models\BOMItem;
+use App\Models\Configuration;
+use App\Models\ProductBOM;
 use Form, DB;
+use Illuminate\Http\Request;
 
 class IngredientsController extends Controller {
 
@@ -30,7 +29,7 @@ class IngredientsController extends Controller {
                                   ->with('measureunit');
 
 
-        $products = $products->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $products = $products->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         // abi_r($products, true);
 
@@ -116,9 +115,9 @@ class IngredientsController extends Controller {
         if (  $rules_tab == 'bom_selector' ) {
             //
 //            abi_r($request->all(), true);
-            $this->validate($request, \App\BOMItem::$rules);
+            $this->validate($request, BOMItem::$rules);
 
-            \App\BOMItem::create($request->all() + ['product_id' => $id]);
+            BOMItem::create($request->all() + ['product_id' => $id]);
 
             return redirect('products/'.$id.'/edit'.'#'.'manufacturing')
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $product->name);
@@ -127,11 +126,11 @@ class IngredientsController extends Controller {
         if (  $rules_tab == 'bom_create' ) {
             //
 //            abi_r($request->all(), true);
-//            $this->validate($request, \App\BOMItem::$rules);
+//            $this->validate($request, BOMItem::$rules);
 
-            $bom = \App\ProductBOM::create($request->all());
+            $bom = ProductBOM::create($request->all());
 
-            \App\BOMItem::create($request->all() + ['product_bom_id' => $bom->id]);
+            BOMItem::create($request->all() + ['product_bom_id' => $bom->id]);
 
             return redirect('productboms/'.$bom->id.'/edit')
                     ->with('success', l('Complete la Lista de Materiales para el Producto &#58&#58 (:id) ', ['id' => $product->id], 'layouts') . $product->name);
@@ -183,11 +182,11 @@ class IngredientsController extends Controller {
     {
         $search = $request->term;
 
-        $boms = \App\ProductBOM::select('id', 'alias', 'name')
+        $boms = ProductBOM::select('id', 'alias', 'name')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'alias', 'LIKE', '%'.$search.'%' )
 //                                ->with('measureunit')
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 /*
         $data = [];

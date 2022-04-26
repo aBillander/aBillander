@@ -73,7 +73,7 @@
 
          <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('currency_id') ? 'has-error' : '' }}">
             {!! Form::label('currency_id', l('Currency'), ['class' => 'control-label']) !!}
-            {!! Form::select('currency_id', $currencyList, old('currency_id', \App\Configuration::getInt('DEF_CURRENCY')), array('class' => 'form-control', 'id' => 'currency_id')) !!}
+            {!! Form::select('currency_id', $currencyList, old('currency_id', AbiConfiguration::getInt('DEF_CURRENCY')), array('class' => 'form-control', 'id' => 'currency_id')) !!}
             {!! $errors->first('currency_id', '<span class="help-block">:message</span>') !!}
          </div>
 
@@ -141,7 +141,7 @@
 {{-- Date Picker :: http://api.jqueryui.com/datepicker/ --}}
 
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script type="text/javascript">
 
@@ -216,7 +216,7 @@
                     if ( response.payment_method_id > 0 ) {
                       $('#payment_method_id').val(response.payment_method_id);
                     } else {
-                      $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'))}});
+                      $('#payment_method_id').val({{ intval(AbiConfiguration::get('DEF_CUSTOMER_PAYMENT_METHOD'))}});
                     }
 
                     $('#currency_id').val(response.currency_id);
@@ -243,11 +243,11 @@
                     if ( drawee_bank_id > 0 )
                       $("#drawee_bank_id").val( drawee_bank_id );
 
-                    $('#warehouse_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE'))}});
+                    $('#warehouse_id').val({{ intval(AbiConfiguration::get('DEF_WAREHOUSE'))}});
 
                     shipping_method_id = response.shipping_method_id;
                     if (shipping_method_id == null) {
-                        shipping_method_id = "{{ intval(\App\Configuration::get('DEF_SHIPPING_METHOD'))}}";
+                        shipping_method_id = "{{ intval(AbiConfiguration::get('DEF_SHIPPING_METHOD'))}}";
                     }
                     $('#shipping_method_id').val( shipping_method_id );
 --}}
@@ -264,28 +264,28 @@
     $( "#date_of_issue_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
 
 
     $( "#due_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
 
 
     $( "#payment_date_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
 
 
     $( "#date_of_entry_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
 
 

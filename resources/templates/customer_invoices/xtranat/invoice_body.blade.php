@@ -8,16 +8,16 @@
 		<td class="header">
 
 
-        @if ($img = \App\Context::getContext()->company->company_logo)
+        @if ($img = AbiContext::getContext()->company->company_logo)
 
-            <img class="img-rounded" height="{{ '60' }}" src="{{ URL::to( \App\Company::imagesPath() . $img ) }}">
+            <img class="img-rounded" height="{{ '60' }}" src="{{ URL::to( AbiCompany::imagesPath() . $img ) }}">
 
         @endif
 
 
 		<div class="banner">
 
-			&nbsp; {!! \App\Configuration::get('CUSTOMER_INVOICE_BANNER') !!}
+			&nbsp; {!! AbiConfiguration::get('CUSTOMER_INVOICE_BANNER') !!}
 
 		</div>
 
@@ -258,7 +258,7 @@
 				<span>Dto.</span>
 			</th>
 			<th class="tax" width="7%" style="border: 1px #ccc solid">
-				<span>{!! \App\Configuration::get('CUSTOMER_INVOICE_TAX_LABEL') !!}</span>
+				<span>{!! AbiConfiguration::get('CUSTOMER_INVOICE_TAX_LABEL') !!}</span>
 			</th>
 			<th class="total xlast-column" width="12%" style="border: 1px #ccc solid">
 				<span>Total</span>
@@ -322,7 +322,7 @@
 				<span class="abi-line-rule-label">{!! $line->extra_quantity_label !!}
 				</span>
 @endif
-@if ( \App\Configuration::isTrue('PRINT_LOT_NUMBER_ON_DOCUMENTS') && $line->lot_references && $line->product->lot_tracking )
+@if ( AbiConfiguration::isTrue('PRINT_LOT_NUMBER_ON_DOCUMENTS') && $line->lot_references && $line->product->lot_tracking )
 @php
 	$names = [];
 	$lots = explode(',', str_replace(' ', '', $line->lot_references));
@@ -437,7 +437,7 @@
 
 @if( !optional($document->paymentmethod)->payment_is_cash || 1 )
 
-						<h3>Numero de cuenta: {{ optional(\App\Context::getContext()->company->bankaccount)->iban_presenter(true) }}</h3>
+						<h3>Numero de cuenta: {{ optional(AbiContext::getContext()->company->bankaccount)->iban_presenter(true) }}</h3>
 
 @endif				
 				</div>	
@@ -643,7 +643,7 @@ https://codepen.io/Bhupinderkumar/pen/gKzKGw
 --}}
 
 {{-- --} }
-	{{ $company->name_fiscal }} - {!! \App\Configuration::get('CUSTOMER_INVOICE_CAPTION') !!}
+	{{ $company->name_fiscal }} - {!! AbiConfiguration::get('CUSTOMER_INVOICE_CAPTION') !!}
 { {-- --}}
 
 
@@ -652,7 +652,7 @@ https://codepen.io/Bhupinderkumar/pen/gKzKGw
 				<tr>
 					<td style="padding-right: 2mm">
 
-						{!! \App\Configuration::get('CUSTOMER_INVOICE_CAPTION') !!}
+						{!! AbiConfiguration::get('CUSTOMER_INVOICE_CAPTION') !!}
 
 <!-- 
 Según el Real Decreto 110/2015 tanto las lámparas led como bajo consumo están sometidas al RAE. Número de registro 6299.
@@ -685,7 +685,7 @@ $GLOBALS['var'] = 'Factura nº:   ' . ($document->document_reference ?: 'BORRADO
 
         // $pdf->page_text(30, ($pdf->get_height() - 26.89), "Impreso el: " . date('d M Y H:i:s'), null, 10);
         
-        if ( 1 || $PAGE_COUNT > 1 || \App\Configuration::isTrue('DEVELOPER_MODE') )
+        if ( 1 || $PAGE_COUNT > 1 || AbiConfiguration::isTrue('DEVELOPER_MODE') )
         {
 			// $pdf->page_text(($pdf->get_width() - 82), ($pdf->get_height() - 26.89), "Página {PAGE_NUM} de {PAGE_COUNT}", null, 9);
 

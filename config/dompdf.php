@@ -13,6 +13,10 @@ return array(
     */
     'show_warnings' => false,   // Throw an Exception on warnings from dompdf
     'orientation' => 'portrait',
+    /*
+     * Dejavu Sans font is missing glyphs for converted entities, turn it off if you need to show € and £.
+     */
+    'convert_entities' => true,
     'defines' => array(
         /**
          * The location of the DOMPDF font directory
@@ -38,7 +42,7 @@ return array(
          * Times-Roman, Times-Bold, Times-BoldItalic, Times-Italic,
          * Symbol, ZapfDingbats.
          */
-        "font_dir" => storage_path('fonts/'), // advised by dompdf (https://github.com/dompdf/dompdf/pull/782)
+        "font_dir" => storage_path('fonts'), // advised by dompdf (https://github.com/dompdf/dompdf/pull/782)
 
         /**
          * The location of the DOMPDF font cache directory
@@ -48,7 +52,7 @@ return array(
          *
          * Note: This directory must exist and be writable by the webserver process.
          */
-        "font_cache" => storage_path('fonts/'),
+        "font_cache" => storage_path('fonts'),
 
         /**
          * The location of a temporary directory.

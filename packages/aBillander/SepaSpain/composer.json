@@ -3,20 +3,37 @@
     "description": "SEPA Direct Debits",
     "homepage": "https://github.com/aBillander/SEPA",
     "license": "MIT",
+    "keywords": [
+        "aBillander",
+        "laravel",
+        "woocommerce",
+        "SepaSpain"
+    ],
     "authors": [
         {
             "name": "Lara Billander",
-            "email": "wasp@abillander.com"
+            "email": "wasp@abillander.com",
+            "role": "Curator"
         }
     ],
     "require": {
-        "php": ">=5.5.9",
-        "illuminate/support": "5.1.x|5.2.x|5.3.x|5.4.x|5.5.x"
+        "php" : "^8.0",
+        "laravel/framework": "^9.0"
     },
     "autoload": {
         "psr-4": {
             "aBillander\\SepaSpain\\": "src/"
         }
     },
-    "minimum-stability": "dev"
+      "extra": {
+        "laravel": {
+          "providers": [
+            "aBillander\\SepaSpain\\SepaSpainServiceProvider"
+          ],
+          "aliases": {
+          }
+        }
+      },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

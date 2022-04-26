@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Models\ModelAttachment;
+
 
 trait ModelAttachmentableTrait
 {
@@ -9,7 +11,7 @@ trait ModelAttachmentableTrait
     // Attachments
     public function attachments()
     {
-        return $this->morphMany('App\ModelAttachment', 'attachmentable');
+        return $this->morphMany(ModelAttachment::class, 'attachmentable');
     }
 
     // Alias

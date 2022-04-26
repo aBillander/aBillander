@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -45,7 +45,7 @@
             // Passing data from Eloquent to Javascript
             // See: https://github.com/laracasts/PHP-Vars-To-Js-Transformer
 
-            var PRICES_ENTERED_WITH_TAX = {!! \App\Configuration::get('PRICES_ENTERED_WITH_TAX') !!};
+            var PRICES_ENTERED_WITH_TAX = {!! AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') !!};
 
         </script>
 

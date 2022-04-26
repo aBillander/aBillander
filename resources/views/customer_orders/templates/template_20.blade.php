@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ \App\Context::getContext()->language->iso_code }}">
+<html lang="{{ AbiContext::getContext()->language->iso_code }}">
     <head>
         <meta charset="utf-8">
         <title>{{ 'Invoice' }}</title>
@@ -11,8 +11,8 @@
     <body>
         <div style="clear:both; position:relative;">
             <div style="position:absolute; left:0pt; width:250pt;">
-                @if ($img = \App\Context::getContext()->company->company_logo)
-                    <img class="img-rounded" height="{{ '60' }}" src="{{ URL::to( \App\Company::$company_path . $img ) }}">
+                @if ($img = AbiContext::getContext()->company->company_logo)
+                    <img class="img-rounded" height="{{ '60' }}" src="{{ URL::to( AbiCompany::$company_path . $img ) }}">
                 @endif
             </div>
             <div style="margin-left:300pt;">

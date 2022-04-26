@@ -9,9 +9,9 @@
             <div class="modal-body">
             <div class="row">
               <div class="col-md-12">
-                <h4><a class="footer-logo" href="http://www.abillander.com/" target="new"><i class="fa fa-bolt"></i> Lar<span>aBillander</span></a> <span style="font-size: 14px;">by Lara Billander</span></h4>
+                <h4><a class="footer-logo" href="http://www.abillander.com/" target="new"><i class="fa fa-bolt"></i> <span>aBillander</span></a> <span style="font-size: 14px;">by Lara Billander</span><span class="pull-right">{{l('Version', [], 'layouts')}} {{ abi_version() }}</span></h4>
                     {!! HTML::image('assets/theme/images/laravatar.png', 'Lara Billander', array('title' => 'Lara Billander :: The Girl with the Dragon Tattoo', 'width' => '150', 'xheight' => '176', 'class' => 'center-block', 'style' => 'padding: 10px')) !!}
-                <p>{{l('Version', [], 'layouts')}} {{ App\Configuration::get('SW_VERSION') }}</p>
+                <p class="pull-right">Laravel v{{ abi_laravel_version() }} (PHP v{{ abi_php_version() }}) </p>
 
 
               </div>

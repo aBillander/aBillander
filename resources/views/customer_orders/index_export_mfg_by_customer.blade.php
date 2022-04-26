@@ -79,7 +79,7 @@
 </div>
 
 
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+@if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') )
             <div class="form-group col-lg-2 col-md-2 col-sm-2">
                 {!! Form::label('manufacturing_status', l('Manufacturing Status')) !!}
                 {!! Form::select('manufacturing_status', ['' => l('All', [], 'layouts')] + $manufacturing_statusList, null, array('class' => 'form-control')) !!}
@@ -87,7 +87,7 @@
 @endif
 
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
             <div class="form-group col-lg-2 col-md-2 col-sm-2">
                 {!! Form::label('is_wooc', l('WooCommerce'), ['class' => 'control-label']) !!}
                 {!! Form::select('is_wooc', ['' => l('All', [], 'layouts')] + $wooc_statusList, null, array('class' => 'form-control')) !!}
@@ -300,7 +300,7 @@
                 <a class="btn btn-sm btn-grey" href="{{ URL::to($model_path.'/' . $document->id . '/pdf') }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
 @endif
 
-@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_FSOL_CONNECTOR') )
                 @if ($document->export_date)
                 <a class="btn btn-sm btn-default" style="display:none;" href="javascript:void(0);" title="{{$document->export_date}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i></a>
                 @else
@@ -414,7 +414,7 @@
 
 
 
-@if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') )
+@if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') )
 
 @if ($model_path=='customerorders')
 
@@ -516,7 +516,7 @@ $(document).ready(function() {
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(document).ready(function() {
@@ -545,14 +545,14 @@ $(document).ready(function() {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
 
 
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 

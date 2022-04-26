@@ -11,12 +11,18 @@
     </h2>        
 </div>
 
-<img src="{{URL::to('/assets/theme/images/Soon.jpg')}}" 
-					title=""
-                    class="center-block"
-                    style=" xborder: 2px solid black;
-                            border-radius: 18px;
-                            -moz-border-radius: 18px;
-                            -khtml-border-radius: 18px;
-                            -webkit-border-radius: 18px;">
+
+<div class="jumbotron">
+
+    <img src="{{URL::to('/assets/theme/images/Soon.jpg')}}" 
+    					title=""
+                        class="center-block"
+                        style=" xborder: 2px solid black;
+                                border-radius: 18px;
+                                -moz-border-radius: 18px;
+                                -khtml-border-radius: 18px;
+                                -webkit-border-radius: 18px;">
+
+</div>
+
 @endsection

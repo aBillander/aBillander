@@ -2,10 +2,13 @@
 
 namespace App\Traits;
 
-use App\SalesRep;
-use App\Price;
+use App\Helpers\Price;
 
-use App\Configuration;
+use App\Models\Configuration;
+use App\Models\Product;
+use App\Models\Combination;
+use App\Models\SalesRep;
+use App\Models\Tax;
 
 trait BillableDocumentLinesTrait
 {
@@ -78,12 +81,12 @@ trait BillableDocumentLinesTrait
 
         // Product
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+            $combination = Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::with('tax')->findOrFail(intval($product_id));
+            $product = Product::with('tax')->findOrFail(intval($product_id));
         }
 
         $reference  = $product->reference;
@@ -212,7 +215,7 @@ trait BillableDocumentLinesTrait
         // Customer Final Price
         if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+            $unit_customer_final_price = new Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
 
             $unit_customer_final_price->applyTaxPercent( $tax_percent );
 
@@ -408,7 +411,7 @@ trait BillableDocumentLinesTrait
 
         // Product
         if ($document_line->combination_id>0) {
-//            $combination = \App\Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
+//            $combination = Combination::with('product')->with('product.tax')->findOrFail(intval($combination_id));
 //            $product = $combination->product;
 //            $product->reference = $combination->reference;
 //            $product->name = $product->name.' | '.$combination->name;
@@ -484,13 +487,13 @@ trait BillableDocumentLinesTrait
         // Customer Final Price
         if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
+            $unit_customer_final_price = new Price( $params['unit_customer_final_price'] / $pmu_conversion_rate, $pricetaxPolicy, $currency );
 
             $unit_customer_final_price->applyTaxPercent( $tax_percent );
 
         } else {
 
-            $unit_customer_final_price = \App\Price::create([$document_line->unit_customer_final_price, $document_line->unit_customer_final_price_tax_inc, $pricetaxPolicy], $currency);
+            $unit_customer_final_price = Price::create([$document_line->unit_customer_final_price, $document_line->unit_customer_final_price_tax_inc, $pricetaxPolicy], $currency);
         }
 
         // Discount
@@ -642,8 +645,8 @@ trait BillableDocumentLinesTrait
         // Tax
         $tax_id = array_key_exists('tax_id', $params) 
                             ? $params['tax_id'] 
-                            : \App\Configuration::get('DEF_TAX');
-        $tax = \App\Tax::findOrFail($tax_id);
+                            : Configuration::get('DEF_TAX');
+        $tax = Tax::findOrFail($tax_id);
         $taxing_address = $this->taxingaddress;
         $tax_percent = $tax->getTaxPercent( $taxing_address );
 
@@ -654,10 +657,10 @@ trait BillableDocumentLinesTrait
         // Price Policy
         $pricetaxPolicy = array_key_exists('prices_entered_with_tax', $params) 
                             ? $params['prices_entered_with_tax'] 
-                            : \App\Configuration::get('PRICES_ENTERED_WITH_TAX');
+                            : Configuration::get('PRICES_ENTERED_WITH_TAX');
 
         // Service Price
-        $price = new \App\Price($params['unit_customer_final_price'], $pricetaxPolicy, $currency);
+        $price = new Price($params['unit_customer_final_price'], $pricetaxPolicy, $currency);
         $price->applyTaxPercent( $tax_percent );
 //        if ( $price->currency->id != $currency->id ) {
 //            $price = $price->convert( $currency );
@@ -677,7 +680,7 @@ trait BillableDocumentLinesTrait
         // Customer Final Price
         if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+            $unit_customer_final_price = new Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
 
             $unit_customer_final_price->applyTaxPercent( $tax_percent );
 
@@ -710,7 +713,7 @@ trait BillableDocumentLinesTrait
         // Misc
         $measure_unit_id = array_key_exists('measure_unit_id', $params) 
                             ? $params['measure_unit_id'] 
-                            : \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS');
+                            : Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS');
 
         $line_sort_order = array_key_exists('line_sort_order', $params) 
                             ? $params['line_sort_order'] 
@@ -768,7 +771,7 @@ trait BillableDocumentLinesTrait
 
 
         // Let's deal with taxes
-        $product = new \App\Product(['tax_id' => $tax->id]);
+        $product = new Product(['tax_id' => $tax->id]);
         $product->sales_equalization = $sales_equalization;
         $rules = $product->getTaxRules( $this->taxingaddress,  $this->customer );
 
@@ -833,7 +836,7 @@ trait BillableDocumentLinesTrait
         $tax_id = array_key_exists('tax_id', $params) 
                             ? $params['tax_id'] 
                             : $document_line->tax_id;
-        $tax = \App\Tax::findOrFail($tax_id);
+        $tax = Tax::findOrFail($tax_id);
         $taxing_address = $this->taxingaddress;
         $tax_percent = $tax->getTaxPercent( $taxing_address );
 
@@ -851,7 +854,7 @@ trait BillableDocumentLinesTrait
 //        $unit_price = $price->getPrice();
 
         // Service Price
-        $price = new \App\Price($params['unit_customer_final_price'], $pricetaxPolicy, $currency);
+        $price = new Price($params['unit_customer_final_price'], $pricetaxPolicy, $currency);
         $price->applyTaxPercent( $tax_percent );
 //        if ( $price->currency->id != $currency->id ) {
 //            $price = $price->convert( $currency );
@@ -872,7 +875,7 @@ trait BillableDocumentLinesTrait
         // Customer Final Price
         if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+            $unit_customer_final_price = new Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
 
             $unit_customer_final_price->applyTaxPercent( $tax_percent );
 
@@ -977,7 +980,7 @@ trait BillableDocumentLinesTrait
 
 
         // Let's deal with taxes
-        $product = new \App\Product(['tax_id' => $tax->id]);
+        $product = new Product(['tax_id' => $tax->id]);
         $product->sales_equalization = $sales_equalization;
         $rules = $product->getTaxRules( $this->taxingaddress,  $this->customer );
 
@@ -1030,8 +1033,8 @@ trait BillableDocumentLinesTrait
         // Tax
         $tax_id = array_key_exists('tax_id', $params) 
                             ? $params['tax_id'] 
-                            : \App\Configuration::get('DEF_TAX');
-        $tax = \App\Tax::findOrFail($tax_id);
+                            : Configuration::get('DEF_TAX');
+        $tax = Tax::findOrFail($tax_id);
         $taxing_address = $this->taxingaddress;
         $tax_percent = $tax->getTaxPercent( $taxing_address );
 
@@ -1042,10 +1045,10 @@ trait BillableDocumentLinesTrait
         // Price Policy
         $pricetaxPolicy = array_key_exists('prices_entered_with_tax', $params) 
                             ? $params['prices_entered_with_tax'] 
-                            : \App\Configuration::get('PRICES_ENTERED_WITH_TAX');
+                            : Configuration::get('PRICES_ENTERED_WITH_TAX');
 
         // Service Price
-        $price = new \App\Price($params['unit_customer_final_price'], $pricetaxPolicy, $currency);
+        $price = new Price($params['unit_customer_final_price'], $pricetaxPolicy, $currency);
         $price->applyTaxPercent( $tax_percent );
 //        if ( $price->currency->id != $currency->id ) {
 //            $price = $price->convert( $currency );
@@ -1065,7 +1068,7 @@ trait BillableDocumentLinesTrait
         // Customer Final Price
         if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+            $unit_customer_final_price = new Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
 
             $unit_customer_final_price->applyTaxPercent( $tax_percent );
 
@@ -1098,7 +1101,7 @@ trait BillableDocumentLinesTrait
         // Misc
         $measure_unit_id = array_key_exists('measure_unit_id', $params) 
                             ? $params['measure_unit_id'] 
-                            : \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS');
+                            : Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS');
 
         $line_sort_order = array_key_exists('line_sort_order', $params) 
                             ? $params['line_sort_order'] 
@@ -1209,7 +1212,7 @@ trait BillableDocumentLinesTrait
         $tax_id = array_key_exists('tax_id', $params) 
                             ? $params['tax_id'] 
                             : $document_line->tax_id;
-        $tax = \App\Tax::findOrFail($tax_id);
+        $tax = Tax::findOrFail($tax_id);
         $taxing_address = $this->taxingaddress;
         $tax_percent = $tax->getTaxPercent( $taxing_address );
 
@@ -1227,7 +1230,7 @@ trait BillableDocumentLinesTrait
 //        $unit_price = $price->getPrice();
 
         // Service Price
-        $price = new \App\Price($params['unit_customer_final_price'], $pricetaxPolicy, $currency);
+        $price = new Price($params['unit_customer_final_price'], $pricetaxPolicy, $currency);
         $price->applyTaxPercent( $tax_percent );
 //        if ( $price->currency->id != $currency->id ) {
 //            $price = $price->convert( $currency );
@@ -1248,7 +1251,7 @@ trait BillableDocumentLinesTrait
         // Customer Final Price
         if ( array_key_exists('prices_entered_with_tax', $params) && array_key_exists('unit_customer_final_price', $params) )
         {
-            $unit_customer_final_price = new \App\Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
+            $unit_customer_final_price = new Price( $params['unit_customer_final_price'], $pricetaxPolicy, $currency );
 
             $unit_customer_final_price->applyTaxPercent( $tax_percent );
 

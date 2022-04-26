@@ -93,7 +93,7 @@
             var from_email = $(this).attr('data-from_email');
             var from_name  = $(this).attr('data-from_name');
 
-            var subject = '{!! l(' :_> :company invites you to his Customer Center', ['company' => \App\Context::getcontext()->company->name_fiscal], [], 'layouts') !!}';
+            var subject = '{!! l(' :_> :company invites you to his Customer Center', ['company' => AbiContext::getcontext()->company->name_fiscal], [], 'layouts') !!}';
             
             var invitation_message = '';
 

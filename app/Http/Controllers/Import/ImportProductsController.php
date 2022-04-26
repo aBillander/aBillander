@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Product as Product;
-
+use App\Models\ActivityLogger;
+use App\Models\Category;
+use App\Models\Configuration;
+use App\Models\Ecotax;
+use App\Models\Product;
+use App\Models\Tax;
+use App\Helpers\Exports\ArrayExport;
+use App\Helpers\Imports\ArrayImport;
 use Excel;
+use Illuminate\Http\Request;
 
 class ImportProductsController extends Controller
 {
@@ -63,19 +67,6 @@ class ImportProductsController extends Controller
     public function import()
     {
         return view('imports.products');
-/*
-		$country = $this->country->findOrFail($id);
-		
-		return view('countries.edit', compact('country'));
-
-        $customer_orders = $this->customerOrder
-                            ->with('customer')
-                            ->with('currency')
-                            ->with('paymentmethod')
-                            ->orderBy('id', 'desc')->get();
-
-        return view('customer_orders.index', compact('customer_orders'));
-*/        
     }
 
     public function process(Request $request)
@@ -89,49 +80,17 @@ class ImportProductsController extends Controller
 
         $rules = [
                 'data_file' => 'required | max:8000',
-                'extension' => 'in:csv,xlsx,xls,ods', // all working except for ods
+                'extension' => 'in:csv,xlsx,xls,ods',
         ];
 
         $this->validate($request->merge( $extra_data ), $rules);
-
-/*
-        $data_file = $request->file('data_file');
-
-        $data_file_full = $request->file('data_file')->getRealPath();   // /tmp/phpNJt6Fl
-
-        $ext    = $data_file->getClientOriginalExtension();
-*/
-
-/*
-        abi_r($data_file);
-        abi_r($data_file_full);
-        abi_r($ext, true);
-*/
-
-/*
-        \Validator::make(
-            [
-                'document' => $data_file,
-                'format'   => $ext
-            ],[
-                'document' => 'required',
-                'format'   => 'in:csv,xlsx,xls,ods' // all working except for ods
-            ]
-        )->passOrDie();
-*/
-
-        // Avaiable fields
-        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
-        // $columns = \DB::getSchemaBuilder()->getColumnListing( self::$table );
-
-//        abi_r($columns);
 
 
         
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Products', __METHOD__ )
-                    ->backTo( route('products.import') );        // 'Import Products :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        $logger = ActivityLogger::setup( 'Import Products', __METHOD__ )
+                    ->backTo( route('products.import') );
 
 
         $logger->empty();
@@ -177,7 +136,7 @@ class ImportProductsController extends Controller
         try{
             
             if ( $action_create > 0 )
-                $this->processFile( $request->file('data_file'), $logger, $params );
+                $this->processFile(       $request->file('data_file'), $logger, $params );
             else
                 $this->processFileUpdate( $request->file('data_file'), $logger, $params );
 
@@ -194,36 +153,6 @@ class ImportProductsController extends Controller
 
         return redirect('activityloggers/'.$logger->id)
                 ->with('success', l('Se han cargado los Productos desde el Fichero: <strong>:file</strong> .', ['file' => $file]));
-
-
-//        abi_r('Se han cargado: '.$i.' productos');
-
-
-
-        // See: https://www.google.com/search?client=ubuntu&channel=fs&q=laravel-excel+%22Serialization+of+%27Illuminate%5CHttp%5CUploadedFile%27+is+not+allowed%22&ie=utf-8&oe=utf-8
-        // https://laracasts.com/discuss/channels/laravel/serialization-of-illuminatehttpuploadedfile-is-not-allowed-on-queue
-
-        // See: https://github.com/LaravelDaily/Laravel-Import-CSV-Demo/blob/master/app/Http/Controllers/ImportController.php
-        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
-/*
-        Excel::filter('chunk')->load('file.csv')->chunk(250, function($results)
-        {
-                foreach($results as $row)
-                {
-                    // do stuff
-                }
-        });
-
-        Excel::filter('chunk')->load(database_path('seeds/csv/users.csv'))->chunk(250, function($results) {
-            foreach ($results as $row) {
-                $user = User::create([
-                    'username' => $row->username,
-                    // other fields
-                ]);
-            }
-        });
-*/
-        // See: https://www.youtube.com/watch?v=z_AhZ2j5sI8  Modificar datos importados
     }
 
 
@@ -232,27 +161,15 @@ class ImportProductsController extends Controller
      *
      * @return 
      */
-    protected function processFile( $file, $logger, $params )
+    protected function processFile( $file, $logger, $params = [] )
     {
+        // Get data as an array
+        $worksheet = Excel::toCollection(new ArrayImport, $file);
 
-        // 
-        // See: https://www.youtube.com/watch?v=rWjj9Slg1og
-        // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
-        Excel::filter('chunk')->selectSheetsByIndex(0)->load( $file )->chunk(250, function ($reader) use ( $logger, $params )
-        {
-            
- /*           $reader->each(function ($sheet){
-                // ::firstOrCreate($sheet->toArray);
-                abi_r($sheet);
-            });
+        // abi_r($worksheet->first(), true);
 
-            $reader->each(function($sheet) {
-                // Loop through all rows
-                $sheet->each(function($row) {
-                    // Loop through all columns
-                });
-            });
-*/
+        $reader = $worksheet->first();    // First sheet in worksheet
+
 
 // Process reader STARTS
 
@@ -272,7 +189,7 @@ class ImportProductsController extends Controller
                 foreach($reader as $row)
                 {
                     // do stuff
-                    // if ($i > $max_id) break;
+                    if ($i > $max_id) break;
 
                     // Prepare data
                     $data = $row->toArray();
@@ -282,13 +199,16 @@ class ImportProductsController extends Controller
                     // Some Poor Man checks:
                     $data['reference'] = trim( $data['reference'] );
 
-                    $data['quantity_decimal_places'] = intval( $data['quantity_decimal_places'] );
+//                    $data['quantity_decimal_places'] = intval( $data['quantity_decimal_places'] );
 
                     $data['manufacturing_batch_size'] = intval( $data['manufacturing_batch_size'] );
                     if ( $data['manufacturing_batch_size'] <= 0 ) $data['manufacturing_batch_size'] = 1;
 
                     $data['measure_unit_id'] = intval( $data['measure_unit_id'] );
-                    if ( $data['measure_unit_id'] <= 0 ) $data['measure_unit_id'] = \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS');
+                    if ( $data['measure_unit_id'] <= 0 ) $data['measure_unit_id'] = Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS');
+
+                    $data['purchase_measure_unit_id'] = intval( $data['purchase_measure_unit_id'] );
+                    if ( $data['measure_unit_id'] <= 0 ) $data['measure_unit_id'] = $data['measure_unit_id'];
 
                     $data['work_center_id'] = intval( $data['work_center_id'] );
                     if ( $data['work_center_id'] <= 0 ) $data['work_center_id'] = NULL;
@@ -297,18 +217,18 @@ class ImportProductsController extends Controller
                     if ( $data['main_supplier_id'] <= 0 ) $data['main_supplier_id'] = NULL;
 
                     // Category
-                    if ( ! \App\Category::where('id', $data['category_id'])->exists() )
+                    if ( ! Category::where('id', $data['category_id'])->exists() )
                         $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'category_id' es inválido: " . ($data['category_id'] ?? ''));
 
                     // Tax
                     $data['tax_id'] = intval( $data['tax_id'] );
-                    if ( ! \App\Tax::where('id', $data['tax_id'])->exists() )
+                    if ( ! Tax::where('id', $data['tax_id'])->exists() )
                         $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'tax_id' es inválido: " . ($data['tax_id'] ?? ''));
 
                     // Ecotax
                     $data['ecotax_id'] = intval( $data['ecotax_id'] );
                     if ( $data['ecotax_id'] > 0 )
-                        if ( ! \App\Ecotax::where('id', $data['ecotax_id'])->exists() )
+                        if ( ! Ecotax::where('id', $data['ecotax_id'])->exists() )
                             $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'ecotax_id' es inválido: " . ($data['ecotax_id'] ?? ''));
                     else
                         unset($data['ecotax_id']);
@@ -316,7 +236,7 @@ class ImportProductsController extends Controller
                     // Check E13
                     $data['ean13'] = trim( $data['ean13'] );
                     // Should be unique? => check your spreadsheet
-                    if ( $data['ean13'] && \App\Product::where('ean13', $data['ean13'])->exists() )
+                    if ( $data['ean13'] && Product::where('ean13', $data['ean13'])->exists() )
                         $logger->log("ERROR", "Producto ".$item.":<br />" . "El campo 'ean13' ya existe: " . ($data['ean13'] ?? ''));
 
                     // Prices
@@ -337,6 +257,12 @@ class ImportProductsController extends Controller
                     $data['publish_to_web'] = (int) $data['publish_to_web'];
                     $data['active'] = (int) $data['active'];
                     $data['position'] = (int) $data['position'];
+
+                    $data['lot_number_generator'] = $data['lot_number_generator'] ? $data['lot_number_generator'] : 'Default';
+                    $data['lot_policy'] = $data['lot_policy'] ? strtoupper($data['lot_policy']) : 'FIFO';
+
+                    // Check dates?
+                    // Do not be lazy, man...
 
 
 
@@ -386,9 +312,7 @@ class ImportProductsController extends Controller
 
             $logger->log('INFO', 'Se han procesado {i} Productos.', ['i' => $i]);
 
-// Process reader          
-    
-        }, false);      // should not queue $shouldQueue
+// Process reader ENDS
 
     }
 
@@ -403,22 +327,13 @@ class ImportProductsController extends Controller
 
         $logger->log("INFO", 'Se actualizarán los Productos según las columnas que se encuentren en el Fichero: <br /><span class="log-showoff-format">{file}</span> .', ['file' => $params['file']]);
 
-        // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
-        Excel::filter('chunk')->selectSheetsByIndex(0)->load( $file )->chunk(250, function ($reader) use ( $logger, $params )
-        {
-            
- /*           $reader->each(function ($sheet){
-                // ::firstOrCreate($sheet->toArray);
-                abi_r($sheet);
-            });
+        // Get data as an array
+        $worksheet = Excel::toCollection(new ArrayImport, $file);
 
-            $reader->each(function($sheet) {
-                // Loop through all rows
-                $sheet->each(function($row) {
-                    // Loop through all columns
-                });
-            });
-*/
+        // abi_r($worksheet->first(), true);
+
+        $reader = $worksheet->first();    // First sheet in worksheet
+
 
 // Process reader STARTS
 
@@ -438,7 +353,7 @@ class ImportProductsController extends Controller
                 foreach($reader as $row)
                 {
                     // do stuff
-                    // if ($i > $max_id) break;
+                    if ($i > $max_id) break;
 
                     // Prepare data
                     $data = $row->toArray();
@@ -478,7 +393,7 @@ class ImportProductsController extends Controller
                     // $item = '[<span class="log-showoff-format">'.($data['reference'] ?? $data['id'] ?? '').'</span>] <span class="log-showoff-format">'.$data['name'].'</span>';
 
 
-                    // Cow boy style: avoid data validation and save precious time
+                    // Cow boy style: avoid data validation and save precious time  ;) ;)  Yeha!
 
 
                     try{
@@ -524,9 +439,7 @@ class ImportProductsController extends Controller
 
             $logger->log('INFO', 'Se han procesado {i} Productos.', ['i' => $i]);
 
-// Process reader          
-    
-        }, false);      // should not queue $shouldQueue
+// Process reader ENDS
 
     }
 
@@ -552,26 +465,11 @@ class ImportProductsController extends Controller
                           ->orderBy('reference', 'asc')
                           ->get();
 
-/*        $pricelist = $this->pricelist
-                    ->with('pricelistlines')
-                    ->with('pricelistlines.product')
-                    ->findOrFail($id);
-
-        $pricelist  = $this->pricelist->findOrFail($id);
-        $lines = $this->pricelistline
-                        ->select('price_list_lines.*', 'products.id', 'products.reference', 'products.name')
-//                        ->with('product')
-                        ->where('price_list_id', $id)
-                        ->join('products', 'products.id', '=', 'price_list_lines.product_id')       // Get field to order by
-                        ->orderBy('products.reference', 'asc')
-                        ->get();
-*/
-
         // Initialize the array which will be passed into the Excel generator.
         $data = []; 
 
         // Define the Excel spreadsheet headers
-        $headers = [ 'id', 'reference', 'name', 'product_type', 'procurement_type', 'mrp_type', 'phantom_assembly', 'ean13', 'position', 'description', 'description_short', 'category_id', 'CATEGORY_NAME', 'quantity_decimal_places', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'ecotax_id', 'ECOTAX_NAME', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price', 'recommended_retail_price_tax_inc', 'available_for_sale_date', 'location', 'width', 'height', 'depth', 'volume', 'weight', 'notes', 'stock_control', 'reorder_point', 'maximum_stock', 'lot_tracking', 'expiry_time', 'out_of_stock', 'out_of_stock_text', 'publish_to_web', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'machine_capacity', 'units_per_tray', 'route_notes', 'main_supplier_id', 'SUPPLIER_NAME', 'supplier_reference', 'supply_lead_time', 'manufacturer_id', 'MANUFACTURER_NAME',
+        $headers = [ 'id', 'reference', 'name', 'product_type', 'procurement_type', 'mrp_type', 'phantom_assembly', 'ean13', 'position', 'description', 'description_short', 'category_id', 'CATEGORY_NAME', 'manufacturing_batch_size', 'price_tax_inc', 'price', 'tax_id', 'TAX_NAME', 'ecotax_id', 'ECOTAX_NAME', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price', 'recommended_retail_price_tax_inc', 'available_for_sale_date', 'new_since_date', 'location', 'width', 'height', 'depth', 'volume', 'weight', 'notes', 'stock_control', 'reorder_point', 'maximum_stock', 'lot_tracking', 'expiry_time', 'lot_number_generator', 'lot_policy', 'out_of_stock', 'out_of_stock_text', 'publish_to_web', 'webshop_id', 'reference_external_wrin', 'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'work_center_id', 'machine_capacity', 'units_per_tray', 'route_notes', 'main_supplier_id', 'SUPPLIER_NAME', 'supplier_reference', 'purchase_measure_unit_id', 'PURCHASE_MEASURE_UNIT_NAME', 'supply_lead_time', 'manufacturer_id', 'MANUFACTURER_NAME',
 
 //             'last_purchase_price', 'cost_average', // <= Easter Eggs!!!
         ];
@@ -597,32 +495,23 @@ class ImportProductsController extends Controller
             $row['TAX_NAME']          = $product->tax ? $product->tax->name : '';
             $row['ECOTAX_NAME']          = $product->ecotax ? $product->ecotax->name : '';
             $row['MEASURE_UNIT_NAME'] = $product->measureunit ? $product->measureunit->name : '';
+            $row['PURCHASE_MEASURE_UNIT_NAME'] = $product->purchasemeasureunit ? $product->purchasemeasureunit->name : '';
             $row['SUPPLIER_NAME']     = $product->supplier ? $product->supplier->name_fiscal : '';
             $row['MANUFACTURER_NAME']     = $product->manufacturer ? $product->manufacturer->name : '';
 
             $data[] = $row;
         }
 
-        $sheetName = 'Products' ;
+        $styles = [];
 
-        // abi_r($data, true);
+        $sheetTitle = 'Products';
+
+        $export = (new ArrayExport($data, $styles))->setTitle($sheetTitle);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Products', function($excel) use ($sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

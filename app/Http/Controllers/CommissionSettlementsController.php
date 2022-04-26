@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use App\Traits\ViewFormatterTrait;
 use App\Traits\DateFormFormatterTrait;
 
-use App\Configuration;
+use App\Models\Configuration;
 
-use App\CommissionSettlement;
-use App\CommissionSettlementLine;
-use App\SalesRep;
-use App\CustomerInvoice;
+use App\Models\CommissionSettlement;
+use App\Models\CommissionSettlementLine;
+use App\Models\SalesRep;
+use App\Models\CustomerInvoice;
 
 class CommissionSettlementsController extends Controller
 {
@@ -147,7 +147,7 @@ class CommissionSettlementsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\CommissionSettlement  $commissionSettlement
+     * @param  \App\Models\CommissionSettlement  $commissionSettlement
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -165,7 +165,7 @@ class CommissionSettlementsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CommissionSettlement  $commissionSettlement
+     * @param  \App\Models\CommissionSettlement  $commissionSettlement
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -182,7 +182,7 @@ class CommissionSettlementsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CommissionSettlement  $commissionSettlement
+     * @param  \App\Models\CommissionSettlement  $commissionSettlement
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -205,7 +205,7 @@ class CommissionSettlementsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CommissionSettlement  $commissionSettlement
+     * @param  \App\Models\CommissionSettlement  $commissionSettlement
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

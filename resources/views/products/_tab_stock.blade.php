@@ -53,7 +53,7 @@
 
 
 
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') )
 
         <div class="row" style="margin-bottom: 15px;">
                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
@@ -119,7 +119,7 @@
                                       data-content="{{ l('Select the function to calculate Lot Numbers.') }}">
                                   <i class="fa fa-question-circle abi-help"></i>
                            </a>
-                    {!! Form::select('lot_number_generator', \App\Lot::getGeneratorList(), null, array('class' => 'form-control', 'id' => 'lot_number_generator')) !!}
+                    {!! Form::select('lot_number_generator', \App\Models\Lot::getGeneratorList(), null, array('class' => 'form-control', 'id' => 'lot_number_generator')) !!}
                     {!! $errors->first('lot_number_generator', '<span class="help-block">:message</span>') !!}
                  </div>
 
@@ -129,7 +129,7 @@
                                       data-content="{{ l('Automatic Lot allocation to Documents will be done on this basis.') }}">
                                   <i class="fa fa-question-circle abi-help"></i>
                            </a>
-                    {!! Form::select('lot_policy', \App\Lot::getLotPolicyList(), null, array('class' => 'form-control', 'id' => 'lot_policy')) !!}
+                    {!! Form::select('lot_policy', \App\Models\Lot::getLotPolicyList(), null, array('class' => 'form-control', 'id' => 'lot_policy')) !!}
                     {!! $errors->first('lot_policy', '<span class="help-block">:message</span>') !!}
                  </div>
 
@@ -156,7 +156,7 @@
 
 
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
 {{--
 @php
     $out_of_stockList = [

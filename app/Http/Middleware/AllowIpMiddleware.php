@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Configuration;
 use Closure;
 
 class AllowIpMiddleware
@@ -15,10 +16,10 @@ class AllowIpMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if ( \App\Configuration::isEmpty('ALLOW_IP_ADDRESSES') )
+        if ( Configuration::isEmpty('ALLOW_IP_ADDRESSES') )
             return $next($request);
 
-        $allowed_ips = \App\Configuration::get('ALLOW_IP_ADDRESSES');       // ' 127. 0.0.1 ';  // "Comma seperated IP address which is to be allowed"; 
+        $allowed_ips = Configuration::get('ALLOW_IP_ADDRESSES');       // ' 127. 0.0.1 ';  // "Comma seperated IP address which is to be allowed"; 
         
         $ipsAllow = array_filter(explode(',', preg_replace('/\s+/', '', $allowed_ips) ));   // array_filter prevents splitting empty strings.
 

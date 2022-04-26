@@ -92,7 +92,7 @@
          
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('warehouse_id') ? 'has-error' : '' }}">
             {{ l('Warehouse') }}
-            {!! Form::select('warehouse_id', \App\Warehouse::selectorList(), null, array('class' => 'form-control', 'id' => 'warehouse_id')) !!}
+            {!! Form::select('warehouse_id', \App\Models\Warehouse::selectorList(), null, array('class' => 'form-control', 'id' => 'warehouse_id')) !!}
             {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}
          </div>
 
@@ -176,7 +176,7 @@
 {{-- Date Picker --}}
 
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
 
@@ -185,7 +185,7 @@
     $( "#manufactured_at_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -194,7 +194,7 @@
     $( "#expiry_at_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 

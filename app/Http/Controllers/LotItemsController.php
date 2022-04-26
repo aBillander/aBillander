@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\LotItem;
+use App\Models\LotItem;
 
 class LotItemsController extends Controller
 {

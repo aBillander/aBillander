@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\PriceList;
-use App\ShippingMethod;
-use App\CustomerGroup;
+use App\Models\PriceList;
+use App\Models\ShippingMethod;
+use App\Models\CustomerGroup;
 use View;
 
 class CustomerGroupsController extends Controller {

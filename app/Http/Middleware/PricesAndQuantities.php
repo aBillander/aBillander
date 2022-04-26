@@ -4,8 +4,6 @@ namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\TransformsRequest;
 
-// https://medium.com/@samolabams/transforming-laravel-request-data-using-middleware-bc95a07332f0
-
 class PricesAndQuantities extends TransformsRequest
 {
     /**
@@ -15,22 +13,30 @@ class PricesAndQuantities extends TransformsRequest
      */
     protected $check_with_stub = [
         'price',
+        'cost',
         'quantity',
+        'weight',
+        'volume',
         'amount',
+        'dispatch',
     ];
 
     /**
      * Clean the data in the given array.
      *
      * @param  array  $data
+     * @param  string  $keyPrefix
      * @return array
      */
-    protected function cleanArray(array $data, $name = null)
+    protected function cleanArray(array $data, $keyPrefix = '')
     {
-        // abi_r($data);
-        return collect($data)->map(function ($value, $key) use ($name) {
-            return $this->cleanValue($key, $value, $name);
-        })->all();
+        foreach ($data as $key => $value) {
+            $data[$key] = $this->cleanValue($keyPrefix.$key, $value);
+        }
+
+        // abi_r('Array');abi_r($data);
+
+        return collect($data)->all();
     }
 
     /**
@@ -40,13 +46,13 @@ class PricesAndQuantities extends TransformsRequest
      * @param  mixed  $value
      * @return mixed
      */
-    protected function cleanValue($key, $value, $name = null)
+    protected function cleanValue($key, $value)
     {
         if (is_array($value)) {
-            return $this->cleanArray($value, $key);     // Should pass the name of the array. Otherwise method transform cannot know "variable name" for $value
+            return $this->cleanArray($value, $key.'.');
         }
 
-        return $this->transform($key, $value, $name);
+        return $this->transform($key, $value);
     }
 
     /**
@@ -56,13 +62,14 @@ class PricesAndQuantities extends TransformsRequest
      * @param  mixed  $value
      * @return mixed
      */
-    protected function transform($key, $value, $name = null)
+    protected function transform($key, $value)
     {
+        // abi_r('Data');abi_r("$key, $value");
+
         if ( !is_string($value) )
         	return $value;
 
-        if ( !$this->stub_in_array($key,  $this->check_with_stub) && 
-             !$this->stub_in_array($name, $this->check_with_stub)    ) 
+        if ( !$this->stub_in_array($key,  $this->check_with_stub) ) 
         {
             return $value;
         }

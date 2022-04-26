@@ -3,23 +3,22 @@
 namespace App\Http\Controllers\CustomerCenter;
 
 use App\Http\Controllers\Controller;
-
+use App\Mail\AbccCustomerOrderMail;
+use App\Mail\AbccCustomerQuotationMail;
+use App\Models\Cart;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerOrder;
+use App\Models\CustomerOrderLine;
+use App\Models\CustomerQuotation;
+use App\Models\CustomerQuotationLine;
+use App\Models\CustomerUser;
+use App\Models\Template;
+use App\Models\Todo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\Configuration;
-use App\Currency;
-use App\Todo;
-
-use App\Cart;
-
-use App\CustomerUser;
-use App\Customer;
-use App\CustomerOrder;
-use App\CustomerOrderLine;
-use App\CustomerQuotation;
-use App\CustomerQuotationLine;
-
 use Illuminate\Support\Facades\Mail;
 
 class AbccCustomerOrdersController extends Controller {
@@ -58,7 +57,7 @@ class AbccCustomerOrdersController extends Controller {
                             ->orderBy('document_date', 'desc')
                             ->orderBy('id', 'desc');        // ->get();
 
-        $customer_orders = $customer_orders->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
+        $customer_orders = $customer_orders->paginate( Configuration::get('ABCC_ITEMS_PERPAGE') );
 
         $customer_orders->setPath('orders');
 
@@ -197,7 +196,7 @@ class AbccCustomerOrdersController extends Controller {
 			'sales_rep_id' => $customer->sales_rep_id,
 			'currency_id' => $cart->currency->id,
 			'payment_method_id' => $cart->payment_method_id,
-			'template_id' => \App\Configuration::get('ABCC_DEFAULT_ORDER_TEMPLATE'),
+			'template_id' => Configuration::get('ABCC_DEFAULT_ORDER_TEMPLATE'),
 		];
 
 
@@ -316,7 +315,7 @@ Bah!
 		try {
 
 			$template_vars = array(
-				'company'       => \App\Context::getContext()->company,
+				'company'       => Context::getContext()->company,
 				'document' => $customerOrder,
 				'customer'       => $customer,
 				'url' => route('customerorders.edit', [$customerOrder->id]),
@@ -340,7 +339,7 @@ Bah!
 								' ('.$template_vars['document_date'].')',
 
 //				'bcc'      => $customer_user->email,
-				'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
+				'iso_code' => $customer->language->iso_code ?? Context::getContext()->language->iso_code,
 				);
 
 			
@@ -358,7 +357,7 @@ Bah!
 */
 			// return new \App\Mail\AbccCustomerOrderMail( $data, $template_vars );
 
-			$send = Mail::to( abi_mail_from_address() )->queue( new \App\Mail\AbccCustomerOrderMail( $data, $template_vars ) );
+			$send = Mail::to( abi_mail_from_address() )->queue( new AbccCustomerOrderMail( $data, $template_vars ) );
 
         // $logger->log("INFO", 'Email sent');
 
@@ -383,7 +382,7 @@ Bah!
 			try {
 
 				$template_vars = array(
-					'company'       => \App\Context::getContext()->company,
+					'company'       => Context::getContext()->company,
 					'document' => $customerOrder,
 					'customer'       => $customer,
 					'url' => route('abcc.orders.show', [$customerOrder->id]),
@@ -403,10 +402,10 @@ Bah!
 								' ('.$template_vars['document_date'].')',
 
 //					'bcc'      => $customer_user->email,
-					'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
+					'iso_code' => $customer->language->iso_code ?? Context::getContext()->language->iso_code,
 					);
 				
-				$send = Mail::to( $customer_user->email )->queue( new \App\Mail\AbccCustomerOrderMail( $data, $template_vars ) );
+				$send = Mail::to( $customer_user->email )->queue( new AbccCustomerOrderMail( $data, $template_vars ) );
 
 	        // $logger->log("INFO", 'Email sent');
 
@@ -543,7 +542,7 @@ Bah!
 			'sales_rep_id' => $customer->sales_rep_id,
 			'currency_id' => $cart->currency->id,
 			'payment_method_id' => $cart->payment_method_id,
-			'template_id' => \App\Configuration::get('DEF_CUSTOMER_QUOTATION_TEMPLATE'),
+			'template_id' => Configuration::get('DEF_CUSTOMER_QUOTATION_TEMPLATE'),
 		];
 
 //        return 'OK';
@@ -639,12 +638,12 @@ Bah!
 				'toName'   => abi_mail_from_name(),				// $cinvoice->customer->name_fiscal,
 				'subject'  => l(' :_> New Customer Quotation #:num', ['num' => $template_vars['document_num']]),
 
-				'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
+				'iso_code' => $customer->language->iso_code ?? Context::getContext()->language->iso_code,
 				);
 
 			
 
-			$send = Mail::to( abi_mail_from_address() )->queue( new \App\Mail\AbccCustomerQuotationMail( $data, $template_vars ) );
+			$send = Mail::to( abi_mail_from_address() )->queue( new AbccCustomerQuotationMail( $data, $template_vars ) );
 
         
         } catch(\Exception $e) {
@@ -680,10 +679,10 @@ Bah!
 					'subject'  => l(' :_> :company - New Quotation #:num', ['num' => $template_vars['document_num'], 'company' => abi_mail_from_name()]),
 
 //					'bcc'      => $customer_user->email,
-					'iso_code' => $customer->language->iso_code ?? \App\Context::getContext()->language->iso_code,
+					'iso_code' => $customer->language->iso_code ?? Context::getContext()->language->iso_code,
 					);
 				
-				$send = Mail::to( $customer_user->email )->queue( new \App\Mail\AbccCustomerQuotationMail( $data, $template_vars ) );
+				$send = Mail::to( $customer_user->email )->queue( new AbccCustomerQuotationMail( $data, $template_vars ) );
 
 	        // $logger->log("INFO", 'Email sent');
 
@@ -787,7 +786,7 @@ Bah!
         	return redirect()->route('abcc.orders.index')
                 	->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         
-        $cart = \App\Context::getContext()->cart;
+        $cart = Context::getContext()->cart;
 
         foreach ($order->lines as $orderline) {
         	# code...
@@ -813,11 +812,11 @@ Bah!
                 	->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         
 
-        $company = \App\Context::getContext()->company;
+        $company = Context::getContext()->company;
 
         // Get Template
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('ABCC_DEFAULT_ORDER_TEMPLATE') );
+             Template::find( Configuration::getInt('ABCC_DEFAULT_ORDER_TEMPLATE') );
 
         if ( !$t )
         	return redirect()->route('abcc.orders.show', $id)

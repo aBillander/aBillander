@@ -115,7 +115,7 @@
     <script type="text/javascript">
 
         // Select default decimals
-        var def_decimalsID = {{ \App\Configuration::get('DEF_QUANTITY_DECIMALS') }};
+        var def_decimalsID = {{ AbiConfiguration::get('DEF_QUANTITY_DECIMALS') }};
 
         $('select[name="quantity_decimal_places"]').val(def_decimalsID);
 

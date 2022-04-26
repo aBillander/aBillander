@@ -162,7 +162,7 @@ $countryList=[];
     // Select default country
     if ( !( countryID > 0) ) {
     	
-    	countryID = {{ \App\Configuration::get('DEF_COUNTRY') }};
+    	countryID = {{ AbiConfiguration::get('DEF_COUNTRY') }};
 
     	$('select[name="address[country_id]"]').val(countryID);
 

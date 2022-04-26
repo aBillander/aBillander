@@ -47,7 +47,7 @@
             <td>{{ $stockmovement->id }}</td>
             <td>{{ abi_date_short( $stockmovement->date ) }}</td>
             <td>[{{ $stockmovement->movement_type_id }}] - 
-                 {{ \App\StockMovement::getTypeName($stockmovement->movement_type_id) }}
+                 {{ \App\Models\StockMovement::getTypeName($stockmovement->movement_type_id) }}
             </td>
 
             <td>{{ $stockmovement->warehouse->alias }}</td>

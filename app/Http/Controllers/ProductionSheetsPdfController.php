@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\ProductionSheet;
-use Illuminate\Http\Request;
-
-use WooCommerce;
-use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
-
+use App\Models\ProductionSheet;
+use App\Models\WorkCenter;
 use App\Traits\BillableIntrospectorTrait;
+use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
+use Illuminate\Http\Request;
+use WooCommerce;
 
 class ProductionSheetsPdfController extends Controller
 {
@@ -213,8 +212,8 @@ class ProductionSheetsPdfController extends Controller
     public function getPdfSummary(Request $request, $id)
     {
         $sheet = $this->productionSheet->findOrFail($id);
-        $work_center = \App\WorkCenter::find($request->input('work_center_id', 0));
-        if ( !$work_center ) $work_center = new \App\WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
+        $work_center = WorkCenter::find($request->input('work_center_id', 0));
+        if ( !$work_center ) $work_center = new WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
 
 
         $sheet->load(['customerorders', 'customerorders.customer', 'customerorders.customerorderlines']);
@@ -236,8 +235,8 @@ class ProductionSheetsPdfController extends Controller
     public function getPdfSummaryPani(Request $request, $id)
     {
         $sheet = $this->productionSheet->findOrFail($id);
-        $work_center = \App\WorkCenter::find($request->input('work_center_id', 0));
-        if ( !$work_center ) $work_center = new \App\WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
+        $work_center = WorkCenter::find($request->input('work_center_id', 0));
+        if ( !$work_center ) $work_center = new WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
 
 
         $sheet->load(['customerorders', 'customerorders.customer', 'customerorders.customerorderlines']);
@@ -259,8 +258,8 @@ class ProductionSheetsPdfController extends Controller
     public function getPdfPreassemblies(Request $request, $id)
     {
         $sheet = $this->productionSheet->findOrFail($id);
-        $work_center = \App\WorkCenter::find($request->input('work_center_id', 0));
-        if ( !$work_center ) $work_center = new \App\WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
+        $work_center = WorkCenter::find($request->input('work_center_id', 0));
+        if ( !$work_center ) $work_center = new WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
 
 
         $sheet->load(['customerorders', 'customerorders.customer', 'customerorders.customerorderlines']);
@@ -293,8 +292,8 @@ class ProductionSheetsPdfController extends Controller
 
         $family = $this->families[$key];
 
-        $work_center = \App\WorkCenter::find($family['work_center_id']);
-        if ( !$work_center ) $work_center = new \App\WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
+        $work_center = WorkCenter::find($family['work_center_id']);
+        if ( !$work_center ) $work_center = new WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
 
 
         //
@@ -332,9 +331,9 @@ class ProductionSheetsPdfController extends Controller
         $sheet->load(['customerorders', 'customerorders.customer', 'customerorders.customerorderlines']);
         // $sheet->customerorders()->load(['customer', 'customerorderlines']);
 
-        // $work_center = \App\WorkCenter::find($family['work_center_id']);
-        $work_center = \App\WorkCenter::findOrFail( $wc );
-        if ( !$work_center ) $work_center = new \App\WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
+        // $work_center = WorkCenter::find($family['work_center_id']);
+        $work_center = WorkCenter::findOrFail( $wc );
+        if ( !$work_center ) $work_center = new WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
 
         $key = $request->input('key');
 
@@ -446,8 +445,8 @@ class ProductionSheetsPdfController extends Controller
     public function getPdfOrders(Request $request, $id)
     {
         $sheet = $this->productionSheet->findOrFail($id);
-        $work_center = \App\WorkCenter::find($request->input('work_center_id', 0));
-        if ( !$work_center ) $work_center = new \App\WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
+        $work_center = WorkCenter::find($request->input('work_center_id', 0));
+        if ( !$work_center ) $work_center = new WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
 
 
         $sheet->load(['customerorders', 'customerorders.customer', 'customerorders.customerorderlines']);
@@ -475,8 +474,8 @@ class ProductionSheetsPdfController extends Controller
     public function getPdfShippingslips(Request $request, $id)
     {
         $sheet = $this->productionSheet->findOrFail($id);
-        $work_center = \App\WorkCenter::find($request->input('work_center_id', 0));
-        if ( !$work_center ) $work_center = new \App\WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
+        $work_center = WorkCenter::find($request->input('work_center_id', 0));
+        if ( !$work_center ) $work_center = new WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
 
 
         $sheet->load(['customershippingslips', 'customershippingslips.customer', 'customershippingslips.lines']);
@@ -504,8 +503,8 @@ class ProductionSheetsPdfController extends Controller
     public function getPdfProducts(Request $request, $id)
     {
         $sheet = $this->productionSheet->findOrFail($id);
-        $work_center = \App\WorkCenter::find($request->input('work_center_id', 0));
-        if ( !$work_center ) $work_center = new \App\WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
+        $work_center = WorkCenter::find($request->input('work_center_id', 0));
+        if ( !$work_center ) $work_center = new WorkCenter(['id' => 0, 'name' => l('All', 'layouts')]);
 
 
         $sheet->load(['customerorders', 'customerorders.customer', 'customerorders.customerorderlines']);

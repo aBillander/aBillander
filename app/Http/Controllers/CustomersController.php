@@ -2,30 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-use Validator;
-
-use View, Mail;
-
-use App\Customer;
-use App\Address;
-use App\CustomerGroup;
-use App\BankAccount;
-use App\CustomerOrder;
-use App\CustomerOrderLine;
-use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
-use App\PriceRule;
-
-use App\Configuration;
-
+use App\Models\Address;
+use App\Models\BankAccount;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\CustomerGroup;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerOrder;
+use App\Models\CustomerOrderLine;
+use App\Models\CustomerShippingSlip;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\PriceRule;
+use App\Models\Product;
+use App\Models\Sequence;
+use App\Rules\CommaSeparatedEmails;
 use App\Traits\DateFormFormatterTrait;
 use App\Traits\ModelAttachmentControllerTrait;
+use Illuminate\Http\Request;
+use Validator;
+use View, Mail;
 
 class CustomersController extends Controller
 {
@@ -99,7 +97,7 @@ class CustomersController extends Controller
             $request->merge( ['name_commercial' => $request->input('address.name_commercial')] );
         }
 
-        $this->validate($request, Customer::$rules + ['cc_addresses' => ['nullable', new \App\Rules\CommaSeparatedEmails()]]);
+        $this->validate($request, Customer::$rules + ['cc_addresses' => ['nullable', new CommaSeparatedEmails()]]);
 
         $address['alias'] = l('Main Address', [],'addresses');
 
@@ -164,15 +162,18 @@ class CustomersController extends Controller
      */
     public function edit($id)
     {
-        $sequenceList = \App\Sequence::listFor( \App\CustomerInvoice::class );
+        $sequenceList = Sequence::listFor( CustomerInvoice::class );
 
-        $customer = $this->customer->with('addresses', 'address', 'address.country', 'address.state', 'bankaccount')->findOrFail($id); 
+        $customer = $this->customer->with('addresses', 'address', 'address.country', 'address.state', 'bankaccount', 'contacts')->findOrFail($id); 
 
         $aBook       = $customer->addresses;
         $mainAddressIndex = -1;
         $aBookCount = $aBook->count();
 
         $bankaccount = $customer->bankaccount;
+
+        $contacts = $customer->contacts;
+        $actions  = $customer->actions()->whereDate('created_at', '>', \Carbon\Carbon::now()->subDays(30))->orderByDesc('created_at')->get();
 
         // Dates (cuen)
         if ($bankaccount)
@@ -204,7 +205,7 @@ class CustomersController extends Controller
             }
 
             // Issue Warning!
-            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'modelList', 'default_model'))
+            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'modelList', 'default_model'))
                 ->with('warning', l('You need one Address at list, for Customer (:id) :name', ['id' => $customer->id, 'name' => $customer->name_fiscal]));
         };
 
@@ -229,7 +230,7 @@ class CustomersController extends Controller
 
             $mainAddressIndex = 0;
 
-            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'sequenceList', 'modelList', 'default_model'))
+            return View::make('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'sequenceList', 'modelList', 'default_model'))
                 ->with('warning', $warning);
 
         } else {
@@ -274,7 +275,7 @@ class CustomersController extends Controller
 
 //        abi_r( $bankaccount );die();
 
-        return view('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'sequenceList', 'modelList', 'default_model'))
+        return view('customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'sequenceList', 'modelList', 'default_model'))
                 ->with('warning', $warning);
     }
 
@@ -300,7 +301,7 @@ class CustomersController extends Controller
 
             $rules['invoicing_address_id'] = 'exists:addresses,id,addressable_id,'.intval($id);
             if ($input['shipping_address_id']>0)
-//                $rules['shipping_address_id'] = 'exists:addresses,id,addressable_type,\\App\\Customer|exists:addresses,id,addressable_id,'.intval($id);
+//                $rules['shipping_address_id'] = 'exists:addresses,id,addressable_type,\\App\\Models\\Customer|exists:addresses,id,addressable_id,'.intval($id);
                 $rules['shipping_address_id'] = 'exists:addresses,id,addressable_id,'.intval($id);
             else
                 $input['shipping_address_id'] = 0;
@@ -329,7 +330,7 @@ class CustomersController extends Controller
 
 //        abi_r(Customer::$rules, true);
 
-        $this->validate($request, Customer::$rules + ['cc_addresses' => ['nullable', new \App\Rules\CommaSeparatedEmails()]]);
+        $this->validate($request, Customer::$rules + ['cc_addresses' => ['nullable', new CommaSeparatedEmails()]]);
         
 //        $this->validate($request, Address::related_rules());
 
@@ -370,6 +371,8 @@ class CustomersController extends Controller
         $customer = $this->customer->with('bankaccount')->findOrFail($id);
 
         $bankaccount = $customer->bankaccount;
+
+        $request->session()->flash('tabName', $section);
 
         $this->validate($request, BankAccount::$rules);
 
@@ -507,7 +510,7 @@ class CustomersController extends Controller
     {
         $customer = $this->customer::findOrFail($id);
 
-        $product = \App\Product::findOrFail($productid);
+        $product = Product::findOrFail($productid);
 
         $items_per_page = intval($request->input('items_per_page', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page >= 0) ) 
@@ -695,7 +698,7 @@ class CustomersController extends Controller
     {
         $customer = $this->customer::findOrFail($id);
 
-        $product = \App\Product::findOrFail($productid);
+        $product = Product::findOrFail($productid);
 
         $items_per_page = intval($request->input('items_per_page', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page >= 0) ) 
@@ -703,7 +706,7 @@ class CustomersController extends Controller
 
         // Recent Sales
         $model = Configuration::get('RECENT_SALES_CLASS') ?: 'CustomerOrder';
-        $class = '\App\\'.$model.'Line';
+        $class = '\\App\\Models\\'.$model.'Line';
         $table = \Str::snake(\Str::plural($model));
         $route = str_replace('_', '', $table);
         $tableLines = \Str::snake($model).'_lines';
@@ -809,7 +812,7 @@ class CustomersController extends Controller
 
         // See ContactMessagesController
         try{
-            $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.invitation',
+            $send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.invitation',
                 // Data passing to view
                 array(
                     'user_email'   => $request->input('invitation_from_email'),

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Party;
-use App\User;
+use App\Models\Party;
+use App\Models\User;
 
 use Auth;
 
@@ -71,7 +71,7 @@ class PartiesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Party  $party
+     * @param  \App\Models\Party  $party
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -82,7 +82,7 @@ class PartiesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Party  $party
+     * @param  \App\Models\Party  $party
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -103,7 +103,7 @@ class PartiesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Party  $party
+     * @param  \App\Models\Party  $party
      * @return \Illuminate\Http\Response
      */
     public function update($id, Request $request)
@@ -125,7 +125,7 @@ class PartiesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Party  $party
+     * @param  \App\Models\Party  $party
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

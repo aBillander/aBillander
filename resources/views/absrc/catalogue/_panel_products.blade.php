@@ -38,14 +38,14 @@
       <th><span class="button-pad">{{ l('Customer Price') }}
            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
                   data-content="{{ l('Prices are exclusive of Tax') }}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
     <br />
     {{ l('Prices are inclusive of Ecotax') }}
 @endif
           ">
               <i class="fa fa-question-circle abi-help"></i>
            </a></span>
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES'))
+@if( AbiConfiguration::isTrue('ENABLE_ECOTAXES'))
     <br /><span class="button-pad text-muted">
     {{ l('Without Ecotax') }}</span>
 @endif</th>
@@ -68,29 +68,29 @@
 @endphp
 @if ($img)
               <a class="view-image" data-html="false" data-toggle="modal" 
-                     href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
+                     href="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
                      data-title="{{ $product->name }} " 
                      data-caption="({{$img->id}}) {{ $img->caption }} " 
                      data-content="{{ nl2p($product->description) }} " 
                      onClick="return false;" title="{{l('View Image')}}">
 
-                      <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+                      <img src="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
               </a>
 @else
               <a class="view-image" data-html="false" data-toggle="modal" 
-                     href="{{ URL::to( \App\Image::pathProducts() . 'default-large_default.png' ) }}"
+                     href="{{ URL::to( \App\Models\Image::pathProducts() . 'default-large_default.png' ) }}"
                      data-title="{{ $product->name }} " 
                      data-caption="({{$product->id}}) {{ $product->name }} " 
                      data-content="{{ nl2p($product->description) }} " 
                      onClick="return false;" title="{{l('View Image')}}">
 
-                      <img src="{{ URL::to( \App\Image::pathProducts() . 'default-mini_default.png' ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+                      <img src="{{ URL::to( \App\Models\Image::pathProducts() . 'default-mini_default.png' ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
               </a>
 @endif
       </td>
 
       <td>{{ $product->name }}
-          @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $product->ecotax )
+          @if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') && $product->ecotax )
               <br />
               {{ l('Ecotax: ') }} {{ $product->ecotax->name }} ({{ abi_money( $product->ecotax->amount ) }})
           @endif
@@ -108,7 +108,7 @@
       <td>{{ $product->as_priceable( 
               $product->price
             ) }}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $product->ecotax)
+@if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') && $product->ecotax)
     <br /><p class="text-muted">
     {{ $product->as_priceable( 
               $product->price - $product->getEcotax()

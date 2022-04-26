@@ -2,33 +2,28 @@
 
 namespace App\Http\Controllers\SalesRepCenter;
 
-// use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use Illuminate\Support\Facades\Auth;
-use App\SalesRepUser;
-use App\SalesRep;
-
-use App\Configuration;
-use App\Currency;
-use App\Todo;
-
-use App\Customer;
-use App\CustomerOrder as Document;
-use App\CustomerOrderLine as DocumentLine;
-use App\CustomerOrderLineTax as DocumentLineTax;
-
-use Mail;
-
 use App\Events\CustomerOrderConfirmed;
-
 use App\Http\Controllers\BillableController;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerOrder as Document;
+use App\Models\CustomerOrderLine as DocumentLine;
+use App\Models\CustomerOrderLineTax as DocumentLineTax;
+use App\Models\PaymentMethod;
+use App\Models\SalesRep;
+use App\Models\SalesRepUser;
+use App\Models\ShippingMethod;
+use App\Models\Template;
+use App\Models\Todo;
 use App\Traits\BillableGroupableControllerTrait;
 use App\Traits\BillableShippingSlipableControllerTrait;
-
 use App\Traits\DateFormFormatterTrait;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Mail;
 
 class AbsrcCustomerOrdersController extends BillableController
 {
@@ -193,11 +188,11 @@ class AbsrcCustomerOrdersController extends BillableController
             return redirect($this->model_path)
                 ->with('error', l('There is not any Sequence for this type of Document &#58&#58 You must create one first', [], 'layouts'));
 
-        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
-        $currencyList = \App\Currency::pluck('name', 'id')->toArray();
-        $salesrepList = \App\SalesRep::where('id', optional($salesrep)->id)->pluck('alias', 'id')->toArray();
+        $payment_methodList = PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $currencyList = Currency::pluck('name', 'id')->toArray();
+        $salesrepList = SalesRep::where('id', optional($salesrep)->id)->pluck('alias', 'id')->toArray();
         $warehouseList = Auth::user()->getAllowedWarehouseList();
-        $shipping_methodList = \App\ShippingMethod::pluck('name', 'id')->toArray();
+        $shipping_methodList = ShippingMethod::pluck('name', 'id')->toArray();
         
         return view($this->view_path.'.create', $this->modelVars() + compact('sequenceList', 'templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'warehouseList', 'shipping_methodList'));
     
@@ -238,11 +233,11 @@ class AbsrcCustomerOrdersController extends BillableController
                     ->with('error', l('The record with id=:id does not exist', ['id' => $customer_id], 'layouts'));
         }
 
-        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
-        $currencyList = \App\Currency::pluck('name', 'id')->toArray();
-        $salesrepList = \App\SalesRep::where('id', optional($salesrep)->id)->pluck('alias', 'id')->toArray();
+        $payment_methodList = PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $currencyList = Currency::pluck('name', 'id')->toArray();
+        $salesrepList = SalesRep::where('id', optional($salesrep)->id)->pluck('alias', 'id')->toArray();
         $warehouseList = Auth::user()->getAllowedWarehouseList();
-        $shipping_methodList = \App\ShippingMethod::pluck('name', 'id')->toArray();
+        $shipping_methodList = ShippingMethod::pluck('name', 'id')->toArray();
         
         return view($this->view_path.'.create', $this->modelVars() + compact('customer_id', 'sequenceList', 'templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'warehouseList', 'shipping_methodList'));
     }
@@ -344,7 +339,7 @@ if (0) {
 
             
 
-            $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.absrc.new_customer_order', $template_vars, function($message) use ($data)
+            $send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.absrc.new_customer_order', $template_vars, function($message) use ($data)
             {
                 $message->from($data['from'], $data['fromName']);
 
@@ -448,11 +443,11 @@ if (0) {
         // Dates (cuen)
         $this->addFormDates( ['document_date', 'delivery_date', 'export_date'], $document );
 
-        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
-        $currencyList = \App\Currency::pluck('name', 'id')->toArray();
-        $salesrepList = \App\SalesRep::where('id', optional($salesrep)->id)->pluck('alias', 'id')->toArray();
+        $payment_methodList = PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $currencyList = Currency::pluck('name', 'id')->toArray();
+        $salesrepList = SalesRep::where('id', optional($salesrep)->id)->pluck('alias', 'id')->toArray();
         $warehouseList = Auth::user()->getAllowedWarehouseList();
-        $shipping_methodList = \App\ShippingMethod::pluck('name', 'id')->toArray();
+        $shipping_methodList = ShippingMethod::pluck('name', 'id')->toArray();
 
         return view($this->view_path.'.edit', $this->modelVars() + compact('customer', 'invoicing_address', 'addressBook', 'addressbookList', 'document', 'sequenceList', 'templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'warehouseList', 'shipping_methodList'));
 	}
@@ -684,7 +679,7 @@ if (0) {
         	return redirect()->route('absrc.orders.index')
                 	->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         
-        $cart = \App\Context::getContext()->cart;
+        $cart = Context::getContext()->cart;
 
         foreach ($order->lines as $orderline) {
         	# code...
@@ -713,11 +708,11 @@ if (0) {
                 	->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts'));
         
 
-        $company = \App\Context::getContext()->company;
+        $company = Context::getContext()->company;
 
         // Get Template
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_CUSTOMER_ORDER_TEMPLATE') );
+             Template::find( Configuration::getInt('DEF_CUSTOMER_ORDER_TEMPLATE') );
 
         if ( !$t )
         	return redirect()->route('absrc.orders.show', $id)
@@ -781,7 +776,7 @@ if (0) {
         {
             $search = $request->customer_id;
 
-            $customers = \App\Customer::select('id', 'name_fiscal', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
+            $customers = Customer::select('id', 'name_fiscal', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
                             		->ofSalesRep()
                                     ->with('currency')
                                     ->with('addresses')
@@ -799,7 +794,7 @@ if (0) {
         {
             $search = $request->term;
 
-            $customers = \App\Customer::select('id', 'name_fiscal', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
+            $customers = Customer::select('id', 'name_fiscal', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
                             		->ofSalesRep()
                                     ->where( function($query) use ($search) {
                                             $query->where(   'name_fiscal',      'LIKE', '%'.$search.'%' );
@@ -808,7 +803,7 @@ if (0) {
                                     } )
                                     ->with('currency')
                                     ->with('addresses')
-                                    ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                     ->get();
 
 //            return $customers;

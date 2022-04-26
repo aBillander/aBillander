@@ -3,21 +3,37 @@
     "description": "Connects aBillander with WooCommerce",
     "homepage": "https://github.com/aBillander/WooConnect",
     "license": "MIT",
+    "keywords": [
+        "aBillander",
+        "laravel",
+        "woocommerce",
+        "WooConnect"
+    ],
     "authors": [
         {
             "name": "Lara Billander",
-            "email": "wasp@abillander.com"
+            "email": "wasp@abillander.com",
+            "role": "Curator"
         }
     ],
     "require": {
-        "php": ">=5.5.9",
-        "illuminate/support": "5.1.x|5.2.x|5.3.x|5.4.x|5.5.x",
-        "dompdf/dompdf": "^0.8"
+        "php" : "^8.0",
+        "laravel/framework": "^9.0"
     },
     "autoload": {
         "psr-4": {
             "aBillander\\WooConnect\\": "src/"
         }
     },
-    "minimum-stability": "dev"
+      "extra": {
+        "laravel": {
+          "providers": [
+            "aBillander\\WooConnect\\ServiceProvider"
+          ],
+          "aliases": {
+          }
+        }
+      },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

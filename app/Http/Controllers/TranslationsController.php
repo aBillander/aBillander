@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php
+
+namespace App\Http\Controllers;
 
 function extractor($a, $b = NULL, $c = NULL){
 
@@ -19,13 +21,13 @@ echo '</pre>';
 return [$a, $b, $c];
 }
 
-use App\Http\Requests;
+
 use App\Http\Controllers\Controller;
 
-use Illuminate\Http\Request as Request;
+use Illuminate\Http\Request;
 
-use App\Context as Context;
-use App\Language as Language;
+use App\Models\Context;
+use App\Models\Language;
 
 class TranslationsController extends Controller {
 
@@ -43,7 +45,7 @@ class TranslationsController extends Controller {
 
 		// Retrieve folders within wiews from: realpath(base_path('resources/views'))
 		$views        = Directory::listDirectories( realpath(base_path('resources/views')) );
-		$translations = Directory::listFiles( realpath(base_path('resources/lang/'.$lang)), 'ASSOC' );
+		$translations = Directory::listFiles( realpath(base_path('lang/'.$lang)), 'ASSOC' );
 
         return view('translations.index', compact('views', 'translations', 'language'));
 	}
@@ -92,7 +94,7 @@ class TranslationsController extends Controller {
 		$lang = $language->iso_code;
 		
 		// Translation file?
-		$file = realpath(base_path('resources/lang')).'/'.$lang.'/'.str_replace('_', '', $id).'.php';
+		$file = realpath(base_path('lang')).'/'.$lang.'/'.str_replace('_', '', $id).'.php';
 		if ( !file_exists( $file ) ){
 			$content = '<?php
 
@@ -156,7 +158,7 @@ try {
 }
 
 //catch exception
-catch(ParseError $e) {
+catch(\Exception $e) {
 
   	echo 'Caught exception: '.$e->getMessage()."\n";
 
@@ -242,7 +244,7 @@ echo '</pre>';
 
 		// Compare
 		$msg = '';
-		$file = realpath(base_path('resources/lang')).'/'.$lang.'/'.str_replace('_', '', $id).'.php';
+		$file = realpath(base_path('lang')).'/'.$lang.'/'.str_replace('_', '', $id).'.php';
 		$t_old = include ($file);
 
 		foreach ($t_keys as $k => $v){
@@ -276,7 +278,7 @@ return [
 
 		foreach($t_keys as $k => $v){
 			if ( $v || 1) $theContent .= 
-"	'$k' => '$v',"."\n";
+"	'".addslashes($k)."' => '".addslashes($v)."',"."\n";
 		}
 
 		$theContent .= '

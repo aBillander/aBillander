@@ -5,7 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 use Request;
-use App\Configuration;
+
+use App\Models\Configuration;
 
 class BillanderServiceProvider extends ServiceProvider
 {
@@ -41,7 +42,7 @@ class BillanderServiceProvider extends ServiceProvider
 
         /*
         if( \Auth::check() )
-            $user = \App\User::find( Auth::id() );       // $email = Auth::user()->email;
+            $user = User::find( Auth::id() );       // $email = Auth::user()->email;
         else
             $user = NULL;
 

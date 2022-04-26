@@ -54,7 +54,7 @@ Route::group(['prefix' => 'abcc', 'middleware' => ['guestcontext']], function ()
 /* ********************************************************** */
 
 
-Route::group(['prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
+Route::group(['prefix' => 'abcc', 'namespace' => 'CustomerCenter'], function ()
 // Route::group(['domain' => env('ABCC_DOMAIN'), 'prefix' => 'abcc', 'namespace' => '\CustomerCenter'], function ()
 {
 //    Route::get('/', ['uses' => 'DashboardController@redirectToLogin']);

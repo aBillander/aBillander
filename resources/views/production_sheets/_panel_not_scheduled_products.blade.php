@@ -20,7 +20,7 @@
   <tbody>
   @foreach ($sheet->productsNotScheduled() as $order)
   @php
-    $product = \App\Product::find( $order['product_id'] );
+    $product = \App\Models\Product::find( $order['product_id'] );
   @endphp
     <tr>
       <td>{{ $order['product_id'] }}</td>

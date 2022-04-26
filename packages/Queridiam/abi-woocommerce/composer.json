@@ -1,0 +1,54 @@
+{
+    "name": "Queridiam/abi-woocommerce",
+    "description": "WooCommerce API Client for aBillander",
+    "homepage": "https://github.com/MQueridiam",
+    "license": "MIT",
+    "keywords": [
+        "aBillander",
+        "laravel",
+        "wordpress",
+        "woocommerce",
+        "Queridiam",
+        "abi-woocommerce"
+    ],
+    "authors": [
+        {
+            "name": "Markus Queridiam",
+            "email": "support@abillander.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : "^8.0",
+        "automattic/woocommerce": "^3.0.0",
+        "laravel/framework": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Queridiam\\WooCommerce\\": "src/"
+        }
+    },
+      "autoload-dev": {
+        "psr-4": {
+          "Queridiam\\WooCommerce\\Test\\": "tests"
+        }
+      },
+      "require-dev": {
+        "fakerphp/faker": "^1.9.1",
+        "mockery/mockery": "^1.4.4",
+        "nunomaduro/collision": "^6.1",
+        "phpunit/phpunit": "^9.5.10"
+      },
+      "extra": {
+        "laravel": {
+          "providers": [
+            "Queridiam\\WooCommerce\\ServiceProvider"
+          ],
+          "aliases": {
+            "WooCommerce": "Queridiam\\WooCommerce\\Facades\\WooCommerce"
+          }
+        }
+      },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

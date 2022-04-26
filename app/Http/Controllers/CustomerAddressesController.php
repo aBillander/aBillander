@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Customer;
-use App\Address;
+use App\Models\Customer;
+use App\Models\Address;
 
 class CustomerAddressesController extends  Controller
 {
@@ -70,7 +70,7 @@ class CustomerAddressesController extends  Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function show($customerId, $id)
@@ -81,7 +81,7 @@ class CustomerAddressesController extends  Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function edit($customerId, $id, Request $request)
@@ -97,7 +97,7 @@ class CustomerAddressesController extends  Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function update($customerId, $id, Request $request)
@@ -116,7 +116,7 @@ class CustomerAddressesController extends  Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\StockCountLine  $stockCountLine
+     * @param  \App\Models\StockCountLine  $stockCountLine
      * @return \Illuminate\Http\Response
      */
     public function destroy($customerId, $id, Request $request)

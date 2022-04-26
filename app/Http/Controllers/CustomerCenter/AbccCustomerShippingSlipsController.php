@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers\CustomerCenter;
 
+use App\Events\CustomerShippingSlipViewed;
 use App\Http\Controllers\Controller;
-
+use App\Models\Company;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerShippingSlip;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\CustomerUser;
+use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\Configuration;
-use App\Currency;
-
-use App\CustomerUser;
-use App\Customer;
-use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
-
-use App\Events\CustomerShippingSlipViewed;
 
 class AbccCustomerShippingSlipsController extends Controller
 {
@@ -93,7 +92,7 @@ class AbccCustomerShippingSlipsController extends Controller
                             ->firstOrFail();
 
         // $company = \App\Context::getContext()->company;
-        $company = \App\Company::with('currency')->findOrFail( intval(Configuration::get('DEF_COMPANY')) );
+        $company = Company::with('currency')->findOrFail( intval(Configuration::get('DEF_COMPANY')) );
 
         return view('abcc.invoices.show', compact('cinvoice', 'company'));
     }
@@ -110,11 +109,11 @@ class AbccCustomerShippingSlipsController extends Controller
                     ->with('error', l('The record with id=:id does not exist', ['id' => $id], 'layouts').$customer->id);
         
 
-        $company = \App\Context::getContext()->company;
+        $company = Context::getContext()->company;
 
         // Get Template
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE') );
+             Template::find( Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_TEMPLATE') );
 
         if ( !$t )
             return redirect()->route('abcc.shippingslips.index', $id)

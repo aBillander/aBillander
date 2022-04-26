@@ -2,25 +2,32 @@
 
 namespace App\Http\Controllers\SalesRepCenter;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Product;
-use App\StockMovement;
-use Form, DB;
-
-// use App\CustomerOrder;
-use App\CustomerOrderLine;
-// use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-// use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
-
 use App\Events\ProductCreated;
-
+use App\Http\Controllers\Controller;
+use App\Models\BOMItem;
+use App\Models\Category;
+use App\Models\Combination;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerOrderLine;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\Ecotax;
+use App\Models\Manufacturer;
+use App\Models\MeasureUnit;
+use App\Models\Option;
+use App\Models\OptionGroup;
+use App\Models\Product;
+use App\Models\ProductBOM;
+use App\Models\StockMovement;
+use App\Models\Supplier;
+use App\Models\Tax;
+use App\Models\WorkCenter;
 use App\Traits\DateFormFormatterTrait;
+use Form, DB;
+use Illuminate\Http\Request;
 
 class AbsrcProductsController extends Controller
 {
@@ -64,16 +71,16 @@ class AbsrcProductsController extends Controller
 
 //        abi_r($products->toSql(), true);
 
-        $products = $products->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $products = $products->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         // abi_r($products, true);
 
         $products->setPath('products');     // Customize the URI used by the paginator
 
         // $categoryList = 
-            if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
+            if ( Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
                 $tree = [];
-                $categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('position', 'asc')->get();
+                $categories =  Category::where('parent_id', '=', '0')->with('children')->orderby('position', 'asc')->get();
                 
                 foreach($categories as $category) {
                     $tree[$category->name] = $category->children()->orderby('position', 'asc')->pluck('name', 'id')->toArray();
@@ -85,11 +92,11 @@ class AbsrcProductsController extends Controller
                 $categoryList = $tree;
 
             } else {
-                // abi_r(\App\Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray(), true);
-                $categoryList = \App\Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray();
+                // abi_r(Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray(), true);
+                $categoryList = Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray();
             }
 
-        $product_procurementtypeList = \App\Product::getProcurementTypeList();
+        $product_procurementtypeList = Product::getProcurementTypeList();
             
 
         return view('absrc.products.index', compact('products', 'categoryList', 'product_procurementtypeList'));
@@ -129,15 +136,15 @@ class AbsrcProductsController extends Controller
 
         $rules = Product::$rules['create'];
 
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+        if ( Configuration::get('PRICES_ENTERED_WITH_TAX') )
             unset($rules['price']);
         else 
             unset($rules['price_tax_inc']);
 
         $this->validate($request, $rules);
 
-        $tax = \App\Tax::find( $request->input('tax_id') );
-        if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ){
+        $tax = Tax::find( $request->input('tax_id') );
+        if ( Configuration::get('PRICES_ENTERED_WITH_TAX') ){
             $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
             $request->merge( ['price' => $price] );
         } else {
@@ -170,8 +177,8 @@ class AbsrcProductsController extends Controller
                         'document_reference' => '', 
                         'quantity' => $request->input('quantity_onhand'),  
                         'price' => null,        // Use default
-                        'currency_id' => \App\Context::getContext()->company->currency->id,
-                        'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+                        'currency_id' => Context::getContext()->company->currency->id,
+                        'conversion_rate' => Context::getContext()->company->currency->conversion_rate,
 
                         'notes' => '',
 
@@ -269,7 +276,7 @@ class AbsrcProductsController extends Controller
                 }
             }
         } else {
-            $groups = \App\OptionGroup::has('options')->orderby('position', 'asc')->pluck('name', 'id');
+            $groups = OptionGroup::has('options')->orderby('position', 'asc')->pluck('name', 'id');
         }
 
 
@@ -280,14 +287,14 @@ class AbsrcProductsController extends Controller
         // See: https://stackoverflow.com/questions/44029961/laravel-search-relation-including-null-in-wherehas
         $pricelists = $product->pricelists; //  \App\PriceList::with('currency')->orderBy('id', 'ASC')->get();
 
-        $ecotaxList = \App\Ecotax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
-        $taxList = \App\Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
-        $measure_unitList = \App\MeasureUnit::pluck('name', 'id')->toArray();
-        $product_procurementtypeList = \App\Product::getProcurementTypeList();
+        $ecotaxList = Ecotax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $taxList = Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $measure_unitList = MeasureUnit::pluck('name', 'id')->toArray();
+        $product_procurementtypeList = Product::getProcurementTypeList();
         // $categoryList = 
-            if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
+            if ( Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
                 $tree = [];
-                $categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('position', 'asc')->get();
+                $categories =  Category::where('parent_id', '=', '0')->with('children')->orderby('position', 'asc')->get();
                 
                 foreach($categories as $category) {
                     $tree[$category->name] = $category->children()->orderby('position', 'asc')->pluck('name', 'id')->toArray();
@@ -299,13 +306,13 @@ class AbsrcProductsController extends Controller
                 $categoryList = $tree;
 
             } else {
-                // abi_r(\App\Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray(), true);
-                $categoryList = \App\Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray();
+                // abi_r(Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray(), true);
+                $categoryList = Category::where('parent_id', '=', '0')->orderby('position', 'asc')->pluck('name', 'id')->toArray();
             }
-        $work_centerList = \App\WorkCenter::pluck('name', 'id')->toArray();
-        $supplierList = \App\Supplier::pluck('name_fiscal', 'id')->toArray();
-        $manufacturerList = \App\Manufacturer::pluck('name', 'id')->toArray();
-        $taxpercentList = \Arr::pluck(\App\Tax::all(), 'percent', 'id');
+        $work_centerList = WorkCenter::pluck('name', 'id')->toArray();
+        $supplierList = Supplier::pluck('name_fiscal', 'id')->toArray();
+        $manufacturerList = Manufacturer::pluck('name', 'id')->toArray();
+        $taxpercentList = \Arr::pluck(Tax::all(), 'percent', 'id');
 
         // When Customer Center enabled:
         $out_of_stockList = [
@@ -361,9 +368,9 @@ class AbsrcProductsController extends Controller
         if (  $rules_tab == 'bom_selector' ) {
             //
 //            abi_r($request->all(), true);
-            $this->validate($request, \App\BOMItem::$rules);
+            $this->validate($request, BOMItem::$rules);
 
-            \App\BOMItem::create($request->all() + ['product_id' => $id]);
+            BOMItem::create($request->all() + ['product_id' => $id]);
 
             return redirect('products/'.$id.'/edit'.'#'.'manufacturing')
                     ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $product->name);
@@ -372,11 +379,11 @@ class AbsrcProductsController extends Controller
         if (  $rules_tab == 'bom_create' ) {
             //
 //            abi_r($request->all(), true);
-//            $this->validate($request, \App\BOMItem::$rules);
+//            $this->validate($request, BOMItem::$rules);
 
-            $bom = \App\ProductBOM::create($request->all());
+            $bom = ProductBOM::create($request->all());
 
-            \App\BOMItem::create($request->all() + ['product_bom_id' => $bom->id]);
+            BOMItem::create($request->all() + ['product_bom_id' => $bom->id]);
 
             return redirect('productboms/'.$bom->id.'/edit')
                     ->with('success', l('Complete la Lista de Materiales para el Producto &#58&#58 (:id) ', ['id' => $product->id], 'layouts') . $product->name);
@@ -391,7 +398,7 @@ class AbsrcProductsController extends Controller
         if ( isset($vrules['ean13']) ) $vrules['ean13'] = $vrules['ean13'] . ','. $product->id.',id';  // Unique
 
         if ($request->input('tab_name') == 'sales') {
-            if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') )
+            if ( Configuration::get('PRICES_ENTERED_WITH_TAX') )
                 unset($vrules['price']);
             else 
                 unset($vrules['price_tax_inc']);
@@ -413,8 +420,8 @@ class AbsrcProductsController extends Controller
             // Dates (cuen)
             $this->mergeFormDates( ['available_for_sale_date'], $request );
             
-            $tax = \App\Tax::find( $product->tax_id );
-            if ( \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ){
+            $tax = Tax::find( $product->tax_id );
+            if ( Configuration::get('PRICES_ENTERED_WITH_TAX') ){
                 $price = $request->input('price_tax_inc')/(1.0+($tax->percent/100.0));
                 $request->merge( ['price' => $price] );
 
@@ -542,7 +549,7 @@ class AbsrcProductsController extends Controller
 
         foreach ( $groups as $group ) 
         {
-            $data[] = \App\Option::where('option_group_id', '=', $group)->orderby('position', 'asc')->pluck('id');
+            $data[] = Option::where('option_group_id', '=', $group)->orderby('position', 'asc')->pluck('id');
         }
 
         $combos = combos($data);
@@ -552,7 +559,7 @@ class AbsrcProductsController extends Controller
         {
             $i++;
 
-            $combination = \App\Combination::create(
+            $combination = Combination::create(
                 array(
 //                    'reference'        => $product->reference.'-'.$i,
                     'reference'        => '',
@@ -601,11 +608,11 @@ class AbsrcProductsController extends Controller
     {
         $search = $request->term;
 
-        $boms = \App\ProductBOM::select('id', 'alias', 'name')
+        $boms = ProductBOM::select('id', 'alias', 'name')
                                 ->where(   'name',      'LIKE', '%'.$search.'%' )
                                 ->orWhere( 'alias', 'LIKE', '%'.$search.'%' )
 //                                ->with('measureunit')
-                                ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                 ->get();
 /*
         $data = [];
@@ -699,10 +706,10 @@ LIMIT 1
     public function ajaxProductCombinationSearch(Request $request)
     {
         if ($request->has('group')) {
-            $combination_id = \App\Combination::getCombinationByOptions( $request->input('product_id'), $request->input('group') );
+            $combination_id = Combination::getCombinationByOptions( $request->input('product_id'), $request->input('group') );
 
             // ToDo: what happens if $combination_id=0 -> Failed to load resource: the server responded with a status of 500 (Internal Server Error)  http://localhost/aBillander5/public/products/ajax/combination_lookup
-            $combination = \App\Combination::select('id', 'product_id', 'reference')
+            $combination = Combination::select('id', 'product_id', 'reference')
                             ->where('id', '=', $combination_id)
                             ->Where('product_id', '=', $request->input('product_id'))
                             ->take(1)->get();
@@ -753,11 +760,11 @@ LIMIT 1
         // Request data
         $product_id      = $request->input('product_id');
         $customer_id     = $request->input('customer_id');
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 //        $conversion_rate = $request->input('conversion_rate');
 //        $product_string  = $request->input('product_string');   // <- Esto es la salida de ajaxProductSearch
 
-    //    $product = \App\Product::find();
+    //    $product = Product::find();
 
         $product = $this->product
                         ->with('tax')
@@ -766,11 +773,11 @@ LIMIT 1
                         ->with('combinations.options.optiongroup')
                         ->find(intval($product_id));
 
-        $customer = \App\Customer::find(intval($customer_id));
+        $customer = Customer::find(intval($customer_id));
         
-        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
-                    \App\Context::getContext()->currency :
-                    \App\Currency::find(intval($currency_id));
+        $currency = ($currency_id == Context::getContext()->currency->id) ?
+                    Context::getContext()->currency :
+                    Currency::find(intval($currency_id));
 
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
@@ -810,9 +817,9 @@ LIMIT 1
      */
     public function getStockMovements($id, Request $request)
     {
-        $items_per_page_stockmovements = intval($request->input('items_per_page_stockmovements', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        $items_per_page_stockmovements = intval($request->input('items_per_page_stockmovements', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page_stockmovements >= 0) ) 
-            $items_per_page_stockmovements = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+            $items_per_page_stockmovements = Configuration::get('DEF_ITEMS_PERPAGE');
 
         $mvts = StockMovement::where('product_id', $id)
                                 ->with('product')
@@ -821,7 +828,7 @@ LIMIT 1
                                 ->orderBy('created_at', 'DESC')
                                 ->orderBy('id', 'DESC');
 
-        $mvts = $mvts->paginate( $items_per_page_stockmovements );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
+        $mvts = $mvts->paginate( $items_per_page_stockmovements );     // Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(Configuration::get('DEF_ITEMS_PERAJAX'))
 
         $mvts->setPath('stockmovements');
 
@@ -833,9 +840,9 @@ LIMIT 1
 
     public function getPendingMovements($id, Request $request)
     {
-        $items_per_page_pendingmovements = intval($request->input('items_per_page_pendingmovements', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        $items_per_page_pendingmovements = intval($request->input('items_per_page_pendingmovements', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page_pendingmovements >= 0) ) 
-            $items_per_page_pendingmovements = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+            $items_per_page_pendingmovements = Configuration::get('DEF_ITEMS_PERPAGE');
 
         
         $lines = CustomerOrderLine::where('product_id', $id)
@@ -848,7 +855,7 @@ LIMIT 1
                             ->select('customer_order_lines.*', 'customer_orders.document_date', \DB::raw('"customerorders" as route'))
                             ->orderBy('customer_orders.document_date', 'desc');
 
-        $lines = $lines->paginate( $items_per_page_pendingmovements );     // \App\Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(\App\Configuration::get('DEF_ITEMS_PERAJAX'))
+        $lines = $lines->paginate( $items_per_page_pendingmovements );     // Configuration::get('DEF_ITEMS_PERPAGE') );  // intval(Configuration::get('DEF_ITEMS_PERAJAX'))
 
         $lines->setPath('pendingmovements');
 
@@ -871,9 +878,9 @@ LIMIT 1
 
     public function getRecentSales($id, Request $request)
     {
-        $items_per_page = intval($request->input('items_per_page', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        $items_per_page = intval($request->input('items_per_page', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page >= 0) ) 
-            $items_per_page = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+            $items_per_page = Configuration::get('DEF_ITEMS_PERPAGE');
 
         // See: https://stackoverflow.com/questions/28913014/laravel-eloquent-search-on-fields-of-related-model
         $o_lines = CustomerOrderLine::where('product_id', $id)

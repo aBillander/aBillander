@@ -27,7 +27,7 @@ $order_by = $family['assemblies'];
           return array_search($model->product_reference, $order_by);
       }) as $order)
   @php
-    $product = \App\Product::find( $order->product_id );
+    $product = \App\Models\Product::find( $order->product_id );
   @endphp
 
 

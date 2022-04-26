@@ -79,10 +79,10 @@
                     {{ $document->document_reference }}
                               @if ( $document->sequence )
                               @if ( $document->status == 'confirmed' )
-                              @if ( ($document->sequence->next_id - $document->document_id) == 1 )
+
                                   <a class="btn btn-xs alert-danger" href="{{ URL::to($model_url.'/' . $document->id . '/unconfirm') }}" title="{{l('Undo Confirm', [], 'layouts')}}"><i class="fa fa-hand-stop-o"></i>
                                   </a>
-                              @endif
+
                               @endif
                               @endif
                     @else

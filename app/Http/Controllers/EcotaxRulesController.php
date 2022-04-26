@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Ecotax as Ecotax;
-use App\EcotaxRule as EcotaxRule;
+use App\Models\Ecotax;
+use App\Models\EcotaxRule;
 use View;
 
 class EcotaxRulesController extends Controller {

@@ -38,7 +38,7 @@
 			<td>{{ $measureunit->id }}</td>
 			<td>{{ $measureunit->sign }}</td>
 			<td>{{ $measureunit->name }}</td>
-			<td>{{ \App\MeasureUnit::getTypeList()[$measureunit->type] }}</td>
+			<td>{{ \App\Models\MeasureUnit::getTypeList()[$measureunit->type] }}</td>
 			<td>{{ $measureunit->decimalPlaces }}</td>
 			<!-- td>{{ $measureunit->conversion_rate }}</td -->
 

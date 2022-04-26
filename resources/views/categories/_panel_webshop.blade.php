@@ -193,6 +193,7 @@
 <script type="text/javascript">
    $(document).ready(function() {
 
+@if ( $category->webshop_id )
           $(document).on('click', '.view-webshop-data', function(evnt) {
            
                var panel = $("#category-webshop-data");
@@ -218,6 +219,7 @@
 
               return false;
           });
+@endif
 
    });
 </script>

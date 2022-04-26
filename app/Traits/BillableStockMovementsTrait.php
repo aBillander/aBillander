@@ -2,10 +2,10 @@
 
 namespace App\Traits;
 
-use App\StockMovement;
-use App\AssemblyOrder;
+use App\Models\StockMovement;
+use App\Models\AssemblyOrder;
 
-use App\Configuration;
+use App\Models\Configuration;
 
 trait BillableStockMovementsTrait
 {

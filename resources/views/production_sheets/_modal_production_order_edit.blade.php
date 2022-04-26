@@ -32,7 +32,7 @@
 
 @php
           $tree = [];
-          $categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
+          $categories =  \App\Models\Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
           
           foreach($categories as $category) {
             $label = $category->name;
@@ -59,7 +59,7 @@ $categoryList = $tree;
          
          <div class="form-group col-lg-5 col-md-5 col-sm-5 {{ $errors->has('warehouse_id') ? 'has-error' : '' }}">
             {{ l('Warehouse') }}
-            {!! Form::select('warehouse_id', \App\Warehouse::selectorList(), null, array('class' => 'form-control', 'id' => 'warehouse_id')) !!}
+            {!! Form::select('warehouse_id', \App\Models\Warehouse::selectorList(), null, array('class' => 'form-control', 'id' => 'warehouse_id')) !!}
             {!! $errors->first('warehouse_id', '<span class="help-block">:message</span>') !!}
          </div>
 

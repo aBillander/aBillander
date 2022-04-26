@@ -17,7 +17,7 @@
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('sales_rep_type') ? 'has-error' : '' }}">
                       {{ l('Sales Rep type') }}
-                      {!! Form::select('sales_rep_type', \App\SalesRep::getTypeList(), null, array('class' => 'form-control')) !!}
+                      {!! Form::select('sales_rep_type', \App\Models\SalesRep::getTypeList(), null, array('class' => 'form-control')) !!}
                      {!! $errors->first('sales_rep_type', '<span class="help-block">:message</span>') !!}
                   </div>
 

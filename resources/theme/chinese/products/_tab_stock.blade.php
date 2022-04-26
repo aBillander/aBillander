@@ -45,7 +45,7 @@
 
 </div>
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
 
 @php
     $out_of_stockList = [

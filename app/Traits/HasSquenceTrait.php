@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use ReflectionClass;
 
-use App\Sequence;
+use App\Models\Sequence;
 
 trait HasSquenceTrait
 {

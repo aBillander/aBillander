@@ -12,8 +12,11 @@
         <a href="{{ route('products.images.export') }}" class="btn xbtn-sm btn-grey" style="margin-right: 21px" 
                 title="{{l('Export Headers')}}"><i class="fa fa-file-excel-o"></i> {{l('Export Headers')}}</a>
 
-        <a href="{{ route('products.images.delete.all') }}" class="btn xbtn-sm btn-danger" style="margin-right: 21px" 
-                title="{{l('Delete ALL Images')}}"><i class="fa fa-trash"></i> {{l('Delete ALL Images')}}</a>
+        <a class="btn xbtn-sm btn-danger delete-item" style="margin-right: 21px" data-html="false" data-toggle="modal" 
+               href="{{ route('products.images.delete.all') }}" 
+               data-content="{{l('The operation you are trying to do is high risk and cannot be undone.', 'layouts')}} {{l('Are you sure?', 'layouts')}}" 
+               data-title="{{ l('Delete ALL Product Images') }}" 
+               onClick="return false;" title="{{l('Delete ALL Images')}}"><i class="fa fa-trash"></i> {{l('Delete ALL Images')}}</a>
 
                 <a href="{{ URL::to('products') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Products') }}</a>
             </div>
@@ -77,6 +80,8 @@
    </div>
 </div>
 @endsection
+
+@include('layouts/modal_delete')
 
 @section('scripts') 
 <script type="text/javascript">

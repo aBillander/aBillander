@@ -2,7 +2,7 @@
 
 namespace App\Traits;
 
-use App\Configuration;
+use App\Models\Configuration;
 
 trait BillableEcotaxableTrait
 {

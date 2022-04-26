@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers;
 
-// use App\Http\Requests;
-
-use Illuminate\Http\Request;
-
-use App\Supplier;
-
-use App\Payment;
-use App\Configuration;
-
-use Excel;
-
-use App\Traits\DateFormFormatterTrait;
-
+use App\Events\SupplierPaymentBounced;
 use App\Events\SupplierPaymentPaid;
-use App\Events\SupplierPaymentBounced;      // <= Just to be the same as CustomerVouchersController, and maybe future use
+use App\Helpers\Exports\ArrayExport;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Payment;
+use App\Models\Supplier;
+use App\Traits\DateFormFormatterTrait;
+use Excel;
+use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use aBillander\SepaSpain\SepaDirectDebit;      // <= Just to be the same as CustomerVouchersController, and maybe future use
 
 class SupplierVouchersController extends Controller
 {
@@ -723,7 +721,7 @@ class SupplierVouchersController extends Controller
         if ( $auto_direct_debit < 0 ) $ribbon1 = 'Todos';
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Recibos de Proveedores -::- '.date('d M Y H:i:s'), '', '', '', '', '', '', '', '', '', '', '', '', ''];        //, date('d M Y H:i:s')];
         $data[] = ['Fecha de Vencimiento: ' . $ribbon];
         $data[] = ['Estado: ' . $request->input('status')];
@@ -765,6 +763,8 @@ class SupplierVouchersController extends Controller
             if ($payment->auto_direct_debit && $payment->bankorder )
                 $row['auto_direct_debit'] = $payment->bankorder->document_reference;
 
+            $row['payment_date'] = $payment->payment_date ? Date::dateTimeToExcel($payment->payment_date) : '';
+
             $row['amount'] = (float) $payment->amount;
 
             $data[] = $row;
@@ -778,56 +778,32 @@ class SupplierVouchersController extends Controller
         $data[] = ['', '', '', '', '', '', 'Total:', $total_amount * 1.0];
 
 
-        $sheetName = 'Recibos de Proveedores' ;
+        $n = count($data);
+        $m = $n - 1;
 
-        // abi_r($data, true);
+        $styles = [
+            'A8:Q8'    => ['font' => ['bold' => true]],
+//            "C$n:C$n"  => ['font' => ['bold' => true, 'italic' => true]],
+            "H$n:H$n"  => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+//            'B' => NumberFormat::FORMAT_TEXT,
+            'F' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'G' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'H' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:C1', 'A2:C2', 'A3:C3', 'A4:C4', 'A5:C5', 'A6:C6'];
+
+        $sheetTitle = 'Recibos de Proveedores';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Recibos de Proveedores', function($excel) use ($sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:C1');
-                $sheet->mergeCells('A2:C2');
-                $sheet->mergeCells('A3:C3');
-                $sheet->mergeCells('A4:C4');
-                $sheet->mergeCells('A5:C5');
-                $sheet->mergeCells('A6:C6');
-                
-                $sheet->getStyle('A8:O8')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-                    'F' => 'dd/mm/yyyy',
-                    'G' => 'dd/mm/yyyy',
-//                    'E' => '0.00%',
-                    'H' => '0.00',
-//                    'F' => '@',
-                ));
-                
-                $n = count($data);
-                $m = $n - 1;
-                $sheet->getStyle("H$n:H$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

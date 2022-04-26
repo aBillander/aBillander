@@ -29,11 +29,11 @@
                     data-oid="{{ $document->id }}" data-oproduct="{{ $document->product_id }}" data-oreference="{{ $document->product_reference }}" data-oname="{{ $document->product_name }}" data-oquantity="{{ $document->planned_quantity }}" 
                     data-olot_reference=
           @if ( $document->product->lot_tracking )
-                  "{{ \App\Lot::generate( \Carbon\Carbon::now(), $document->product, $document->product->expiry_time ) }}"
+                  "{{ \App\Models\Lot::generate( \Carbon\Carbon::now(), $document->product, $document->product->expiry_time ) }}"
           @else
                   ""
           @endif 
-                data-oworkcenter="{{ $document->work_center_id }}" data-ocategory="{{ $document->schedule_sort_order }}" data-onotes="{{ $document->notes }}" data-olottracking="{{ $document->product->lot_tracking }}" data-oexpirytime="{{ $document->product->expiry_time }}" data-oexpirydate="{{ $document->product->expiry_time }}" data-owarehouse="{{ $document->warehouse_id > 0 ? $document->warehouse_id : \App\Configuration::getInt('DEF_WAREHOUSE') }}" 
+                data-oworkcenter="{{ $document->work_center_id }}" data-ocategory="{{ $document->schedule_sort_order }}" data-onotes="{{ $document->notes }}" data-olottracking="{{ $document->product->lot_tracking }}" data-oexpirytime="{{ $document->product->expiry_time }}" data-oexpirydate="{{ $document->product->expiry_time }}" data-owarehouse="{{ $document->warehouse_id > 0 ? $document->warehouse_id : AbiConfiguration::getInt('DEF_WAREHOUSE') }}" 
                 onClick="return false;">
 
                     <i class="fa {{ $icon_class }}"></i> {{l('Finish Order')}}</a>

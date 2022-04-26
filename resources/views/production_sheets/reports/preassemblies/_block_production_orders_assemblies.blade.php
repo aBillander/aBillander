@@ -15,7 +15,7 @@
   
   @foreach ($sheet->productionorders->where('schedule_sort_order', $schedule_sort_order) as $order)
   @php
-    $product = \App\Product::find( $order->product_id );
+    $product = \App\Models\Product::find( $order->product_id );
   @endphp
 
     <tr style="font-weight: bold;">

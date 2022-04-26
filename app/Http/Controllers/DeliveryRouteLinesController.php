@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\DeliveryRoute;
-use App\DeliveryRouteLine;
+use App\Models\DeliveryRoute;
+use App\Models\DeliveryRouteLine;
 use Illuminate\Http\Request;
 
 class DeliveryRouteLinesController extends Controller
@@ -59,7 +59,7 @@ class DeliveryRouteLinesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\DeliveryRouteLine  $deliveryrouteline
+     * @param  \App\Models\DeliveryRouteLine  $deliveryrouteline
      * @return \Illuminate\Http\Response
      */
     public function show($deliveryrouteId, DeliveryRouteLine $deliveryrouteline)
@@ -70,7 +70,7 @@ class DeliveryRouteLinesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\DeliveryRouteLine  $deliveryrouteline
+     * @param  \App\Models\DeliveryRouteLine  $deliveryrouteline
      * @return \Illuminate\Http\Response
      */
     public function edit($deliveryrouteId, DeliveryRouteLine $deliveryrouteline)
@@ -87,7 +87,7 @@ class DeliveryRouteLinesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\DeliveryRouteLine  $deliveryrouteline
+     * @param  \App\Models\DeliveryRouteLine  $deliveryrouteline
      * @return \Illuminate\Http\Response
      */
     public function update($deliveryrouteId, Request $request, DeliveryRouteLine $deliveryrouteline)
@@ -112,7 +112,7 @@ class DeliveryRouteLinesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\DeliveryRouteLine  $deliveryrouteline
+     * @param  \App\Models\DeliveryRouteLine  $deliveryrouteline
      * @return \Illuminate\Http\Response
      */
     public function destroy($deliveryrouteId, DeliveryRouteLine $deliveryrouteline)

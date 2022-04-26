@@ -12,7 +12,7 @@
                            </a></th>
               <th colspan="2">{{ l('Product Name') }}</th>
               <th>
-@if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
+@if( AbiConfiguration::get( 'ABCC_STOCK_SHOW' ) != 'none')
                   {{ l('Stock') }}
 @endif
                </th>
@@ -26,7 +26,7 @@
                   <span class="button-pad">{{ l('Customer Price') }}
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
                                 data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
-      @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+      @if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
           <br /> 
           {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
       @endif
@@ -69,7 +69,7 @@
                <th class="text-right button-pad">{{ l('Total') }}
                          <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
                                 data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
     <br />
     {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
 @endif
@@ -96,28 +96,28 @@
       <td class="button-pad">
 
                     <a class="view-image-multiple" data-html="false" data-toggle="modal"
-                       href="{{ URL::to( \App\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-large_default' . '.' . $line->image->extension ) }}"
+                       href="{{ URL::to( \App\Models\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-large_default' . '.' . $line->image->extension ) }}"
                        data-title="{{ $line->product->name }}"
                        data-caption="{{ $line->image->caption }}"
                        data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 
                        data-id="{{ $line->product->id }}" 
                        onClick="return false;" title="{{l('View Image')}}">
 
-                        <img src="{{ URL::to( \App\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-mini_default' . '.' . $line->image->extension ) . '?'. 'time='. time() }}"
+                        <img src="{{ URL::to( \App\Models\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-mini_default' . '.' . $line->image->extension ) . '?'. 'time='. time() }}"
                              alt="{{ $line->product->name }}" style="border: 1px solid #dddddd;">
                     </a>
 
       </td>
 
       <td class="text-left view-image-multiple" data-html="false" data-toggle="modal"
-                       href="{{ URL::to( \App\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-large_default' . '.' . $line->image->extension ) }}"
+                       href="{{ URL::to( \App\Models\Image::pathProducts() . $line->image->getImageFolder() . $line->image->filename . '-large_default' . '.' . $line->image->extension ) }}"
                        data-title="{{ $line->product->name }}"
                        data-caption="{{ $line->image->caption }}"
                        data-content="{{ nl2p($line->product->description_short) }} <br /> {{ nl2p($line->product->description) }} " 
                        data-id="{{ $line->product->id }}" 
                        onClick="return false;" title="{{l('View Product')}}">{{ $line->product->name }}
 
-          @if( \App\Configuration::isTrue('ENABLE_ECOTAXES') && $line->product->ecotax )
+          @if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') && $line->product->ecotax )
               <br />
               {{ l('Ecotax: ', 'abcc/catalogue') }} {{ $line->product->ecotax->name }} ({{ abi_money( $line->product->getEcotax() ) }})
           @endif
@@ -125,8 +125,8 @@
 
       <td style="white-space:nowrap">
 {{-- STOCK --}}
-@if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) != 'none')
-            @if( \App\Configuration::get( 'ABCC_STOCK_SHOW' ) == 'amount')
+@if( AbiConfiguration::get( 'ABCC_STOCK_SHOW' ) != 'none')
+            @if( AbiConfiguration::get( 'ABCC_STOCK_SHOW' ) == 'amount')
               <div class="progress progress-striped" style="margin-bottom: auto !important">
                 <div class="progress-bar progress-bar-{{ $line->product->stock_badge }}" title="{{ l('stock.badge.'.$line->product->stock_badge, 'abcc/layouts') }}" style="width: 100%">
                         <span class="badge" style="color: #333333; background-color: #ffffff;">{{ $line->product->as_quantity('quantity_onhand') }}</span>

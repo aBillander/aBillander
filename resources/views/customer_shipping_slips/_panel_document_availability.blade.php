@@ -6,10 +6,16 @@
                    {{l('Stock Availability')}}
                </h4><br -->
               <div xclass="page-header">
+
+    <div class="pull-right" style="padding-top: 4px;">
+
+@if( 0 && \App\Helpers\AsignaExcel::getAsignaId() == $document->carrier_id )
+        <a href="{{ route('customershippingslips.asigna', [$document->id]) }}" class="btn xbtn-sm btn-blue" title="{{l('Hoja Asigna :: CSV')}}" xstyle="margin-right: 32px;"><img src="{{ \App\Helpers\AsignaExcel::getCarrierLogoUrl( ) }}" height="20" style="background: white" /> &nbsp;<i><b>{{l('Hoja de Envío')}}</b></i></a>
+@endif
+
+    </div>
+
                   <h3>
-
-                <a class="btn xbtn-sm btn-navy pull-right" href="{{ URL::to($model_path.'/' . $document->id . '/pdf?template='.\App\Configuration::getInt('DEF_PICKING_TEMPLATE')) }}" xtitle="{{l('Show Preview', [], 'layouts')}}" target="_blank" style="margin-right: 72px;"><i class="fa fa-file-code-o"></i> Albarán Picking</a>
-
                       <span style="color: #dd4814;">{{l('Stock Availability')}}</span> <!-- span style="color: #cccccc;">/</span>  -->
                        
                   </h3><br>        
@@ -147,7 +153,7 @@
       <td>{{ $stockmovement->id }}</td>
       <td>{{ abi_date_short( $stockmovement->date ) }}</td>
       <td>[{{ $stockmovement->movement_type_id }}] - 
-           {{ \App\StockMovement::getTypeName($stockmovement->movement_type_id) }}
+           {{ \App\Models\StockMovement::getTypeName($stockmovement->movement_type_id) }}
       </td>
 
       <td>{{ $stockmovement->warehouse->alias }}</td>

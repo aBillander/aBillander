@@ -24,7 +24,7 @@
 
 <div class="row">
     <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('data_file') ? 'has-error' : '' }}"
-      xstyle="background-image: url('{{ URL::to( abi_tenant_local_path( 'images_bb/' ) . \App\Configuration::get('ABCC_BB_IMAGE') ) }}'); background-size: cover; backdrop-filter: blur(8px);">
+      xstyle="background-image: url('{{ URL::to( abi_tenant_local_path( 'images_bb/' ) . AbiConfiguration::get('ABCC_BB_IMAGE') ) }}'); background-size: cover; backdrop-filter: blur(8px);">
        {!! Form::label('data_file', l('Upload Image', [], 'layouts')) !!}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                         data-content="{{ l('File should be an Image.') }}">
@@ -45,8 +45,8 @@
 
             <div class="form-group" style="margin-top: 12px">
 
-@if( \App\Configuration::get('ABCC_BB_IMAGE') )
-              <img width="50%" src="{{ URL::to( abi_tenant_local_path( 'images_bb/' ) . \App\Configuration::get('ABCC_BB_IMAGE') ) }}" class="img-responsive pull-right xcenter-block" style="border: 1px solid #dddddd;">
+@if( AbiConfiguration::get('ABCC_BB_IMAGE') )
+              <img width="50%" src="{{ URL::to( abi_tenant_local_path( 'images_bb/' ) . AbiConfiguration::get('ABCC_BB_IMAGE') ) }}" class="img-responsive pull-right xcenter-block" style="border: 1px solid #dddddd;">
 @endif
               {!! Form::label('', l('Current image').': &nbsp; ', ['class' => 'control-label pull-right']) !!}
             </div>

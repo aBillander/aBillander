@@ -46,12 +46,6 @@
           <ul class="dropdown-menu">
             <li><a href="{{ route('products.import') }}"><i class="fa fa-file-excel-o"></i> &nbsp; {{l('File', [], 'layouts')}}</a>
             </li>
-
-@if ( \App\Configuration::isTrue('ENABLE_FSOL_CONNECTOR') )
-            <li class="divider"></li>
-            <li><a href="{{ route('fsxproducts.index') }}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i> &nbsp; {{l('FactuSOL')}}</a>
-            </li>
-@endif
           </ul>
         </div>
 
@@ -117,7 +111,7 @@
                                           ), -1, array('class' => 'form-control')) !!}
 </div>
 
-@if( 1 || \App\Configuration::isFalse('SHOW_PRODUCTS_ACTIVE_ONLY') )
+@if( 1 || AbiConfiguration::isFalse('SHOW_PRODUCTS_ACTIVE_ONLY') )
   
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
@@ -173,7 +167,7 @@
             <!-- th>{{ l('Cost Price') }}</th -->
             <th>{{ l('Customer Price') }}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
-                        data-content="{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                        data-content="{{ AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') ?
                                     l('Prices are entered inclusive of tax', [], 'appmultilang') :
                                     l('Prices are entered exclusive of tax', [], 'appmultilang') }}">
                     <i class="fa fa-question-circle abi-help"></i>
@@ -202,13 +196,13 @@
 @endphp
 @if ($img)
               <a class="view-image" data-html="false" data-toggle="modal" 
-                     href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
+                     href="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
                      data-content="{{l('You are going to view a record. Are you sure?')}}" 
                      data-title="{{ l('Product Images') }} :: {{ $product->name }} " 
                      data-caption="({{$img->id}}) {{ $img->caption }} " 
                      onClick="return false;" title="{{l('View Image')}}">
 
-                      <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+                      <img src="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
               </a>
 @endif
       </td>

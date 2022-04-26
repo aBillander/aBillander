@@ -80,7 +80,7 @@
                 <a href="{{ URL::to('products/' . $line->product_id . '/edit') }}" title="{{l('View Product')}}" target="_blank">{{ $line->reference }}</a></td>
                 <td>
                 {{ $line->name }}
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )
 
     @include('production_orders._chunck_line_lots')
 
@@ -109,7 +109,7 @@
 
                 <td class="text-right {{  !$filled ? 'active' : $filled }}">
 
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') && ($line->type == 'product') && ($line->product->lot_tracking > 0) )
 @php
 /* See ProductionOrderController@getDocumentMaterials()
     $line->pending = $line->as_quantity('required_quantity') - $line->as_quantity('real_quantity');
@@ -201,13 +201,13 @@ Poner campos de cabecera: producto, cantidad, fecha terminación, almacén, lote
            <div>
              <div class="radio-inline">
                <label>
-                 {!! Form::radio('backorder', '1', \App\Configuration::isTrue('ALLOW_CUSTOMER_BACKORDERS'), ['id' => 'backorder_on']) !!}
+                 {!! Form::radio('backorder', '1', AbiConfiguration::isTrue('ALLOW_CUSTOMER_BACKORDERS'), ['id' => 'backorder_on']) !!}
                  {!! l('Yes', [], 'layouts') !!}
                </label>
              </div>
              <div class="radio-inline">
                <label>
-                 {!! Form::radio('backorder', '0', \App\Configuration::isFalse('ALLOW_CUSTOMER_BACKORDERS'), ['id' => 'backorder_off']) !!}
+                 {!! Form::radio('backorder', '0', AbiConfiguration::isFalse('ALLOW_CUSTOMER_BACKORDERS'), ['id' => 'backorder_off']) !!}
                  {!! l('No', [], 'layouts') !!}
                </label>
              </div>

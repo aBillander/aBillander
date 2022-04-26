@@ -101,7 +101,7 @@
 					</td>
 					
 					<td class="text-right">
-						{{ \App\Tax::find($line->tax_id)->percent }} %
+						{{ \App\Models\Tax::find($line->tax_id)->percent }} %
 					</td>
 					
 					<td class="text-right">

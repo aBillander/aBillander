@@ -8,12 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
-use App\Customer;
-use App\Address;
+use App\Models\Customer;
+use App\Models\Address;
 
 class AbccCustomerAddressesController extends Controller
 {
-
 
    protected $customer;
    protected $address;
@@ -78,7 +77,7 @@ class AbccCustomerAddressesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Address  $address
+     * @param  \App\Models\Address  $address
      * @return \Illuminate\Http\Response
      */
     public function show(Address $address)
@@ -89,7 +88,7 @@ class AbccCustomerAddressesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Address  $address
+     * @param  \App\Models\Address  $address
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -116,7 +115,7 @@ class AbccCustomerAddressesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Address  $address
+     * @param  \App\Models\Address  $address
      * @return \Illuminate\Http\Response
      */
     public function update($id, Request $request)
@@ -142,7 +141,7 @@ class AbccCustomerAddressesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Address  $address
+     * @param  \App\Models\Address  $address
      * @return \Illuminate\Http\Response
      */
     public function updateDefaultAddresses(Request $request)
@@ -176,7 +175,7 @@ class AbccCustomerAddressesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Address  $address
+     * @param  \App\Models\Address  $address
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

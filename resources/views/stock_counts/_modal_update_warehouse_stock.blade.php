@@ -205,7 +205,7 @@ function doAjaxStockUpdate(payload)
                     console.log(data);
                     // alert(data.error);
                     $('#process_log').prepend('<div class="alert alert-danger alert-block">'+ data.responseJSON.message +'</div>');
-                    $('#process_log').prepend('<div class="alert alert-danger alert-block"><h2>Something went wrong. The stack trace is printed below</h2></div>');
+                    $('#process_log').prepend('<div class="alert alert-danger alert-block"><h2>{{ l('Something went wrong. The stack trace is printed below:') }}</h2></div>');
 
                     $('#modal_update-warehouse-stockRedirect').removeClass('btn-success');
                     $('#modal_update-warehouse-stockRedirect').addClass('btn-warning');

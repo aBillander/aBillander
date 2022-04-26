@@ -1,10 +1,20 @@
-<?php 
+<?php
 
-namespace App;
+namespace App\Helpers;
 
-use Excel;
-
+use App\Helpers\Exports\ArrayExport;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\Supplier;
+use App\Models\SupplierInvoice;
+use App\Models\Tax;
+use App\Models\TaxRule;
 use Carbon\Carbon;
+use Excel;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class Modelo347 {
 
@@ -139,14 +149,14 @@ class Modelo347 {
         $ribbon = '['.$customer->identification.'] '.$customer->name_fiscal;
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Comprobación Acumulados 347 :: Año: '.$this->year, '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = ['Facturas del Cliente: ' . $ribbon];
         $data[] = [''];
 
         // All Taxes
-        $alltaxes = \App\Tax::get()->sortByDesc('percent');
-        $alltax_rules = \App\TaxRule::get();
+        $alltaxes = Tax::get()->sortByDesc('percent');
+        $alltax_rules = TaxRule::get();
 
 
         // Define the Excel spreadsheet headers
@@ -167,7 +177,8 @@ class Modelo347 {
         foreach ($documents as $document) {
             $row = [];
             $row[] = $document->document_reference;
-            $row[] = abi_date_short($document->document_date);
+//            $row[] = abi_date_short($document->document_date);
+            $row[] = Date::dateTimeToExcel($document->document_date);
             $row[] = 'T'.$document->document_date->quarter;
             $row[] = $document->payment_status_name;
             $row[] = $document->total_tax_excl * 1.0;
@@ -267,76 +278,55 @@ class Modelo347 {
         }
 
 
-        
+
+        $n = count($data);
+        $m = $n - 3 - 4;
+
+        $styles = [
+            'A5:Q5'    => ['font' => ['bold' => true]],
+            "D$m:K$n"  => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+//            'A' => NumberFormat::FORMAT_TEXT,
+                    'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+                    'D' => NumberFormat::FORMAT_PERCENTAGE_00,
+                    'E' => NumberFormat::FORMAT_NUMBER_00,
+                    'F' => NumberFormat::FORMAT_NUMBER_00,
+                    'G' => NumberFormat::FORMAT_NUMBER_00,
+                    'H' => NumberFormat::FORMAT_NUMBER_00,
+                    'I' => NumberFormat::FORMAT_NUMBER_00,
+                    'J' => NumberFormat::FORMAT_NUMBER_00,
+                    'K' => NumberFormat::FORMAT_NUMBER_00,
+                    'L' => NumberFormat::FORMAT_NUMBER_00,
+                    'M' => NumberFormat::FORMAT_NUMBER_00,
+                    'N' => NumberFormat::FORMAT_NUMBER_00,
+                    'O' => NumberFormat::FORMAT_NUMBER_00,
+                    'P' => NumberFormat::FORMAT_NUMBER_00,
+                    'Q' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:D1', 'A2:D2', 'A3:D3'];
+
+        $sheetTitle = 'Facturas 347';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
         $company = Context::getContext()->company;
 
-        $fileName    = '347 CLIENTES '.$this->year.' - '.str_replace(['.', ','], '', strtoupper($company->name_fiscal) );
-        
-        $sheetName = 'Facturas 347';
+        $sheetFileName = '347 CLIENTES '.$this->year.' - '.str_replace(['.', ','], '', strtoupper($company->name_fiscal) );
 
         // Generate and return the spreadsheet
-        $theSheet = Excel::create($fileName, function($excel) use ($sheetName, $data) {
-
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:D1');
-                $sheet->mergeCells('A2:D2');
-                $sheet->mergeCells('A3:D3');
-                
-                $sheet->getStyle('A5:Q5')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-                    'B' => 'dd/mm/yyyy',
-                    'D' => '0.00%',
-                    'E' => '0.00',
-                    'F' => '0.00',
-                    'G' => '0.00',
-                    'H' => '0.00',
-                    'I' => '0.00',
-                    'J' => '0.00',
-                    'K' => '0.00',
-                    'L' => '0.00',
-                    'M' => '0.00',
-                    'N' => '0.00',
-                    'O' => '0.00',
-                    'P' => '0.00',
-                    'Q' => '0.00',
-//                    'F' => '@',
-                ));
-                
-                $n = count($data);
-                $m = $n - 3 - 4;
-                $sheet->getStyle("D$m:K$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        });
-
         if ($download == true)
         {
-            $theSheet->download('xlsx');
+            return Excel::download($export, $sheetFileName.'.xlsx');
 
         } else {
             //
             $pathToFile     = storage_path() . '/exports/' . $fileName .'.xlsx';// die($pathToFile);
 
-            // https://docs.laravel-excel.com/2.1/export/store.html
-            $storage_data = $theSheet->store('xlsx', storage_path('exports'), true);    // return storage information
+            // return storage information
+            $storage_data = Excel::store($export, $pathToFile);
 /*
 Key     Explanation
 full    Full path with filename
@@ -349,13 +339,9 @@ ext     File extension
         }
 
 
-
-
-
         // Final touches
-        
 
-        return $fileName;
+        return $sheetFileName;
     }
 
 
@@ -387,7 +373,7 @@ ext     File extension
         $ribbon = '['.$customer->identification.'] '.$customer->name_fiscal;
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Comprobación Acumulados 347 :: Año: '.$this->year, '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = ['Facturas del Cliente: ' . $ribbon];
         $data[] = [''];
@@ -400,15 +386,15 @@ ext     File extension
 
         // Convert each member of the returned collection into an array,
         // and append it to the data array.
-        $alltaxes = \App\Tax::get()->sortByDesc('percent');
-        $alltax_rules = \App\TaxRule::get();
+        $alltaxes = Tax::get()->sortByDesc('percent');
+        $alltax_rules = TaxRule::get();
 
         $sub_totals = [];
         
         foreach ($documents as $document) {
             $row = [];
             $row[] = $document->document_reference;
-            $row[] = abi_date_short($document->document_date);
+            $row[] = Date::dateTimeToExcel($document->document_date);
             $row[] = 'T'.$document->document_date->quarter;
             $row[] = $document->payment_status_name;
             $row[] = '';    // $document->paymentmethod->name;
@@ -481,67 +467,46 @@ ext     File extension
         $data[] = [''];
         $data[] = ['', '', '', '', 'Total:', $base * 1.0, $iva * 1.0, $re * 1.0, ($base + $iva + $re) * 1.0];
 
-        
+
+        $n = count($data);
+        $m = $n - 3;
+
+        $styles = [
+            'A4:I4'    => ['font' => ['bold' => true]],
+            "E$m:I$n"  => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+//            'A' => NumberFormat::FORMAT_TEXT,
+                    'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+                    'E' => NumberFormat::FORMAT_PERCENTAGE_00,
+                    'F' => NumberFormat::FORMAT_NUMBER_00,
+                    'G' => NumberFormat::FORMAT_NUMBER_00,
+                    'H' => NumberFormat::FORMAT_NUMBER_00,
+                    'I' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:D1', 'A2:D2', 'A3:D3'];
+
+        $sheetTitle = 'Facturas 347';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
         $company = Context::getContext()->company;
 
-        $fileName    = '347 CLIENTES '.$this->year.' - '.str_replace(['.', ','], '', strtoupper($company->name_fiscal) );
-        
-        $sheetName = 'Facturas 347';
+        $sheetFileName = '347 CLIENTES '.$this->year.' - '.str_replace(['.', ','], '', strtoupper($company->name_fiscal) );
 
         // Generate and return the spreadsheet
-        $theSheet = Excel::create($fileName, function($excel) use ($sheetName, $data) {
-
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:D1');
-                $sheet->mergeCells('A2:D2');
-                $sheet->mergeCells('A3:D3');
-                
-                $sheet->getStyle('A4:I4')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-                    'B' => 'dd/mm/yyyy',
-                    'E' => '0.00%',
-                    'F' => '0.00',
-                    'G' => '0.00',
-                    'H' => '0.00',
-                    'I' => '0.00',
-//                    'F' => '@',
-                ));
-                
-                $n = count($data);
-                $m = $n - 3;
-                $sheet->getStyle("E$m:I$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        });
-
         if ($download == true)
         {
-            $theSheet->download('xlsx');
+            return Excel::download($export, $sheetFileName.'.xlsx');
 
         } else {
             //
             $pathToFile     = storage_path() . '/exports/' . $fileName .'.xlsx';// die($pathToFile);
 
-            // https://docs.laravel-excel.com/2.1/export/store.html
-            $storage_data = $theSheet->store('xlsx', storage_path('exports'), true);    // return storage information
+            // return storage information
+            $storage_data = Excel::store($export, $pathToFile);
 /*
 Key     Explanation
 full    Full path with filename
@@ -554,13 +519,9 @@ ext     File extension
         }
 
 
-
-
-
         // Final touches
-        
 
-        return $fileName;
+        return $sheetFileName;
     }
 
     
@@ -683,7 +644,7 @@ ext     File extension
         $ribbon = '['.$supplier->identification.'] '.$supplier->name_fiscal;
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Comprobación Acumulados 347 :: Año: '.$this->year, '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = ['Facturas del Proveedor: ' . $ribbon];
         $data[] = [''];
@@ -696,15 +657,15 @@ ext     File extension
 
         // Convert each member of the returned collection into an array,
         // and append it to the data array.
-        $alltaxes = \App\Tax::get()->sortByDesc('percent');
-        $alltax_rules = \App\TaxRule::get();
+        $alltaxes = Tax::get()->sortByDesc('percent');
+        $alltax_rules = TaxRule::get();
 
         $sub_totals = [];
         
         foreach ($documents as $document) {
             $row = [];
             $row[] = $document->document_reference;
-            $row[] = abi_date_short($document->document_date);
+            $row[] = Date::dateTimeToExcel($document->document_date);
             $row[] = 'T'.$document->document_date->quarter;
             $row[] = $document->payment_status_name;
             $row[] = '';    // $document->paymentmethod->name;
@@ -777,67 +738,46 @@ ext     File extension
         $data[] = [''];
         $data[] = ['', '', '', '', 'Total:', $base * 1.0, $iva * 1.0, $re * 1.0, ($base + $iva + $re) * 1.0];
 
-        
+
+        $n = count($data);
+        $m = $n - 3;
+
+        $styles = [
+            'A4:I4'    => ['font' => ['bold' => true]],
+            "E$m:I$n"  => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+//            'A' => NumberFormat::FORMAT_TEXT,
+                    'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+                    'E' => NumberFormat::FORMAT_PERCENTAGE_00,
+                    'F' => NumberFormat::FORMAT_NUMBER_00,
+                    'G' => NumberFormat::FORMAT_NUMBER_00,
+                    'H' => NumberFormat::FORMAT_NUMBER_00,
+                    'I' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:D1', 'A2:D2', 'A3:D3'];
+
+        $sheetTitle = 'Facturas 347';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
         $company = Context::getContext()->company;
 
-        $fileName    = '347 PROVEEDORES '.$this->year.' - '.str_replace(['.', ','], '', strtoupper($company->name_fiscal) );
-        
-        $sheetName = 'Facturas 347';
+        $sheetFileName = '347 PROVEEDORES '.$this->year.' - '.str_replace(['.', ','], '', strtoupper($company->name_fiscal) );
 
         // Generate and return the spreadsheet
-        $theSheet = Excel::create($fileName, function($excel) use ($sheetName, $data) {
-
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:D1');
-                $sheet->mergeCells('A2:D2');
-                $sheet->mergeCells('A3:D3');
-                
-                $sheet->getStyle('A4:I4')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-                    'B' => 'dd/mm/yyyy',
-                    'E' => '0.00%',
-                    'F' => '0.00',
-                    'G' => '0.00',
-                    'H' => '0.00',
-                    'I' => '0.00',
-//                    'F' => '@',
-                ));
-                
-                $n = count($data);
-                $m = $n - 3;
-                $sheet->getStyle("E$m:I$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        });
-
         if ($download == true)
         {
-            $theSheet->download('xlsx');
+            return Excel::download($export, $sheetFileName.'.xlsx');
 
         } else {
             //
             $pathToFile     = storage_path() . '/exports/' . $fileName .'.xlsx';// die($pathToFile);
 
-            // https://docs.laravel-excel.com/2.1/export/store.html
-            $storage_data = $theSheet->store('xlsx', storage_path('exports'), true);    // return storage information
+            // return storage information
+            $storage_data = Excel::store($export, $pathToFile);
 /*
 Key     Explanation
 full    Full path with filename
@@ -850,12 +790,8 @@ ext     File extension
         }
 
 
-
-
-
         // Final touches
-        
 
-        return $fileName;
+        return $sheetFileName;
     }
 }

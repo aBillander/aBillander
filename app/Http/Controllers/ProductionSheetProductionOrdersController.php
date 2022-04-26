@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\ProductionSheet;
-use App\ProductionOrder;
-
-use App\Product;
-
-use App\Lot;
-use App\LotItem;
-
-use App\Configuration;
-
+use App\Models\Category;
+use App\Models\Configuration;
+use App\Models\Lot;
+use App\Models\LotItem;
+use App\Models\Product;
+use App\Models\ProductionOrder;
+use App\Models\ProductionSheet;
+use App\Models\Warehouse;
+use App\Models\WorkCenter;
 use App\Traits\DateFormFormatterTrait;
+use Illuminate\Http\Request;
 
 class ProductionSheetProductionOrdersController extends Controller
 {
@@ -54,12 +52,12 @@ class ProductionSheetProductionOrdersController extends Controller
         $work_center_id = $request->input('work_center_id', '');
         $category_id    = $request->input('category_id',    '');
 
-        $work_centerList = \App\WorkCenter::pluck('name', 'id')->toArray();
+        $work_centerList = WorkCenter::pluck('name', 'id')->toArray();
 
         // Category Tree
-        if ( \App\Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
+        if ( Configuration::get('ALLOW_PRODUCT_SUBCATEGORIES') ) {
             $tree = [];
-            $categories =  \App\Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
+            $categories =  Category::where('parent_id', '=', '0')->with('children')->orderby('name', 'asc')->get();
             
             foreach($categories as $category) {
                 $label = $category->name;
@@ -78,10 +76,10 @@ class ProductionSheetProductionOrdersController extends Controller
 
         } else {
             
-            $categoryList =  \App\Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray();
+            $categoryList =  Category::where('parent_id', '=', '0')->orderby('name', 'asc')->pluck('name', 'id')->toArray();
         }
 
-        $warehouseList = \App\Warehouse::selectorList();
+        $warehouseList = Warehouse::selectorList();
 
 // \DB::enableQueryLog();
 

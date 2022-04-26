@@ -14,7 +14,7 @@
         <a href="{{ route('shippingmethods.index') }}">{{ l('Shipping Method Rules') }}</a> <span style="color: #cccccc;">/</span> {{ $shippingmethod->name }}
 
         <a href="javascript:void(0);" class="btn btn-info btn-xs">{{ $shippingmethod->billing_type_name }}</a>
-        <span class="badge" style="background-color: #3a87ad;" title="{{ \App\Context::getContext()->currency->name }}">{{ \App\Context::getContext()->currency->iso_code }}</span>
+        <span class="badge" style="background-color: #3a87ad;" title="{{ AbiContext::getContext()->currency->name }}">{{ AbiContext::getContext()->currency->iso_code }}</span>
     </h2>        
 </div>
 
@@ -76,7 +76,7 @@
 {{--
 @php
 
-$address = \App\Context::getContext()->company->address;
+$address = AbiContext::getContext()->company->address;
 $address->state_id = 42;  // Sevilla
 
 $amount = 25.0;

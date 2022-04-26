@@ -3,8 +3,10 @@
 namespace App\Listeners;
 
 use App\Events\ProductCreated;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Models\Context;
+use App\Models\StockMovement;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
 class InitializeStock
 {
@@ -39,15 +41,15 @@ class InitializeStock
                         'quantity' => $request->input('quantity_onhand'),  
                         'notes' => '',
                         'product_id' => $product->id, 
-                        'currency_id' => \App\Context::getContext()->currency->id, 
-                        'conversion_rate' => \App\Context::getContext()->currency->conversion_rate, 
+                        'currency_id' => Context::getContext()->currency->id, 
+                        'conversion_rate' => Context::getContext()->currency->conversion_rate, 
                         'warehouse_id' => $request->input('warehouse_id'), 
                         'movement_type_id' => 10,
                         'model_name' => '', 'document_id' => 0, 'document_line_id' => 0, 'combination_id' => 0, 'user_id' => \Auth::id()
             ];
     
             // Initial Stock
-            $stockmovement = \App\StockMovement::create( $data );
+            $stockmovement = StockMovement::create( $data );
     
             // Stock movement fulfillment (perform stock movements)
             $stockmovement->process();

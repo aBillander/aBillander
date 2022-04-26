@@ -60,6 +60,13 @@
                 <span>
               @endif
               {{ $sdd->status_name }}</span>
+
+@if ( $sdd->status == 'confirmed' )
+
+        <a href="{{ route('sepasp.directdebit.unconfirm', [$sdd->id]) }}" class="btn btn-xs btn-danger" 
+        title="{{l('Undo', 'layouts')}}" xstyle="margin-left: 22px;"><i class="fa fa-undo"></i></a>
+
+@endif
             </td>
 
       <td class="text-center">

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ \App\Context::getContext()->language->iso_code }}">
+<html lang="{{ AbiContext::getContext()->language->iso_code }}">
 	<head>
 		<meta charset="utf-8">
 	</head>
@@ -7,6 +7,14 @@
 		<h2>Nuevo Mensaje de <a href="{{ URL::to('customers/' . $customer->id . '/edit') }}" title=" {{l('View Customer')}} " target="_blank">{{ $customer->name_regular }}</a></h2>
 
 <div>{!! $user_message !!}</div>
+
+@if( $customer_user ?? null )
+
+			<br /><br />
+			<hr />
+			Enviado por: {{ $customer_user->getFullName() }}<br />
+			{{ $customer_user->email }}
+@endif
 
 {{--
 		<div>

@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\CustomerCenter;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\Configuration;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
-use App\Payment as Payment;
-
-class AbccCustomerVouchersController extends Controller {
-
+class AbccCustomerVouchersController extends Controller
+{
 
    protected $payment;
 
@@ -32,7 +31,7 @@ class AbccCustomerVouchersController extends Controller {
 					->with('bankorder')
 					->orderBy('due_date', 'desc');		// ->get();
 
-        $payments = $payments->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
+        $payments = $payments->paginate( Configuration::get('ABCC_ITEMS_PERPAGE') );
 
         $payments->setPath('vouchers');
 

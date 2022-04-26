@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\CustomerCenter;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\Address;
+use App\Models\Configuration;
+use App\Models\Customer;
+use App\Models\PriceRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\Customer;
-use App\Address;
-use App\PriceRule;
 
 class AbccCustomerController extends Controller
 {
@@ -62,7 +61,7 @@ class AbccCustomerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Customer  $customer
+     * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
     public function show(Customer $customer)
@@ -73,7 +72,7 @@ class AbccCustomerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Customer  $customer
+     * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
     public function edit()
@@ -91,7 +90,7 @@ class AbccCustomerController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Customer  $customer
+     * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -121,7 +120,7 @@ class AbccCustomerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Customer  $customer
+     * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
     public function destroy(Customer $customer)
@@ -137,9 +136,9 @@ class AbccCustomerController extends Controller
      */
     public function getQuantityPriceRules(Request $request)
     {
-        $items_per_page_pricerules = intval($request->input('items_per_page_pricerules', \App\Configuration::get('DEF_ITEMS_PERPAGE')));
+        $items_per_page_pricerules = intval($request->input('items_per_page_pricerules', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page_pricerules >= 0) ) 
-            $items_per_page_pricerules = \App\Configuration::get('DEF_ITEMS_PERPAGE');
+            $items_per_page_pricerules = Configuration::get('DEF_ITEMS_PERPAGE');
 
         $customer      = Auth::user()->customer;
         $id = $customer->id;

@@ -1,12 +1,13 @@
-<?php namespace App\Http\Controllers;
+<?php
 
-use App\Http\Requests;
+namespace App\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Combination as Combination;
-use App\Product as Product;
+use App\Models\Combination;
+use App\Models\Product;
 
 class CombinationsController extends Controller {
 

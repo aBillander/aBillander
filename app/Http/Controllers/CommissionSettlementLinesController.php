@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use App\Traits\ViewFormatterTrait;
 use App\Traits\DateFormFormatterTrait;
 
-use App\Configuration;
+use App\Models\Configuration;
 
-use App\CommissionSettlement;
-use App\CommissionSettlementLine;
-use App\SalesRep;
-use App\CustomerInvoice;
+use App\Models\CommissionSettlement;
+use App\Models\CommissionSettlementLine;
+use App\Models\SalesRep;
+use App\Models\CustomerInvoice;
 
 class CommissionSettlementLinesController extends Controller
 {

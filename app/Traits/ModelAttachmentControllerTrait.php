@@ -4,8 +4,8 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 
-use App\ModelAttachment;
-use App\Configuration;
+use App\Models\ModelAttachment;
+use App\Models\Configuration;
 
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\URL;

@@ -1,11 +1,12 @@
-<?php namespace App\Http\Controllers;
+<?php
 
-use App\Http\Requests;
+namespace App\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Tax as Tax;
+use App\Models\Tax;
 use View;
 
 class TaxesController extends Controller {
@@ -106,7 +107,18 @@ class TaxesController extends Controller {
      */
     public function destroy($id)
     {
-        $this->tax->findOrFail($id)->delete();
+        $tax = $this->tax->findOrFail($id);
+
+        try {
+
+            $tax->delete();
+            
+        } catch (\Exception $e) {
+
+            return redirect()->back()
+                    ->with('error', l('This record cannot be deleted because it is in use &#58&#58 (:id) ', ['id' => $id], 'layouts').$e->getMessage());
+            
+        }
 
         return redirect('taxes')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts'));

@@ -2,18 +2,24 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
     /**
      * The event listener mappings for the application.
      *
-     * @var array
+     * @var array<class-string, array<int, class-string>>
      */
-    // php artisan event:generate
     protected $listen = [
+        Registered::class => [
+            SendEmailVerificationNotification::class,
+        ],
+
+// aBillander stuff:        
 
         'Illuminate\Mail\Events\MessageSent' => [
             'App\Listeners\LogSentMessageListener',
@@ -205,13 +211,8 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\CustomerInvoiceViewed' => [
             'App\Listeners\CustomerInvoiceSetDates',
         ],
-        
-        'App\Events\Event' => [
-            'App\Listeners\EventListener',
-        ],
 */
     ];
-    // php artisan event:generate
 
     /**
      * Register any events for your application.
@@ -220,8 +221,16 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        parent::boot();
-
         //
+    }
+
+    /**
+     * Determine if events and listeners should be automatically discovered.
+     *
+     * @return bool
+     */
+    public function shouldDiscoverEvents()
+    {
+        return false;
     }
 }

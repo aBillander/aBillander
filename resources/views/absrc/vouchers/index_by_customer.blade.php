@@ -176,7 +176,7 @@
 
       <td class="button-pad">{{ optional($payment->paymenttype)->name }} 
 
-@if( ($payment->payment_type_id == \App\Configuration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) )
+@if( ($payment->payment_type_id == AbiConfiguration::getInt('DEF_CHEQUE_PAYMENT_TYPE')) )
   @if( $payment->chequedetail )
 
               <a class="btn btn-xs btn-warning" href="{{ URL::to('absrc/cheques/' . $payment->chequedetail->cheque_id . '/edit' ) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
@@ -214,7 +214,7 @@
             	@else
             		<span>
             	@endif
-            	{{\App\Payment::getStatusName($payment->status)}}</span></td>
+            	{{\App\Models\Payment::getStatusName($payment->status)}}</span></td>
 
 
       <td class="text-center">
@@ -294,14 +294,14 @@ $(document).ready(function() {
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(function() {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -309,7 +309,7 @@ $(document).ready(function() {
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 </script>

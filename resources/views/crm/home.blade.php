@@ -12,17 +12,18 @@
     </div>
     <h2>
          
-        <a href="{{ route('logout') }}"
-            onclick="event.preventDefault();
-                     document.getElementById('logout-form').submit();">
+        <a class="btn btn-sm alert-success" href="#" onclick="return false;" title=" _ninette_ ">
+            <i class="fa fa-key"></i>
+        </a> 
+
+        <span style="color: #cccccc;">/</span> 
+
+        <a href="#" onclick="return false;">
             {{ Auth::user()->getFullName() }}
         </a>
 
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            {{ csrf_field() }}
-        </form>
-
-         <!-- a href="{{ URL::to('auth/logout') }}">{{ Auth::user()->getFullName() }}</a --> <span style="color: #cccccc;">/</span> {{ l('microCRM', 'layouts') }} <span style="color: #cccccc;">/</span> {{ l('Home', 'layouts') }}
+        <span style="color: #cccccc;">/</span> {!! l('microCRM', 'layouts') !!} 
+        <span style="color: #cccccc;">/</span> {{ l('Home', 'layouts') }}
     </h2>
 </div>
 
@@ -55,7 +56,7 @@
 {{-- ***************************************************** --}}
 
 
-<div class="container-fluid">
+<div class="container-fluid hidden">
    <div class="row">
 
       <div class="col-lg-2 col-md-2 col-sm-2">

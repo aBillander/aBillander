@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\WarehouseShippingSlipLine;
+use App\Models\WarehouseShippingSlipLine;
 use Illuminate\Http\Request;
 
-class WarehouseShippingSlipLineController extends Controller
+class WarehouseShippingSlipLinesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,7 +41,7 @@ class WarehouseShippingSlipLineController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\WarehouseShippingSlipLine  $warehouseShippingSlipLine
+     * @param  \App\Models\WarehouseShippingSlipLine  $warehouseShippingSlipLine
      * @return \Illuminate\Http\Response
      */
     public function show(WarehouseShippingSlipLine $warehouseShippingSlipLine)
@@ -52,7 +52,7 @@ class WarehouseShippingSlipLineController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\WarehouseShippingSlipLine  $warehouseShippingSlipLine
+     * @param  \App\Models\WarehouseShippingSlipLine  $warehouseShippingSlipLine
      * @return \Illuminate\Http\Response
      */
     public function edit(WarehouseShippingSlipLine $warehouseShippingSlipLine)
@@ -64,7 +64,7 @@ class WarehouseShippingSlipLineController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\WarehouseShippingSlipLine  $warehouseShippingSlipLine
+     * @param  \App\Models\WarehouseShippingSlipLine  $warehouseShippingSlipLine
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, WarehouseShippingSlipLine $warehouseShippingSlipLine)
@@ -75,7 +75,7 @@ class WarehouseShippingSlipLineController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\WarehouseShippingSlipLine  $warehouseShippingSlipLine
+     * @param  \App\Models\WarehouseShippingSlipLine  $warehouseShippingSlipLine
      * @return \Illuminate\Http\Response
      */
     public function destroy(WarehouseShippingSlipLine $warehouseShippingSlipLine)

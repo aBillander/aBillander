@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers\SalesRepCenter;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use App\Cheque;
-use App\ChequeDetail;
-use App\Currency;
-use App\Bank;
-use App\Configuration;
-
-use Excel;
-
+use App\Helpers\Exports\ArrayExport;
+use App\Models\Bank;
+use App\Models\Cheque;
+use App\Models\ChequeDetail;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
 use App\Traits\DateFormFormatterTrait;
+use Excel;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class AbsrcChequesController extends Controller
 {
@@ -103,7 +102,7 @@ class AbsrcChequesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Cheque  $cheque
+     * @param  \App\Models\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
     public function show(Cheque $cheque)
@@ -114,7 +113,7 @@ class AbsrcChequesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Cheque  $cheque
+     * @param  \App\Models\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
     public function edit(Cheque $cheque)
@@ -137,7 +136,7 @@ class AbsrcChequesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Cheque  $cheque
+     * @param  \App\Models\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Cheque $cheque)
@@ -158,7 +157,7 @@ class AbsrcChequesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Cheque  $cheque
+     * @param  \App\Models\Cheque  $cheque
      * @return \Illuminate\Http\Response
      */
     public function destroy(Cheque $cheque)
@@ -296,7 +295,7 @@ class AbsrcChequesController extends Controller
         }
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Cheques de Clientes', '', '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = ['Fecha de Emisión: ' . $ribbon];
         $data[] = ['Fecha de Vencimiento: ' . $ribbon1];
@@ -342,53 +341,31 @@ class AbsrcChequesController extends Controller
         $data[] = ['', '', 'Total:', $total_amount * 1.0];
 
 
-        $sheetName = 'Cheques' ;
+        $n = count($data);
+        $m = $n - 1;
 
-        // abi_r($data, true);
+        $styles = [
+            'A6:R6'    => ['font' => ['bold' => true]],
+            "C$n:C$n"  => ['font' => ['bold' => true, 'italic' => true]],
+            "D$n:D$n"  => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+//            'B' => NumberFormat::FORMAT_TEXT,
+            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'D' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:C1', 'A2:C2', 'A3:C3', 'A4:C4'];
+
+        $sheetTitle = 'Cheques';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Cheques', function($excel) use ($sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:C1');
-                $sheet->mergeCells('A2:C2');
-                $sheet->mergeCells('A3:C3');
-                $sheet->mergeCells('A4:C4');
-                
-                $sheet->getStyle('A6:R6')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-                    'B' => 'dd/mm/yyyy',
-//                    'E' => '0.00%',
-                    'D' => '0.00',
-//                    'F' => '@',
-                ));
-                
-                $n = count($data);
-                $m = $n - 1;
-                $sheet->getStyle("D$n:D$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

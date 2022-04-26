@@ -113,7 +113,7 @@
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" 
                                     data-content="{{ l('Prices shown: Rule Price (or Unit Price, if there are Extra Items), Unit Price (when applies, i.e. Price Rule is per Pack), Product Price (as seen on Product record).') }}
                                     {{l('Price is WITHOUT Taxes.')}}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
     <br />{{l('Prices are exclusive of Ecotax.')}}
 @endif
                   ">
@@ -135,7 +135,7 @@
 		<tr>
       <td class="text-center">{{ $rule->id }}</td>
       <td>{{ $rule->name }}
-          <br /><span class="text-warning">[{{ \App\PriceRule::getRuleTypeName($rule->rule_type) }}]</span> <span title="{{l('Creation date')}}">{{ abi_date_short( $rule->created_at ) }}</span>
+          <br /><span class="text-warning">[{{ \App\Models\PriceRule::getRuleTypeName($rule->rule_type) }}]</span> <span title="{{l('Creation date')}}">{{ abi_date_short( $rule->created_at ) }}</span>
       </td>
       <!-- td>{{ optional($rule->category)->name }}</td -->
       <td>
@@ -337,7 +337,7 @@ $(document).ready(function() {
                     if ( response.payment_method_id > 0 ) {
                       $('#payment_method_id').val(response.payment_method_id);
                     } else {
-                      $('#payment_method_id').val({{ intval(\App\Configuration::get('DEF_CUSTOMER_PAYMENT_METHOD'))}});
+                      $('#payment_method_id').val({{ intval(AbiConfiguration::get('DEF_CUSTOMER_PAYMENT_METHOD'))}});
                     }
 
                     $('#currency_id').val(response.currency_id);
@@ -361,11 +361,11 @@ $(document).ready(function() {
                       $('#shipping_address_id').val(response.invoicing_address_id);
                     }
 
-                    $('#warehouse_id').val({{ intval(\App\Configuration::get('DEF_WAREHOUSE'))}});
+                    $('#warehouse_id').val({{ intval(AbiConfiguration::get('DEF_WAREHOUSE'))}});
 
                     shipping_method_id = response.shipping_method_id;
                     if (shipping_method_id == null) {
-                        shipping_method_id = "{{ intval(\App\Configuration::get('DEF_SHIPPING_METHOD'))}}";
+                        shipping_method_id = "{{ intval(AbiConfiguration::get('DEF_SHIPPING_METHOD'))}}";
                     }
                     $('#shipping_method_id').val( shipping_method_id );
 
@@ -385,14 +385,14 @@ $(document).ready(function() {
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(function() {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -400,7 +400,7 @@ $(document).ready(function() {
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 </script>

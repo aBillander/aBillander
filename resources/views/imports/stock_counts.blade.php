@@ -8,6 +8,8 @@
     <div class="col-md-12">
         <div class="page-header">
             <div class="pull-right">
+                <a class="btn btn-blue" href="{{ URL::to('stockcounts/' . $stockcount->id . '/stockcountlines') }}" title="{{l('Stock Count Lines', 'stockcounts')}}"><i class="fa fa-folder-open-o"></i> {{l('Stock Count Lines', 'stockcounts')}}</a>
+
                 <a href="{{ URL::to('stockcounts') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to Stock Counts') }}</a>
             </div>
             <h2><a href="{{ URL::to('stockcounts') }}">{{ l('Stock Counts') }}</a> <span style="color: #cccccc;">/</span> {{ l('Import') }} <span style="color: #cccccc;">::</span> {{$stockcount->name}} </h2>

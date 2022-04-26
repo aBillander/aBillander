@@ -5,7 +5,7 @@
 
 @if ($sheet->customerorders()->count())
 
-{!! Form::open( ['route' => ['fsxorders.export.orders'], 'method' => 'POST', 'id' => 'form-export'] ) !!}
+{{-- !! Form::open( ['route' => ['fsxorders.export.orders'], 'method' => 'POST', 'id' => 'form-export'] ) !! --}}
 {{-- !! csrf_field() !! --}}
 
 <table id="sheets" class="table table-hover">
@@ -91,13 +91,13 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
                 <a class="btn btn-sm btn-warning move-customer-order" href="{{ URL::to('customerorders/' . $order->id . '/move') }}" title="{{l('Move')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->reference }}" onClick="return false;"><i class="fa fa-external-link"></i></a>
 
                 <a class="btn btn-sm btn-danger unlink-customer-order" href="{{ URL::to('customerorders/' . $order->id . '/unlink') }}" title="{{l('Unlink')}}" data-oid="{{ $order->id }}" data-oreference="{{ $order->reference }}" onClick="return false;"><i class="fa fa-unlink"></i></a>
-
+{{--
                 @if ($order->export_date)
                 <a class="btn btn-sm btn-default" style="display:none;" href="javascript:void(0);" title="{{$order->export_date}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i></a>
                 @else
                 <a class="btn btn-sm btn-grey" href="{{ URL::route('fsxorders.export', [$order->id] ) }}" title="{{l('Exportar a FactuSOL')}}"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i></a>
                 @endif
-
+--}}
             </td>
     </tr>
   @endforeach
@@ -105,7 +105,7 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
 </table>
 
 
-{!! Form::close() !!}
+{{-- !! Form::close() !! --}}
 
 
 @else
@@ -129,9 +129,9 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
 <div class="row">
 
          <div class="form-group col-lg-6 col-md-6 col-sm-6">
-
+{{--
         <a class="btn btn-sm btn-grey pull-left" style="margin-right: 21px" href="javascript:void(0);" title="{{l('Exportar Pedidos seleccionados')}}" onclick = "this.disabled=true;$('#form-export').attr('action', '{{ route( 'fsxorders.export.orders' )}}');$('#form-export').submit();return false;"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i>  {{l('Exportar a FactuSOL')}}</a>
-
+--}}
          <div><span class="label label-success">{{ $sheet->customerorders()->count() }}</span> pedido(s) en total.
          <br />
          <span class="label label-danger"> {{ $sheet->customerorders()->where('export_date', null)->count() }}</span> pedido(s) pendientes descargar a FactuSOL.</div>
@@ -143,7 +143,7 @@ border-radius: 3px;" xclass="btn btn-xs btn-grey" data-toggle="popover" data-pla
 
 
 
-        <!-- a class="btn btn-sm btn-grey" style="margin-right: 21px" href="javascript:void(0);" title="{{l('Exportar Pedidos seleccionados')}}" onclick = "this.disabled=true;$('#form-export').attr('action', '{{ route( 'fsxorders.export.orders' )}}');$('#form-export').submit();return false;"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i>  {{l('Exportar a FactuSOL')}}</a -->
+        <!-- a class="btn btn-sm btn-grey" style="margin-right: 21px" href="javascript:void(0);" title="{{l('Exportar Pedidos seleccionados')}}" onclick = "this.disabled=true;$('#form-export').attr('action', '{ { route( 'fsxorders.export.orders' )} }');$('#form-export').submit();return false;"><i class="fa fa-foursquare" style="color: #ffffff; background-color: #df382c; border-color: #df382c; font-size: 16px;"></i>  {{l('Exportar a FactuSOL')}}</a -->
 
   <a href="{{ route('productionsheet.pickinglist', [$sheet->id]) }}" class="btn btn-sm btn-info hidden" title="{{l('Show', [], 'layouts')}}"><i class="fa fa-eye"></i> {{l('Picking List')}}</a>
 

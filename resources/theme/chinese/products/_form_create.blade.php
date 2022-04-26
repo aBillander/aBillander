@@ -80,7 +80,7 @@
                     {!! Form::select('measure_unit_id', $measure_unitList, null, array('class' => 'form-control')) !!}
                     {!! $errors->first('measure_unit_id', '<span class="help-block">:message</span>') !!}
                  </div>
-@if ( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if ( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
                  <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('ecotax_id') ? 'has-error' : '' }}">
                     {{ l('Eco-Tax') }}
                     {!! Form::select('ecotax_id', array('' => l('-- Please, select --', [], 'layouts')) + $ecotaxList, null, array('class' => 'form-control')) !!}
@@ -172,19 +172,19 @@
                   <div class="form-group col-lg-3 col-md-3 col-sm-3">
                      <label for="margin_method" class="control-label">{{ l('Margin calculation method') }}</label>
                      <div class="form-control" id="margin_method">
-                      <strong>{{ \App\Configuration::get('MARGIN_METHOD') }}</strong> : 
+                      <strong>{{ AbiConfiguration::get('MARGIN_METHOD') }}</strong> : 
 
-   @if ( \App\Configuration::get('MARGIN_METHOD') == 'CST' )  
+   @if ( AbiConfiguration::get('MARGIN_METHOD') == 'CST' )  
       {{ l('Margin calculation is based on Cost Price', [], 'layouts') }}.
    @else
       {{ l('Margin calculation is based on Sales Price', [], 'layouts') }}.
    @endif
-                        {{-- l (\App\Configuration::get('MARGIN_METHOD'), [], 'appmultilang') --}}
+                        {{-- l (AbiConfiguration::get('MARGIN_METHOD'), [], 'appmultilang') --}}
                       </div>
                   </div>
                   <div class="form-group col-lg-3 col-md-3 col-sm-3">
                      <label for="prices_entered" class="control-label">{{ l('Price input method') }}</label>
-                     <div class="form-control" id="prices_entered">{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                     <div class="form-control" id="prices_entered">{{ AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') ?
                                                         l('Prices are entered inclusive of tax', [], 'appmultilang') :
                                                         l('Prices are entered exclusive of tax', [], 'appmultilang') }}</div>
                   </div>
@@ -306,18 +306,18 @@
            $("#price").val({{ old('price', 0.0) }});
            $("#price_tax_inc").val({{ old('price_tax_inc', 0.0) }});
            $("#price_usd").val({{ old('price_usd', 0.0) }});
-           $("#price_usd_conversion_rate").val({{ old('price_usd', \App\Currency::findByIsoCode('USD')->conversion_rate) }});
-           $("#measure_unit_id").val({{ old('measure_unit_id', \App\Configuration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS')) }});
+           $("#price_usd_conversion_rate").val({{ old('price_usd', \App\Models\Currency::findByIsoCode('USD')->conversion_rate) }});
+           $("#measure_unit_id").val({{ old('measure_unit_id', AbiConfiguration::get('DEF_MEASURE_UNIT_FOR_PRODUCTS')) }});
 //           $("#quantity_onhand").val( 0 );
           
           // Select default tax
-          $('select[name="tax_id"]').val({{ old('tax_id', \App\Configuration::get('DEF_TAX')) }});
+          $('select[name="tax_id"]').val({{ old('tax_id', AbiConfiguration::get('DEF_TAX')) }});
 
           // Select default warehouse
-          $('select[name="warehouse_id"]').val({{ old('warehouse_id', \App\Configuration::get('DEF_WAREHOUSE')) }});
+          $('select[name="warehouse_id"]').val({{ old('warehouse_id', AbiConfiguration::get('DEF_WAREHOUSE')) }});
 
           // Select default decimals
-          $('select[name="quantity_decimal_places"]').val({{ old('quantity_decimal_places', \App\Configuration::get('DEF_QUANTITY_DECIMALS')) }});
+          $('select[name="quantity_decimal_places"]').val({{ old('quantity_decimal_places', AbiConfiguration::get('DEF_QUANTITY_DECIMALS')) }});
 
           // Select default manufacturing batch size
           $('input[name="manufacturing_batch_size"]').val({{ old('manufacturing_batch_size', 1) }});
@@ -330,21 +330,21 @@
 
         // Select default tax
         if ( !($('select[name="tax_id"]').val() > 0) ) {
-          var def_taxID = {{ \App\Configuration::get('DEF_TAX') }};
+          var def_taxID = {{ AbiConfiguration::get('DEF_TAX') }};
 
           $('select[name="tax_id"]').val(def_taxID);
         }
 
         // Select default warehouse
         if ( !($('select[name="warehouse_id"]').val() > 0) ) {
-          var def_warehouseID = {{ \App\Configuration::get('DEF_WAREHOUSE') }};
+          var def_warehouseID = {{ AbiConfiguration::get('DEF_WAREHOUSE') }};
 
           $('select[name="warehouse_id"]').val(def_warehouseID);
         }
 
 
         // Select default decimals
-        var def_decimalsID = {{ \App\Configuration::get('DEF_QUANTITY_DECIMALS') }};
+        var def_decimalsID = {{ AbiConfiguration::get('DEF_QUANTITY_DECIMALS') }};
 
         $('select[name="quantity_decimal_places"]').val(def_decimalsID);
 

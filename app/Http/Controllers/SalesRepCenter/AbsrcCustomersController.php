@@ -2,33 +2,40 @@
 
 namespace App\Http\Controllers\SalesRepCenter;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Models\Address;
+use App\Models\BankAccount;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerGroup;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerOrder;
+use App\Models\CustomerOrderLine;
+use App\Models\CustomerShippingSlip;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\PaymentMethod;
+use App\Models\PriceList;
+use App\Models\PriceRule;
+use App\Models\Product;
+use App\Models\SalesRep;
+use App\Models\SalesRepUser;
+use App\Models\Sequence;
+use App\Models\ShippingMethod;
+use App\Models\Template;
+use App\Traits\DateFormFormatterTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Mail;
 use Validator;
 
-use App\Configuration;
-use Illuminate\Support\Facades\Auth;
-use App\SalesRepUser;
-use App\SalesRep;
+class AbsrcCustomersController extends Controller
+{
 
-use Mail;
-
-use App\Customer;
-use App\Address;
-use App\CustomerGroup;
-use App\CustomerOrder;
-use App\CustomerOrderLine;
-use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
-use App\PriceRule;
-
-class AbsrcCustomersController extends Controller {
-
+   use DateFormFormatterTrait;
 
    protected $customer, $address;
 
@@ -165,13 +172,13 @@ class AbsrcCustomersController extends Controller {
     {
         $salesrep = Auth::user()->salesrep;
 
-        $sequenceList = \App\Sequence::listFor( \App\CustomerInvoice::class );
+        $sequenceList = Sequence::listFor( CustomerInvoice::class );
 
         // Do the Mambo!!!
         try {
             $customer = $this->customer
                              ->ofSalesRep()
-                             ->with('addresses', 'address', 'address.country', 'address.state')
+                             ->with('addresses', 'address', 'address.country', 'address.state', 'bankaccount', 'contacts')
                              ->findOrFail($id); 
 
         } catch(ModelNotFoundException $e) {
@@ -183,6 +190,15 @@ class AbsrcCustomersController extends Controller {
         $aBook       = $customer->addresses;
         $mainAddressIndex = -1;
         $aBookCount = $aBook->count();
+
+        $bankaccount = $customer->bankaccount;
+
+        $contacts = $customer->contacts;
+        $actions  = $customer->actions()->whereDate('created_at', '>', \Carbon\Carbon::now()->subDays(30))->orderByDesc('created_at')->get();
+
+        // Dates (cuen)
+        if ($bankaccount)
+            $this->addFormDates( ['mandate_date'], $bankaccount );
 
         if ( !($aBookCount>0) )
         {
@@ -198,18 +214,18 @@ class AbsrcCustomersController extends Controller {
             }
 
             // Issue Warning!
-            return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex'))
+            return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions'))
                 ->with('warning', l('You need one Address at list, for Customer (:id) :name', ['id' => $customer->id, 'name' => $customer->name_fiscal]));
         };
 
 
-        $invoices_templateList = \App\Template::listFor( \App\CustomerInvoice::class );
-        $payment_methodList = \App\PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
-        $currencyList = \App\Currency::pluck('name', 'id')->toArray();
-        $salesrepList = \App\SalesRep::where('id', optional($salesrep)->id)->pluck('alias', 'id')->toArray();
+        $invoices_templateList = Template::listFor( CustomerInvoice::class );
+        $payment_methodList = PaymentMethod::orderby('name', 'desc')->pluck('name', 'id')->toArray();
+        $currencyList = Currency::pluck('name', 'id')->toArray();
+        $salesrepList = SalesRep::where('id', optional($salesrep)->id)->pluck('alias', 'id')->toArray();
         $customer_groupList = CustomerGroup::pluck('name', 'id')->toArray();
-        $price_listList = \App\PriceList::pluck('name', 'id')->toArray();
-        $shipping_methodList = \App\ShippingMethod::pluck('name', 'id')->toArray();
+        $price_listList = PriceList::pluck('name', 'id')->toArray();
+        $shipping_methodList = ShippingMethod::pluck('name', 'id')->toArray();
         // $monthList = 
 
         if ( $aBookCount == 1 ) 
@@ -233,7 +249,7 @@ class AbsrcCustomersController extends Controller {
 
             $mainAddressIndex = 0;
 
-            return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'sequenceList', 'invoices_templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'customer_groupList', 'price_listList', 'shipping_methodList'))
+            return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'sequenceList', 'invoices_templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'customer_groupList', 'price_listList', 'shipping_methodList'))
                 ->with('warning', $warning);
 
         } else {
@@ -276,7 +292,7 @@ class AbsrcCustomersController extends Controller {
 
 //        abi_r($sequenceList1, true);
 
-        return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'sequenceList', 'invoices_templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'customer_groupList', 'price_listList', 'shipping_methodList'))
+        return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'sequenceList', 'invoices_templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'customer_groupList', 'price_listList', 'shipping_methodList'))
                 ->with('warning', $warning);
     }
 
@@ -302,7 +318,7 @@ class AbsrcCustomersController extends Controller {
 
             $rules['invoicing_address_id'] = 'exists:addresses,id,addressable_id,'.intval($id);
             if ($input['shipping_address_id']>0)
-//                $rules['shipping_address_id'] = 'exists:addresses,id,addressable_type,\\App\\Customer|exists:addresses,id,addressable_id,'.intval($id);
+//                $rules['shipping_address_id'] = 'exists:addresses,id,addressable_type,\\App\\Models\\Customer|exists:addresses,id,addressable_id,'.intval($id);
                 $rules['shipping_address_id'] = 'exists:addresses,id,addressable_id,'.intval($id);
             else
                 $input['shipping_address_id'] = 0;
@@ -356,6 +372,47 @@ class AbsrcCustomersController extends Controller {
     }
 
     /**
+     * Update Bank Account in storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function updateBankAccount($id, Request $request)
+    {
+        // Dates (cuen)
+        $this->mergeFormDates( ['mandate_date'], $request );
+
+        $section = '#bankaccounts';
+
+//        abi_r(Customer::$rules, true);
+
+        $customer = $this->customer->with('bankaccount')->findOrFail($id);
+
+        $bankaccount = $customer->bankaccount;
+
+        $request->session()->flash('tabName', $section);
+
+        $this->validate($request, BankAccount::$rules);
+
+        if ( $bankaccount )
+        {
+            // Update
+            $bankaccount->update($request->all());
+        } else {
+            // Create
+            $bankaccount = BankAccount::create($request->all());
+            $customer->bankaccounts()->save($bankaccount);
+
+            $customer->bank_account_id = $bankaccount->id;
+            $customer->save();
+        }
+
+        return redirect('absrc/customers/'.$customer->id.'/edit'.$section)
+            ->with('info', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $customer->name_commercial);
+
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -397,7 +454,7 @@ class AbsrcCustomersController extends Controller {
                                     ->isNotBlocked()
 //                                    ->with('currency')
 //                                    ->with('addresses')
-                                    ->take( intval(\App\Configuration::get('DEF_ITEMS_PERAJAX')) )
+                                    ->take( intval(Configuration::get('DEF_ITEMS_PERAJAX')) )
                                     ->get();
 
 //            return $customers;
@@ -488,7 +545,7 @@ class AbsrcCustomersController extends Controller {
     {
         $customer = $this->customer::findOrFail($id);
 
-        $product = \App\Product::findOrFail($productid);
+        $product = Product::findOrFail($productid);
 
         $items_per_page = intval($request->input('items_per_page', Configuration::get('DEF_ITEMS_PERPAGE')));
         if ( !($items_per_page >= 0) ) 
@@ -681,7 +738,7 @@ class AbsrcCustomersController extends Controller {
 
         // See ContactMessagesController
         try{
-            $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.invitation',
+            $send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.invitation',
                 // Data passing to view
                 array(
                     'user_email'   => $request->input('invitation_from_email'),

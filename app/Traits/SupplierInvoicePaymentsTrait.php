@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
-use App\Configuration;
-use App\Payment;
+use App\Models\Configuration;
+use App\Models\Payment;
 
 trait SupplierInvoicePaymentsTrait
 {
@@ -75,7 +75,7 @@ trait SupplierInvoicePaymentsTrait
         $pmethod = $this->paymentmethod;
         $dlines = $pmethod->deadlines;
         // $pdays = $this->customer->paymentDays();     <= Not used in this method
-        // $base_date = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $this->document_date );
+        // $base_date = \Carbon\Carbon::createFromFormat( Context::getContext()->language->date_format_lite, $this->document_date );
         $base_date = $this->document_date;
 
         for($i = 0; $i < count($pmethod->deadlines); $i++)
@@ -99,7 +99,7 @@ trait SupplierInvoicePaymentsTrait
             $data = [   'payment_type' => 'payable', 
                         'reference' => $this->document_reference . ' :: ' . ($i+1) . ' / ' . count($pmethod->deadlines), 
                         'name' => ($i+1) . ' / ' . count($pmethod->deadlines), 
-//                          'due_date' => \App\FP::date_short( \Carbon\Carbon::parse( $due_date ), \App\Context::getContext()->language->date_format_lite ), 
+//                          'due_date' => abi_date_short( \Carbon\Carbon::parse( $due_date ), Context::getContext()->language->date_format_lite ), 
                         'due_date' => $due_date, 
                         'payment_date' => null, 
                         'amount' => $installment, 

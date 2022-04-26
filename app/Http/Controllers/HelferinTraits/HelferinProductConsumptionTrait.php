@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\HelferinTraits;
 
-use Illuminate\Http\Request;
-
-use App\Product;
-use App\Customer;
-
-use App\CustomerShippingSlipLine;
-
+use App\Helpers\Exports\ArrayExport;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\Product;
+use Carbon\Carbon;
 use Excel;
+use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 trait HelferinProductConsumptionTrait
 {
@@ -20,11 +22,11 @@ trait HelferinProductConsumptionTrait
         $this->mergeFormDates( ['consumption_date_from', 'consumption_date_to'], $request );
 
         $date_from = $request->input('consumption_date_from')
-                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('consumption_date_from'))->startOfDay()
+                     ? Carbon::createFromFormat('Y-m-d', $request->input('consumption_date_from'))->startOfDay()
                      : null;
         
         $date_to   = $request->input('consumption_date_to'  )
-                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('consumption_date_to'  ))->endOfDay()
+                     ? Carbon::createFromFormat('Y-m-d', $request->input('consumption_date_to'  ))->endOfDay()
                      : null;
 
         //             abi_r($date_from.' - '.$date_to);die();
@@ -97,10 +99,10 @@ trait HelferinProductConsumptionTrait
 
         $customer_label = (int) $customer_id > 0
         				? Customer::findOrFail($customer_id)->name_regular
-        				: '';
+        				: 'todos';
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Consumo de Productos ' . $ribbon, '', '', date('d M Y H:i:s')];
         $data[] = [''];
         $data[] = ['Cliente:', $customer_label];
@@ -127,45 +129,28 @@ trait HelferinProductConsumptionTrait
 
         }
 
-        $sheetName = 'Consumo';
+
+        $styles = [
+            'A6:D6'    => ['font' => ['bold' => true]],
+//            "C$n:C$n"  => ['font' => ['bold' => true, 'italic' => true]],
+        ];
+
+        $columnFormats = [
+            'A' => NumberFormat::FORMAT_TEXT,
+            'C' => NumberFormat::FORMAT_NUMBER,
+//            'B' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+        ];
+
+        $merges = ['A1:C1', 'A2:C2'];
+
+        $sheetTitle = 'Consumo entre Fechas';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Consumo entre Fechas', function($excel) use ($sheetName, $data) {
-
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:C1');
-                $sheet->mergeCells('A2:C2');
-
-                $sheet->getStyle('A6:D6')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-//                    'B' => 'dd/mm/yyyy',
-//                    'C' => 'dd/mm/yyyy',
-                    'A' => '@',
-//                    'C' => '0.00',
-                    'C' => '0',
-
-                ));
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-
-        return redirect()->back()
-                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
     }
 

@@ -4,13 +4,13 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 
-use App\Configuration;
-use App\Context;
-use App\Product;
-use App\ShippingMethod;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Product;
+use App\Models\ShippingMethod;
 
-use App\Lot;
-use App\LotItem;
+use App\Models\Lot;
+use App\Models\LotItem;
 
 trait ProductionOrderLotFormsControllerTrait
 {

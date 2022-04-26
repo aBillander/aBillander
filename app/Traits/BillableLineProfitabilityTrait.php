@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
-use App\Configuration;
-use App\Calculator;
+use App\Models\Configuration;
+use App\Helpers\Calculator;
 
 trait BillableLineProfitabilityTrait
 {

@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Tax as Tax;
-use App\TaxRule as TaxRule;
-use App\State;
+use App\Models\Tax;
+use App\Models\TaxRule;
+use App\Models\State;
 use View;
 
 class TaxRulesController extends Controller {
@@ -43,8 +42,9 @@ class TaxRulesController extends Controller {
      */
     public function create($taxId)
     {
-        $tax = $this->tax->findOrFail($taxId);
-        return view('tax_rules.create', compact('tax'));
+        $tax = $this->tax->with('taxrules')->findOrFail($taxId);
+        $position = $tax->taxrules->max('position') + 10;
+        return view('tax_rules.create', compact('tax', 'position'));
     }
 
     /**

@@ -26,11 +26,11 @@
 
 @php
 
-$m = \App\StockMovement::with('stockmovementable')->find(2);
+$m = \App\Models\StockMovement::with('stockmovementable')->find(2);
 
-$s = \App\StockCountLine::find(2);
+$s = \App\Models\StockCountLine::find(2);
 
-// abi_toSql((\App\StockMovement::with('stockmovementable')->where('id', 43)));
+// abi_toSql((\App\Models\StockMovement::with('stockmovementable')->where('id', 43)));
 
 abi_r($m->stockmovementable->document->id);
 
@@ -126,7 +126,7 @@ abi_r($m->stockmovementable->document->id);
 			<td>{{ $stockmovement->id }}</td>
 			<td>{{ abi_date_short( $stockmovement->date ) }}</td>
       <td>[{{ $stockmovement->movement_type_id }}] - 
-           {{ \App\StockMovement::getTypeName($stockmovement->movement_type_id) }}
+           {{ \App\Models\StockMovement::getTypeName($stockmovement->movement_type_id) }}
       </td>
 
 			<td>{{ $stockmovement->warehouse->alias }}</td>
@@ -240,14 +240,14 @@ $(document).ready(function() {
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(function() {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -255,7 +255,7 @@ $(document).ready(function() {
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 </script>

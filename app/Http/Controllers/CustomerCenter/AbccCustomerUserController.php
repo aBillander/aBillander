@@ -7,13 +7,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-use App\CustomerUser;
-// use App\Customer;
-// use App\Address;
+use App\Models\CustomerUser;
 
 class AbccCustomerUserController extends Controller 
 {
-
 
    protected $customer_user;
 

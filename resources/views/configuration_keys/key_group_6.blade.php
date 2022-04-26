@@ -27,7 +27,7 @@
                <div class="panel-body well">
 
 
-@if (\App\Configuration::isTrue('ENABLE_SALESREP_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_SALESREP_CENTER') )
 
 
 {!! Form::open(array('url' => 'configurationkeys', 'id' => 'key_group_'.intval($tab_index), 'name' => 'key_group_'.intval($tab_index), 'class' => 'form-horizontal')) !!}

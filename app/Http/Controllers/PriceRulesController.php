@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\PriceRule;
-use App\Product;
-use App\Customer;
-use App\Configuration;
-
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Customer;
+use App\Models\PriceRule;
+use App\Models\Product;
+use App\Rules\PriceRuleDuplicated;
 use App\Traits\DateFormFormatterTrait;
+use Illuminate\Http\Request;
 
 class PriceRulesController extends Controller 
 {
@@ -190,7 +188,7 @@ class PriceRulesController extends Controller
         $this->mergeFormDates( ['date_from', 'date_to'], $request );
 
         // Force Currency
-        $request->merge( [ 'currency_id' => \App\Context::getContext()->currency->id, 'price' => (float) $request->input('price', 0) ] );
+        $request->merge( [ 'currency_id' => Context::getContext()->currency->id, 'price' => (float) $request->input('price', 0) ] );
 
         $extra_rules = [];
 
@@ -248,7 +246,7 @@ class PriceRulesController extends Controller
 			$extra_rules =  [
 
 	        'from_quantity_pack' => [
-	                                new \App\Rules\PriceRuleDuplicated(
+	                                new PriceRuleDuplicated(
 	                                        $request->input('customer_id'), 
 	                                        $request->input('customer_group_id'), 
 	                                        $request->input('product_id'), 

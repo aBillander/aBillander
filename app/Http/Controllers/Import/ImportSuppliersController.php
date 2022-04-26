@@ -3,16 +3,21 @@
 namespace App\Http\Controllers\Import;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Supplier;
-use App\Address;
-use App\Country;
-use App\State;
-use App\Product;
-
+use App\Models\ActivityLogger;
+use App\Models\Address;
+use App\Models\Configuration;
+use App\Models\Country;
+use App\Models\Currency;
+use App\Models\Language;
+use App\Models\PaymentMethod;
+use App\Models\Product;
+use App\Models\Sequence;
+use App\Models\State;
+use App\Models\Supplier;
+use App\Helpers\Exports\ArrayExport;
+use App\Helpers\Imports\ArrayImport;
 use Excel;
+use Illuminate\Http\Request;
 
 class ImportSuppliersController extends Controller
 {
@@ -71,19 +76,6 @@ class ImportSuppliersController extends Controller
     public function import()
     {
         return view('imports.suppliers');
-/*
-		$country = $this->country->findOrFail($id);
-		
-		return view('countries.edit', compact('country'));
-
-        $customer_orders = $this->customerOrder
-                            ->with('customer')
-                            ->with('currency')
-                            ->with('paymentmethod')
-                            ->orderBy('id', 'desc')->get();
-
-        return view('customer_orders.index', compact('customer_orders'));
-*/        
     }
 
     public function process(Request $request)
@@ -102,44 +94,10 @@ class ImportSuppliersController extends Controller
 
         $this->validate($request->merge( $extra_data ), $rules);
 
-/*
-        $data_file = $request->file('data_file');
-
-        $data_file_full = $request->file('data_file')->getRealPath();   // /tmp/phpNJt6Fl
-
-        $ext    = $data_file->getClientOriginalExtension();
-*/
-
-/*
-        abi_r($data_file);
-        abi_r($data_file_full);
-        abi_r($ext, true);
-*/
-
-/*
-        \Validator::make(
-            [
-                'document' => $data_file,
-                'format'   => $ext
-            ],[
-                'document' => 'required',
-                'format'   => 'in:csv,xlsx,xls,ods' // all working except for ods
-            ]
-        )->passOrDie();
-*/
-
-        // Avaiable fields
-        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
-        // $columns = \DB::getSchemaBuilder()->getColumnListing( self::$table );
-
-//        abi_r($columns);
-
-
-        
 
         // Start Logger
-        $logger = \App\ActivityLogger::setup( 'Import Suppliers', __METHOD__ )
-                    ->backTo( route('suppliers.import') );        // 'Import Suppliers :: ' . \Carbon\Carbon::now()->format('Y-m-d H:i:s')
+        $logger = ActivityLogger::setup( 'Import Suppliers', __METHOD__ )
+                    ->backTo( route('suppliers.import') );
 
 
         $logger->empty();
@@ -157,6 +115,7 @@ class ImportSuppliersController extends Controller
         $params = ['simulate' => $simulate, 'file' => $file];
 
         // Truncate table
+        if ( ! $params['simulate'] )
         if ( $truncate > 0 ) {
 
             $nbr = Supplier::count();
@@ -176,13 +135,13 @@ class ImportSuppliersController extends Controller
                 // $collection = Address::where('addressable_type', "App\\Supplier")->get(['id']);
                 // Address::destroy($collection->toArray());
 
-                \DB::table('addresses')->where('addressable_type', "App\\Supplier")->delete();
+                \DB::table('addresses')->where('addressable_type', "App\\Models\\Supplier")->delete();
 
                 // Note: This solution is for resetting the auto_increment of the table without truncating the table itself
                 $max = \DB::table('addresses')->max('id') + 1; 
                 \DB::statement("ALTER TABLE addresses AUTO_INCREMENT = $max");
 
-                $logger->log("INFO", "Se han borrado todos los Proveedores antes de la Importación. En total {nbr} Proveedores.", ['nbr' => $nbr]);
+                $logger->log("INFO", "Se han borrado todos los Proveedores y sus Direcciones antes de la Importación. En total {nbr} Proveedores.", ['nbr' => $nbr]);
             }
         }
 
@@ -204,36 +163,6 @@ class ImportSuppliersController extends Controller
 
         return redirect('activityloggers/'.$logger->id)
                 ->with('success', l('Se han cargado los Proveedores desde el Fichero: <strong>:file</strong> .', ['file' => $file]));
-
-
-//        abi_r('Se han cargado: '.$i.' productos');
-
-
-
-        // See: https://www.google.com/search?client=ubuntu&channel=fs&q=laravel-excel+%22Serialization+of+%27Illuminate%5CHttp%5CUploadedFile%27+is+not+allowed%22&ie=utf-8&oe=utf-8
-        // https://laracasts.com/discuss/channels/laravel/serialization-of-illuminatehttpuploadedfile-is-not-allowed-on-queue
-
-        // See: https://github.com/LaravelDaily/Laravel-Import-CSV-Demo/blob/master/app/Http/Controllers/ImportController.php
-        // https://www.youtube.com/watch?v=STJV2hTO1Zs&t=4s
-/*
-        Excel::filter('chunk')->load('file.csv')->chunk(250, function($results)
-        {
-                foreach($results as $row)
-                {
-                    // do stuff
-                }
-        });
-
-        Excel::filter('chunk')->load(database_path('seeds/csv/users.csv'))->chunk(250, function($results) {
-            foreach ($results as $row) {
-                $user = User::create([
-                    'username' => $row->username,
-                    // other fields
-                ]);
-            }
-        });
-*/
-        // See: https://www.youtube.com/watch?v=z_AhZ2j5sI8  Modificar datos importados
     }
 
 
@@ -244,25 +173,13 @@ class ImportSuppliersController extends Controller
      */
     protected function processFile( $file, $logger, $params = [] )
     {
+        // Get data as an array
+        $worksheet = Excel::toCollection(new ArrayImport, $file);
 
-        // 
-        // See: https://www.youtube.com/watch?v=rWjj9Slg1og
-        // https://laratutorials.wordpress.com/2017/10/03/how-to-import-excel-file-in-laravel-5-and-insert-the-data-in-the-database-laravel-tutorials/
-        Excel::filter('chunk')->selectSheetsByIndex(0)->load( $file )->chunk(250, function ($reader) use ( $logger, $params )
-        {
-            
- /*           $reader->each(function ($sheet){
-                // ::firstOrCreate($sheet->toArray);
-                abi_r($sheet);
-            });
+        // abi_r($worksheet->first(), true);
 
-            $reader->each(function($sheet) {
-                // Loop through all rows
-                $sheet->each(function($row) {
-                    // Loop through all columns
-                });
-            });
-*/
+        $reader = $worksheet->first();    // First sheet in worksheet
+
 
 // Process reader STARTS
 
@@ -273,13 +190,7 @@ class ImportSuppliersController extends Controller
             $i_created = 0;
             $i_updated = 0;
             $i_ok = 0;
-            $max_id = 2000;
-
-            // Custom
-            $state_names = [];
-            if (file_exists(__DIR__.'/FSOL_provincias.php')) {
-                $state_names = include __DIR__.'/FSOL_provincias.php';
-            }
+            $max_id = 1000;
 
 
             if(!empty($reader) && $reader->count()) {
@@ -299,7 +210,7 @@ class ImportSuppliersController extends Controller
                     // $item = implode(', ', $data);
                     $item = http_build_query($data, null, ', ');
 
-                    // $item = '[<span class="log-showoff-format">'.$data['reference_external'].'</span>] <span class="log-showoff-format">'.$data['name_fiscal'].'</span>';
+                    $item = '[<span class="log-showoff-format">'.($data['reference_external'] ?? '').'</span>] <span class="log-showoff-format">'.$data['name_fiscal'].'</span>';
 
                     // Some Poor Man checks:
                     if ( ! $data['name_fiscal'] )
@@ -334,25 +245,25 @@ class ImportSuppliersController extends Controller
 
                     if ( $data['payment_method_id'] )
                     {
-                        if ( !\App\PaymentMethod::where('id', $data['payment_method_id'])->exists() )
+                        if ( !PaymentMethod::where('id', $data['payment_method_id'])->exists() )
                             $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'payment_method_id' no existe. ".$data['payment_method_id']);
                     }
 
                     if ( $data['language_id'] )
                     {
-                        if ( !\App\Language::where('id', $data['language_id'])->exists() )
+                        if ( !Language::where('id', $data['language_id'])->exists() )
                             $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'language_id' no existe. ".$data['language_id']);
                     }
 
                     if ( $data['currency_id'] )
                     {
-                        if ( !\App\Currency::where('id', $data['currency_id'])->exists() )
+                        if ( !Currency::where('id', $data['currency_id'])->exists() )
                             $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'currency_id' no existe. ".$data['currency_id']);
                     }
 
                     if ( $data['invoice_sequence_id'] )
                     {
-                        if ( !\App\Sequence::where('id', $data['invoice_sequence_id'])->exists() )
+                        if ( !Sequence::where('id', $data['invoice_sequence_id'])->exists() )
                             $logger->log("ERROR", "Proveedor ".$item.":<br />" . "El campo 'invoice_sequence_id' no existe. ".$data['invoice_sequence_id']);
                     }
 
@@ -443,7 +354,7 @@ class ImportSuppliersController extends Controller
                     // Country
                     if ( !array_key_exists('country_id', $data) || intval($data['country_id']) == 0 ) 
                     {
-                        $data['country_id'] = \App\Configuration::get('DEF_COUNTRY');
+                        $data['country_id'] = Configuration::get('DEF_COUNTRY');
                     }
                     $country = Country::find($data['country_id']);
 
@@ -509,8 +420,9 @@ if ($country) {
                         // if ( array_key_exists('reference', $data) )
                         //     unset( $data['reference'] );
                         
-                    } else
+                    }
 /*
+                    else
                     if ( array_key_exists('reference_external', $data) )
                     {
                         $key_name = 'reference_external';
@@ -557,7 +469,7 @@ if ($country) {
                                 $address = $this->address->create($data);
                                 $supplier->addresses()->save($address);
 
-                                $supplier->update(['invoicing_address_id' => $address->id, 'shipping_address_id' => $address->id]);
+                                $supplier->update(['invoicing_address_id' => $address->id]);
                                 
                             }
 
@@ -629,11 +541,11 @@ if ($country) {
                                 $address = $this->address->create($data);
                                 $supplier->addresses()->save($address);
 
-                                $supplier->update(['invoicing_address_id' => $address->id, 'shipping_address_id' => $address->id]);
+                                $supplier->update(['invoicing_address_id' => $address->id]);
                                 
                             }
 
-                            $logger->log("INFO", "El Proveedor ". $key_val ." se ha creado (".$supplier->id.")");
+                            $logger->log("INFO", "El Proveedor ". $supplier->name_fiscal ." se ha creado (".$supplier->id.")");
 
                             $i_created++;
 
@@ -685,9 +597,7 @@ if ($country) {
 
             $logger->log('INFO', 'Se han procesado {i} Proveedores.', ['i' => $i]);
 
-// Process reader          
-    
-        }, false);      // should not queue $shouldQueue
+// Process reader ENDS
 
     }
 
@@ -699,7 +609,6 @@ if ($country) {
      */
     public function export()
     {
-        
         $suppliers = $this->supplier
                         ->with('paymentmethod')
                         ->with('address')
@@ -718,7 +627,7 @@ if ($country) {
                     // 'sales_equalization', 
                     'website', // 'customer_center_url', 'customer_center_user', 'customer_center_password', 
 
-                    'payment_method_id', 'PAYMENT_METHOD_NAME', 'discount_percent', 'discount_ppd_percent', 'payment_days', 'delivery_time', 
+                    'payment_method_id', 'PAYMENT_METHOD_NAME', 'discount_percent', 'discount_ppd_percent', 'delivery_time', 
                     'creditor', 'customer_id',
                     'notes', 'approved', 'blocked', 'active', 
                     'currency_id', 'CURRENCY_NAME', 'language_id', 'LANGUAGE_NAME',  
@@ -758,27 +667,17 @@ if ($country) {
             $data[] = $row;
         }
 
-        $sheetName = 'Suppliers' ;
+        $styles = [];
 
-        // abi_r($data, true);
+        $sheetTitle = 'Suppliers';
+
+        $export = (new ArrayExport($data, $styles))->setTitle($sheetTitle);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Suppliers', function($excel) use ($sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');           // ->export('pdf');  <= Does not work. See: https://laracasts.com/discuss/channels/general-discussion/dompdf-07-on-maatwebsiteexcel-autoloading-issue
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 
 
@@ -789,18 +688,9 @@ if ($country) {
      */
     public function exportProducts()
     {
- /*       
-        $suppliers = $this->supplier
-                        ->with('paymentmethod')
-                        ->with('address')
-                        ->with('address.country')
-                        ->with('address.state')
-//                        ->with('currency');
-                        ->orderBy('name_fiscal', 'asc')
-                        ->get();
-*/
         $products = $this->product
                           ->where('procurement_type', 'purchase')
+                          ->whereHas('supplier')
                           ->with('measureunit')
                           ->with('purchasemeasureunit')
 //                          ->with('combinations')                                  
@@ -821,21 +711,6 @@ if ($country) {
                     'stock_control', 'reorder_point', 'maximum_stock', 'lot_tracking', 'expiry_time', 'out_of_stock', 'out_of_stock_text', 
                     'blocked', 'active', 'measure_unit_id', 'MEASURE_UNIT_NAME', 'purchase_measure_unit_id', 'PURCHASE_MEASURE_UNIT_NAME', 
                     'main_supplier_id', 'SUPPLIER_IDENTIFICATION', 'SUPPLIER_NAME', 'supplier_reference', 'supply_lead_time', 
-
-/*
-                    'id', 'name_fiscal', 'name_commercial', 'identification', 'reference_external', 'accounting_id', 
-                    // 'sales_equalization', 
-                    'website', // 'customer_center_url', 'customer_center_user', 'customer_center_password', 
-
-                    'payment_method_id', 'PAYMENT_METHOD_NAME', 'discount_percent', 'discount_ppd_percent', 'payment_days', 'delivery_time', 
-                    'creditor', 'customer_id',
-                    'notes', 'approved', 'blocked', 'active', 
-                    'currency_id', 'CURRENCY_NAME', 'language_id', 'LANGUAGE_NAME',  
-                    'invoice_sequence_id', 
-
-                    'address1', 'address2', 'postcode', 'city', 'state_id', 'STATE_NAME', 'country_id', 'COUNTRY_NAME', 
-                    'firstname', 'lastname', 'email', 'phone', 'phone_mobile', 'fax', 
-*/
         ];
 
         $float_headers = [ 'price_tax_inc', 'price', 'cost_price', 'cost_average', 'last_purchase_price', 'recommended_retail_price', 'recommended_retail_price_tax_inc', 'width', 'height', 'depth', 'volume', 'weight', 'reorder_point', 'maximum_stock', 
@@ -867,26 +742,16 @@ if ($country) {
             $data[] = $row;
         }
 
-        $sheetName = 'Supplier Products' ;
+        $styles = [];
 
-        // abi_r($data, true);
+        $sheetTitle = 'Supplier Products';
+
+        $export = (new ArrayExport($data, $styles))->setTitle($sheetTitle);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Supplier_Products', function($excel) use ($sheetName, $data) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');           // ->export('pdf');  <= Does not work. See: https://laracasts.com/discuss/channels/general-discussion/dompdf-07-on-maatwebsiteexcel-autoloading-issue
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 }

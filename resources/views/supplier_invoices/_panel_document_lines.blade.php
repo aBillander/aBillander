@@ -151,7 +151,7 @@
                 @endif</td>
                 <td class="text-right button-pad">
                     
-@if ( \App\Configuration::isTrue('ENABLE_LOTS') && ($line->line_type == 'product') && ($line->product->lot_tracking > 0) )
+@if ( AbiConfiguration::isTrue('ENABLE_LOTS') && ($line->line_type == 'product') && ($line->product->lot_tracking > 0) )
 @php
   $color = $line->pending > 0 ? 'alert-danger' : 'btn-grey';
   $msg   = $line->pending > 0 ? ' ('.$line->measureunit->quantityable( $line->pending ).')' : '';
@@ -166,7 +166,7 @@
                       @if ( $document->editable )
                     <!-- a class="btn btn-sm btn-info" title="{{l('XXXXXS', [], 'layouts')}}" onClick="loadsupplierdocumentlines();"><i class="fa fa-pencil"></i></a -->
                     
-                      @if ( !$line->locked || \App\Configuration::isTrue('ENABLE_CRAZY_IVAN') )
+                      @if ( !$line->locked || AbiConfiguration::isTrue('ENABLE_CRAZY_IVAN') )
 
                     <a class="btn btn-sm btn-warning edit-document-line" data-id="{{$line->id}}" data-type="{{$line->line_type}}" title="{{l('Edit', [], 'layouts')}}" onClick="return false;"><i class="fa fa-pencil"></i></a>
                     

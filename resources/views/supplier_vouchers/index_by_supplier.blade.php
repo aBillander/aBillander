@@ -176,7 +176,7 @@
 
 @if ( $payment->currency_conversion_rate != 1.0 )
         <br />
-        <span class="text-warning">{{ \App\Currency::viewMoneyWithSign($payment->amount_currency, $payment->currency) }}</span>
+        <span class="text-warning">{{ \App\Models\Currency::viewMoneyWithSign($payment->amount_currency, $payment->currency) }}</span>
 
 @endif
 
@@ -211,7 +211,7 @@
             	@else
             		<span>
             	@endif
-            	{{\App\Payment::getStatusName($payment->status)}}</span></td>
+            	{{\App\Models\Payment::getStatusName($payment->status)}}</span></td>
 
 
       <td class="text-center">
@@ -291,14 +291,14 @@ $(document).ready(function() {
 
 <!-- script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.\App\Context::getContext()->language->iso_code.'.js'); !!}
+{!! HTML::script('assets/plugins/jQuery-UI/datepicker/datepicker-'.AbiContext::getContext()->language->iso_code.'.js'); !!}
 
 <script>
   $(function() {
     $( "#date_from_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 
@@ -306,7 +306,7 @@ $(document).ready(function() {
     $( "#date_to_form" ).datepicker({
       showOtherMonths: true,
       selectOtherMonths: true,
-      dateFormat: "{{ \App\Context::getContext()->language->date_format_lite_view }}"
+      dateFormat: "{{ AbiContext::getContext()->language->date_format_lite_view }}"
     });
   });
 </script>

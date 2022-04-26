@@ -23,6 +23,7 @@ class CreateStockCountLinesTable extends Migration
             $table->decimal('quantity', 20, 6);
             $table->decimal('cost_price', 20, 6)->nullable();
             $table->decimal('cost_average', 20, 6)->nullable();
+            $table->decimal('last_purchase_price', 20, 6)->nullable();
 
             $table->integer('stock_count_id')->unsigned()->nullable(false);
             $table->integer('product_id')->unsigned()->nullable();

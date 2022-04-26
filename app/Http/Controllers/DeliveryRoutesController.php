@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\DeliveryRoute;
-use App\DeliveryRouteLine;
+use App\Models\DeliveryRoute;
+use App\Models\DeliveryRouteLine;
 
-use App\Carrier;
+use App\Models\Carrier;
 
 class DeliveryRoutesController extends Controller
 {
@@ -54,7 +54,7 @@ class DeliveryRoutesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\DeliveryRoute  $deliveryroute
+     * @param  \App\Models\DeliveryRoute  $deliveryroute
      * @return \Illuminate\Http\Response
      */
     public function show(DeliveryRoute $deliveryroute)
@@ -65,7 +65,7 @@ class DeliveryRoutesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\DeliveryRoute  $deliveryroute
+     * @param  \App\Models\DeliveryRoute  $deliveryroute
      * @return \Illuminate\Http\Response
      */
     public function edit(DeliveryRoute $deliveryroute)
@@ -79,7 +79,7 @@ class DeliveryRoutesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\DeliveryRoute  $deliveryroute
+     * @param  \App\Models\DeliveryRoute  $deliveryroute
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, DeliveryRoute $deliveryroute)
@@ -95,7 +95,7 @@ class DeliveryRoutesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\DeliveryRoute  $deliveryroute
+     * @param  \App\Models\DeliveryRoute  $deliveryroute
      * @return \Illuminate\Http\Response
      */
     public function destroy(DeliveryRoute $deliveryroute)

@@ -1,10 +1,12 @@
-<?php 
+<?php
 
-namespace App;
+namespace App\Helpers;
 
 use App\Traits\ViewFormatterTrait;
 
-use \App\Currency as Currency;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
 
 class Price {
 
@@ -24,7 +26,7 @@ class Price {
 	
     public function __construct( $amount = 0, $amount_is_tax_inc = 0, Currency $currency = null, $currency_conversion_rate = null )
     {
-        if ( $currency === null ) $currency = \App\Context::getContext()->currency;
+        if ( $currency === null ) $currency = Context::getContext()->currency;
         if ( $currency_conversion_rate === null ) $currency_conversion_rate = $currency->conversion_rate;
 
         $this->amount = $amount;
@@ -54,7 +56,7 @@ class Price {
     {
         // $price = [ price, price_tax_inc, price_is_tax_inc ]
 
-        $price_is_tax_inc = \App\Configuration::get('PRICES_ENTERED_WITH_TAX');
+        $price_is_tax_inc = Configuration::get('PRICES_ENTERED_WITH_TAX');
 
         if ( count($price) == 3 )
         {
@@ -74,7 +76,7 @@ class Price {
 
         $priceObj = new self();
 
-        if ( $currency === null ) $currency = \App\Context::getContext()->currency;
+        if ( $currency === null ) $currency = Context::getContext()->currency;
         if ( $currency_conversion_rate === null ) $currency_conversion_rate = $currency->conversion_rate;
 
         $priceObj->price = $price[0];
@@ -105,7 +107,7 @@ class Price {
         $currency_from = $this->currency;
 //        $currency_from->conversion_rate = $this->currency_conversion_rate;
 
-        if ( $currency === null ) $currency = \App\Context::getContext()->currency;
+        if ( $currency === null ) $currency = Context::getContext()->currency;
         $currency_to = $currency;
         
         if ( $currency_conversion_rate !== null ) $currency_to->conversion_rate = $currency_conversion_rate;
@@ -130,7 +132,7 @@ class Price {
 
     public function convertToBaseCurrency()
     {
-        return $this->convert( \App\Context::getContext()->currency );
+        return $this->convert( Context::getContext()->currency );
     }
 
     public function applyTaxPercent( $percent = null )
@@ -186,12 +188,12 @@ class Price {
         }
     }
     
-    public function getDiscount( \App\Price $priceObjBase )
+    public function getDiscount( Price $priceObjBase )
     {
         //
     }
     
-    public function getMargin( \App\Price $priceObjBase )
+    public function getMargin( Price $priceObjBase )
     {
         //
     }
@@ -204,7 +206,7 @@ class Price {
         $tax   = $gross - $net;
         $tax_percent = (float) $this->as_percentable($this->tax_percent);
 
-        if ( \App\Configuration::get('ROUND_PRICES_WITH_TAX') ) {
+        if ( Configuration::get('ROUND_PRICES_WITH_TAX') ) {
             $gross = (float) $this->as_priceable( $gross, $this->currency );
             if ($tax_percent != 0.0) 
                 $tax = (float) $this->as_priceable( $gross/(1.0+1.0/($tax_percent/100.0)), $this->currency );
@@ -241,7 +243,7 @@ class Price {
         
         $tax_percent = (float) $this->as_percentable($this->tax_percent);
 
-        if ( \App\Configuration::get('ROUND_PRICES_WITH_TAX') ) {
+        if ( Configuration::get('ROUND_PRICES_WITH_TAX') ) {
             $gross = (float) $this->as_priceable( $gross, $this->currency );
             $tax   = $gross - $net;
         } else {

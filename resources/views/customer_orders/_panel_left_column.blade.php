@@ -1,4 +1,4 @@
-    @if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && ($document->webshop_id > 0) )
+    @if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && ($document->webshop_id > 0) )
 
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">
@@ -275,7 +275,20 @@ color: #ffffff; background-color: #772953; border-color: #772953;">
                 {{l('Customer Group')}}:<br /> {{ $customer->customergroup->name ?? '-' }}
               </li>
               <li class="list-group-item">
-                {{l('Price List')}}:<br /> {{ $customer->pricelist->name ?? '-' }}
+                {{l('Price List')}}:<br />
+                @if( $customer->currentpricelist() )
+                  <a href="{{ URL::to('pricelists/' . $customer->currentpricelist()->id . '/pricelistlines') }}" title="{{l('View Document', 'layouts')}}" target="_new">
+                    {{ $customer->currentpricelist()->name }}
+                  </a>
+
+                        <a class="btn btn-xs btn-warning" href="{{ URL::to('pricelists/' . $customer->currentpricelist()->id . '/pricelistlines') }}" title="{{l('View Document', 'layouts')}}" target="_new"><i class="fa fa-external-link"></i></a>
+
+                  @if( ! $customer->price_list_id )
+                      <span class="text-warning">({{l('Group Price List')}})</span>
+                  @endif
+                @else
+                  -
+                @endif
               </li>
               <li class="list-group-item">
                 {{l('Sales Representative')}}:<br />
@@ -308,7 +321,7 @@ color: #ffffff; background-color: #772953; border-color: #772953;">
           </div>
 @endif
 
-    @if ( \App\Configuration::isTrue('ENABLE_MANUFACTURING') && ($document->production_sheet_id > 0) )
+    @if ( AbiConfiguration::isTrue('ENABLE_MANUFACTURING') && ($document->production_sheet_id > 0) )
 
           <div class="xpanel xpanel-default">
           <div class="xpanel-body">

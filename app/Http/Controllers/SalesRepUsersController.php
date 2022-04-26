@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Language;
+use App\Models\SalesRep;
+use App\Models\SalesRepUser;
 use Illuminate\Http\Request;
-use Validator;
-
-use App\SalesRep;
-use App\SalesRepUser;
-use App\Configuration;
-use App\Language;
-
 use Mail;
+use Validator;
 
 class SalesRepUsersController extends Controller
 {
@@ -101,12 +100,12 @@ class SalesRepUsersController extends Controller
                 'fromName' => config('mail.from.name'   ),  // \App\Configuration::get('ABCC_EMAIL_NAME'),
                 'to'       => $salesrepuser->email,         // $cinvoice->customer->address->email,
                 'toName'   => $salesrepuser->getFullName(),    // $cinvoice->customer->name_fiscal,
-                'subject'  => l(' :_> Confirmación de acceso al Centro de Agentes de :company', ['company' => \App\Context::getcontext()->company->name_fiscal]),
+                'subject'  => l(' :_> Confirmación de acceso al Centro de Agentes de :company', ['company' => Context::getcontext()->company->name_fiscal]),
                 );
 
             
 
-            $send = Mail::send('emails.'.\App\Context::getContext()->language->iso_code.'.absrc_invitation_confirmation', $template_vars, function($message) use ($data)
+            $send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.absrc_invitation_confirmation', $template_vars, function($message) use ($data)
             {
                 $message->from($data['from'], $data['fromName']);
 
@@ -147,7 +146,7 @@ class SalesRepUsersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function show(SalesRepUser $customeruser)
@@ -158,7 +157,7 @@ class SalesRepUsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function edit(SalesRepUser $customeruser)
@@ -170,7 +169,7 @@ class SalesRepUsersController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, SalesRepUser $salesrepuser)
@@ -212,7 +211,7 @@ class SalesRepUsersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CustomerOrder  $customerorder
+     * @param  \App\Models\CustomerOrder  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function destroy(SalesRepUser $salesrepuser)

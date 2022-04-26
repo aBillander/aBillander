@@ -1,0 +1,114 @@
+2022-02-25
+==========
+
+Autenticación: https://laravel.com/docs/9.x/authentication#remembering-users
+
+Instalado Breeze
+
+composer require laravel/breeze --dev
+
+php artisan breeze:install
+
+npm install && npm run dev
+
+Laravel Mix v6.0.43   
+                         
+
+✔ Compiled Successfully in 2215ms
+┌───────────────────────────────────────────────────────────────────┬──────────┐
+│                                                              File │ Size     │
+├───────────────────────────────────────────────────────────────────┼──────────┤
+│                                                        /js/app.js │ 715 KiB  │
+│                                                       css/app.css │ 29.9 KiB │
+└───────────────────────────────────────────────────────────────────┴──────────┘
+webpack compiled successfully
+
+Novedades:
+- app/Http/Controllers/Auth
+- app/Http/Requests/Auth
+- RouteServiceProvider cambia: public const HOME = '/dashboard';
+- app/View/Components
+- public/css/app.css, public/js/app.js (después de compilar recursos)
+- resources/css/app.css, resources/js/app.js
+- resources/views/auth
+- resources/views/components
+- resources/views/layouts/app, guest, navigation
+- resources/views/dashboard
+- routes/auth.php, modifica: web.php
+- tests/Feature/Auth
+
+
+Migraciones
+-----------
+
+users: añade campo: $table->timestamp('email_verified_at')->nullable();
+personal_access_tokens: tabla nueva
+
+Las migraciones tienen un formato nuevo: return new class extends Migration
+pero vale también el antiguo: class CreateTaxesTable extends Migration {
+
+
+2022-03-01
+==========
+
+composer update    # Actualiza Laravel 9.1.0 => 9.2.0
+
+
+2022-03-15
+==========
+
+https://image.intervention.io/v2/introduction/installation
+https://image.intervention.io/v2/introduction/installation#integration-in-laravel
+
+composer require intervention/image
+
+After you have installed Intervention Image, open your Laravel config file config/app.php and add the following lines.
+
+In the $providers array add the service providers for this package.
+
+Intervention\Image\ImageServiceProvider::class
+
+Add the facade of this package to the $aliases array.
+
+'Image' => Intervention\Image\Facades\Image::class
+
+*********
+
+composer require barryvdh/laravel-dompdf
+
+remember folder storage/fonts
+
+
+2022-03-16
+==========
+
+Tables with Model field(s)
+
+x addresses
+x bank_accounts
+x document_ascriptions
+x email_logs
+x images
+x model_attachments
+x payments
+x shipping_method_service_lines
+x shipping_methods
+x stock_movements
+
+
+2022-03-18
+==========
+
+https://docs.laravel-excel.com/3.1/getting-started/installation.html
+
+composer require psr/simple-cache:^1.0 maatwebsite/excel
+
+Optional: Facade in config/app.php:
+
+'aliases' => [
+    ...
+    'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+]
+
+php artisan vendor:publish --provider="Maatwebsite\Excel\ExcelServiceProvider" --tag=config
+

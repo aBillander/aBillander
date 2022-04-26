@@ -25,7 +25,7 @@
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" 
                                     data-content="{{ l('Prices shown: Rule Price (or Unit Price, if there are Extra Items), Unit Price (when applies, i.e. Price Rule is per Pack), Product Price (as seen on Product record).', 'pricerules') }}
                                     {{l('Price is WITHOUT Taxes.', 'pricerules')}}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
     <br />{{l('Prices are exclusive of Ecotax.', 'pricerules')}}
 @endif
                   ">
@@ -49,7 +49,7 @@
         <tr>
       <td class="text-center">{{ $rule->id }}</td>
       <td>{{ $rule->name }}
-          <br /><span class="text-warning">[{{ \App\PriceRule::getRuleTypeName($rule->rule_type) }}]</span> <span title="{{l('Creation date', 'pricerules')}}">{{ abi_date_short( $rule->created_at ) }}</span>
+          <br /><span class="text-warning">[{{ \App\Models\PriceRule::getRuleTypeName($rule->rule_type) }}]</span> <span title="{{l('Creation date', 'pricerules')}}">{{ abi_date_short( $rule->created_at ) }}</span>
       </td>
       <!-- td>{{ optional($rule->category)->name }}</td -->
       <td>{{ optional($rule->customergroup)->name }}</td>

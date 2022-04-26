@@ -26,7 +26,7 @@
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('outstanding_amount') ? 'has-error' : '' }}">
                      {{ l('Outstanding Amount') }}
-                     {!! Form::text('outstanding_amount', $supplier->as_money('outstanding_amount', \App\Context::getContext()->language->currency), array('class' => 'form-control', 'id' => 'outstanding_amount', 'disabled' => "disabled")) !!}
+                     {!! Form::text('outstanding_amount', $supplier->as_money('outstanding_amount', AbiContext::getContext()->language->currency), array('class' => 'form-control', 'id' => 'outstanding_amount', 'disabled' => "disabled")) !!}
                     {!! $errors->first('outstanding_amount', '<span class="help-block">:message</span>') !!}
                   </div>
         </div>

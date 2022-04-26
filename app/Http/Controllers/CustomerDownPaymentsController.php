@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Payment as Payment;
+use App\Models\Payment;
 
 class CustomerDownPaymentsController extends Controller {
 
@@ -96,7 +96,7 @@ class CustomerDownPaymentsController extends Controller {
 		$this->validate($request, Payment::$rules);
 
 		if ( $request->input('status') == 'paid' ) {
-			if ( !$request->input('payment_date') ) $request->merge( array('payment_date' => \App\FP::date_short( \Carbon\Carbon::now() ) ) );
+			if ( !$request->input('payment_date') ) $request->merge( array('payment_date' => abi_date_short( \Carbon\Carbon::now() ) ) );
 		} else {
 			if (  $request->input('payment_date') ) $request->merge( array('payment_date' => null ) );
 		}

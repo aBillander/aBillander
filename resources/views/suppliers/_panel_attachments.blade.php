@@ -4,7 +4,7 @@
 {!! Form::open(array('route' => array('suppliers.attachment.store', $supplier->id), 'xtitle' => l('Upload an Attach Files', 'layouts'), 'class' => '', 'id' => 'add-attachment-action', 'files' => true)) !!}
 <input type="hidden" value="attachments" name="tab_name" id="tab_name">
 
-                      <input type="hidden" value="App\Supplier"     name="model_class"     id="model_class">
+                      <input type="hidden" value="App\Models\Supplier"     name="model_class"     id="model_class">
                       <input type="hidden" value="{{ $supplier->id }}"                 name="model_id"        id="model_id">
                       <input type="hidden" value="{{ $supplier->name_regular ?: $supplier->id }}" name="model_reference" id="model_reference">
                       <input type="hidden" value="#attachments"     name="previous_anchor"     id="previous_anchor">

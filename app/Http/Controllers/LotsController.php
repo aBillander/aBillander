@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Configuration;
-use App\Lot;
-use App\Product;
-use App\StockMovement;
-use App\MeasureUnit;
-use App\Warehouse;
-
-use Excel;
-
+use App\Helpers\Exports\ArrayExport;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Lot;
+use App\Models\MeasureUnit;
+use App\Models\Product;
+use App\Models\StockMovement;
+use App\Models\Warehouse;
 use App\Traits\DateFormFormatterTrait;
 use App\Traits\ModelAttachmentControllerTrait;
+use Excel;
+use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class LotsController extends Controller
 {
@@ -49,16 +50,23 @@ class LotsController extends Controller
                                 ->with('product')
                                 ->with('combination')
                                 ->with('measureunit')
-                                ->orderBy('created_at', 'DESC');
+                                ->with('warehouse')
+                                ->orderBy('manufactured_at', 'DESC')
+                                ->orderBy(
+                                    Product::select('reference')
+                                        ->whereColumn('product_id', 'products.id')
+                                        ->orderByDesc('reference')
+                                        ->limit(1)
+                                );
 
 //         abi_r($lots->toSql(), true);
 
-        $lots = $lots->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $lots = $lots->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
         // $lots = $lots->paginate( 1 );
 
         $lots->setPath('lots');     // Customize the URI used by the paginator
 
-        $warehouseList = \App\Warehouse::selectorList();
+        $warehouseList = Warehouse::selectorList();
 
         $weight_unit = MeasureUnit::where('id', Configuration::getInt('DEF_WEIGHT_UNIT'))->first();
 
@@ -149,8 +157,8 @@ class LotsController extends Controller
 //                    'quantity_after_movement' => $line->,
 
                     'price' => $product->getPriceForStockValuation(),
-                    'currency_id' => \App\Context::getContext()->company->currency->id,
-                    'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+                    'currency_id' => Context::getContext()->company->currency->id,
+                    'conversion_rate' => Context::getContext()->company->currency->conversion_rate,
 
                     'notes' => '',
 
@@ -215,8 +223,8 @@ class LotsController extends Controller
     //                   'quantity_after_movement' => ,
 
                     'price' => $product->getPriceForStockValuation(),
-                    'currency_id' => \App\Context::getContext()->company->currency->id,
-                    'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+                    'currency_id' => Context::getContext()->company->currency->id,
+                    'conversion_rate' => Context::getContext()->company->currency->conversion_rate,
 
                     'notes' => '',
 
@@ -246,7 +254,7 @@ class LotsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Lot  $lot
+     * @param  \App\Models\Lot  $lot
      * @return \Illuminate\Http\Response
      */
     public function show(Lot $lot)
@@ -257,7 +265,7 @@ class LotsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Lot  $lot
+     * @param  \App\Models\Lot  $lot
      * @return \Illuminate\Http\Response
      */
     public function edit(Lot $lot)
@@ -278,7 +286,7 @@ class LotsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Lot  $lot
+     * @param  \App\Models\Lot  $lot
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Lot $lot)
@@ -304,7 +312,7 @@ class LotsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Lot  $lot
+     * @param  \App\Models\Lot  $lot
      * @return \Illuminate\Http\Response
      */
     public function updateQuantity(Request $request, Lot $lot)
@@ -543,8 +551,8 @@ class LotsController extends Controller
 //                   'quantity_after_movement' => ,
 
                 'price' => $product->getPriceForStockValuation(),
-                'currency_id' => \App\Context::getContext()->company->currency->id,
-                'conversion_rate' => \App\Context::getContext()->company->currency->conversion_rate,
+                'currency_id' => Context::getContext()->company->currency->id,
+                'conversion_rate' => Context::getContext()->company->currency->conversion_rate,
 
                 'notes' => '',
 
@@ -576,7 +584,7 @@ class LotsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Lot  $lot
+     * @param  \App\Models\Lot  $lot
      * @return \Illuminate\Http\Response
      */
     public function destroy(Lot $lot)
@@ -588,6 +596,146 @@ class LotsController extends Controller
 
         return redirect('lots')
                 ->with('success', l('This record has been successfully deleted &#58&#58 (:id) ', ['id' => $id], 'layouts').$reference);
+    }
+
+
+
+/* ************************************************************************************************** */
+
+
+
+    /**
+     * Export a file of the resource.
+     *
+     * @return 
+     */
+    public function export(Request $request)
+    {
+        // Dates (cuen)
+        $this->mergeFormDates( ['date_from', 'date_to'], $request );
+
+        $lots = $this->lot
+                                ->filter( $request->all() )
+                                ->with('product')
+                                ->with('combination')
+                                ->with('measureunit')
+                                ->with('warehouse')
+                                ->orderBy('manufactured_at', 'DESC')
+                                ->orderBy(
+                                    Product::select('reference')
+                                        ->whereColumn('product_id', 'products.id')
+                                        ->orderByDesc('reference')
+                                        ->limit(1)
+                                )->get();
+        
+        $product = ($request->input('product_reference') ?        $request->input('product_reference').'*' : '') . 
+                   ($request->input('product_name')      ? ' / '. $request->input('product_name')     .'*' : '');
+        $warehouse = $request->input('warehouse_id') ? Warehouse::find($request->input('warehouse_id')) : null;
+        $qty = $request->input('quantity') ? (abi_quantity_prefixes()[$request->input('quantity_prefix')] ?? '?').' '.$request->input('quantity') : 'todas';
+
+        // Limit number of records
+        if ( ($count=$lots->count()) > 1500 )
+            return redirect()->back()
+                    ->with('error', l('Too many Records for this Query &#58&#58 (:id) ', ['id' => $count], 'layouts'));
+
+        // Initialize the array which will be passed into the Excel generator.
+        $data = []; 
+
+        if ( $request->input('date_from_form') && $request->input('date_to_form') )
+        {
+            $ribbon = 'entre ' . $request->input('date_from_form') . ' y ' . $request->input('date_to_form');
+
+        } else
+
+        if ( !$request->input('date_from_form') && $request->input('date_to_form') )
+        {
+            $ribbon = 'hasta ' . $request->input('date_to_form');
+
+        } else
+
+        if ( $request->input('date_from_form') && !$request->input('date_to_form') )
+        {
+            $ribbon = 'desde ' . $request->input('date_from_form');
+
+        } else
+
+        if ( !$request->input('date_from_form') && !$request->input('date_to_form') )
+        {
+            $ribbon = 'todas';
+
+        }
+
+        // Sheet Header Report Data
+        $data[] = [Context::getContext()->company->name_fiscal];
+        $data[] = ['Lotes', '', '', '', '', '', date('d M Y H:i:s')];       //, date('d M Y H:i:s')];
+        $data[] = ['Lote: '. ($request->input('reference') ?: 'todos')];
+        $data[] = ['Fechas (fabricación): ' . $ribbon];
+        $data[] = ['Filtro Productos: '. $product ?: 'todos'];  // '['.$product->reference.'] '.$product->name : 'todos'];
+        $data[] = ['Almacén: '. ($warehouse ? $warehouse->alias : 'todos')];
+        $data[] = ['Cantidad: '. $qty];
+        $data[] = [''];
+
+        // Define the Excel spreadsheet headers
+        $headers = [ 
+                    'id', 'reference', 'WAREHOUSE', 'PRODUCT_REFERENCE', 'PRODUCT_NAME', 
+
+                    'quantity', 'ALLOCATED_QTY', 'MEASURE_UNIT', 'WEIGHT', 
+
+                    'MANUFACTURED_AT', 'EXPIRY_AT', 'blocked', 'notes',
+        ];
+
+        $data[] = $headers;
+
+        foreach ($lots as $lot) {
+            
+            $row = [];
+            foreach ($headers as $header)
+            {
+                $row[$header] = $lot->{$header} ?? '';
+            }
+
+            $row['WAREHOUSE'] = $lot->warehouse->alias;
+            $row['PRODUCT_REFERENCE'] = $lot->product->reference;
+            $row['PRODUCT_NAME'] = $lot->product->name;
+
+            $row['ALLOCATED_QTY'] = $lot->allocatedQuantity();
+            $row['MEASURE_UNIT'] = optional($lot->measureunit)->sign;
+            $row['WEIGHT'] = $lot->getWeight();
+
+            $row['MANUFACTURED_AT'] = Date::dateTimeToExcel( $lot->manufactured_at );
+            $row['EXPIRY_AT'] = Date::dateTimeToExcel( $lot->expiry_at );
+
+            $data[] = $row;
+        }
+
+
+        $styles = [
+            'A2:D2'    => ['font' => ['bold' => true]],
+            'A9:M9'    => ['font' => ['bold' => true]],
+//            "C$n:C$n"  => ['font' => ['bold' => true, 'italic' => true]],
+//            "D$n:D$n"  => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+            'E' => NumberFormat::FORMAT_TEXT,
+            'J' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'K' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'F' => NumberFormat::FORMAT_NUMBER_00,
+            'G' => NumberFormat::FORMAT_NUMBER_00,
+            'I' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:D1', 'A2:D2', 'A3:D3', 'A4:D4', 'A5:D5', 'A6:D6', 'A7:D7'];
+
+        $sheetTitle = 'Lotes';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $sheetTitle;
+
+        // Generate and return the spreadsheet
+        return Excel::download($export, $sheetFileName.'.xlsx');
+
     }
 
 
@@ -627,7 +775,7 @@ class LotsController extends Controller
 
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = [l('Lot Stock Movements', 'lots') . $ribbon, '', '', '', '', '', '', date('d M Y H:i:s')];
         $data[] = [$ribbon1];
         $data[] = [''];
@@ -677,7 +825,7 @@ if ( $sections != 'allocations' )
 //            $total_weight   += $lot->getWeight();
         }
 
-        $data[] = [];
+        $data[] = [''];
 
 //        $data[] = ['', '', '', 'TOTAL:', $totat_quantity, '', 'TOTAL:', $total_weight, '', '', '', ''];
 }
@@ -726,91 +874,44 @@ if ( $sections != 'movements' )
 //            $total_weight   += $lot->getWeight();
         }
 
-        $data[] = [];
+        $data[] = [''];
 }
 
 
 
-        $sheetName = 'Movimientos' ;
+        $nbr  = $lines_so_far + 1;
+        $nbr3 = $lines_so_far + 3;
 
-        // abi_r($data, true);
+        $n = count($data);
+        $m = $n - 1;
+
+        $styles = [
+            'A2:F2'    => ['font' => ['bold' => true]],
+            'A5:L5'    => ['font' => ['bold' => true]],
+            'A8:L8'    => ['font' => ['bold' => true]],
+//            "C$n:C$n"  => ['font' => ['bold' => true, 'italic' => true]],
+            "A$nbr:L$nbr"    => ['font' => ['bold' => true]],
+            "A$nbr3:L$nbr3"  => ['font' => ['bold' => true]],
+            "A$n:L$n"        => ['font' => ['bold' => true]],
+        ];
+
+        $columnFormats = [
+            'A' => NumberFormat::FORMAT_TEXT,
+//            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+//            'D' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:D1', 'A2:D2', 'A3:D3', "A$nbr:D$nbr"];
+
+        $sheetTitle = 'Movimientos';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $lot->reference.' - '.l('Lot Stock Movements', 'lots');
 
         // Generate and return the spreadsheet
-        Excel::create($lot->reference.' - '.l('Lot Stock Movements', 'lots'), function($excel) use ($sheetName, $data, $lines_so_far) {
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data, $lines_so_far) {
-                
-                $sheet->mergeCells('A1:D1');
-                $sheet->mergeCells('A2:D2');
-                $sheet->mergeCells('A3:D3');
-
-                $nbr = $lines_so_far + 1;
-                $sheet->mergeCells("A$nbr:D$nbr");
-
-                $sheet->getStyle('A2:F2')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->getStyle('A5:L5')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->getStyle('A8:L8')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $nbr = $lines_so_far + 1;
-
-                $sheet->getStyle("A$nbr:L$nbr")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $nbr = $lines_so_far + 3;
-
-                $sheet->getStyle("A$nbr:L$nbr")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $nbr = count($data);
-
-                $sheet->getStyle("A$nbr:L$nbr")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-//                    'B' => 'dd/mm/yyyy',
-//                    'C' => 'dd/mm/yyyy',
-                    'A' => '@',
-//                    'C' => '0.00',
-//                    'H' => '0.00',
-
-                ));
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
-
-        // https://www.youtube.com/watch?v=LWLN4p7Cn4E
-        // https://www.youtube.com/watch?v=s-ZeszfCoEs
     }
 
 

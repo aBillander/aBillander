@@ -18,6 +18,7 @@ class CreateContactsTable extends Migration
             $table->string('firstname', 32)->nullable(false);            // Contact information
             $table->string('lastname', 32)->nullable();
             $table->string('job_title')->nullable();
+            $table->string('type', 32)->nullable()->default('Employee');   // Use case example: manager, secretary, etc.
             $table->string('email')->nullable();
 
             $table->string('phone', 32)->nullable();
@@ -34,13 +35,16 @@ class CreateContactsTable extends Migration
 
             $table->string('website', 128)->nullable();
 
+            $table->tinyInteger('is_primary')->default(0);
             $table->tinyInteger('blocked')->default(0);
             $table->tinyInteger('active')->default(1);
 
             $table->text('notes')->nullable();
 
             $table->integer('user_created_by_id')->unsigned();
-            $table->integer('party_id')->unsigned()->nullable(false);
+            $table->integer('party_id')->unsigned()->nullable();
+            $table->integer('customer_id')->unsigned()->nullable();
+            $table->integer('address_id')->unsigned()->nullable();
             
             $table->timestamps();
         });

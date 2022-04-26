@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Models\Address;
+use App\Models\BankAccount;
+use App\Models\Company;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Country;
 use Illuminate\Http\Request;
-
-use App\Company;
-use App\Address;
-use App\BankAccount;
-use App\Country;
-use App\Configuration; 
-use \iImage;
 use View;
+use \iImage;
 
 class CompaniesController extends Controller {
 
@@ -158,14 +157,14 @@ class CompaniesController extends Controller {
 //			$filename = 'company_logo'.'.'.$file->getClientOriginalExtension();
 			$filename = time().'.'.$file->getClientOriginalExtension();
 //			iImage::make($file)->resize(300,300)->save( public_path('/uploads/company/'.$filename) );
-			iImage::make($file)->save( public_path( \App\Company::imagesPath() . $filename ) );
+			iImage::make($file)->save( public_path( Company::imagesPath() . $filename ) );
 
 			// 'HEADER_TITLE' Not needed anymore
 			Configuration::updateValue('HEADER_TITLE', '');
 
 			// Delete old image
-			$old_file = public_path( \App\Company::imagesPath() . \App\Context::getContext()->company->company_logo );
-	        if ( \App\Context::getContext()->company->company_logo && file_exists( $old_file ) ) {
+			$old_file = public_path( Company::imagesPath() . Context::getContext()->company->company_logo );
+	        if ( Context::getContext()->company->company_logo && file_exists( $old_file ) ) {
 	            unlink( $old_file );
       		}
 
@@ -200,6 +199,8 @@ class CompaniesController extends Controller {
         $company = $this->company->with('bankaccounts')->findOrFail($id);
 
         $request->merge( ['notes' => $request->input('bank_account_notes')] );
+
+        $request->session()->flash('tabName', $section);
 
         $this->validate($request, BankAccount::$rules);
 

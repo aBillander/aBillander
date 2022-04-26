@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Configuration;
-use App\ProductionSheet;
-use App\DeliveryRoute;
-
-use Excel;
+use App\Models\Configuration;
+use App\Models\ProductionSheet;
+use App\Models\DeliveryRoute;
 
 class ProductionSheetsDeliveryRoutesController extends Controller
 {

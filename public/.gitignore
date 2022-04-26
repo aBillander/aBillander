@@ -1,6 +1,3 @@
-company_icon.png
-xtracon.png
-
 !tenants
 tenants/*
 !tenants/localhost

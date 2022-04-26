@@ -110,7 +110,7 @@
                <div class="radio-inline">
                  <label>
                    {!! Form::radio('enable_min_order', '-1', NULL, ['id' => 'enable_min_order_default']) !!}
-                   {!! l('Default', [], 'layouts') !!} ({{ abi_yn_label ( \App\Configuration::get('ABCC_ENABLE_MIN_ORDER') ) }})
+                   {!! l('Default', [], 'layouts') !!} ({{ abi_yn_label ( AbiConfiguration::get('ABCC_ENABLE_MIN_ORDER') ) }})
                  </label>
                </div>
              </div>
@@ -122,7 +122,7 @@
                <div class="radio-inline">
                  <label>
                    {!! Form::radio('use_default_min_order_value', '1', NULL, ['id' => 'use_default_min_order_value_on']) !!}
-                   {!! l('Yes', [], 'layouts') !!} ({{ abi_money( \App\Configuration::get('ABCC_MIN_ORDER_VALUE') ) }})
+                   {!! l('Yes', [], 'layouts') !!} ({{ abi_money( AbiConfiguration::get('ABCC_MIN_ORDER_VALUE') ) }})
                  </label>
                </div>
                <div class="radio-inline">
@@ -138,7 +138,7 @@
           {!! Form::label('min_order_value', l('Minimum Order Value', 'customerusers')) !!}
           {!! Form::text('min_order_value', null, array('class' => 'form-control', 'id' => 'min_order_value')) !!}
 
-          <!-- div class="form-control" id="min_order_value_default">{{ \App\Configuration::get('ABCC_MIN_ORDER_VALUE') }}</div -->
+          <!-- div class="form-control" id="min_order_value_default">{{ AbiConfiguration::get('ABCC_MIN_ORDER_VALUE') }}</div -->
       </div>
 
 </div>
@@ -163,7 +163,7 @@
                <div class="radio-inline">
                  <label>
                    {!! Form::radio('enable_quotations', '-1', NULL, ['id' => 'enable_quotations_default']) !!}
-                   {!! l('Default', [], 'layouts') !!} ({{ abi_yn_label ( \App\Configuration::get('ABCC_ENABLE_QUOTATIONS') ) }})
+                   {!! l('Default', [], 'layouts') !!} ({{ abi_yn_label ( AbiConfiguration::get('ABCC_ENABLE_QUOTATIONS') ) }})
                  </label>
                </div>
              </div>
@@ -187,7 +187,7 @@
                <div class="radio-inline">
                  <label>
                    {!! Form::radio('display_prices_tax_inc', '-1', NULL, ['id' => 'display_prices_tax_inc_default']) !!}
-                   {!! l('Default', [], 'layouts') !!} ({{ abi_yn_label ( \App\Configuration::get('ABCC_DISPLAY_PRICES_TAX_INC') ) }})
+                   {!! l('Default', [], 'layouts') !!} ({{ abi_yn_label ( AbiConfiguration::get('ABCC_DISPLAY_PRICES_TAX_INC') ) }})
                  </label>
                </div>
                      </div>
@@ -242,7 +242,7 @@
 <script type="text/javascript">
 
 
-    var enable_min_order_default = {{ \App\Configuration::get('ABCC_ENABLE_MIN_ORDER')}};
+    var enable_min_order_default = {{ AbiConfiguration::get('ABCC_ENABLE_MIN_ORDER')}};
 
     $(document).ready(function() 
     {

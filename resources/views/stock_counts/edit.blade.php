@@ -10,9 +10,7 @@
 		<div class="panel panel-info">
 			<div class="panel-heading">
 
-                <a class="pull-right btn btn-xs btn-blue" href="{{ URL::to('stockcounts/' . $stockcount->id . '/stockcountlines') }}" title="{{l('Stock Count Lines')}}"><i class="fa fa-folder-open-o"></i></a>
-
-            	<h3 class="panel-title">{{ l('Edit Stock Count') }} :: ({{$stockcount->id}}) {{$stockcount->name}}</h3>
+                <h3 class="panel-title">{{ l('Edit Stock Count') }} :: ({{$stockcount->id}}) {{$stockcount->name}}</h3>
             </div>
 
 			<div class="panel-body">
@@ -21,7 +19,7 @@
 
 				{!! Form::model($stockcount, array('method' => 'PATCH', 'route' => array('stockcounts.update', $stockcount->id))) !!}
 
-					@include('stock_counts._form')
+					@include('stock_counts._form', ['with_lines' => true])
 
 				{!! Form::close() !!}
 			</div>

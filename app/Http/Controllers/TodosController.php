@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use App\Models\Configuration;
+use App\Models\Todo;
 use Illuminate\Http\Request;
-
-use App\Todo;
 
 class TodosController extends Controller {
 
@@ -32,7 +30,7 @@ class TodosController extends Controller {
 		        ->orderBy('id', 'desc');
         // $completed_tasks = Task::where("iscompleted", true)->get();
 
-        $todos = $todos->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $todos = $todos->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $todos->setPath('todos');
 

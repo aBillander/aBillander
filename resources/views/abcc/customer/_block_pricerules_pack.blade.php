@@ -22,7 +22,7 @@
               <th class="text-center">{{l('Price per Package')}}
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
                           data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
     <br />
     {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
 @endif
@@ -33,7 +33,7 @@
               <th class="text-center">{{l('Unit Price')}}
                    <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-html="true" data-container="body" 
                           data-content="{{ l('Prices are exclusive of Tax', 'abcc/catalogue') }}
-@if( \App\Configuration::isTrue('ENABLE_ECOTAXES') )
+@if( AbiConfiguration::isTrue('ENABLE_ECOTAXES') )
     <br />
     {!! l('Prices are inclusive of Ecotax', 'abcc/catalogue') !!}
 @endif
@@ -59,17 +59,17 @@
 @endphp
 
               [<a class="view-image-multiple" data-html="false" data-toggle="modal" 
-                       href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
+                       href="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
                        data-content="{{ nl2p($rule->product->description_short) }} <br /> {{ nl2p($rule->product->description) }} " 
                        data-title="{{ l('Product Images') }} :: {{ $rule->product->name }} " 
                        data-caption="({{$img->filename}}) {{ $img->caption }} " 
-                       data-id="{{ $product->id }}" 
+                       data-id="{{ $rule->product->id }}" 
                        onClick="return false;" title="{{l('View Image', 'abcc/catalogue')}}">
   
                         {{ $rule->product->reference }}
                 </a>]
   
-                <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+                <img src="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
 
                 {{ $rule->product->name }}
             @endif

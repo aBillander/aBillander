@@ -1,8 +1,0 @@
-
-http://www.direct-debits.com/es/direct-debits-una-aplicacion-en-modo-saas
-
-http://wiki.openbravo.com/wiki/SEPA_Direct_Debit_Customer-to-Bank/User_Documentation
-
-https://docs.oracle.com/cd/E39564_01/doc.91/e60209/fields_sepa_pay_file_appx.htm
-
-

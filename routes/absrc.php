@@ -65,7 +65,7 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 
     // Sales Reps routes here
 
-    Route::group(['prefix' => 'absrc', 'namespace' => '\SalesRepCenter'], function ()
+    Route::group(['prefix' => 'absrc', 'namespace' => 'SalesRepCenter'], function ()
     {
         // Ajax Search
         Route::get('ajax/customer_lookup', 'AbsrcCustomersController@ajaxCustomerSearch')->name('absrc.ajax.customerLookup');
@@ -118,9 +118,13 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 
         Route::get('customerusers/{customer}/getuser', 'AbsrcCustomerUsersController@getUser')->name('absrc.customeruser.getuser');
 
+        Route::post('customers/{id}/bankaccount', 'AbsrcCustomersController@updateBankAccount')->name('absrc.customers.bankaccount');
+
         Route::get('customers/{id}/getpricerules',         'AbsrcCustomersController@getPriceRules')->name('absrc.customer.getpricerules');
 
         Route::get('customers/{id}/product/{productid}/consumption', 'AbsrcCustomersController@productConsumption' )->name('absrc.customer.product.consumption');
+
+        Route::post('bankaccounts/iban/calculate', 'AbsrcBankAccountsController@ibanCalculate')->name('absrc.bankaccounts.iban.calculate' );
 
 /*        Route::resource('customers', 'CustomersController');
         Route::get('customerorders/create/withcustomer/{customer}', 'CustomerOrdersController@createWithCustomer')->name('customerorders.create.withcustomer');
@@ -136,6 +140,10 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 
 
         $pairs = [
+                [
+                    'controller' => 'AbsrcCustomerQuotationsController',
+                    'path' => 'quotations',
+                ],
                 [
                     'controller' => 'AbsrcCustomerOrdersController',
                     'path' => 'orders',
@@ -164,6 +172,7 @@ foreach ($pairs as $pair) {
         Route::get($path.'/line/searchproduct',        $controller.'@searchProduct' )->name($routepath.'.searchproduct');
         Route::get($path.'/line/searchservice',        $controller.'@searchService' )->name($routepath.'.searchservice');
         Route::get($path.'/line/getproduct',           $controller.'@getProduct'    )->name($routepath.'.getproduct');
+        Route::get($path.'/line/getproduct/prices',    $controller.'@getProductPrices')->name($routepath.'.getproduct.prices');
 
         // ?? Maybe only for Invoices ??
         Route::get($path.'/{id}/getpayments',          $controller.'@getDocumentPayments' )->name($routepath.'.getpayments');

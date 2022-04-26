@@ -97,7 +97,7 @@
             <th>{{ l('Cost Price') }}</th -->
             <th>{{ l('Customer Price') }}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" data-container="body" 
-                        data-content="{{ \App\Configuration::get('PRICES_ENTERED_WITH_TAX') ?
+                        data-content="{{ AbiConfiguration::get('PRICES_ENTERED_WITH_TAX') ?
                                     l('Prices are entered inclusive of tax', [], 'appmultilang') :
                                     l('Prices are entered exclusive of tax', [], 'appmultilang') }}">
                     <i class="fa fa-question-circle abi-help"></i>
@@ -126,13 +126,13 @@
 @endphp
 @if ($img)
               <a class="view-image" data-html="false" data-toggle="modal" 
-                     href="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
+                     href="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
                      data-content="{{l('You are going to view a record. Are you sure?')}}" 
                      data-title="{{ l('Product Images') }} :: {{ $product->name }} " 
                      data-caption="({{$img->id}}) {{ $img->caption }} " 
                      onClick="return false;" title="{{l('View Image')}}">
 
-                      <img src="{{ URL::to( \App\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+                      <img src="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->id . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
               </a>
 @endif
       </td>

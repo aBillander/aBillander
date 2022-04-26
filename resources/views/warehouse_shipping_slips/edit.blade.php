@@ -53,7 +53,7 @@
                 <div class="btn-group">
                     <a href="#" class="btn xbtn-sm btn-default dropdown-toggle" data-toggle="dropdown" title="{{l('Back to', 'layouts')}}"><i class="fa fa-mail-reply"></i> &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu  pull-right">
-                      <li><a href="{{ URL::to('warehouseshippingslips') }}"><i class="fa {{ \App\WarehouseShippingSlip::getBadge('i_class') }}"></i> {{l('Back to Documents')}}</a></li>
+                      <li><a href="{{ URL::to('warehouseshippingslips') }}"><i class="fa {{ \App\Models\WarehouseShippingSlip::getBadge('i_class') }}"></i> {{l('Back to Documents')}}</a></li>
                       <li class="divider"></li>
 
                       <li><a href="{{ route('warehouse.inventory', [$document->warehouse_id]) }}" target="_blank"><i class="fa fa-th-list" style="color: #38b44a;"></i> {{ l('Products in') }} [{{ $document->warehouse->alias }}] {{ $document->warehouse->name }}</a></li>
@@ -69,7 +69,7 @@
 
             </div>
             
-              <h2><a class="btn btn-sm {{ \App\WarehouseShippingSlip::getBadge('a_class') }}" href="{{ URL::to('warehouseshippingslips') }}" title="{{l('Documents')}}"><i class="fa {{ \App\WarehouseShippingSlip::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> 
+              <h2><a class="btn btn-sm {{ \App\Models\WarehouseShippingSlip::getBadge('a_class') }}" href="{{ URL::to('warehouseshippingslips') }}" title="{{l('Documents')}}"><i class="fa {{ \App\Models\WarehouseShippingSlip::getBadge('i_class') }}"></i></a> <span style="color: #cccccc;">/</span> 
                   
                   <span class="lead well well-sm">
 

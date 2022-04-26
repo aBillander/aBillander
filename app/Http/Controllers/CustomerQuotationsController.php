@@ -2,33 +2,33 @@
 
 namespace App\Http\Controllers;
 
-// use App\Http\Requests;
-
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-
-use App\Customer;
-use App\CustomerQuotation as Document;
-use App\CustomerQuotationLine as DocumentLine;
-
-use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-use App\CustomerInvoiceLineTax;
-
-use App\CustomerShippingSlip;
-use App\CustomerShippingSlipLine;
-use App\CustomerShippingSlipLineTax;
-
-use App\CustomerOrder;
-use App\CustomerOrderLine;
-use App\CustomerOrderLineTax;
-use App\DocumentAscription;
-
-use App\Configuration;
-use App\Sequence;
-use App\Template;
-
 use App\Events\CustomerQuotationConfirmed;
+use App\Helpers\Price;
+use App\Models\Combination;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerInvoiceLineTax;
+use App\Models\CustomerOrder;
+use App\Models\CustomerOrderLine;
+use App\Models\CustomerOrderLineTax;
+use App\Models\CustomerQuotation as Document;
+use App\Models\CustomerQuotationLine as DocumentLine;
+use App\Models\CustomerShippingSlip;
+use App\Models\CustomerShippingSlipLine;
+use App\Models\CustomerShippingSlipLineTax;
+use App\Helpers\DocumentAscription;
+use App\Models\Product;
+use App\Models\SalesRep;
+use App\Models\Sequence;
+use App\Models\ShippingMethod;
+use App\Models\Tax;
+use App\Models\Template;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 
 class CustomerQuotationsController extends BillableController
 {
@@ -82,9 +82,9 @@ class CustomerQuotationsController extends BillableController
         if ( !($items_per_page >= 0) ) 
             $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
 
-        $sequenceList = Sequence::listFor( 'App\\CustomerInvoice' );
+        $sequenceList = Sequence::listFor( CustomerInvoice::class );
 
-        $templateList = Template::listFor( 'App\\CustomerInvoice' );
+        $templateList = Template::listFor( CustomerInvoice::class );
 
         $customer = $this->customer->findOrFail($id);
 
@@ -183,10 +183,10 @@ class CustomerQuotationsController extends BillableController
         $customer = Customer::with('addresses')->findOrFail(  $request->input('customer_id') );
 
         // Extra data
-//        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
+//        $seq = Sequence::findOrFail( $request->input('sequence_id') );
 //        $doc_id = $seq->getNextDocumentId();
 
-        $extradata = [  'user_id'              => \App\Context::getContext()->user->id,
+        $extradata = [  'user_id'              => Context::getContext()->user->id,
 
                         'sequence_id'          => $request->input('sequence_id') ?? Configuration::getInt('DEF_'.strtoupper( $this->getParentModelSnakeCase() ).'_SEQUENCE'),
 
@@ -230,7 +230,7 @@ class CustomerQuotationsController extends BillableController
     /**
      * Display the specified resource.
      *
-     * @param  \App\CustomerQuotation  $customerorder
+     * @param  \App\Models\CustomerQuotation  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -241,7 +241,7 @@ class CustomerQuotationsController extends BillableController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\CustomerQuotation  $customerorder
+     * @param  \App\Models\CustomerQuotation  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function edit($id, Request $request)
@@ -290,7 +290,7 @@ class CustomerQuotationsController extends BillableController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\CustomerQuotation  $customerorder
+     * @param  \App\Models\CustomerQuotation  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Document $customerquotation)
@@ -306,17 +306,17 @@ class CustomerQuotationsController extends BillableController
         $this->validate($request, $rules);
 /*
         // Extra data
-        $seq = \App\Sequence::findOrFail( $request->input('sequence_id') );
+        $seq = Sequence::findOrFail( $request->input('sequence_id') );
         $doc_id = $seq->getNextDocumentId();
 
         $extradata = [  'document_prefix'      => $seq->prefix,
                         'document_id'          => $doc_id,
                         'document_reference'   => $seq->getDocumentReference($doc_id),
 
-                        'user_id'              => \App\Context::getContext()->user->id,
+                        'user_id'              => Context::getContext()->user->id,
 
                         'created_via'          => 'manual',
-                        'status'               =>  \App\Configuration::get('CUSTOMER_ORDERS_NEED_VALIDATION') ? 'draft' : 'confirmed',
+                        'status'               =>  Configuration::get('CUSTOMER_ORDERS_NEED_VALIDATION') ? 'draft' : 'confirmed',
                         'locked'               => 0,
                      ];
 
@@ -372,7 +372,7 @@ class CustomerQuotationsController extends BillableController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\CustomerQuotation  $customerorder
+     * @param  \App\Models\CustomerQuotation  $customerorder
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -536,9 +536,9 @@ class CustomerQuotationsController extends BillableController
         if ( !($items_per_page >= 0) ) 
             $items_per_page = Configuration::getInt('DEF_ITEMS_PERPAGE');
 
-        $sequenceList = Sequence::listFor( 'App\\CustomerInvoice' );
+        $sequenceList = Sequence::listFor( CustomerInvoice::class );
 
-        $templateList = Template::listFor( 'App\\CustomerInvoice' );
+        $templateList = Template::listFor( CustomerInvoice::class );
 
         $customer = $this->customer->findOrFail($id);
 
@@ -903,9 +903,9 @@ class CustomerQuotationsController extends BillableController
                 $line->quantity_onhand = $line->quantity;
             }
 
-        $sequenceList = Sequence::listFor( 'App\\CustomerOrder' );
+        $sequenceList = Sequence::listFor( CustomerOrder::class );
 
-        $templateList = Template::listFor( 'App\\CustomerOrder' );
+        $templateList = Template::listFor( CustomerOrder::class );
 
         return view($this->view_path.'._panel_document_availability', $this->modelVars() + compact('document', 'sequenceList', 'templateList', 'onhand_only'));
     }
@@ -931,7 +931,7 @@ class CustomerQuotationsController extends BillableController
         $shipping_method_id = $document->shipping_method_id ?? 
                               $customer->getShippingMethodId();
 
-        $shipping_method = \App\ShippingMethod::find($shipping_method_id);
+        $shipping_method = ShippingMethod::find($shipping_method_id);
         $carrier_id = $shipping_method ? $shipping_method->carrier_id : null;
 
         // Common data
@@ -1162,30 +1162,30 @@ class CustomerQuotationsController extends BillableController
         $combination_id  = $request->input('combination_id', 0);
         $customer_id     = $request->input('customer_id');
         $sales_rep_id    = $request->input('sales_rep_id', 0);
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 
 //        return "$product_id, $combination_id, $customer_id, $currency_id";
 
         if ($combination_id>0) {
-            $combination = \App\Combination::with('product')->with('product.tax')->find(intval($combination_id));
+            $combination = Combination::with('product')->with('product.tax')->find(intval($combination_id));
             $product = $combination->product;
             $product->reference = $combination->reference;
             $product->name = $product->name.' | '.$combination->name;
         } else {
-            $product = \App\Product::with('tax')->find(intval($product_id));
+            $product = Product::with('tax')->find(intval($product_id));
         }
 
-        $customer = \App\Customer::find(intval($customer_id));
+        $customer = Customer::find(intval($customer_id));
 
         $sales_rep = null;
         if ($sales_rep_id>0)
-            $sales_rep = \App\SalesRep::find(intval($sales_rep_id));
+            $sales_rep = SalesRep::find(intval($sales_rep_id));
         if (!$sales_rep)
             $sales_rep = (object) ['id' => 0, 'commission_percent' => 0.0]; 
         
-        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
-                    \App\Context::getContext()->currency :
-                    \App\Currency::find(intval($currency_id));
+        $currency = ($currency_id == Context::getContext()->currency->id) ?
+                    Context::getContext()->currency :
+                    Currency::find(intval($currency_id));
 
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
@@ -1249,7 +1249,7 @@ class CustomerQuotationsController extends BillableController
         $other_json      = $request->input('other_json');
         $customer_id     = $request->input('customer_id');
         $sales_rep_id    = $request->input('sales_rep_id', 0);
-        $currency_id     = $request->input('currency_id', \App\Context::getContext()->currency->id);
+        $currency_id     = $request->input('currency_id', Context::getContext()->currency->id);
 
 //        return "$product_id, $combination_id, $customer_id, $currency_id";
 
@@ -1259,17 +1259,17 @@ class CustomerQuotationsController extends BillableController
             $product = $other_json;
         }
 
-        $customer = \App\Customer::find(intval($customer_id));
+        $customer = Customer::find(intval($customer_id));
 
         $sales_rep = null;
         if ($sales_rep_id>0)
-            $sales_rep = \App\SalesRep::find(intval($sales_rep_id));
+            $sales_rep = SalesRep::find(intval($sales_rep_id));
         if (!$sales_rep)
             $sales_rep = (object) ['id' => 0, 'commission_percent' => 0.0]; 
         
-        $currency = ($currency_id == \App\Context::getContext()->currency->id) ?
-                    \App\Context::getContext()->currency :
-                    \App\Currency::find(intval($currency_id));
+        $currency = ($currency_id == Context::getContext()->currency->id) ?
+                    Context::getContext()->currency :
+                    Currency::find(intval($currency_id));
 
         $currency->conversion_rate = $request->input('conversion_rate', $currency->conversion_rate);
 
@@ -1278,12 +1278,12 @@ class CustomerQuotationsController extends BillableController
             return '';
         }
 
-        $tax = \App\Tax::find($product->tax_id);
+        $tax = Tax::find($product->tax_id);
 
         // Calculate price per $customer_id now!
         $amount_is_tax_inc = Configuration::get('PRICES_ENTERED_WITH_TAX');
         $amount = $amount_is_tax_inc ? $product->price_tax_inc : $product->price;
-        $price = new \App\Price( $amount, $amount_is_tax_inc, $currency );
+        $price = new Price( $amount, $amount_is_tax_inc, $currency );
         $tax_percent = $tax->getFirstRule()->percent;
         $price->applyTaxPercent( $tax_percent );
 

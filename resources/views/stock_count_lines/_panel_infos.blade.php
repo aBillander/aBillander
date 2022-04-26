@@ -20,5 +20,11 @@
             <br />
             <br />
 
+@if ( !$list->processed )
+                <p class="text-center">
+                    <a class="btn btn-xs btn-warning" href="{{ URL::to('stockcounts/' . $list->id . '/edit') }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i> &nbsp;{{l('Edit', [], 'layouts')}}</a>
+                </p>
+@endif
+
           </div>
           </div>

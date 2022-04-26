@@ -2,7 +2,10 @@
 
 namespace App\Traits;
 
-use App\Configuration;
+use App\Models\Configuration;
+use App\Models\Tax;
+
+use App\Helpers\Price;
 
 trait BillableCustomTrait
 {
@@ -42,7 +45,7 @@ trait BillableCustomTrait
             case 'total':
                 # Summarize (by tax), round off and summarize
 
-                $tax_classes = \App\Tax::with('taxrules')->get();
+                $tax_classes = Tax::with('taxrules')->get();
 
                 foreach ($tax_classes as $tx) 
                 {
@@ -88,7 +91,7 @@ trait BillableCustomTrait
             
             case 'total':
                 # Summarize (by tax), round off and summarize
-                $tax_classes = \App\Tax::with('taxrules')->get();
+                $tax_classes = Tax::with('taxrules')->get();
 
                 foreach ($tax_classes as $tx) 
                 {
@@ -153,7 +156,7 @@ trait BillableCustomTrait
             $total_tax_excl = $this->total_lines_tax_excl * $reduction - $this->document_discount_amount_tax_excl - $this->document_ppd_amount_tax_excl;
 
             // Make a Price object for rounding
-            $p = \App\Price::create([$total_tax_excl, $total_tax_incl], $currency);
+            $p = Price::create([$total_tax_excl, $total_tax_incl], $currency);
             $p->applyRounding();        // But see: BillableTotalsTrait :: applyDiscount()
 
             // Improve this: Sum subtotals by tax type must match Order Totals
@@ -175,7 +178,7 @@ trait BillableCustomTrait
         {
 
             // Make a Price object 
-            $p = \App\Price::create([$this->total_currency_tax_excl, $this->total_currency_tax_incl], $this->currency, $this->currency_conversion_rate);
+            $p = Price::create([$this->total_currency_tax_excl, $this->total_currency_tax_incl], $this->currency, $this->currency_conversion_rate);
 
             // abi_r($p);
 

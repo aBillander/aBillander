@@ -21,7 +21,7 @@
 @php
 
   $work_center_id = 1;
-  $work_center =\App\WorkCenter::findOrFail($work_center_id);
+  $work_center =\App\Models\WorkCenter::findOrFail($work_center_id);
 
 @endphp
     <h3>
@@ -86,7 +86,7 @@
 @php
 
   $work_center_id = 2;
-  $work_center =\App\WorkCenter::findOrFail($work_center_id);
+  $work_center =\App\Models\WorkCenter::findOrFail($work_center_id);
 
 @endphp
     <h3>

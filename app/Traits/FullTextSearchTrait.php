@@ -65,7 +65,7 @@ trait FullTextSearchTrait
 	 * @param string $term
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 *
-	 * Usage: $products = \App\Product::select('*')->searchWhithRelevance($term)->get();
+	 * Usage: $products = \App\Models\Product::select('*')->searchWhithRelevance($term)->get();
 	 */
 	public function scopeSearchWhithRelevance($query, $term)
 	{

@@ -174,20 +174,20 @@ border-top-right-radius: 6px;">
 
                 $('#myModalBankAccountLabel').html(title);
                 // Clean up data
-                $('#bank_account_id').val('');
-                $('#bank_name').val('');
-                $('#ccc_entidad').val('');
-                $('#ccc_oficina').val('');
-                $('#ccc_control').val('');
-                $('#ccc_cuenta').val('');
-                $('#iban').val('');
-                $('#swift').val('');
-                $('#suffix').val('');
-                $('#creditorid').val('');
-                $('#bank_account_notes').val('');
+                $('#bank_account_id').val('{{ old('bank_account_id', '') }}');
+                $('#bank_name').val('{{ old('bank_name', '') }}');
+                $('#ccc_entidad').val('{{ old('ccc_entidad', '') }}');
+                $('#ccc_oficina').val('{{ old('ccc_oficina', '') }}');
+                $('#ccc_control').val('{{ old('ccc_control', '') }}');
+                $('#ccc_cuenta').val('{{ old('ccc_cuenta', '') }}');
+                $('#iban').val('{{ old('iban', '') }}');
+                $('#swift').val('{{ old('swift', '') }}');
+                $('#suffix').val('{{ old('suffix', '000') }}');
+                $('#creditorid').val('{{ old('creditorid', '') }}');
+                $('#bank_account_notes').val('{{ old('bank_account_notes', '') }}');
 
                 // Default bank account?
-                $("input[name=is_default][value=" + 1 + "]").prop('checked', true);
+                $("input[name=is_default][value=" + {{ old('is_default', '1') }} + "]").prop('checked', true);
 
                 $('#iban').parent().removeClass('has-success');
 

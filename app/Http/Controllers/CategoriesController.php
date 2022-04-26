@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 
-use App\Configuration;
-use App\Category;
+use App\Models\Configuration;
+use App\Models\Category;
 use View;
 
 class CategoriesController extends Controller {
@@ -68,6 +67,14 @@ class CategoriesController extends Controller {
             // REST API Connect to shop & check ifor $request->input('webshop_id') existance
         }
 */
+
+        // Check position
+        if ( (int) $request->input('position') == 0 )
+        {
+            $max_position = (int) Category::where('parent_id', $parentId)->max('position');
+
+            $request->merge( ['position' => $max_position + 10] );
+        }
 
         $this->validate($request, Category::$rules['main_data']);
 
@@ -239,7 +246,7 @@ define('PS_SHOP_PATH', 'http://localhost/ps16014/');
 define('PS_WS_AUTH_KEY', 'HPIIUGHGGKUCF89MYTDSZP587XFPQMNV');
 // require_once('./PSWebServiceLibrary.php');
 
-$webService = new \App\PrestaShopWebservice(PS_SHOP_PATH, PS_WS_AUTH_KEY, DEBUG);
+$webService = new \App\Models\PrestaShopWebservice(PS_SHOP_PATH, PS_WS_AUTH_KEY, DEBUG);
 $xml = $webService -> get(array('url' => PS_SHOP_PATH . '/api/categories?schema=blank'));
 
 $resources = $xml -> children() -> children();

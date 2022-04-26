@@ -6,8 +6,8 @@
 
    <div class="panel-body">
 
-            {!! Form::hidden('customer_id', \App\Context::getContext()->customer->id, array('id' => 'customer_id')) !!}
-            {!! Form::hidden('currency_id', \App\Context::getContext()->cart->currency_id, array('id' => 'currency_id')) !!}
+            {!! Form::hidden('customer_id', AbiContext::getContext()->customer->id, array('id' => 'customer_id')) !!}
+            {!! Form::hidden('currency_id', AbiContext::getContext()->cart->currency_id, array('id' => 'currency_id')) !!}
 
             {{ Form::hidden('line_product_id',     null, array('id' => 'line_product_id'    )) }}
             {{ Form::hidden('line_combination_id', null, array('id' => 'line_combination_id')) }}

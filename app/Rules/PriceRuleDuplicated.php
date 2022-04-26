@@ -4,8 +4,8 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
-use App\PriceRule;
-use App\Context;
+use App\Models\PriceRule;
+use App\Models\Context;
 
 // php artisan make:rule SupplierPriceListLineQuantity
 

@@ -20,7 +20,7 @@
   <tbody>
   @foreach ($sheet->productionorderlinesGrouped() as $order)
   @php
-    $product = \App\Product::with('measureunit')->find( $order['product_id'] );
+    $product = \App\Models\Product::with('measureunit')->find( $order['product_id'] );
   @endphp
   @if ( $product->procurement_type != 'purchase' || $product->is_packaging) @continue @endif
     <tr>

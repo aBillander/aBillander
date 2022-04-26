@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+
 /*
 |--------------------------------------------------------------------------
 | Helper functions.
@@ -17,23 +21,25 @@ function l($string = NULL, $data = [], $langfile = NULL)
             $data = [];
         }
 
-        if ($langfile == NULL) $langfile = \App\Context::getContext()->controller;
+        if ($langfile == NULL) $langfile = Context::getContext()->controller ?? '';
+        if ($langfile == ''  ) $langfile = 'layouts';
 
         if (Lang::has('localized/'.$langfile.'.'.$string))
             return Lang::get('localized/'.$langfile.'.'.$string, $data);
 
         if (Lang::has($langfile.'.'.$string))
             return Lang::get($langfile.'.'.$string, $data);
-  //  elseif (Lang::has('_allcontrollers.'.$string))
-  //    return Lang::get('_allcontrollers.'.$string);
-    else 
-    {
-      foreach ($data as $key => $value)
-      {
-        $string = str_replace(':'.$key, $value, $string);
-      }
-      return $string;
-    }
+        else
+        if (Lang::has('layouts.'.$string))
+            return Lang::get('layouts.'.$string);
+        else 
+        {
+          foreach ($data as $key => $value)
+          {
+            $string = str_replace(':'.$key, $value, $string);
+          }
+          return $string;
+        }
   }
 
 function ld($string = NULL, $data = [], $langfile = 'customerdocuments')
@@ -69,6 +75,19 @@ function abi_toSql($query)
 
 
 
+if (! function_exists('abi_version')) {
+    /**
+     * Get the version number of the aBillander Application.
+     *
+     * @param  none
+     * @return string
+     */
+    function abi_version()
+    {
+        return App\Models\Configuration::VERSION;
+    }
+}
+
 if (! function_exists('abi_laravel_version')) {
     /**
      * Get the version number of the Laravel framework.
@@ -78,7 +97,22 @@ if (! function_exists('abi_laravel_version')) {
      */
     function abi_laravel_version()
     {
-        return app()->version();
+        return Illuminate\Foundation\Application::VERSION;
+        // return app()->version();
+    }
+}
+
+if (! function_exists('abi_php_version')) {
+    /**
+     * Get the version number of the PHP language.
+     *
+     * @param  none
+     * @return string
+     */
+    function abi_php_version()
+    {
+        return PHP_VERSION;
+        // return app()->version();
     }
 }
 
@@ -92,9 +126,9 @@ function abi_date_short(\Carbon\Carbon $date = null, $format = '')
         // http://laravel.io/forum/03-11-2014-date-format
         // https://laracasts.com/forum/?p=764-saving-carbon-dates-from-user-input/0
 
-        // if ($format == '') $format = \App\Configuration::get('DATE_FORMAT_SHORT');     
-        if ($format == '') $format = \App\Context::getContext()->language->date_format_lite; // Should take value after User / Environment settings
-        if (!$format) $format = \App\Configuration::get('DATE_FORMAT_SHORT');
+        // if ($format == '') $format = Configuration::get('DATE_FORMAT_SHORT');     
+        if ($format == '') $format = Context::getContext()->language->date_format_lite; // Should take value after User / Environment settings
+        if (!$format) $format = Configuration::get('DATE_FORMAT_SHORT');
         // echo ($format); die();
         // $date = \Carbon\Carbon::createFromFormat($format, $date);    
         // http://laravel.io/forum/03-12-2014-class-carbon-not-found?page=1
@@ -111,9 +145,9 @@ function abi_date_full(\Carbon\Carbon $date = null, $format = '')
         // http://laravel.io/forum/03-11-2014-date-format
         // https://laracasts.com/forum/?p=764-saving-carbon-dates-from-user-input/0
 
-        // if ($format == '') $format = \App\Configuration::get('DATE_FORMAT_SHORT');     
-        if ($format == '') $format = \App\Context::getContext()->language->date_format_full; // Should take value after User / Environment settings
-        if (!$format) $format = \App\Configuration::get('DATE_FORMAT_SHORT');
+        // if ($format == '') $format = Configuration::get('DATE_FORMAT_SHORT');     
+        if ($format == '') $format = Context::getContext()->language->date_format_full; // Should take value after User / Environment settings
+        if (!$format) $format = Configuration::get('DATE_FORMAT_SHORT');
         // echo ($format); die();
         // $date = \Carbon\Carbon::createFromFormat($format, $date);    
         // http://laravel.io/forum/03-12-2014-class-carbon-not-found?page=1
@@ -127,9 +161,9 @@ function abi_toLocale_date_short(\Carbon\Carbon $date = null, $format = '')
     {
         if (!$date) return null;
 
-        if ($format == '') $format = \App\Context::getContext()->language->date_format_lite;
+        if ($format == '') $format = Context::getContext()->language->date_format_lite;
 
-        if (!$format) $format = \App\Configuration::get('DATE_FORMAT_SHORT');
+        if (!$format) $format = Configuration::get('DATE_FORMAT_SHORT');
 
         return $date->format($format);
     }
@@ -138,7 +172,7 @@ function abi_fromLocale_date_short($date_form = null, $format = '')
     {
         if (!$date_form) return null;
 
-        if ($format == '') $format = \App\Context::getContext()->language->date_format_lite;
+        if ($format == '') $format = Context::getContext()->language->date_format_lite;
 
         try {
             $date = \Carbon\Carbon::createFromFormat( $format, $date_form );
@@ -169,9 +203,9 @@ function abi_date_form_short($str_date = '', $format = '')
         // http://laravel.io/forum/03-11-2014-date-format
         // https://laracasts.com/forum/?p=764-saving-carbon-dates-from-user-input/0
 
-        // if ($format == '') $format = \App\Configuration::get('DATE_FORMAT_SHORT');     
-        if ($format == '') $format = \App\Context::getContext()->language->date_format_lite; // Should take value after User / Environment settings
-        if (!$format) $format = \App\Configuration::get('DATE_FORMAT_SHORT');
+        // if ($format == '') $format = Configuration::get('DATE_FORMAT_SHORT');     
+        if ($format == '') $format = Context::getContext()->language->date_format_lite; // Should take value after User / Environment settings
+        if (!$format) $format = Configuration::get('DATE_FORMAT_SHORT');
         // echo ($format); die();
         // $date = \Carbon\Carbon::createFromFormat($format, $date);    
         // http://laravel.io/forum/03-12-2014-class-carbon-not-found?page=1
@@ -185,7 +219,7 @@ function abi_form_date_short($date_form = null)
     {
         if (!$date_form) return null;
 
-        $date = \Carbon\Carbon::createFromFormat( \App\Context::getContext()->language->date_format_lite, $date_form );
+        $date = \Carbon\Carbon::createFromFormat( Context::getContext()->language->date_format_lite, $date_form );
 
         return $date->toDateString();
     }
@@ -201,9 +235,9 @@ function abi_date_form_full($str_date_time = '', $format = '')
         // http://laravel.io/forum/03-11-2014-date-format
         // https://laracasts.com/forum/?p=764-saving-carbon-dates-from-user-input/0
 
-        // if ($format == '') $format = \App\Configuration::get('DATE_FORMAT_SHORT');     
-        if ($format == '') $format = \App\Context::getContext()->language->date_format_lite; // Should take value after User / Environment settings
-        if (!$format) $format = \App\Configuration::get('DATE_FORMAT_SHORT');
+        // if ($format == '') $format = Configuration::get('DATE_FORMAT_SHORT');     
+        if ($format == '') $format = Context::getContext()->language->date_format_lite; // Should take value after User / Environment settings
+        if (!$format) $format = Configuration::get('DATE_FORMAT_SHORT');
         // echo ($format); die();
         // $date = \Carbon\Carbon::createFromFormat($format, $date);    
         // http://laravel.io/forum/03-12-2014-class-carbon-not-found?page=1
@@ -217,25 +251,25 @@ function abi_date_form_full($str_date_time = '', $format = '')
 
 function abi_mail_from_name()
 {
-    // \App\Context::getContext()->user->getFullName();
+    // Context::getContext()->user->getFullName();
 
     return config('mail.from.name');
 }
 
 function abi_mail_from_address()
 {
-    // \App\Context::getContext()->user->email;
+    // Context::getContext()->user->email;
 
     return config('mail.from.address');
 }
 
-function abi_money($amount, \App\Currency $currency = null)
+function abi_money($amount, Currency $currency = null)
 {
     if (!is_numeric($amount))
         return $amount;
 
     if ($currency === null)
-        $currency = \App\Context::getContext()->currency;
+        $currency = Context::getContext()->currency;
 
     $number = number_format($amount, $currency->decimalPlaces, $currency->decimalSeparator, $currency->thousandsSeparator);
 
@@ -250,13 +284,13 @@ function abi_money($amount, \App\Currency $currency = null)
     return $number;
 }
 
-function abi_money_amount($amount, \App\Currency $currency = null)
+function abi_money_amount($amount, Currency $currency = null)
 {
     if (!is_numeric($amount))
         return $amount;
 
     if ($currency === null)
-        $currency = \App\Context::getContext()->currency;
+        $currency = Context::getContext()->currency;
 
     $number = number_format($amount, $currency->decimalPlaces, $currency->decimalSeparator, $currency->thousandsSeparator);
     
@@ -314,7 +348,9 @@ function combos($data, &$all = array(), $group = array(), $val = null, $i = 0)
  */
 function checkRoute($route='') {
 
-	if ($route=='/') return true;
+	// Note that:  Route::has('named.route'), not on url!
+
+    if ($route=='/') return true;
 
 	$route=ltrim($route, '/');
 
@@ -444,7 +480,7 @@ if (! function_exists('abi_tenant_local_path')) {
      */
     function abi_tenant_local_path($path = '')
     {
-        $tenant = \App\Context::getContext()->tenant;
+        $tenant = Context::getContext()->tenant;
 
         // return public_path( 'tenants/' , $tenant ).($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
         return '/tenants/' . $tenant . ($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
@@ -461,7 +497,7 @@ if (! function_exists('abi_tenant_db_backups_path')) {
      */
     function abi_tenant_db_backups_path($path = '')
     {
-        $tenant = \App\Context::getContext()->tenant;
+        $tenant = Context::getContext()->tenant;
 
         // return public_path( 'tenants/' , $tenant ).($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
         return 'db_backups/' . $tenant . ($path ? DIRECTORY_SEPARATOR.ltrim($path, DIRECTORY_SEPARATOR) : $path);
@@ -478,7 +514,7 @@ if (! function_exists('abi_tenant_full_attachments_path')) {
      */
     function abi_tenant_attachments_full_path($path = '')
     {
-        $tenant = \App\Context::getContext()->tenant;
+        $tenant = Context::getContext()->tenant;
 
         // tenants/localhost/attachments
 
@@ -557,3 +593,29 @@ if (! function_exists('abi_count_decimals')) {
 }
 
 
+
+
+/*
+|--------------------------------------------------------------------------
+| Helper xtra functions.
+|--------------------------------------------------------------------------
+|
+*/
+    
+
+/*
+|--------------------------------------------------------------------------
+| Nice Prints
+|--------------------------------------------------------------------------
+*/
+
+function niceQuantity( $val = 0.0, $decimalPlaces = 0 )
+{
+    $data = floatval( $val );
+
+    // Do formatting
+
+    $data = number_format($data, $decimalPlaces, ',', '.');
+
+    return $data;
+}

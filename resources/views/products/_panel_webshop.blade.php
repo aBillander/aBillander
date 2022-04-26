@@ -140,10 +140,10 @@
                         </a>
                         <ul class="dropdown-menu">
                           <li><a href="{{ route('wproducts.update.product.stock', $product->reference ) }}"><i class="fa fa-th"></i> &nbsp;{{l('Update Stock')}}</a></li>
-                          <li><a href="{{ route('wproducts.update.product.price', ['product_sku' => $product->reference] ) }}"><i class="fa fa-money"></i> &nbsp;{{l('Update Price')}}</a></li>
-                          <li><a href="{{ route('wproducts.update.product.key', ['product_sku' => $product->reference, 'key' => 'name'] ) }}"><i class="fa fa-flag-o"></i> &nbsp;{{l('Update Name')}}</a></li>
-                          <li><a href="{{ route('wproducts.update.product.key', ['product_sku' => $product->reference, 'key' => 'description'] ) }}"><i class="fa fa-flag"></i> &nbsp;{{l('Update Description')}}</a></li>
-                          <li><a href="{{ route('wproducts.update.product.images', ['product_sku' => $product->reference] ) }}"><i class="fa fa-image"></i> &nbsp;{{l('Update Images')}}</a></li>
+                          <li><a href="{{ route('wproducts.update.product.price', [$product->reference] ) }}"><i class="fa fa-money"></i> &nbsp;{{l('Update Price')}}</a></li>
+                          <li><a href="{{ route('wproducts.update.product.key', [$product->reference, 'key' => 'name'] ) }}"><i class="fa fa-flag-o"></i> &nbsp;{{l('Update Name')}}</a></li>
+                          <li><a href="{{ route('wproducts.update.product.key', [$product->reference, 'key' => 'description'] ) }}"><i class="fa fa-flag"></i> &nbsp;{{l('Update Description')}}</a></li>
+                          <li><a href="{{ route('wproducts.update.product.images', [$product->reference] ) }}"><i class="fa fa-image"></i> &nbsp;{{l('Update Images')}}</a></li>
                           <!-- li class="divider"></li -->
                         </ul>
                       </div>
@@ -193,7 +193,7 @@
             $('#reference').val('');
             $('#product_id').val('');
             $('#rule_price').val('');
-            $('#rule_currency_id').val("{{ \App\Configuration::getInt('DEF_CURRENCY')}}");
+            $('#rule_currency_id').val("{{ AbiConfiguration::getInt('DEF_CURRENCY')}}");
             $('#from_quantity').val('1');
             $('#date_from_form').val('');
             $('#date_to_form').val('');
@@ -238,7 +238,7 @@
 
              // alert('OK');
 
-@if ( \App\Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
 
     CKEDITOR.replace( 'woo_description' );
     CKEDITOR.replace( 'woo_short_description' );

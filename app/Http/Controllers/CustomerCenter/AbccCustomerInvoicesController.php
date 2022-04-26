@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers\CustomerCenter;
 
+use App\Events\CustomerInvoiceViewed;
 use App\Http\Controllers\Controller;
-
+use App\Models\Company;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Customer;
+use App\Models\CustomerInvoice;
+use App\Models\CustomerInvoiceLine;
+use App\Models\CustomerUser;
+use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\CustomerUser;
-use App\Customer;
-use App\CustomerInvoice;
-use App\CustomerInvoiceLine;
-
-use App\Events\CustomerInvoiceViewed;
-
-use App\Configuration;
-use App\Currency;
 
 class AbccCustomerInvoicesController extends Controller
 {
@@ -48,7 +47,7 @@ class AbccCustomerInvoicesController extends Controller
                             ->with('paymentmethod')
                             ->orderBy('id', 'desc');
 
-        $customer_invoices = $customer_invoices->paginate( \App\Configuration::get('ABCC_ITEMS_PERPAGE') );
+        $customer_invoices = $customer_invoices->paginate( Configuration::get('ABCC_ITEMS_PERPAGE') );
 
         $customer_invoices->setPath('invoices');
 
@@ -83,7 +82,7 @@ class AbccCustomerInvoicesController extends Controller
                             ->firstOrFail();
 
         // $company = \App\Context::getContext()->company;
-        $company = \App\Company::with('currency')->findOrFail( intval(Configuration::get('DEF_COMPANY')) );
+        $company = Company::with('currency')->findOrFail( intval(Configuration::get('DEF_COMPANY')) );
 
         return view('abcc.invoices.show', compact('cinvoice', 'company'));
     }
@@ -106,14 +105,14 @@ class AbccCustomerInvoicesController extends Controller
                     ->with('error', l('The record with id=:id does not exist', ['id' => $cinvoiceKey], 'layouts'));
         
 
-        $company = \App\Context::getContext()->company;
+        $company = Context::getContext()->company;
 /*
         event(new CustomerInvoiceViewed($cinvoice, 'customer_viewed_at'));
 */
 
         // Get Template
         $t = $document->template ?? 
-             \App\Template::find( Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE') );
+             Template::find( Configuration::getInt('DEF_CUSTOMER_INVOICE_TEMPLATE') );
 
         if ( !$t )
             return redirect()->route('abcc.invoices.index')

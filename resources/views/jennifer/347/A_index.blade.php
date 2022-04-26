@@ -55,7 +55,7 @@
         <br />{{ $supplier->name_commercial }}</td>
       <td>{{ $supplier->address->postcode }}</td>
       <td>{{ $supplier->address->city }}</td>
-      <td>{{ \App\Currency::viewMoney( $supplier->yearly_sales ) }}</td>
+      <td>{{ \App\Models\Currency::viewMoney( $supplier->yearly_sales ) }}</td>
                 
       <td class="text-right button-pad">
                    <a class=" hide  btn btn-sm btn-blue"    href="{{ route('jennifer.reports.mod347.email', [$mod347_year, $supplier->id]) }}" title="{{l('Send by eMail', [], 'layouts')}}" onclick="this.disabled=true;"><i class="fa fa-envelope"></i></a>

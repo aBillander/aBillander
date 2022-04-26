@@ -1,11 +1,15 @@
 <?php
 
-namespace App;
+namespace App\Helpers;
+
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
 
 class Calculator {
 
     // PHP Margin Calculator
-    public static function margin( $icst, $iprc, \App\Currency $currency = null)
+    public static function margin( $icst, $iprc, Currency $currency = null)
     {
       if ($currency === null)
             $currency = Currency::find( intval(Configuration::get('DEF_CURRENCY')) );
@@ -51,11 +55,11 @@ class Calculator {
     }
 
     // JavaScript Margin Calculator
-    public static function marginJSCode( \App\Currency $currency = null, $withTags = NULL)
+    public static function marginJSCode( Currency $currency = null, $withTags = NULL)
     {
         
       if ($currency === null)
-            $currency = \App\Context::getContext()->currency;
+            $currency = Context::getContext()->currency;
 
         $jscode = "
                 var crate = " . $currency->conversion_rate . ";
@@ -129,10 +133,10 @@ class Calculator {
     // PHP Discount Calculator
     // $product_price : Default currency ( DEF_CURRENCY )
     // $line_price : $currency
-    public static function discount($product_price, $line_price, \App\Currency $currency = null)
+    public static function discount($product_price, $line_price, Currency $currency = null)
     {
       if ($currency === null)
-            $currency = \App\Context::getContext()->currency;
+            $currency = Context::getContext()->currency;
 
       if ( $product_price == 0.0 ) return 0.0;
 

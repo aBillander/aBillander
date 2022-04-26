@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-
-use App\Warehouse as Warehouse;
-use App\Address as Address;
-use App\Country as Country;
-
+use App\Helpers\Exports\ArrayExport;
+use App\Models\Address;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Country;
+use App\Models\Warehouse;
 use Excel;
-
-use View;
+use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class WarehousesController extends Controller {
 
@@ -70,7 +68,7 @@ class WarehousesController extends Controller {
 		$warehouse = $this->warehouse->create( $request->all() );
 
 		// First record
-		if ( Warehouse::count() == 1 ) \App\Configuration::updateValue('DEF_WAREHOUSE', $warehouse->id);
+		if ( Warehouse::count() == 1 ) Configuration::updateValue('DEF_WAREHOUSE', $warehouse->id);
 
 		$data = $request->input('address');
 //		$data['notes'] = '';
@@ -170,7 +168,7 @@ class WarehousesController extends Controller {
         } else 
 
         // Default Warehouse
-        if ( \App\Configuration::get('DEF_WAREHOUSE') == $id ) {
+        if ( Configuration::get('DEF_WAREHOUSE') == $id ) {
 
         	$in_use = true;
         }
@@ -203,7 +201,7 @@ class WarehousesController extends Controller {
         				->where('name', 'LIKE', '%'.$request->input('name', '').'%')
                         ->orderBy('products.name', 'asc');
 
-        $products = $products->paginate( \App\Configuration::get('DEF_ITEMS_PERPAGE') );
+        $products = $products->paginate( Configuration::get('DEF_ITEMS_PERPAGE') );
 
         $products->setPath('inventory');
 
@@ -231,7 +229,7 @@ class WarehousesController extends Controller {
         $data = []; 
 
         // Sheet Header Report Data
-        $data[] = [\App\Context::getContext()->company->name_fiscal];
+        $data[] = [Context::getContext()->company->name_fiscal];
         $data[] = ['Productos en Almacén -::- '.$warehouse->address->alias, '', '', date('d M Y H:i:s')];
         $data[] = ['Filtro Referencia: ' . $request->input('reference', '')];
         $data[] = ['Filtro Nombre de Producto: ' . $request->input('name', '')];
@@ -267,58 +265,27 @@ class WarehousesController extends Controller {
         }
 
 
-        $sheetName = 'Productos en Almacén' ;
+        $styles = [
+            'A2:C2'    => ['font' => ['bold' => true]],
+            'A6:D6'    => ['font' => ['bold' => true]],
+        ];
 
-        // abi_r($data, true);
+        $columnFormats = [
+            'B' => NumberFormat::FORMAT_TEXT,
+//            'E' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'H' => NumberFormat::FORMAT_NUMBER_00,
+        ];
+
+        $merges = ['A1:C1', 'A2:C2', 'A3:C3', 'A4:C4'];
+
+        $sheetTitle = 'Productos en Almacén';
+
+        $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
+
+        $sheetFileName = $sheetTitle;
 
         // Generate and return the spreadsheet
-        Excel::create('Productos en Almacén', function($excel) use ($sheetName, $data) {
-
-            // Set the spreadsheet title, creator, and description
-            // $excel->setTitle('Payments');
-            // $excel->setCreator('Laravel')->setCompany('WJ Gilmore, LLC');
-            // $excel->setDescription('Price List file');
-
-            // Build the spreadsheet, passing in the data array
-            $excel->sheet($sheetName, function($sheet) use ($data) {
-                
-                $sheet->mergeCells('A1:C1');
-                $sheet->mergeCells('A2:C2');
-                $sheet->mergeCells('A3:C3');
-                $sheet->mergeCells('A4:C4');
-                
-                $sheet->getStyle('A2:C2')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-                
-                $sheet->getStyle('A6:D6')->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->setColumnFormat(array(
-//                    'F' => 'dd/mm/yyyy',
-//                    'G' => 'dd/mm/yyyy',
-//                    'E' => '0.00%',
-                    'H' => '0.00',
-//                    'F' => '@',
-                ));
-                
-                $n = count($data);
-                $m = $n - 1;
-                $sheet->getStyle("H$n:H$n")->applyFromArray([
-                    'font' => [
-                        'bold' => true
-                    ]
-                ]);
-
-                $sheet->fromArray($data, null, 'A1', false, false);
-            });
-
-        })->download('xlsx');
+        return Excel::download($export, $sheetFileName.'.xlsx');
 
 	}
 
@@ -332,7 +299,7 @@ class WarehousesController extends Controller {
         	return Redirect::route('warehouses.index');
        	}
 
-        return View::make('warehouses.indexStockmoves')->with(array('warehouse' => $wh, 'stockmoves' => $wh->stockmoves));
+        return view('warehouses.indexStockmoves')->with(array('warehouse' => $wh, 'stockmoves' => $wh->stockmoves));
 	}
 
 }

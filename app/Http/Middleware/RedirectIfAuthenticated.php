@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Providers\RouteServiceProvider;
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class RedirectIfAuthenticated
@@ -11,56 +13,59 @@ class RedirectIfAuthenticated
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string|null  $guard
-     * @return mixed
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @param  string|null  ...$guards
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle(Request $request, Closure $next, ...$guards)
     {
-        if (Auth::guard($guard)->check()) {
-            
-            // Customers
-            if ( $guard == 'customer' ) {
-                return redirect()->route('customer.dashboard');
-            }
-            
-            // Sales Reps
-            if ( $guard == 'salesrep' ) {
-                return redirect()->route('salesrep.dashboard');
-            }
-            
-            // Regular Users
-            if ( $guard == 'web' ) {
-                return redirect( Auth::user()->home_page );
-            }
+        $guards = empty($guards) ? [null] : $guards;
 
-            // Regular Users
-            // return redirect('/home');
-            // return redirect()->route( 'jennifer.home' );
-            // return redirect()->route( Auth::user()->home_page );
-            //    abi_r( Auth::user()->home_page );
-            //    abi_r( checkRoute( Auth::user()->home_page ) );die();
+        foreach ($guards as $guard) {
 
-            if ( Auth::user()->home_page == '/' ) 
-                return redirect('/home');
-            else 
-            {
-                if ( checkRoute( Auth::user()->home_page ) ) 
-                {
-                    return redirect( Auth::user()->home_page );
-                
-                } else {
-                    return redirect('/home');
+// Original stuff:
+//            if (Auth::guard($guard)->check()) {
+//                return redirect(RouteServiceProvider::HOME);
+//            }
+            
+            if (Auth::guard($guard)->check()) {
+                // Customers
+                if ( $guard == 'customer' ) {
+                    return redirect()->route('customer.dashboard');
                 }
-            }
+                
+                // Sales Reps
+                if ( $guard == 'salesrep' ) {
+                    return redirect()->route('salesrep.dashboard');
+                }
+                
+                // Regular Users
+                if ( $guard == 'web' ) {
+                    $home_page = Auth::user()->home_page;
 
-            // return redirect('/home');
-        }
+                    if ( $home_page == '/' ) 
+                        $home_page ='/home';
+                    
+                    if ( checkRoute( $home_page ) ) 
+                    {
+                        return redirect( $home_page );
+                    
+                    } else {
+                        return redirect('/home');
+                    }
+                }
 
-        \App\Context::getContext()->language = \App\Language::find( intval(\App\Configuration::get('DEF_LANGUAGE')) );
+            }   // End if (Auth::guard($guard)->check())
+
+        }   // End foreach
+
+/* What is this for? =>
+
+        \App\Models\Context::getContext()->language = \App\Models\Language::find( intval(\App\Models\Configuration::get('DEF_LANGUAGE')) );
 
         // Changing The Default Language At Runtime
-        \App::setLocale(\App\Context::getContext()->language->iso_code);
+        \App::setLocale(\App\Models\Context::getContext()->language->iso_code);
+*/
 
         return $next($request);
     }

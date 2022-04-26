@@ -1,12 +1,13 @@
-<?php namespace App\Http\Controllers;
+<?php
 
-use App\Http\Requests;
+namespace App\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Response;		// Prevent error: Class 'App\Http\Controllers\Response' not found
+use Illuminate\Support\Facades\Response;
 
-use App\Country as Country;
+use App\Models\Country;
 use View;
 
 class CountriesController extends Controller {

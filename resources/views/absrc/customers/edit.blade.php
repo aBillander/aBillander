@@ -17,6 +17,8 @@
                     <a href="#" class="btn btn-success dropdown-toggle" data-toggle="dropdown" title="{{l('Add Document', [], 'layouts')}}"><i class="fa fa-plus"></i> {{l('Document', [], 'layouts')}} &nbsp;<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                       <li><a href="{{ route('absrc.orders.create.withcustomer', $customer->id) }}">{{l('Order', [], 'layouts')}}</a></li>
+
+                      <li><a href="{{ route('absrc.quotations.create.withcustomer', $customer->id) }}">{{l('Quotation', [], 'layouts')}}</a></li>
 {{--
                       <li class="divider"></li>
                       <li><a href="{{ route('absrc.shippingslips.create.withcustomer', $customer->id) }}">{{l('Shipping Slip', [], 'layouts')}}</a></li>
@@ -63,10 +65,10 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-dashboard"></i>
                &nbsp; {{ l('Commercial') }}
             </a>
-            <!-- a id="b_bankaccounts" href="#bankaccounts" class="list-group-item">
+            <a id="b_bankaccounts" href="#bankaccounts" class="list-group-item">
                <i class="fa fa-briefcase"></i>
-               &nbsp; Bancos
-            </a -->
+               &nbsp; {{ l('Bank Accounts') }}
+            </a>
             <a id="b_addressbook" href="#addressbook" class="list-group-item">
                <i class="fa fa-address-book"></i>
                &nbsp; {{ l('Address Book') }}
@@ -100,7 +102,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
             </a -->
 --}}
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
             <a id="b_customerusers" href="#customeruser" class="list-group-item">
                <i class="fa fa-bolt"></i>
                &nbsp; {{ l('ABCC Access') }}
@@ -119,6 +121,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
          {!! Form::close() !!}
 
+          @include('absrc.customers._panel_bankaccounts')
+
           @include('absrc.customers._panel_addressbook')
 
 {{--
@@ -135,7 +139,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
 --}}
 
-@if (\App\Configuration::isTrue('ENABLE_CUSTOMER_CENTER') )
+@if (AbiConfiguration::isTrue('ENABLE_CUSTOMER_CENTER') )
 
           @include('absrc.customers._panel_customer_users')
 
@@ -153,7 +157,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
    {
       $("#panel_main").hide();
       $("#panel_commercial").hide();
- //     $("#panel_bankaccounts").hide();
+      $("#panel_bankaccounts").hide();
       $("#panel_addressbook").hide();
  //     $("#panel_specialprices").hide();
  //     $("#panel_accounting").hide();
@@ -165,7 +169,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
       $("#b_main").removeClass('active');
       $("#b_commercial").removeClass('active');
- //     $("#b_bankaccounts").removeClass('active');
+      $("#b_bankaccounts").removeClass('active');
       $("#b_addressbook").removeClass('active');
  //     $("#b_specialprices").removeClass('active');
  //     $("#b_accounting").removeClass('active');
@@ -180,6 +184,11 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
          $("#panel_commercial").show();
          $("#b_commercial").addClass('active');
          // document.f_cliente.codgrupo.focus();
+      }
+      else if(window.location.hash.substring(1) == 'bankaccounts')
+      {
+         $("#panel_bankaccounts").show();
+         $("#b_bankaccounts").addClass('active');
       }
       else if(window.location.hash.substring(1) == 'addressbook')
       {
@@ -217,9 +226,18 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
       }
       else  
       {
+
+@if( Session::get('tabName') == '#bankaccounts' )
+         $("#panel_bankaccounts").show();
+         $("#b_bankaccounts").addClass('active');
+
+         // Simulate click
+         $("#b_bankaccounts").trigger("click");
+@else
          $("#panel_main").show();
          $("#b_main").addClass('active');
          // document.f_cliente.nombre.focus();
+@endif
       }
 
       // Gracefully scrolls to the top of the page

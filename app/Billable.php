@@ -1034,6 +1034,17 @@ class Billable extends Model implements ShippableInterface
         }
         
         
+        if (array_key_exists('is_invoiceable', $params) && $params['is_invoiceable'] > 0)
+        {
+            $query->where('is_invoiceable', '>', 0);
+        }
+
+        if (array_key_exists('is_invoiceable', $params) && $params['is_invoiceable'] == 0)
+        {
+            $query->where('is_invoiceable', 0);
+        }
+
+        
         if ( array_key_exists('closed', $params) )
         {
             if ( $params['closed'] == '1' )

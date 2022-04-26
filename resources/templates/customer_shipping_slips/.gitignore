@@ -2,6 +2,8 @@
 /*
 !default
 !gmdis
+!gmdis_sorted
+!gmdis_picking
 !xtranat
 !xtragorillas
 !.gitignore

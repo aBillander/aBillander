@@ -54,6 +54,9 @@ class BackupDatabase extends Command
                 // This can fail because:
                 // The Process class relies on proc_open, which is not available on your PHP installation.
 
+                // mysqldump -uroot -proot db_name | gzip > "DATABASE-2020-01-19-16-53-30.sql.gz"
+                // mysqldump -u dbUser -p DBName   | gzip > "OutputFile.sql.gz"
+
                 $this->process = new Process([
                     'mysqldump',
                     '--user='     . config('database.connections.mysql.username'),

@@ -169,6 +169,10 @@ class SupplierDownPaymentsController extends Controller
             ];
 
         $payment = Payment::create($data);
+        // Just to prevent an empty relation $payment->paymentable, that will lead to a "white screen"
+        $payment->paymentable_type = 'App\\Models\\SupplierInvoice';
+        $payment->save();
+
         $document->supplier->payments()->save($payment);
 
 

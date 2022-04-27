@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Configuration;
 use Illuminate\Console\Command;
-use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 // https://pineco.de/scheduling-mysql-backups-with-laravel/
 // php artisan make:command BackupDatabase
@@ -54,10 +55,9 @@ class BackupDatabase extends Command
                 // This can fail because:
                 // The Process class relies on proc_open, which is not available on your PHP installation.
 
-                // mysqldump -uroot -proot db_name | gzip > "DATABASE-2020-01-19-16-53-30.sql.gz"
-                // mysqldump -u dbUser -p DBName   | gzip > "OutputFile.sql.gz"
+                // https://stackoverflow.com/questions/64422574/symfony-process-component-mysqldump-gzip
 
-                $this->process = new Process([
+                $command = [
                     'mysqldump',
                     '--user='     . config('database.connections.mysql.username'),
                     '--password=' . config('database.connections.mysql.password'),
@@ -65,9 +65,19 @@ class BackupDatabase extends Command
                     '--port='     . config('database.connections.mysql.port'),
 
                     config('database.connections.mysql.database'),
+                ];
 
-                    '--result-file=' . $file,
-                ]);
+                if ( Configuration::isTrue('DB_COMPRESS_BACKUP') )
+                {
+                    $command[] = '| gzip > ' . $file.'.gz';
+
+                    $this->process = Process::fromShellCommandline( implode(' ', $command ) );
+
+                } else {
+                    $command[] = '--result-file=' . $file;
+
+                    $this->process = new Process( $command );
+                }
             }
             catch (\Exception $e) {
                 // $this->error("The Process class can not be instantiated.\n\n" . $e->getMessage());

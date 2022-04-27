@@ -32,6 +32,7 @@ return [
 	'Do nothing' => 'No hacer nada',
 	'Delete older Backups' => 'Borrar las más antiguas',
 	'Email warning' => 'Aviso por Email',
+	'Compress Backups?' => '¿Comprimir la Copia?',
 
 	'Maximum number of Database Backups reached' => 'Se ha alcanzado el máximo permitido de copias de seguridad',
 

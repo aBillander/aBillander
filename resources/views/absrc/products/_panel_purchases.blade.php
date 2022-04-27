@@ -35,7 +35,7 @@
                 {!! $errors->first('manufacturer_id', '<span class="help-block">:message</span>') !!}
              </div>
         </div>
-
+{{--
         <div class="row">
                   <div class="form-group col-lg-3 col-md-3 col-sm-3 {{ $errors->has('cost_price') ? 'has-error' : '' }}">
                      {{ l('Cost Price') }}
@@ -51,7 +51,7 @@
                      {!! Form::text('last_purchase_price', null, array('class' => 'form-control', 'id' => 'last_purchase_price', 'onfocus' => 'this.blur()')) !!}
                   </div>
         </div>
-
+--}}
         <div class="row">
         </div>
 

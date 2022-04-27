@@ -258,6 +258,26 @@
         <span class="help-block">{!! l('MAX_DB_BACKUPS_ACTION.help') !!}</span>
       </div>
     </div>
+    
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('DB_COMPRESS_BACKUP.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="DB_COMPRESS_BACKUP" id="DB_COMPRESS_BACKUP_on" value="1" @if( old('DB_COMPRESS_BACKUP', $key_group['DB_COMPRESS_BACKUP']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="DB_COMPRESS_BACKUP" id="DB_COMPRESS_BACKUP_off" value="0" @if( !old('DB_COMPRESS_BACKUP', $key_group['DB_COMPRESS_BACKUP']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('DB_COMPRESS_BACKUP.help') !!}</span>
+      </div>
+    </div>
 
 
 

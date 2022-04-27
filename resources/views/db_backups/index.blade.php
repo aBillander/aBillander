@@ -33,7 +33,7 @@
    </div>
    <div class="panel-body">
 
-<!-- Purchases Prices -->
+<!-- Backups Configs -->
 
         <div class="row">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12 {{ $errors->has('MAX_DB_BACKUPS') ? 'has-error' : '' }}">
@@ -54,9 +54,29 @@
         </div>
 
         <div class="row">
+           <div class="form-group col-lg-12 col-md-12 col-sm-12" id="div-compress">
+                {{ l('Compress Backups?') }}
+             <div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('DB_COMPRESS_BACKUP', '1', (bool) $DB_COMPRESS_BACKUP == true, ['id' => 'DB_COMPRESS_BACKUP_on']) !!}
+                   {!! l('Yes', [], 'layouts') !!}
+                 </label>
+               </div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('DB_COMPRESS_BACKUP', '0', (bool) $DB_COMPRESS_BACKUP == false, ['id' => 'DB_COMPRESS_BACKUP_off']) !!}
+                   {!! l('No', [], 'layouts') !!}
+                 </label>
+               </div>
+             </div>
+           </div>
         </div>
 
-<!-- Purchases Prices ENDS -->
+        <div class="row">
+        </div>
+
+<!-- Backups Configs ENDS -->
 
    </div>
 

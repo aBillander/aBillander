@@ -218,6 +218,8 @@ return [
 	'MAX_DB_BACKUPS_ACTION.option.email' => '<strong> email </strong>: Notice by email',
 	'MAX_DB_BACKUPS_ACTION.option.nothing' => '<strong> nothing </strong>: Do nothing',
 	'MAX_DB_BACKUPS_ACTION.help' => '',
+	'DB_COMPRESS_BACKUP.name' => 'Compress Database Backup',
+	'DB_COMPRESS_BACKUP.help' => '',
 
 	'RECENT_SALES_CLASS.name' => 'The Price of the most recent sales is taken from',
 	'RECENT_SALES_CLASS.option.CustomerOrder' => '<strong> CustomerOrder </strong>: Most recent Orders',

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Configuration;
 use Illuminate\Support\Facades\DB;
 
 // Most suitable way to go about this is listen to db queries. You can do
@@ -27,8 +28,9 @@ use Illuminate\Support\Facades\DB;
 
 
 Route::get('/conf', function () {
-	App\Models\Configuration::get('POPO');
-	// dd(App\Models\Configuration::loadConfiguration());
+	$key = Configuration::isTrue('POPOZKIN');
+
+	abi_r( $key == false);
 });
 
 
@@ -59,6 +61,13 @@ GROUP BY
 
 Route::get('migratethis', function()
 {
+	// 2022-04-27
+	$date = '2022-04-27';
+
+	Configuration::updateValue('DB_COMPRESS_BACKUP', '1');
+
+	die('OK - '.$date);
+
 
 	// 2022-04-09
 	$date = '2022-04-09';

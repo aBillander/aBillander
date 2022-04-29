@@ -60,7 +60,7 @@
                     <ul class="dropdown-menu  pull-right">
                       <li><a href="{{ URL::to($model_path.'') }}"><i class="fa {{ $model_class::getBadge('i_class') }}"></i> {{l('Back to Documents')}}</a></li>
                       <!-- li><a href="{{ route('customer.invoiceable.shippingslips', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Group Shipping Slips')}}</a></li -->
-                      <li><a href="{{ route('customer.orders', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Quotations', 'layouts')}}</a></li>
+                      <li><a href="{{ route('customer.quotations', [$customer->id]) }}"><i class="fa fa-user-circle"></i> {{l('Quotations', 'layouts')}}</a></li>
 {{--
 @if ( $document->status != 'draft' && $document->status != 'canceled')
                       <li class="divider"></li>

@@ -43,7 +43,11 @@
 </div>
 <div class="form-group col-lg-6 col-md-6 col-sm-6">
     {!! Form::label('password', l('Password', 'customerusers')) !!}
-    {!! Form::text('password', null, array('id' => 'password', 'class' => 'form-control',  "autocomplete" => "off", 'class' => 'form-control', 'required' => 'required')) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Leave empty to keep current password', 'customerusers') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+    {!! Form::text('password', null, array('id' => 'password', 'class' => 'form-control',  "autocomplete" => "off", 'required' => 'required')) !!}
 </div>
 </div>
 

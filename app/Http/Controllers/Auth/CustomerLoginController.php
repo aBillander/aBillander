@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Configuration;
 use App\Http\Controllers\Controller;
+use App\Models\Configuration;
 use App\Models\CustomerUser;
 use App\Models\Language;
 use Auth;

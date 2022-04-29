@@ -35,6 +35,7 @@
             <th class="text-right">{{ l('Items') }}</th>
             <th class="text-right">{{ l('Total') }}</th>
             <th class="text-center">{{ l('Notes') }}</th>
+            <th>{{ l('Order') }}</th>
             <th> </th>
         </tr>
     </thead>
@@ -47,9 +48,10 @@
                 @else
                     <span class="label label-default" title="{{ l('Draft', 'layouts') }}">{{ l('Draft', 'layouts') }}</span>
                 @endif
-                @if ( $order->notes_from_customer && mb_stripos( $order->notes_from_customer, 'quotation' ) !== false )
-                    <br /><span class="label label-success" title="{{ l('Quotation') }}">{{ l('Quotation', 'layouts') }}</span>
-                @endif
+
+
+                <a class="btn btn-sm btn-grey" href="{{ route('abcc.quotation.pdf', [$order->id]) }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
+
                 </td>
             <td>{{ abi_date_short($order->document_date) }}</td>
             <td>{{ abi_date_short($order->valid_until_date) }}</td>
@@ -79,6 +81,18 @@
                  </a>
                 @endif
             </td>
+            <td>
+@if ( $order->status == 'closed' )
+            {{ abi_date_short($order->order->document_date) }}
+@endif
+            </td>
+            <td>
+@if ( $order->status == 'closed' )
+            <a href="{{ route('abcc.order.pdf',  [$order->order->id]) }}" title="{{l('Show', [], 'layouts')}}" target="_blank">{{ $order->order->document_reference }}
+                <span class="btn btn-sm btn-grey" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-file-pdf-o"></i></span>
+            </a>
+@endif
+            </td>
             <td class="text-right">
                 <!--
                 <a class="btn btn-sm btn-blue"    href="{{ URL::to('customerorders/' . $order->id . '/mail') }}" title="{{l('Send by eMail', [], 'layouts')}}"><i class="fa fa-envelope"></i></a>               
@@ -87,14 +101,13 @@
 
                 <!-- a class="btn btn-sm btn-lightblue" href="{ { URL::to('customerorders/' . $order->id . '/shippingslip') }}" title="{{l('Shipping Slip', [], 'layouts')}}"><i class="fa fa-truck"></i></a -->
 
-                <a class="btn btn-sm btn-grey" href="{{ route('abcc.quotation.pdf', [$order->id]) }}" title="{{l('PDF Export', [], 'layouts')}}" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
-
+{{--
 @if( $order->is_valid )
                 <a class="btn btn-sm btn-warning" href="{{ route('abcc.quotation.accept', [$order->id]) }}" title="{{l('Accept Quotation')}}"><i class="fa fa-handshake-o"></i></a>
 @endif
 
                 <a class=" hide btn btn-sm btn-warning" href="{{ route('abcc.quotation.duplicate', [$order->id]) }}" title="{{l('Copy Quotation to Cart')}}"><i class="fa fa-copy"></i></a>
-
+--}}
             </td>
         </tr>
         @endforeach

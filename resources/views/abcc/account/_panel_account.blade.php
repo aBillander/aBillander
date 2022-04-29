@@ -43,7 +43,18 @@
 </div>
 <div class="form-group col-lg-6 col-md-6 col-sm-6">
     {!! Form::label('password', l('Password')) !!}
-    {!! Form::password('password', array('id' => 'password', 'class' => 'form-control',  "autocomplete" => "off")) !!}
+                 <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                    data-content="{{ l('Leave empty to keep current password') }}">
+                        <i class="fa fa-question-circle abi-help"></i>
+                 </a>
+    {!! Form::text('password', '', array('id' => 'password', 'class' => 'form-control',  "autocomplete" => "off")) !!}
+</div>
+</div>
+
+<div class="row">
+<div class="form-group col-lg-4 col-md-4 col-sm-4">
+    {!! Form::label('language_id', l('Language')) !!}
+    {!! Form::select('language_id', $languageList, null, array('class' => 'form-control')) !!}
 </div>
 </div>
 

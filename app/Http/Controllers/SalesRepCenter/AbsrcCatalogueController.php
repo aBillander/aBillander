@@ -8,9 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Models\Configuration;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Image;
 use App\Models\SalesRepUser;
 use App\Models\SalesRep;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Category;
 use App\Models\Product;
@@ -250,4 +251,65 @@ class AbsrcCatalogueController extends Controller
         }        
         return view('abcc.catalogue.new_products', compact('category_id', 'categories', 'products', 'breadcrumb'));
 	}
+
+
+    public function getProduct($i, Request $request)
+    {
+        $salesrep_user = Auth::user();
+
+        $product = $this->product
+                              ->with('images')
+                              ->IsSaleable()
+                              ->IsAvailable()
+ //                             ->qualifyForCustomer( $customer->id, $customer->currency_id)
+                              ->IsActive()
+                              ->find($i);
+        
+        // abi_r($product, true);
+        $images = $product->images;
+        // ($product->images, true);
+        $img = $product->getFeaturedImage();
+
+        if ( $images->count() == 0 )
+        {	
+        	$img->is_featured = 1;
+            $images->push($img);
+        }
+
+        $carousel = '';
+
+        $active = false;
+        foreach ($images as $k => $image) {
+        	// code...
+        	$flaf = '';
+        	if ( !$active && $image->is_featured )
+        	{
+        		$active = true;
+        		$flaf = 'active';
+        	}
+        	$src = \URL::to( Image::pathProducts() . $image->getImageFolder() . $image->filename . '-large_default' . '.' . $image->extension );
+        	$alt = "(".$image->filename.") ".$image->caption;
+        	$caption = "(".$image->filename.") ".$image->caption;
+
+        	$carousel .= view('absrc.catalogue._modal_view_product_image_chunck', compact('flaf', 'src', 'alt', 'caption'));
+        }
+
+        $data = [];
+
+        if ($product)
+        {
+        	$data = [
+        		'title' => $product->name,
+        		'content' => nl2p($product->description_short) . '<br />' . nl2p($product->description),
+        		'href' => \URL::to( Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ),
+        		'caption' => "(".$img->filename.") ".$img->caption,
+
+        		'carousel' => $carousel,
+
+        		'nbr_images' => $images->count(),
+        	];
+        }
+
+        return response()->json( $data );
+    }
 }

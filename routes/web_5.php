@@ -263,6 +263,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('products/{id}/getpackitems',         'ProductsController@getPackItems' )->name('product.getpackitems' );
 
+        Route::get('catalogue/products/{id}', 'ProductsController@getProduct')->name('catalogue.product');
+
         Route::resource('products.measureunits', 'ProductMeasureUnitsController');
         Route::post('product/{id}/measureunit/change', 'ProductMeasureUnitsController@changeMainMeasureUnit')->name('product.measureunit.change');
         Route::get('product/{id}/getmeasureunits', 'ProductsController@getMeasureUnits')->name('product.measureunits'); // JSON response

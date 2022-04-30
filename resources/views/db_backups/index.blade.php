@@ -74,6 +74,26 @@
         </div>
 
         <div class="row">
+           <div class="form-group col-lg-12 col-md-12 col-sm-12" id="div-notify">
+                {{ l('Notify by email?') }}
+             <div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('DB_EMAIL_NOTIFY', '1', (bool) $DB_EMAIL_NOTIFY == true, ['id' => 'DB_EMAIL_NOTIFY_on']) !!}
+                   {!! l('Yes', [], 'layouts') !!}
+                 </label>
+               </div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('DB_EMAIL_NOTIFY', '0', (bool) $DB_EMAIL_NOTIFY == false, ['id' => 'DB_EMAIL_NOTIFY_off']) !!}
+                   {!! l('No', [], 'layouts') !!}
+                 </label>
+               </div>
+             </div>
+           </div>
+        </div>
+
+        <div class="row">
         </div>
 
 <!-- Backups Configs ENDS -->

@@ -222,6 +222,8 @@ return [
 	'MAX_DB_BACKUPS_ACTION.help' => '',
 	'DB_COMPRESS_BACKUP.name' => 'Comprimir la Copia de Seguridad de la Base de Datos',
 	'DB_COMPRESS_BACKUP.help' => '',
+	'DB_EMAIL_NOTIFY.name' => 'Informar por email',
+	'DB_EMAIL_NOTIFY.help' => 'Informar por email el resultado (éxito o error) de la Copia de Seguridad.',
 
 	'RECENT_SALES_CLASS.name' => 'El Precio de las últimas ventas se toma de',
 	'RECENT_SALES_CLASS.option.CustomerOrder' => '<strong>CustomerOrder</strong>: Ultimos Pedidos',

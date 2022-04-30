@@ -278,6 +278,26 @@
         <span class="help-block">{!! l('DB_COMPRESS_BACKUP.help') !!}</span>
       </div>
     </div>
+    
+
+    <div class="form-group">
+      <label class="col-lg-4 control-label">{!! l('DB_EMAIL_NOTIFY.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="radio">
+          <label>
+            <input name="DB_EMAIL_NOTIFY" id="DB_EMAIL_NOTIFY_on" value="1" @if( old('DB_EMAIL_NOTIFY', $key_group['DB_EMAIL_NOTIFY']) ) checked="checked" @endif type="radio">
+            {!! l('Yes', [], 'layouts') !!}
+          </label>
+        </div>
+        <div class="radio">
+          <label>
+            <input name="DB_EMAIL_NOTIFY" id="DB_EMAIL_NOTIFY_off" value="0" @if( !old('DB_EMAIL_NOTIFY', $key_group['DB_EMAIL_NOTIFY']) ) checked="checked" @endif type="radio">
+            {!! l('No', [], 'layouts') !!}
+          </label>
+        </div>
+        <span class="help-block">{!! l('DB_EMAIL_NOTIFY.help') !!}</span>
+      </div>
+    </div>
 
 
 

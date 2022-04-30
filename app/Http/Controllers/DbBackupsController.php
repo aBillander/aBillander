@@ -64,6 +64,7 @@ class DbBackupsController extends Controller
 		$MAX_DB_BACKUPS = Configuration::get('MAX_DB_BACKUPS');
 		$MAX_DB_BACKUPS_ACTION = Configuration::get('MAX_DB_BACKUPS_ACTION');
 		$DB_COMPRESS_BACKUP = Configuration::get('DB_COMPRESS_BACKUP');
+		$DB_EMAIL_NOTIFY    = Configuration::get('DB_EMAIL_NOTIFY');
 
 		$actions = [
 					''       => l('Do nothing'),
@@ -71,7 +72,7 @@ class DbBackupsController extends Controller
 					'email'  => l('Email warning'),
 			];
 
-		return view('db_backups.index', compact('bk_folder', 'listing', 'MAX_DB_BACKUPS', 'MAX_DB_BACKUPS_ACTION', 'actions', 'DB_COMPRESS_BACKUP'));
+		return view('db_backups.index', compact('bk_folder', 'listing', 'MAX_DB_BACKUPS', 'MAX_DB_BACKUPS_ACTION', 'actions', 'DB_COMPRESS_BACKUP', 'DB_EMAIL_NOTIFY'));
 	}
 
     /**
@@ -102,6 +103,8 @@ class DbBackupsController extends Controller
         Configuration::updateValue('MAX_DB_BACKUPS_ACTION', $request->input('MAX_DB_BACKUPS_ACTION', ''));
 
         Configuration::updateValue('DB_COMPRESS_BACKUP', $request->input('DB_COMPRESS_BACKUP', '1'));
+
+        Configuration::updateValue('DB_EMAIL_NOTIFY', $request->input('DB_EMAIL_NOTIFY', '0'));
 
         return redirect()->route('dbbackups.index')
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts'));
@@ -161,9 +164,14 @@ class DbBackupsController extends Controller
             Artisan::call('db:backup');
 
         } catch (\Exception $e) {
+
+        	$result = Artisan::output();
+
+	    	// The backup has been failed.
+	    	event(new DatabaseBackup( 'KO', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . $e->getMessage() . '<br />' . $result );
             
 	        return redirect()->back()	// '/dbbackups')
-	                ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . $e->getMessage() . Artisan::output());
+	                ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . $e->getMessage() . '<br />' . $result );
 
         }
 
@@ -174,6 +182,9 @@ class DbBackupsController extends Controller
 			|| strpos($result, strtolower(l('Error', 'layouts'))) !== false )
 		{
 			$result = nl2p($result);
+
+	    	// The backup has been failed.
+	    	event(new DatabaseBackup( 'KO', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . $result );
 
 			return redirect()->back()	// '/dbbackups')
 	                ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . $result);

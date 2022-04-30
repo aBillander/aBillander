@@ -124,6 +124,7 @@ class ConfigurationKeysController extends Controller {
                         'MAX_DB_BACKUPS',
                         'MAX_DB_BACKUPS_ACTION',
                         'DB_COMPRESS_BACKUP',
+                        'DB_EMAIL_NOTIFY',
                         'RECENT_SALES_CLASS',
                         'ABI_IMPERSONATE_TIMEOUT',
                         'ABI_TIMEOUT_OFFSET',

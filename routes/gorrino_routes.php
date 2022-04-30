@@ -68,6 +68,8 @@ Route::get('migratethis', function()
 
 	Configuration::updateValue('DB_COMPRESS_BACKUP', '1');
 
+	Configuration::updateValue('DB_EMAIL_NOTIFY', '0');
+
 	die('OK - '.$date);
 
 

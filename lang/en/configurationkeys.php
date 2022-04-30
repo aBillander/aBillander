@@ -220,6 +220,8 @@ return [
 	'MAX_DB_BACKUPS_ACTION.help' => '',
 	'DB_COMPRESS_BACKUP.name' => 'Compress Database Backup',
 	'DB_COMPRESS_BACKUP.help' => '',
+	'DB_EMAIL_NOTIFY.name' => 'Notify by email',
+	'DB_EMAIL_NOTIFY.help' => 'Notify by email Database Backup success or failure.',
 
 	'RECENT_SALES_CLASS.name' => 'The Price of the most recent sales is taken from',
 	'RECENT_SALES_CLASS.option.CustomerOrder' => '<strong> CustomerOrder </strong>: Most recent Orders',

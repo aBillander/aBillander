@@ -525,6 +525,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('carriers/ajax/carrier_lookup', 'CarriersController@ajaxCarrierSearch')->name('carriers.ajax.carrierLookup');        
 
         Route::get( 'customershippingslips/{id}/asigna', 'CustomerShippingSlipsAsignaController@export' )->name('customershippingslips.asigna');
+        Route::post( 'customershippingslips/asigna', 'CustomerShippingSlipsAsignaController@exportBulk' )->name('customershippingslips.asigna.bulk');
 
 
         Route::resource('manufacturers', 'ManufacturersController');

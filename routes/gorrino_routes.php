@@ -64,6 +64,8 @@ Route::get('migratethis', function()
 	// 2022-04-27
 	$date = '2022-04-27';
 
+	Configuration::updateValue('ASIGNA_CARRIER_ID', '2');
+
 	Configuration::updateValue('DB_COMPRESS_BACKUP', '1');
 
 	die('OK - '.$date);

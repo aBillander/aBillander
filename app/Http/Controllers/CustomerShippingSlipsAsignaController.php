@@ -34,8 +34,49 @@ class CustomerShippingSlipsAsignaController extends Controller
                         ->where('carrier_id', $asigna_id)
                         ->where('id', $id)
                         ->get();    // findOrFail($id);
+        
 
+        // So far, so good!
+        return $this->exportProcess( $documents );
+   }
 
+    /**
+     * Export a file of the resource (bulk).
+     *
+     * @return 
+     */
+    public function exportBulk(Request $request)
+    {
+        //
+        // Get Document IDs & constraints
+        $document_list = $request->input('document_group', []);
+
+        if ( count( $document_list ) == 0 ) 
+            return redirect()->back()
+                ->with('warning', l('No records selected. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+
+        $asigna_id = AsignaExcel::getAsignaId();
+        
+        $documents = $this->customershippingslip
+                        ->where('carrier_id', $asigna_id)
+                        ->find( $document_list );
+
+        if ( $documents->count() == 0 ) 
+            return redirect()->back()
+                ->with('warning', l('No records found. ', 'layouts').l('No action is taken &#58&#58 (:id) ', ['id' => ''], 'layouts'));
+
+        
+        // So far, so good!
+        return $this->exportProcess( $documents );
+   }
+
+    /**
+     * Export a file of the resource (Process).
+     *
+     * @return 
+     */
+    public function exportProcess( $documents )
+    {
         // Initialize the array which will be passed into the Excel generator.
         $data = []; 
 

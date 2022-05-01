@@ -10,7 +10,7 @@
         <a href="{{ URL::to('dbbackups/job/edit') }}" class="btn xbtn-sm btn-success" xstyle="margin-right: 32px;" 
                 title="{{l('DB Backup Job')}}"><i class="fa fa-cog"></i> &nbsp;{{l('Cron Job')}}</a>
 
-        <a href="{{ URL::to('dbbackups/process') }}" class="btn xbtn-sm btn-primary" style="margin-right: 32px;" 
+        <a href="{{ URL::to('dbbackups/process') }}?notnotify" class="btn xbtn-sm btn-primary" style="margin-right: 32px;" 
                 title="{{l('Create Data Base Backup')}}"><i class="fa fa-database"></i> &nbsp;{{l('New DB Backup')}}</a>
     </div>
     <h2>

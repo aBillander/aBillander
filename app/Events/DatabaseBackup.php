@@ -16,16 +16,18 @@ class DatabaseBackup
 
     public $status;
     public $message;
+    public $params;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($status = 'OK', $message = '')
+    public function __construct($status = 'OK', $message = '', $params = [])
     {
         $this->status  = $status;
         $this->message = $message;
+        $this->params  = $params;
     }
 
     /**

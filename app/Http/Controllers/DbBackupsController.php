@@ -151,7 +151,7 @@ class DbBackupsController extends Controller
 	 *
 	 * @return Response
 	 */
-	public function process()
+	public function process(Request $request)
 	{
         if (!\function_exists('proc_open')) {
 	        return redirect()->back()	// '/dbbackups')
@@ -168,7 +168,7 @@ class DbBackupsController extends Controller
         	$result = Artisan::output();
 
 	    	// The backup has been failed.
-	    	event(new DatabaseBackup( 'KO', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . $e->getMessage() . '<br />' . $result );
+	    	event(new DatabaseBackup( 'KO', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . $e->getMessage() . '<br />' . $result ));
             
 	        return redirect()->back()	// '/dbbackups')
 	                ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . $e->getMessage() . '<br />' . $result );
@@ -184,14 +184,18 @@ class DbBackupsController extends Controller
 			$result = nl2p($result);
 
 	    	// The backup has been failed.
-	    	event(new DatabaseBackup( 'KO', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . $result );
+	    	event(new DatabaseBackup( 'KO', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . $result ));
 
 			return redirect()->back()	// '/dbbackups')
 	                ->with('error', l('Unable to create this record &#58&#58 (:id) ', ['id' => ''], 'layouts') . $result);
 		}
 
+		$params = [];
+		if( $request->has('notnotify') )
+			$params['notify'] = 0;
+
 	    // The backup has been proceed successfully.
-	    event(new DatabaseBackup());
+	    event(new DatabaseBackup('OK', '', $params));
 	    
         return redirect()->back()	// '/dbbackups')
                 ->with('success', l('This record has been successfully created &#58&#58 (:id) ', ['id' => ''], 'layouts') . $result);

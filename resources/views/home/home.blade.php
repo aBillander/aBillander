@@ -96,6 +96,14 @@
 @endif                        </span>
 
                             <a class="btn btn-xs alert-success" href="{{ URL::to('dbbackups') }}" title="{{l('Go to', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
+                        <br/>
+                        Tamaño: 
+                        <span class="text-info">
+@if ($last_backup)
+                            &nbsp; {{ abi_formatBytes( $last_backup->getSize() ) }}
+@else
+                            &nbsp; --
+@endif                        </span>
                      </div>
 
                   </div>

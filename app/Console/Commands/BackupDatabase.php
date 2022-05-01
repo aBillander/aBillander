@@ -69,6 +69,9 @@ class BackupDatabase extends Command
 
                 if ( Configuration::isTrue('DB_COMPRESS_BACKUP') )
                 {
+                    // SiteGround craving
+                    $command[2] = '--password=' . '"'.config('database.connections.mysql.password').'"';
+
                     $command[] = '| gzip > ' . $file.'.gz';
 
                     $this->process = Process::fromShellCommandline( implode(' ', $command ) );

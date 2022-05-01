@@ -132,12 +132,14 @@ class DatabaseBackupListener
 
 
         // MAIL notification
-        if ( Configuration::isTrue('DB_EMAIL_NOTIFY') )
+        $params['notify'] = $event->params['notify'] ?? 1;  // Default behaviour is "notify by email" 
+
+        if ( Configuration::isTrue('DB_EMAIL_NOTIFY') && $params['notify'] )
         try {
 
             $template_vars = [
-                'status'  => $event->status,
-                'message' => $event->message,
+                'status'         => $event->status,
+                'status_message' => $event->message,
             ];
 
             $data = array(

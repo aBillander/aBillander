@@ -15,12 +15,12 @@
 	La Copia de Seguridad de la Base de Datos se ha realizado correctamente. 
 	<br />
 	<br />
-	{{ $message }}
+	{{ $status_message }}
 @else
 	La Copia de Seguridad de la Base de Datos ha fallado.
 	<br />
 	<br />
-	{{ $message }}
+	{{ $status_message }}
 @endif
 	<br />
 </div>

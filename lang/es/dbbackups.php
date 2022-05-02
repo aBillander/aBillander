@@ -32,8 +32,11 @@ return [
 	'Do nothing' => 'No hacer nada',
 	'Delete older Backups' => 'Borrar las más antiguas',
 	'Email warning' => 'Aviso por Email',
+	'Compress Backups?' => '¿Comprimir la Copia?',
+	'Notify by email?'     => '¿Informar por email?',
 
 	'Maximum number of Database Backups reached' => 'Se ha alcanzado el máximo permitido de copias de seguridad',
+	'Data Base Backup notification' => 'Notificación Copia de Seguridad de la Base de Datos',
 
 	'The Data Base Backup class relies on proc_open, which is not available on your PHP installation.' => 'La Copia de Seguridad de la Base de Datos se basa en la función proc_open de PHP, que no está disponible en la instalación de PHP de su Servidor.',
 

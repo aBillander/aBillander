@@ -29,12 +29,12 @@
 
         <div class="row">
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('ccc_entidad') ? 'has-error' : '' !!}">
-                    {{ l('Entidad') }}
+                    {{ l('Bank code') }}
                     {!! Form::text('ccc_entidad', null, array('class' => 'form-control', 'id' => 'ccc_entidad')) !!}
                     {!! $errors->first('ccc_entidad', '<span class="help-block">:message</span>') !!}
                   </div>
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {!! $errors->has('ccc_oficina') ? 'has-error' : '' !!}">
-                    {{ l('Oficina') }}
+                    {{ l('Bank Branch code') }}
                     {!! Form::text('ccc_oficina', null, array('class' => 'form-control', 'id' => 'ccc_oficina')) !!}
                     {!! $errors->first('ccc_oficina', '<span class="help-block">:message</span>') !!}
                   </div>
@@ -44,15 +44,23 @@
                     {!! $errors->first('ccc_control', '<span class="help-block">:message</span>') !!}
                   </div>
                   <div class="form-group col-lg-4 col-md-4 col-sm-4 {!! $errors->has('ccc_cuenta') ? 'has-error' : '' !!}">
-                    {{ l('Cuenta') }}
+                    {{ l('Account') }}
                     {!! Form::text('ccc_cuenta', null, array('class' => 'form-control', 'id' => 'ccc_cuenta')) !!}
                     {!! $errors->first('ccc_cuenta', '<span class="help-block">:message</span>') !!}
+                  </div>
+                  <div class="form-group col-lg-2 col-md-2 col-sm-2">
+                      <br />
+                      <a class="btn xbtn-sm btn-warning calculate_iban"><i class="fa fa-cogs"></i> {{ l('Calculate Iban') }}</a>
                   </div>
         </div>
 
         <div class="row">
                   <div class="form-group col-lg-4 col-md-4 col-sm-4 {!! $errors->has('iban') ? 'has-error' : '' !!}">
                     {{ l('Iban') }}
+                       <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                          data-content="{{ l('To make it more readable, you can enter spaces.') }}">
+                              <i class="fa fa-question-circle abi-help"></i>
+                       </a>
                     {!! Form::text('iban', null, array('class' => 'form-control', 'id' => 'iban')) !!}
                     {!! $errors->first('iban', '<span class="help-block">:message</span>') !!}
                   </div>
@@ -76,3 +84,54 @@
 
 
      {!! Form::close() !!}
+
+
+
+@section('scripts')    @parent
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+
+    $("body").on('click', ".calculate_iban", function() {
+
+            var url = "{{ route('bankaccounts.iban.calculate') }}";
+            var token = "{{ csrf_token() }}";
+
+            var payload = { 
+                              ccc_entidad : $('#ccc_entidad').val(),
+                              ccc_oficina : $('#ccc_oficina').val(),
+                              ccc_control : $('#ccc_control').val(),
+                              ccc_cuenta  : $('#ccc_cuenta').val(),
+                          };
+
+            $('#iban').parent().removeClass('has-success');
+
+            $.ajax({
+                url : url,
+                headers : {'X-CSRF-TOKEN' : token},
+                type : 'POST',
+                dataType : 'json',
+                data : payload,
+
+                success: function(result){
+
+                    // Poner borde de campo en naranja
+                    // showAlertDivWithDelay("#msg-success");
+
+                    console.log(result);
+
+                    $('#iban').val(result.data.iban);
+
+                    $('#iban').parent().addClass('has-success');
+                }
+            });
+
+        });
+
+
+    });
+
+</script> 
+
+@endsection

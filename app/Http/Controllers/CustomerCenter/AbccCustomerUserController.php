@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\CustomerCenter;
 
 use App\Http\Controllers\Controller;
-
+use App\Models\CustomerUser;
+use App\Models\Language;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use App\Models\CustomerUser;
 
 class AbccCustomerUserController extends Controller 
 {
@@ -75,8 +74,10 @@ class AbccCustomerUserController extends Controller
         $customer      = Auth::user()->customer;
 
         $tab_index = 'account';
+
+        $languageList = Language::pluck('name', 'id')->toArray();
 		
-		return view('abcc.account.edit', compact('customer_user', 'customer', 'tab_index'));
+		return view('abcc.account.edit', compact('customer_user', 'customer', 'tab_index', 'languageList'));
 	}
 
 	/**
@@ -91,7 +92,7 @@ class AbccCustomerUserController extends Controller
         $customer_user = Auth::user();
         $customer      = Auth::user()->customer;
 
-        // abi_r($customer_user->id);die();
+        // abi_r($request->all());die();
 
 
         $vrules = CustomerUser::$rules;

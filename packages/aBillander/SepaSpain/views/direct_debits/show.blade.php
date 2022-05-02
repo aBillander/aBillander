@@ -18,6 +18,10 @@
         <a class=" hide btn xbtn btn-info create-production-order" title="{{l('Add New Item', [], 'layouts')}}"><i class="fa fa-money"></i> &nbsp;{{l('Set as Paid')}}</a>
 
         <a href="{{ route('sepasp.directdebits.index') }}" class="btn xbtn-sm btn-default"><i class="fa fa-mail-reply"></i> {{ l('Back to SEPA Direct Debits') }}</a>
+
+
+                <a id="btn1" href="#myHelpModal" class="btn btn-sm btn-behance" xdata-backdrop="false" data-toggle="modal"> <i class="fa fa-life-saver"></i>  {{l('Help', [], 'layouts')}}</a>
+
     </div>
     <h2>
         <a href="{{ route('sepasp.directdebits.index') }}">{{ l('SEPA Direct Debits') }}</a> <span style="color: #cccccc;">/</span> {{$directdebit->document_reference}} 
@@ -104,6 +108,17 @@
 
 
 @endsection
+
+
+
+{{-- *************************************** --}}
+
+
+{{--  --}}
+
+    @include('sepa_es::direct_debits._modal_help')
+
+{{--  --}}
 
 
 @section('scripts') @parent 

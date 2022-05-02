@@ -217,6 +217,8 @@ return [
 	'Margin 1 (%)'     => 'Margen 1 (%)',
 	'Margin Amount'     => 'Margen Neto',
 	'Margin 2 (%)'     => 'Margen 2 (%)',
+	'Margin Amount 2'     => 'Margen Neto 2',
+	'Value' => 'Valor',
 	'Commission (%)'     => 'Comisión (%)',
 	'Commission'     => 'Comisión',
 	'Cost-Benefit Analysis'     => 'Análisis de Rentabilidad',

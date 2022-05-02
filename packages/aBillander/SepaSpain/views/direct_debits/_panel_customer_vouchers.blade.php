@@ -81,7 +81,11 @@
               	<!-- a class="btn btn-sm btn-warning" href="{{ URL::to('customervouchers/' . $payment->id . '/edit' ) }}" title="{{l('Edit', [], 'layouts')}}"><i class="fa fa-pencil"></i></a -->
 
               @if ( $payment->status == 'pending' )
+
+{{-- 
+  status == confirmed: do not allow unlink anymore
                 <a class="btn btn-sm btn-warning unlink-customer-voucher" href="{{ URL::to('customervouchers/' . $payment->id . '/unlink') }}" title="{{l('Unlink')}}" data-oid="{{ $payment->id }}" data-boid="{{ $payment->bank_order_id }}" data-oreference="{{ $payment->reference }}" onClick="return false;"><i class="fa fa-unlink"></i></a>
+--}}
 
                 <a class="btn btn-sm btn-danger" href="{{ URL::to('customervouchers/' . $payment->id  . '/edit?action=bounce&back_route=' . urlencode('sepasp/directdebits/' . $directdebit->id) ) }}" title="{{l('Bounce', 'customervouchers')}}"><i class="fa fa-mail-reply-all"></i>
                   </a>
@@ -135,9 +139,11 @@
 
 @if ( $directdebit->vouchers->where('status', 'pending')->count() )
 
-  <button class=" btn xbtn btn-info create-production-order pull-left" title="{{l('Unlink selected Vouchers from Remittance')}}" onclick = "this.disabled=true;$('#form-payvouchers').attr('action', '{{ route( 'customervouchers.unlinkvouchers' )}}');$('#form-payvouchers').submit();return false;">
-    <i class="fa fa-unlink"></i> &nbsp;{{l('Unlink Vouchers')}}
-  </button>
+@if ( $directdebit->status == "pending")
+    <button class=" btn xbtn btn-info create-production-order pull-left" title="{{l('Unlink selected Vouchers from Remittance')}}" onclick = "this.disabled=true;$('#form-payvouchers').attr('action', '{{ route( 'customervouchers.unlinkvouchers' )}}');$('#form-payvouchers').submit();return false;">
+      <i class="fa fa-unlink"></i> &nbsp;{{l('Unlink Vouchers')}}
+    </button>
+@endif
 
                <strong class="{{ $errors->has('payment_type_id') ? 'text-danger' : '' }}">{{ l('Payment Type', 'customervouchers') }}</strong>: &nbsp;
 

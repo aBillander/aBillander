@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class HomeController extends Controller
 {
@@ -37,7 +38,27 @@ class HomeController extends Controller
         if ( 0 && checkRoute( Auth::user()->home_page ) )
             return redirect( Auth::user()->home_page );
 
-        return view('home.home');
+        // Most recent Database backup:
+        $bk_folder = storage_path( abi_tenant_db_backups_path() );
+
+        try {
+
+            $listing =  array_reverse(
+                \Arr::sort(File::files( $bk_folder ), function($file)
+                    {
+                        return $file->getMTime();
+                    })
+            );
+
+            $last_backup = $listing[0] ?? null;
+
+        } catch (\Exception $e) {
+
+            $last_backup = null;
+
+        }
+
+        return view('home.home', compact('last_backup'));
     }
 
     /**

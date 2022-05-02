@@ -237,6 +237,8 @@ class SuppliersController extends Controller
 
         $bankaccount = $supplier->bankaccount;
 
+        $request->session()->flash('tabName', $section);
+
         $this->validate($request, BankAccount::$rules);
 
         if ( $bankaccount )

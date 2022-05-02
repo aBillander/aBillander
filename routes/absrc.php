@@ -73,6 +73,7 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
         Route::get('/', 'SalesRepHomeController@index')->name('salesrep.dashboard');
 
         Route::get('catalogue', 'AbsrcCatalogueController@index')->name('absrc.catalogue');
+        Route::get('catalogue/products/{id}', 'AbsrcCatalogueController@getProduct')->name('absrc.catalogue.product');
 
         Route::resource('products', 'AbsrcProductsController')->names('absrc.products');
         Route::get('products/{id}/stockmovements',   'AbsrcProductsController@getStockMovements'  )->name('absrc.products.stockmovements');

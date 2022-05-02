@@ -10,7 +10,7 @@
         <a href="{{ URL::to('dbbackups/job/edit') }}" class="btn xbtn-sm btn-success" xstyle="margin-right: 32px;" 
                 title="{{l('DB Backup Job')}}"><i class="fa fa-cog"></i> &nbsp;{{l('Cron Job')}}</a>
 
-        <a href="{{ URL::to('dbbackups/process') }}" class="btn xbtn-sm btn-primary" style="margin-right: 32px;" 
+        <a href="{{ URL::to('dbbackups/process') }}?notnotify" class="btn xbtn-sm btn-primary" style="margin-right: 32px;" 
                 title="{{l('Create Data Base Backup')}}"><i class="fa fa-database"></i> &nbsp;{{l('New DB Backup')}}</a>
     </div>
     <h2>
@@ -33,7 +33,7 @@
    </div>
    <div class="panel-body">
 
-<!-- Purchases Prices -->
+<!-- Backups Configs -->
 
         <div class="row">
                   <div class="form-group col-lg-12 col-md-12 col-sm-12 {{ $errors->has('MAX_DB_BACKUPS') ? 'has-error' : '' }}">
@@ -54,9 +54,49 @@
         </div>
 
         <div class="row">
+           <div class="form-group col-lg-12 col-md-12 col-sm-12" id="div-compress">
+                {{ l('Compress Backups?') }}
+             <div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('DB_COMPRESS_BACKUP', '1', (bool) $DB_COMPRESS_BACKUP == true, ['id' => 'DB_COMPRESS_BACKUP_on']) !!}
+                   {!! l('Yes', [], 'layouts') !!}
+                 </label>
+               </div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('DB_COMPRESS_BACKUP', '0', (bool) $DB_COMPRESS_BACKUP == false, ['id' => 'DB_COMPRESS_BACKUP_off']) !!}
+                   {!! l('No', [], 'layouts') !!}
+                 </label>
+               </div>
+             </div>
+           </div>
         </div>
 
-<!-- Purchases Prices ENDS -->
+        <div class="row">
+           <div class="form-group col-lg-12 col-md-12 col-sm-12" id="div-notify">
+                {{ l('Notify by email?') }}
+             <div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('DB_EMAIL_NOTIFY', '1', (bool) $DB_EMAIL_NOTIFY == true, ['id' => 'DB_EMAIL_NOTIFY_on']) !!}
+                   {!! l('Yes', [], 'layouts') !!}
+                 </label>
+               </div>
+               <div class="radio-inline">
+                 <label>
+                   {!! Form::radio('DB_EMAIL_NOTIFY', '0', (bool) $DB_EMAIL_NOTIFY == false, ['id' => 'DB_EMAIL_NOTIFY_off']) !!}
+                   {!! l('No', [], 'layouts') !!}
+                 </label>
+               </div>
+             </div>
+           </div>
+        </div>
+
+        <div class="row">
+        </div>
+
+<!-- Backups Configs ENDS -->
 
    </div>
 

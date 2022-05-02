@@ -263,6 +263,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
 
         Route::get('products/{id}/getpackitems',         'ProductsController@getPackItems' )->name('product.getpackitems' );
 
+        Route::get('catalogue/products/{id}', 'ProductsController@getProduct')->name('catalogue.product');
+
         Route::resource('products.measureunits', 'ProductMeasureUnitsController');
         Route::post('product/{id}/measureunit/change', 'ProductMeasureUnitsController@changeMainMeasureUnit')->name('product.measureunit.change');
         Route::get('product/{id}/getmeasureunits', 'ProductsController@getMeasureUnits')->name('product.measureunits'); // JSON response
@@ -523,6 +525,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get('carriers/ajax/carrier_lookup', 'CarriersController@ajaxCarrierSearch')->name('carriers.ajax.carrierLookup');        
 
         Route::get( 'customershippingslips/{id}/asigna', 'CustomerShippingSlipsAsignaController@export' )->name('customershippingslips.asigna');
+        Route::post( 'customershippingslips/asigna', 'CustomerShippingSlipsAsignaController@exportBulk' )->name('customershippingslips.asigna.bulk');
 
 
         Route::resource('manufacturers', 'ManufacturersController');

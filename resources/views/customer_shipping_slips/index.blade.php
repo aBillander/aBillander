@@ -213,6 +213,11 @@
 
 <a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route( 'customershippingslips.bulk.pdf' )}}');$('#form-select-documents').submit();return false;" target="_blank"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
 
+@if( \App\Helpers\AsignaExcel::getAsignaId() > 0 )
+<br />
+        <a href="javascript:void(0);" onclick = "this.disabled=true;$('#form-select-documents').attr('action', '{{ route('customershippingslips.asigna.bulk') }}');$('#form-select-documents').submit();return false;" class="btn btn-xs btn-grey" title="{{l('Con los seleccionados: Hoja Asigna (CSV)')}}" xstyle="margin-right: 12px;"><i class="fa fa-bus"></i> &nbsp;<img src="{{ \App\Helpers\AsignaExcel::getCarrierLogoUrl( ) }}" height="14" style="background: white" /></a>
+@endif
+
             </th>
             <th class="text-center">
 

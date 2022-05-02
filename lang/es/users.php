@@ -52,12 +52,6 @@ return [
 
 	'Users - Edit'     => 'Usuarios - Modificar',
 	'Edit User'     => 'Modificar Usuario',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-	''     => '',
-
+	
+	'Leave empty to keep current password'     => 'Dejar el campo vacío para mantener la contraseña actual',
 ];

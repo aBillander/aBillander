@@ -5,6 +5,7 @@ namespace aBillander\WooConnect;
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
+use App\Helpers\Price;
 use App\Models\Context;
 use App\Models\Configuration;
 use App\Models\Customer;
@@ -19,7 +20,6 @@ use App\Models\CustomerOrderLineTax as OrderLineTax;
 use App\Models\Product;
 use App\Models\Combination;
 use App\Models\Tax;
-use App\Models\Price;
 use App\Models\ActivityLogger;
 
 class WooOrderImporter {

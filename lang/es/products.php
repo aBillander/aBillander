@@ -202,6 +202,7 @@ return [
 	'Default?'     => '¿Principal?',
 
 	'Publish to web?'     => '¿Publicar en la web?',
+	'Published to web?'     => '¿Publicado en la web?',
 	'Webshop ID'     => 'Código en la Tienda Web',
 
 	'Reference of this Product in an external System.' => 'Referencia de este Producto en un Sistema externo.',

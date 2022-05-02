@@ -54,6 +54,7 @@ return [
 	'Edit Category'     => 'Modificar Categoría',
 
 	'Publish to web?'     => '¿Publicar en la web?',
+	'Published to web?'     => '¿Publicado en la web?',
 	'Publish to ABCC?'     => '¿Publicar en ABCC?',
 	'Webshop ID'     => 'Código en la Tienda Web',
 	'Web Shop Data'     => 'Datos para la Tienda Web',

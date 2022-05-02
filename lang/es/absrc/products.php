@@ -159,6 +159,7 @@ return [
 	'Default?'     => '¿Principal?',
 
 	'Publish to web?'     => '¿Publicar en la web?',
+	'Published to web?'     => '¿Publicado en la web?',
 
 
 

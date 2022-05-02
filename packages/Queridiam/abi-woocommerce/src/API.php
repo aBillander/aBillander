@@ -29,7 +29,7 @@ class API
     {
         $result = $this->client->post($endpoint, $data);
 
-        return $result;
+        return json_decode(json_encode($result), true);
     }
 
     /**
@@ -44,7 +44,7 @@ class API
     {
         $result = $this->client->put($endpoint, $data);
 
-        return $result;
+        return json_decode(json_encode($result), true);
     }
 
     /**
@@ -59,8 +59,8 @@ class API
     {
         $objects = $this->client->get($endpoint, $parameters);
 
-//      return json_decode(json_encode($objects), true);
-        return json_decode(json_encode($objects, JSON_FORCE_OBJECT), true);
+        return json_decode(json_encode($objects), true);
+//        return json_decode(json_encode($objects, JSON_FORCE_OBJECT), true);
     }
 
     /**
@@ -75,7 +75,7 @@ class API
     {
         $result = $this->client->delete($endpoint, $parameters);
 
-        return $result;
+        return json_decode(json_encode($result), true);
     }
 
     /**

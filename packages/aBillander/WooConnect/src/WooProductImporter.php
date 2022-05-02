@@ -5,13 +5,13 @@ namespace aBillander\WooConnect;
 use WooCommerce;
 use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
 
-use App\Context;
-use App\Configuration;
-use App\Product;
-use App\Image;
-use App\Combination;
-use App\Tax;
-use App\ActivityLogger;
+use App\Models\Context;
+use App\Models\Configuration;
+use App\Models\Product;
+use App\Models\Image;
+use App\Models\Combination;
+use App\Models\Tax;
+use App\Models\ActivityLogger;
 
 // use \aBillander\WooConnect\WooProduct;
 

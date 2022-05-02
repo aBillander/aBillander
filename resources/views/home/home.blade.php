@@ -73,6 +73,44 @@
               </div>
             </div>
             </div>
+
+            <div class="col-lg-3 col-md-6">
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-warning">
+              <div class="panel-heading">
+                <h3 class="panel-title">Copia de Seguridad</h3>
+              </div>
+              <div class="panel-body">
+
+                  <div class="row">
+
+                     <div class="form-group col-lg-12">
+                        Última: 
+                        <span class="xlead well xwell-sm alert-info" style="padding: 3px; border-radius: 3px;">
+@if ($last_backup)
+                            {{ abi_date_full( \Carbon\Carbon::createFromTimestamp($last_backup->getMTime()) ) }}
+@else
+                            -- nunca --
+@endif                        </span>
+
+                            <a class="btn btn-xs alert-success" href="{{ URL::to('dbbackups') }}" title="{{l('Go to', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
+                        <br/>
+                        Tamaño: 
+                        <span class="text-info">
+@if ($last_backup)
+                            &nbsp; {{ abi_formatBytes( $last_backup->getSize() ) }}
+@else
+                            &nbsp; --
+@endif                        </span>
+                     </div>
+
+                  </div>
+
+              </div>
+            </div>
+            </div>
 {{-- 
             <div class="col-lg-3 col-md-6">
             <div class="panel panel-danger">

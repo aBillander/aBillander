@@ -455,7 +455,10 @@ function checkRoute($route='') {
 
             return round(pow(1024, $base - floor($base)), $precision) . $suffixes[floor($base)];
         } else {
-            return $size;
+            if ($size == 0)
+                return round($size, 0) . ' bytes';
+            else
+                return $size;
         }
     }
 

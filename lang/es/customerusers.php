@@ -90,4 +90,6 @@ return [
 	'Total'     => 'Total',
 
 	'View Image'     => 'Ver Imagen',
+	
+	'Leave empty to keep current password'     => 'Dejar el campo vacío para mantener la contraseña actual',
 ];

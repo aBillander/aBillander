@@ -129,7 +129,45 @@ class DatabaseBackupListener
             }
         }
 
-        // die('pedo');
+
+
+        // MAIL notification
+        $params['notify'] = $event->params['notify'] ?? 1;  // Default behaviour is "notify by email" 
+
+        if ( Configuration::isTrue('DB_EMAIL_NOTIFY') && $params['notify'] )
+        try {
+
+            $template_vars = [
+                'status'         => $event->status,
+                'status_message' => $event->message,
+            ];
+
+            $data = array(
+                'from'     => abi_mail_from_address(),          // config('mail.from.address'  ),
+                'fromName' => abi_mail_from_name(),             // config('mail.from.name'    ),
+                'to'       => abi_mail_from_address(),          // $cinvoice->customer->address->email,
+                'toName'   => abi_mail_from_name(),             // $cinvoice->customer->name_fiscal,
+                'subject'  => ' :_> [aBillander] ' . l('Data Base Backup notification'),
+                );
+
+            
+
+            $send = Mail::send('emails.'.Context::getContext()->language->iso_code.'.dbbackup_notification', $template_vars, function($message) use ($data)
+            {
+                $message->from($data['from'], $data['fromName']);
+
+                $message->to( $data['to'], $data['toName'] )->subject( $data['subject'] );    // Will send blind copy to sender!
+
+            }); 
+
+        } catch(\Exception $e) {
+
+            // Die silently...
+
+            // abi_r($e->getMessage(), true);
+
+        }
+        // MAIL notification ENDS
     }
 }
 

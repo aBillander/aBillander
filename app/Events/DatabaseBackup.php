@@ -14,14 +14,20 @@ class DatabaseBackup
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $status;
+    public $message;
+    public $params;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($status = 'OK', $message = '', $params = [])
     {
-        //
+        $this->status  = $status;
+        $this->message = $message;
+        $this->params  = $params;
     }
 
     /**

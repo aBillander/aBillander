@@ -133,9 +133,36 @@ class WooCustomerImporter {
 
 //        abi_r($importer->raw_data, true);
 
+
         // Do stuff
         // Build Customer data
         $customer = $importer->raw_data;
+
+        // Can download if there are valid data
+        $can_download = 1;
+        // Name fiscal
+        if (!trim(WooOrder::getNameFiscal( $customer )))
+            $can_download = 0;
+        else
+        // Address
+        if (!$customer['billing']['address_1'])
+            $can_download = 0;
+        else
+        // Country
+        if (!Country::findByIsoCode( $customer['billing']['country'] ))
+            $can_download = 0;
+        else
+        // State
+        if (!WooOrder::getState( $customer['billing']['state'], $customer['billing']['country'] ))
+            $can_download = 0;
+        
+        if ( !$can_download )
+        {
+            $importer->logMessage("ERROR", 'Se ha podido crear el Cliente: <span class="log-showoff-format">{pid}</span> porque faltan datos.', ['pid' => $customer_id]);
+
+            return $importer;
+        }
+
 
         $language_id = intval( Configuration::get('WOOC_DEF_LANGUAGE') );
 

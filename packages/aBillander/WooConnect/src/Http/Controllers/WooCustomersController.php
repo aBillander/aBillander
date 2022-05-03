@@ -141,7 +141,7 @@ class WooCustomersController extends Controller
 			$err = '<ul><li><strong>'.$e->getMessage().'</strong></li></ul>';
 
 			// Improbe this: 404 doesnot show upper-left logo , and language is English
-			return redirect('404')
+			return redirect()->back()
 				->with('error', l('La Tienda Online ha rechazado la conexión, y ha dicho: ') . $err);
 
 		}
@@ -415,7 +415,7 @@ class WooCustomersController extends Controller
         // Do the Mambo!
         foreach ( $list as $pID ) 
         {
-        	$logger->log("INFO", 'Se descargará el Cliente class="log-showoff-format">{pid}</span> .', ['pid' => $pID]);
+        	$logger->log("INFO", 'Se descargará el Cliente <span class="log-showoff-format">{pid}</span> .', ['pid' => $pID]);
 
         	$importer = WooCustomerImporter::processCustomer( $pID );
         }

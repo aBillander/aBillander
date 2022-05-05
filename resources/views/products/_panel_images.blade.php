@@ -47,7 +47,20 @@
            <tr style="vertical-align:middle;">
                <td>{{ $img->id }}</td>
                <td>
+@php
+  $img = $product->getFeaturedImage();
+@endphp
+              <a class="view-image-multiple" data-html="false" data-toggle="modal" 
+                     href="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-large_default' . '.' . $img->extension ) }}"
+                     data-title="{{ l('Product Images') }} :: {{ $product->name }} " 
+                     data-caption="({{$img->filename}}) {{ $img->caption }} " 
+                     data-content="{{ nl2p($product->description_short) }} <br /> {{ nl2p($product->description) }} " 
+                     data-id="{{ $product->id }}" 
+                     onClick="return false;" title="{{l('View Image')}}">
 
+                      <img src="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->filename . '-mini_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
+              </a>
+{{--
               <a class="view-image" data-html="false" data-toggle="modal" 
                      href="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->id . '-large_default' . '.' . $img->extension ) }}"
                      data-content="{{l('You are going to view a record. Are you sure?')}}" 
@@ -57,7 +70,7 @@
 
                       <img src="{{ URL::to( \App\Models\Image::pathProducts() . $img->getImageFolder() . $img->id . '-small_default' . '.' . $img->extension ) . '?'. 'time='. time() }}" style="border: 1px solid #dddddd;">
               </a>
-
+--}}
                </td>
                <td>{{ $img->caption }}</td>
                <td>{{ $img->position }}</td>

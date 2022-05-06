@@ -20,7 +20,7 @@
     https://bootsnipp.com/snippets/K5VD
 --}}
 {{-- Multiple Images (Carousel) --}}
-<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+<div id="carousel-example-generic" class="carousel slide" xdata-ride="carousel">
 
     <!-- Indicatodores -->
     <ol class="carousel-indicators" xstyle="background-color: black;" id="imageCarouselIds">

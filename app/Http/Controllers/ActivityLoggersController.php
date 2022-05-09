@@ -120,8 +120,14 @@ class ActivityLoggersController extends Controller
 
         $loggers->setPath('');     // Customize the URI used by the paginator
 
+        $autorefresh = $request->has('autorefresh');
 
-        return view('activity_loggers.show', compact('activitylogger', 'loggers', 'logger_errors', 'logger_warnings', 'logger_all'));
+        // if ($autorefresh)
+        //    $activitylogger->empty();
+
+
+
+        return view('activity_loggers.show', compact('activitylogger', 'loggers', 'logger_errors', 'logger_warnings', 'logger_all', 'autorefresh'));
     }
 
     /**

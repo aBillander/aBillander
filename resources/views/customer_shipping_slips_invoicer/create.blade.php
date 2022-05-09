@@ -193,7 +193,10 @@ border-color: #772953;">
               </div>
 
                <div class="panel-footer text-right">
-                  <button class="btn btn-success" type="submit" onclick="loadingpage();this.disabled=false;this.form.submit();">
+
+                  <a href="{{ URL::to('activityloggers/'.$logger->id.'?autorefresh') }}" class="btn btn-warning" title="{{l('Go to', [], 'layouts')}}" target="_invoicer_{{ mt_rand(1111,9999) }}" onclick='$("#button_process").prop("disabled",false); return true;''><i class="fa fa-clipboard"></i> {{ l('Open LOG') }}</a>
+
+                  <button class="btn btn-success" type="submit" onclick="loadingpage();this.form.submit();" id="button_process">
                      <i class="fa fa-refresh"></i>
                      &nbsp; {!! l('Process', [], 'layouts') !!}
                   </button>
@@ -240,7 +243,7 @@ border-color: #772953;">
 {{-- ***************************************************** --}}
 
 
-<div class="container-fluid">
+<div class="container-fluid  hidden ">
    <div class="row">
 
       <div class="col-lg-2 col-md-2 col-sm-2">
@@ -293,6 +296,9 @@ border-color: #772953;">
 
 
         $("#invoicer_autocustomer_name").val('');
+
+        // Just to forceopen LOG
+        $("#button_process").prop("disabled",true);
 
         // To get focus;
         // $("#autocustomer_name").focus();

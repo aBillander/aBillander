@@ -37,7 +37,12 @@ class CustomerShippingSlipsInvoicerController
         // unset($statusList['closed']);
         unset($statusList['canceled']);
 
-        return view('customer_shipping_slips_invoicer.create', compact('statusList'));
+        $logger = ActivityLogger::setup( 'Automatic Invoice Customer Shipping Slips', 'App\Http\Controllers\CustomerShippingSlipsInvoicerController::process' )
+                    ->backTo( route('customershippingslips.invoicer.create') );
+
+        $logger->empty();
+
+        return view('customer_shipping_slips_invoicer.create', compact('statusList', 'logger'));
     
     }
 

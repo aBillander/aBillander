@@ -28,12 +28,19 @@
 
 @section('scripts')    @parent
 
-    <script type="text/javascript">
+<script type="text/javascript">
+   
+   $(document).ready(function() {
 
         // Set default language
         $('select[name="language_id"]').val( {{ intval(AbiConfiguration::get('DEF_LANGUAGE')) }} );
 
-    </script>
+        // Set focus
+        $("#name").focus();
+
+   });
+
+</script>
 
 
 @endsection

@@ -22,5 +22,7 @@ return [
 	'By Shipping Address' => 'Por Dirección de Envío',
 	'Yes: One Invoice per Shipping Address' => 'Sí: Una Factura por Dirección de Envío',
 
+	'Open LOG' => 'Abrir el LOG',
+
 
 ];

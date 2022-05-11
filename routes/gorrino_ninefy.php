@@ -17,6 +17,14 @@ use Illuminate\Support\Facades\DB;
 
 Route::get('ninefy', function()
 {
+	// 2022-05-11
+	$date = '2022-05-11';
+	
+	DB::statement("ALTER TABLE `password_resets` ADD `model_name` varchar(64) not null default '".addslashes(App\Models\User::class)."' AFTER `token`;");
+
+//	die('OK - '.$date);
+
+
 	// 2022-04-27
 	$date = '2022-04-27';
 

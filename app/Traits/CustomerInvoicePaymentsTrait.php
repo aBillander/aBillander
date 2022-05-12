@@ -87,6 +87,10 @@ trait CustomerInvoicePaymentsTrait
         $this->open_balance = $ototal;
         $this->save();
 
+        // Update Customer Risk
+        $this->customer->calculateRisk();
+//        $this->customer->calculateUnresolved();   <= Not needed!
+
 
         return true;
     }

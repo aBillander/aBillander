@@ -333,6 +333,10 @@ class CustomerInvoice extends Billable
 
         $this->save();
 
+        // Update Customer Risk
+        $this->customer->calculateRisk();
+//        $this->customer->calculateUnresolved();   <= Not needed!
+
         return true;
     }
 

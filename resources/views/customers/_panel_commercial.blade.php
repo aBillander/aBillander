@@ -301,7 +301,6 @@ $(document).ready(function() {
 
         function calculateRisk() {
            
-           var panel = $("#"+field);
            var url = "{{ route('customers.update.risk', $customer->id) }}";
            var token = "{{ csrf_token() }}";
 
@@ -321,8 +320,11 @@ $(document).ready(function() {
 
                    console.log(response);
 
-                   panel.val(response.value);
+                   $("#outstanding_amount").val(response.outstanding);
+                   $("#unresolved_amount").val(response.unresolved);
+
 //                   panel.removeClass('loading');
+
                    $("[data-toggle=popover]").popover();
 
                     showAlertDivWithDelay("#msg-success-update");

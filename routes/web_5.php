@@ -428,6 +428,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('customers/{id}/bankaccount', 'CustomersController@updateBankAccount')->name('customers.bankaccount');
         Route::post('customers/invite', 'CustomersController@invite')->name('customers.invite');
 
+        Route::post('customers/{id}/risk', 'CustomersController@updateRisk')->name('customers.update.risk');
+
         Route::get('customers/{id}/product/{productid}/consumption', 'CustomersController@productConsumption' )->name('customer.product.consumption');
 
         Route::get('customers/{id}/recentsales',  'CustomersController@getRecentSales')->name('customer.recentsales');

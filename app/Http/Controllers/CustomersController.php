@@ -837,4 +837,51 @@ class CustomersController extends Controller
         return response()->json(['success'=>'Email sent.']);
     }
 
+
+
+
+    public function updateRisk(Request $request, $id)
+    {
+        $customer = $this->customer::findOrFail($id);
+
+        return $customer;
+
+        $document = $this->document
+//                        ->with('customershippingsliplines')
+//                        ->with('customershippingsliplines.product')
+                        ->findOrFail($document_id);
+
+        $field = $request->input('field', '');
+
+        if ($field == 'weight')
+        {
+            $value = $document->getWeight();
+            
+        } else 
+        if ($field == 'volume')
+        {
+            $value = $document->getVolume();
+            
+        } else 
+        {
+            return response()->json( [
+                    'msg' => 'KO',
+                    'document' => $document_id,
+                    'value' => '',
+            ] );
+            
+        }        
+
+        $document->{$field} = $value;
+
+        $document->save();
+
+        return response()->json( [
+                'msg' => 'OK',
+                'customer' => $customer->id,
+                'outstanding' => $field,
+                'unresolved'  => $value,
+        ] );
+    }
+
 }

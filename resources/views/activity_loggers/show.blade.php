@@ -7,6 +7,8 @@
 
 <div class="page-header">
     <div class="pull-right" style="padding-top: 4px;">
+
+@if( !$autorefresh )
         @if( $logger_errors )
         <a href="{{ route('activityloggers.show', [$activitylogger->id, 'level'=>'ERROR']) }}" class="btn btn-xs btn-danger" xonclick="return false;" 
                 title="{{l('Go to', 'layouts')}}: {{l('ERRORS')}}"><span class="badge">{{ $logger_errors }}</span> {{l('ERROR(S)')}}</a>
@@ -34,6 +36,9 @@
 @endif
 
         <a href="{{ URL::to('activityloggers') }}" class="btn btn-default"><i class="fa fa-mail-reply"></i> {{l('Back to aBillander LOG')}}</a>
+
+@endif {{-- @if( !$autorefresh ) ENDS --}}
+
     </div>
     <h2>
         <a href="{{ URL::to('activityloggers') }}">{{ l('aBillander LOG') }}</a> <span style="color: #cccccc;">/</span> {{$activitylogger->signature}}
@@ -166,4 +171,35 @@
 
 @endsection
 
+
+
+
+@section('scripts')    @parent
+
+{{-- Auto refresh --}}
+
+@if( $autorefresh )
+
+<script type="text/javascript">
+
+/*
+$(document).ready(function() {
+   
+});
+*/
+
+    window.setInterval(refresh, 10000);     
+    // Call a function every 10000 milliseconds 
+    // (OR 10 seconds).
+
+    // Refresh or reload page.
+    function refresh() {
+        window.location.reload();
+    }
+
+</script>
+
+@endif
+
+@endsection
 

@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('password_resets', function (Blueprint $table) {
             $table->string('email', 128)->index();
             $table->string('token');
+            $table->string('model_name', 64)->default( addslashes(App\Models\User::class) );
             $table->timestamp('created_at')->nullable();
         });
     }

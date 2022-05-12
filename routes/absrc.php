@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Auth\SalesRepNewPasswordController;
+use App\Http\Controllers\Auth\SalesRepPasswordResetLinkController;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,11 +27,26 @@ Route::group(['prefix' => 'absrc'], function ()
     Route::get('/register', 'Auth\SalesRepRegisterController@showRegistrationForm')->name('salesrep.register');
     Route::post('/register', 'Auth\SalesRepRegisterController@register')->name('salesrep.register.submit');
 
+
+    Route::get('forgot-password', [SalesRepPasswordResetLinkController::class, 'create'])
+                ->name('salesrep.password.request');
+
+    Route::post('forgot-password', [SalesRepPasswordResetLinkController::class, 'store'])
+                ->name('salesrep.password.email');
+
+    Route::get('reset-password/{token}', [SalesRepNewPasswordController::class, 'create'])
+                ->name('salesrep.password.reset');
+
+    Route::post('reset-password', [SalesRepNewPasswordController::class, 'store'])
+                ->name('salesrep.password.update');
+
+/*
 // Password Reset Routes...
     Route::post('password/email', ['as' => 'salesrep.password.email', 'uses' => 'Auth\SalesRepForgotPasswordController@sendResetLinkEmail']);
     Route::get('password/reset', ['as' => 'salesrep.password.request', 'uses' => 'Auth\SalesRepForgotPasswordController@showLinkRequestForm']);
     Route::post('password/reset', ['uses' => 'Auth\SalesRepResetPasswordController@reset']);
     Route::get('password/reset/{token}', ['as' => 'salesrep.password.reset', 'uses' => 'Auth\SalesRepResetPasswordController@showResetForm']);
+*/
 
     Route::post('mail', 'MailController@store');
 });

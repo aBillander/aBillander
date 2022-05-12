@@ -59,5 +59,6 @@ return [
 	'Stock'     => 'Stock',
 
 	'Publish to web?'     => '¿Publicar en la web?',
+	'Published to web?'     => '¿Publicado en la web?',
 	'Product Images'     => 'Imágenes de Productos',
 ];

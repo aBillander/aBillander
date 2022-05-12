@@ -10,6 +10,9 @@ use App\Models\Configuration;
 use App\Models\Category;
 use View;
 
+use WooCommerce;
+use Automattic\WooCommerce\HttpClient\HttpClientException as WooHttpClientException;
+
 class CategoriesController extends Controller {
 
 
@@ -60,13 +63,36 @@ class CategoriesController extends Controller {
      */
     public function store($parentId=0, Request $request)
     {
-
-/* ToDo: Validaion
-        if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && ($request->has('webshop_id') )
+        // Check WebShop Category
+        if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && $request->has('webshop_id') )
         {
-            // REST API Connect to shop & check ifor $request->input('webshop_id') existance
+            // REST API Connect to shop & check for $request->input('webshop_id') existance
+            try {
+
+                $woo_category = WooCommerce::get('products/categories/' . $request->has('webshop_id')); // Array
+            }
+
+            catch( WooHttpClientException $e ) {
+
+                /*
+                $e->getMessage(); // Error message.
+
+                $e->getRequest(); // Last request data.
+
+                $e->getResponse(); // Last response data.
+                */
+
+                $err = '<ul><li><strong>'.$e->getMessage().'</strong></li></ul>';
+
+                return redirect()->back()
+                    ->with('error', l('La Tienda Online ha rechazado la conexión, y ha dicho: ') . $err);
+
+            }
+
+            if (empty($woo_category))
+                $request->merge(['webshop_id' => null]);
         }
-*/
+
 
         // Check position
         if ( (int) $request->input('position') == 0 )
@@ -88,7 +114,7 @@ class CategoriesController extends Controller {
                     ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $category->id], 'layouts') . $request->input('name'));
         }
 
-        return redirect('categories')
+        return redirect()->back()
                 ->with('info', l('This record has been successfully created &#58&#58 (:id) ', ['id' => $category->id], 'layouts') . $request->input('name'));
     }
 
@@ -128,6 +154,37 @@ class CategoriesController extends Controller {
      */
     public function update($parentId=0, $id, Request $request)
     {
+        // Check WebShop Category
+        if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && $request->has('webshop_id') )
+        {
+            // REST API Connect to shop & check for $request->input('webshop_id') existance
+            try {
+
+                $woo_category = WooCommerce::get('products/categories/' . $request->has('webshop_id')); // Array
+            }
+
+            catch( WooHttpClientException $e ) {
+
+                /*
+                $e->getMessage(); // Error message.
+
+                $e->getRequest(); // Last request data.
+
+                $e->getResponse(); // Last response data.
+                */
+
+                $err = '<ul><li><strong>'.$e->getMessage().'</strong></li></ul>';
+
+                return redirect()->back()
+                    ->with('error', l('La Tienda Online ha rechazado la conexión, y ha dicho: ') . $err);
+
+            }
+
+            if (empty($woo_category))
+                $request->merge(['webshop_id' => null]);
+        }
+
+
         $section =  $request->input('tab_name')     ? 
                     '#'.$request->input('tab_name') :
                     '';
@@ -148,7 +205,7 @@ class CategoriesController extends Controller {
         return redirect(route('categories.edit', $id) . $section)
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $id], 'layouts') . $category->name);
         */
-        return redirect('categories')
+        return redirect()->back()
                 ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $category->id], 'layouts') . $category->name);
     }
 

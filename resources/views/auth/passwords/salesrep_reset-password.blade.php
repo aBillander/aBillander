@@ -11,16 +11,16 @@
                 <div class="panel-heading">{{ l('Sales Rep Reset Password', [], 'layouts') }}</div>
 
                 <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('salesrep.password.request') }}">
+                    <form class="form-horizontal" method="POST" action="{{ route('salesrep.password.update') }}">
                         {{ csrf_field() }}
 
-                        <input type="hidden" name="token" value="{{ $token }}">
+                        <input type="hidden" name="token" value="{{ $request->route('token') }}">
 
                         <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
                             <label for="email" class="col-md-4 control-label">{{ l('E-Mail Address', [], 'layouts') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ $email ?? old('email') }}" required autofocus>
+                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email', $request->email) }}" autocomplete="off" required autofocus>
 
                                 @if ($errors->has('email'))
                                     <span class="help-block">
@@ -34,7 +34,7 @@
                             <label for="password" class="col-md-4 control-label">{{ l('Password', [], 'layouts') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" required>
+                                <input id="password" type="password" class="form-control" name="password" autocomplete="new-password" required>
 
                                 @if ($errors->has('password'))
                                     <span class="help-block">

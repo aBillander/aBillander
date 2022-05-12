@@ -2,7 +2,7 @@
 
 <div class="panel panel-primary" id="panel_internet">
    <div class="panel-heading">
-      <h3 class="panel-title">{{ l('Web Shop') }}</h3>
+      <h3 class="panel-title" title="{{ $product->webshop_id }}">{{ l('Web Shop') }}</h3>
    </div>
 
 <!-- Internet -->
@@ -144,7 +144,8 @@
                           <li><a href="{{ route('wproducts.update.product.key', [$product->reference, 'key' => 'name'] ) }}"><i class="fa fa-flag-o"></i> &nbsp;{{l('Update Name')}}</a></li>
                           <li><a href="{{ route('wproducts.update.product.key', [$product->reference, 'key' => 'description'] ) }}"><i class="fa fa-flag"></i> &nbsp;{{l('Update Description')}}</a></li>
                           <li><a href="{{ route('wproducts.update.product.images', [$product->reference] ) }}"><i class="fa fa-image"></i> &nbsp;{{l('Update Images')}}</a></li>
-                          <!-- li class="divider"></li -->
+                          <li class="divider"></li>
+                          <li><a href="{{ route('wproducts.update.abiproduct.webshopid', [$product->reference] ) }}"><i class="fa fa-arrows-h"></i> &nbsp;{{l('Sync Webshop ID')}}</a></li>
                         </ul>
                       </div>
 

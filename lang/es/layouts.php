@@ -177,6 +177,7 @@ return [
 	'Invoicing'     => 'Facturación',
 	'Customer Invoices'     => 'Facturas de Clientes',
 	'Customer Vouchers'     => 'Recibos de Clientes',
+	'Vouchers'     => 'Recibos',
 
 	'Reports'     => 'Informes',
 	'Sales Orders'     => 'Pedidos de Venta',

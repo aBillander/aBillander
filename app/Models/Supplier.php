@@ -221,7 +221,7 @@ class Supplier extends Model {
             return $carry + $item->amount / $item->currency_conversion_rate;
         }, 0.0);
 
-        $this->outstanding_amount = $amount;
+        $this->unresolved_amount = $amount;
         $this->save();
 
         return $amount;

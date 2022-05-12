@@ -28,10 +28,6 @@ class CustomerInvoiceUnclosedListener
     {
         $document = $event->document;
 
-        // Update Customer Risk
-        $customer = $document->customer;
-        $customer->removeRisk($document->total_tax_incl);
-
         // Revert Stock Movements
         // Only if invoice has not "left document(s)", i.e., only if it is manually generated
         // 'created_via' != 'aggregate_shipping_slips'
@@ -46,6 +42,10 @@ class CustomerInvoiceUnclosedListener
 
         // Check / Perform Vouchers
         $document->payments()->delete();
+
+        // Update Customer Risk
+        $customer = $document->customer;
+        $customer->removeRisk($document->total_tax_incl);
 
     }
 }

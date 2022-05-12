@@ -98,6 +98,7 @@ return [
 	'Outstanding Amount Allowed'     => 'Riesgo Máximo Permitido',
 	'Outstanding Amount'     => 'Riesgo Alcanzado',
 	'Unresolved Amount'     => 'Impagado',
+	'Update Outstanding Amount and Unresolved Amount' => 'Actualizar Riesgo Alcanzado y Cantidad Impagada',
 	'Sales Equalization'     => 'Recargo de Equivalencia',
 	'Customer Group'     => 'Grupo de Clientes',
 	'Price List'     => 'Tarifa',

@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Auth\CustomerNewPasswordController;
+use App\Http\Controllers\Auth\CustomerPasswordResetLinkController;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Customer Center Routes
@@ -43,11 +47,26 @@ Route::group(['prefix' => 'abcc', 'middleware' => ['guestcontext']], function ()
     Route::get('/register', 'Auth\CustomerRegisterController@showRegistrationForm')->name('customer.register');
     Route::post('/register', 'Auth\CustomerRegisterController@register')->name('customer.register.submit');
 
+
+    Route::get('forgot-password', [CustomerPasswordResetLinkController::class, 'create'])
+                ->name('customer.password.request');
+
+    Route::post('forgot-password', [CustomerPasswordResetLinkController::class, 'store'])
+                ->name('customer.password.email');
+
+    Route::get('reset-password/{token}', [CustomerNewPasswordController::class, 'create'])
+                ->name('customer.password.reset');
+
+    Route::post('reset-password', [CustomerNewPasswordController::class, 'store'])
+                ->name('customer.password.update');
+
+/*
 // Password Reset Routes...
     Route::post('password/email', ['as' => 'customer.password.email', 'uses' => 'Auth\CustomerForgotPasswordController@sendResetLinkEmail']);
     Route::get('password/reset', ['as' => 'customer.password.request', 'uses' => 'Auth\CustomerForgotPasswordController@showLinkRequestForm']);
     Route::post('password/reset', ['uses' => 'Auth\CustomerResetPasswordController@reset']);
     Route::get('password/reset/{token}', ['as' => 'customer.password.reset', 'uses' => 'Auth\CustomerResetPasswordController@showResetForm']);
+*/
 });
 
 

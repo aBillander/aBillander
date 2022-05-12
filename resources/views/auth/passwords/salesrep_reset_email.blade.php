@@ -6,7 +6,7 @@
 @if ($level == 'error')
 # Whoops!
 @else
-# Estimado Cliente,
+# Estimado Usuario,
 @endif
 @endif
 

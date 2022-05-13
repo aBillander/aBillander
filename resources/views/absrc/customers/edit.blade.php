@@ -36,6 +36,8 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                     <ul class="dropdown-menu pull-right">
                       <li><a href="{{ route('absrc.customer.orders', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Orders', [], 'layouts')}}</a></li>
 {{--
+                      <li><a href="{{ route('absrc.customer.shippingslips', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Shipping Slips', [], 'layouts')}}</a></li>
+                      <li class="divider"></li>
                       <li class="divider"></li>
                       <li><a href="{{ route('customer.shippingslips', $customer->id) }}"><i class="fa fa-user-circle"></i> {{l('Shipping Slips', [], 'layouts')}}</a></li>
                       <li class="divider"></li>
@@ -86,11 +88,11 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
                <i class="fa fa-file-text-o"></i>
                &nbsp; {{ l('Orders') }}
             </a>
+--}}
             <a id="b_products" href="#products" class="list-group-item">
                <i class="fa fa-th"></i>
                &nbsp; {{ l('Products') }}
             </a>
---}}
             <a id="b_pricerules" href="#pricerules" class="list-group-item">
                <i class="fa fa-gavel"></i>
                &nbsp; {{ l('Price Rules') }}
@@ -125,12 +127,7 @@ border-color: #269abc;"><i class="fa fa-mail-forward"></i> &nbsp;{{l('Go to', []
 
           @include('absrc.customers._panel_addressbook')
 
-{{--
-
-          @include('customers._panel_orders')
-
-          @include('customers._panel_products')
---}}
+          @include('absrc.customers._panel_products')
 
           @include('absrc.customers._panel_pricerules')
 

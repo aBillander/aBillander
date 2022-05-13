@@ -52,7 +52,7 @@
 
 		function getCustomerProducts( page = 1 ){
            var panel = $('.content_products');
-           var url = '{{ route( 'absrc.customer.recentsales', [$customer->id] ) }}?page=' + page;
+           var url = '{ { route( 'absrc.customer.recentsales', [$customer->id] ) } }?page=' + page;
 
 			$.ajax({
 				type: "GET",

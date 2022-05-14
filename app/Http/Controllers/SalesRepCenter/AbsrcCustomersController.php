@@ -452,6 +452,25 @@ class AbsrcCustomersController extends Controller
      */
     public function ajaxCustomerSearch(Request $request)
     {
+
+        if ($request->has('customer_id'))
+        {
+            $search = $request->customer_id;
+
+            $customers = Customer::select('id', 'name_fiscal', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
+                                    ->ofSalesRep()
+                                    ->with('currency')
+                                    ->with('addresses')
+                                    ->find( $search );
+
+//            return $customers;
+//            return Product::searchByNameAutocomplete($query, $onhand_only);
+//            return Product::searchByNameAutocomplete($request->input('query'), $onhand_only);
+//            response( $customers );
+//            return json_encode( $customers );
+            return response()->json( $customers );
+        }
+        
         if ($request->has('term'))
         {
             $search = $request->term;

@@ -117,7 +117,13 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 //                                                        'as'   => 'products.ajax.optionsLookup' ));
 //        Route::post('products/ajax/combination_lookup'  , array('uses' => 'ProductsController@ajaxProductCombinationSearch', 
 //                                                        'as'   => 'products.ajax.combinationLookup' ));
-        
+
+        // Helferin
+        Route::get('/helferin/home', 'AbsrcHelferinController@index')->name('absrc.helferin.home');
+        Route::post('/helferin/reports/sales'  , 'AbsrcHelferinController@reportSales'  )->name('absrc.helferin.reports.sales');
+        Route::post('/helferin/reports/consumption'  , 'AbsrcHelferinController@reportConsumption'  )->name('absrc.helferin.reports.consumption');
+  
+
         Route::get('warehouses/{id}/inventory', 'AbsrcWarehousesController@indexProducts')->name('absrc.warehouse.inventory');
         Route::get('export/warehouses/{id}/inventory', 'AbsrcWarehousesController@exportProducts' )->name('absrc.warehouse.inventory.export');
 

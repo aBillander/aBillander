@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Configuration;
+use Illuminate\Support\Facades\DB;
+
 /*
 |--------------------------------------------------------------------------
 | Gorrino ninefy route
@@ -14,6 +17,26 @@
 
 Route::get('ninefy', function()
 {
+	// 2022-05-11
+	$date = '2022-05-11';
+	
+	DB::statement("ALTER TABLE `password_resets` ADD `model_name` varchar(64) not null default '".addslashes(App\Models\User::class)."' AFTER `token`;");
+
+//	die('OK - '.$date);
+
+
+	// 2022-04-27
+	$date = '2022-04-27';
+
+	Configuration::updateValue('ASIGNA_CARRIER_ID', '2');
+
+	Configuration::updateValue('DB_COMPRESS_BACKUP', '1');
+
+	Configuration::updateValue('DB_EMAIL_NOTIFY', '0');
+
+//	die('OK - '.$date);
+
+
 	// 2022-04-21
 	$date = '2022-04-21';
 
@@ -26,7 +49,7 @@ Route::get('ninefy', function()
 		abi_r("UPDATE `stock_movements` SET `stockmovementable_type` = 'App\\\\Models\\\\".$model."' WHERE `stockmovementable_type` = 'App\\\\".$model."';");
 	}	
 
-	die('OK - '.$date);
+//	die('OK - '.$date);
   
 
 	// Table addresses
@@ -38,7 +61,7 @@ Route::get('ninefy', function()
 		abi_r("UPDATE `addresses` SET `addressable_type` = 'App\\\\Models\\\\".$model."' WHERE `addressable_type` = 'App\\\\".$model."';");
 	}	
 
-	die('OK - '.'addresses');
+//	die('OK - '.'addresses');
 
 	// 2022-04-09
 	$date = '2022-04-09';
@@ -65,7 +88,7 @@ Route::get('ninefy', function()
 
 	DB::statement("ALTER TABLE `parties` CHANGE `email` `email` VARCHAR(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL;");
 
-	die('OK - '.$date);
+//	die('OK - '.$date);
 
 
 
@@ -79,7 +102,7 @@ Route::get('ninefy', function()
 /*
 	Illuminate\Support\Facades\DB::statement("INSERT INTO `templates` (`id`, `name`, `model_name`, `folder`, `file_name`, `paper`, `orientation`, `created_at`, `updated_at`, `deleted_at`) VALUES (NULL, 'xtranat Albarán Gorillas', 'CustomerShippingSlipPdf', 'templates::', 'xtragorillas', 'A4', 'portrait', '2022-03-21 07:30:53', '2022-03-21 07:30:53', NULL);");
 */
-	die('OK - '.$date);
+//	die('OK - '.$date);
 
 
 
@@ -113,7 +136,7 @@ Route::get('ninefy', function()
 	table_models('payments', 'paymentable_type'  , ['CustomerInvoice', 'SupplierInvoice']);
 	table_models('payments', 'paymentorable_type', ['Customer', 'Supplier']);
 
-	die('OK');
+//	die('OK');
 
 	// Table images
 	table_models('images', 'imageable_type', ['Product']);
@@ -122,7 +145,7 @@ Route::get('ninefy', function()
 	table_models('document_ascriptions', 'leftable_type' , ['CustomerOrder', 'CustomerShippingSlip']);
 	table_models('document_ascriptions', 'rightable_type', ['CustomerOrder', 'CustomerShippingSlip', 'CustomerInvoice']);
 
-	die('OK');
+//	die('OK');
 	
 
 	// Table bank_accounts
@@ -136,7 +159,7 @@ Route::get('ninefy', function()
 		abi_r("UPDATE `$table` SET `$field` = 'App\\\\Models\\\\$model' WHERE `$field` = 'App\\\\$model';");
 	}
 
-	die('OK - '.$date);
+//	die('OK - '.$date);
 
 
 	// 2022-03-15
@@ -182,7 +205,7 @@ Route::get('ninefy', function()
 		abi_r("UPDATE `addresses` SET `addressable_type` = 'App\\\\Models\\\\".$model."' WHERE `addressable_type` = 'App\\\\".$model."';");
 	}	
 
-	die('OK - '.$date);
+//	die('OK - '.$date);
 
 
 	// 2022-03-04

@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use WooCommerce;
 use aBillander\WooConnect\WooConnector;
 use aBillander\WooConnect\WooOrderImporter;
+use aBillander\WooConnect\WooProduct;
 
 
 class WooConfigurationKeysController extends Controller {

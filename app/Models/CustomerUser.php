@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
 // use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Notifications\CustomerResetPasswordNotification;
 
 class CustomerUser extends Authenticatable
 {
-    use Notifiable;
+    use HasFactory, Notifiable;
 //    use SoftDeletes;
 
     /**

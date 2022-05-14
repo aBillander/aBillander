@@ -294,13 +294,20 @@ class WooProductsController extends Controller
 			];
 
 		// Images
-		$abi_images = $abi_product->images->sortByDesc('is_featured');
+		$abi_images = $abi_product->images->sortBy([
+										    ['is_featured', 'desc'],
+										    ['position', 'asc'],
+										]);
 
 if ( $abi_images->count() > 0 )
-{		
+{
+
+/*		This code will result in featured image duplication
+
 		// Add featured image to Galery
 		$abi_featured = $abi_images->first();
 		$abi_images->push($abi_featured);
+*/
 
 		$i=0;
 
@@ -314,7 +321,8 @@ if ( $abi_images->count() > 0 )
 					// Avoid problems:
 //					'name' => str_replace(' ', '%20', trim($abi_image->caption)),
 //					'alt'  => str_replace(' ', '%20', trim($abi_image->caption)),
-					'position' => $i,	// First image is taken as "main Image" ??? < Key not documented???
+					'position' => $i,	// Image position. 0 means that the image is featured.
+										// https://woocommerce.github.io/woocommerce-rest-api-docs/#http-request
 				];
 
 			$i++;
@@ -877,11 +885,7 @@ The image in position 0 is your featured image.
 
 // If no images do nothing: we do not want products on the webshop without image!
 if ( $abi_images->count() > 0 )
-{		
-		// Add featured image to Galery
-		$abi_featured = $abi_images->first();
-		$abi_images->push($abi_featured);
-
+{
 		$i=0;
 
 		foreach ($abi_images as $abi_image) {
@@ -894,7 +898,7 @@ if ( $abi_images->count() > 0 )
 					// Avoid problems:
 //					'name' => str_replace(' ', '%20', trim($abi_image->caption)),
 //					'alt'  => str_replace(' ', '%20', trim($abi_image->caption)),
-					'position' => $i,	// First image is taken as "main Image" ??? < Key not documented???
+					'position' => $i,	// position = 0 => Product Featured Image (Woo Featured image)
 				];
 
 			$i++;
@@ -910,6 +914,34 @@ if ( $abi_images->count() > 0 )
 //        return redirect()->to(url()->previous())
         return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
 				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts') . ' ('.$abi_images->count().')');
+	}
+
+
+	public function updateAbiProductWebshopId( $sku )
+	{
+		$product_sku = $sku;
+
+		// Get Woo Product by SKU
+		$wproduct = WooProduct::fetch( $product_sku );
+
+		// Oh! Second try:
+		if ( !$wproduct )
+			$wproduct = WooProduct::fetchById( $product_sku );
+
+		if ( !$wproduct ) return ;
+
+        $wproduct_id = $wproduct['id'];
+
+        // Get Product
+        $product = Product::where('reference', $product_sku)->first();
+
+        // Update
+        $product->webshop_id = $wproduct_id;
+        $product->save();
+
+
+        return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
+				->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $product_sku], 'layouts'));
 	}
 
 

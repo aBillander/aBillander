@@ -118,18 +118,20 @@
       <th class="text-left">{{l('ID', 'layouts')}}</th>
       <!-- th>{{l('username')}}</th -->
       <th>{{l('Created')}}</th>
+      <th>{{l('Name')}}</th>
 
       <!-- th class="text-left">{{l('Company')}}</th>
       <th>{{l('first_name')}} {{l('last_name')}}</th -->
 
       <th>{{l('Billing Address')}}</th>
-      <th> </th>
+      <th>{{l('Shipping Address')}}</th>
 
-      <th>{{l('email')}}<br />
-          {{l('phone')}}</th>
-
+      <!-- th>{{l('email')}}<br />
+          {{l('phone')}}</th -->
+{{--
       <th>{{l('orders_count')}}</th>
       <th>{{l('total_spent')}}</th>
+--}}
 			<th> </th>
 		</tr>
 	</thead>
@@ -149,22 +151,35 @@
       <td title="{{ $customer["username"] }}">{{ $customer["id"] }}</td>
       <!-- td>{{ $customer["username"] }}</td -->
       <td title="{{ $customer["date_created"] }}">{{ explode('T', $customer["date_created"])[0] }}</td>
+      <td>
+        <img src="{{ $customer["avatar_url"] }}" style="border: 1px solid #dddddd; height: 36px;">
+        {{ $customer["first_name"] }} {{ $customer["last_name"] }}
+            <br />{{ $customer["email"] }}</td>
 
       <td>{{ $customer["billing"]["company"] }}<br />
-          {{ $customer["billing"]["first_name"] }} {{ $customer["billing"]["last_name"] }}</td>
+          {{ $customer["billing"]["first_name"] }} {{ $customer["billing"]["last_name"] }}
 
-      <td>{{ $customer["billing"]["address_1"] }}<br />
+          {{ $customer["billing"]["address_1"] }}<br />
           {{ $customer["billing"]["address_2"] }}<br />
-          {{ $customer["billing"]["postcode"] }} {{ $customer["billing"]["city"] }} {{ $customer["billing"]["state"] }}
+          {{ $customer["billing"]["postcode"] }} {{ $customer["billing"]["city"] }} {{ $customer["billing"]["state"] }} {{ $customer["billing"]["country"] }}<br />
+          {{ $customer["billing"]["email"] }}
+          {{ $customer["billing"]["phone"] }}
       </td>
 
-      <td>{{ $customer["billing"]["email"] }}<br />
-          {{ $customer["billing"]["phone"] }}</td>
+      <td>{{ $customer["shipping"]["company"] }}<br />
+          {{ $customer["shipping"]["first_name"] }} {{ $customer["shipping"]["last_name"] }}
 
+          {{ $customer["shipping"]["address_1"] }}<br />
+          {{ $customer["shipping"]["address_2"] }}<br />
+          {{ $customer["shipping"]["postcode"] }} {{ $customer["shipping"]["city"] }} {{ $customer["shipping"]["state"] }} {{ $customer["shipping"]["country"] }}
+      </td>
 
+      <!-- td></td -->
+
+{{--
       <td>{{ $customer["orders_count"] ?? '' }}</td>
       <td>{{ $customer["total_spent"] ?? '' }}</td>
-
+--}}
 			<td class="text-right" style="width:1px; white-space: nowrap;">
 {{--
                 <a class='update-local-customer btn btn-sm btn-warning' href="{{ URL::route('wcustomers.ascription') }}"
@@ -180,6 +195,8 @@
 
         @if ( !( isset($customer["abi_customer"]) && ($abi_customer = $customer["abi_customer"]) ) )
                 <a class="btn btn-sm btn-grey" href="{{ URL::route('wcustomers.import', $customer["id"] ) }}" title="{{l('Import', [], 'layouts')}}"><i class="fa fa-download"></i></a>
+        @else
+                <a class="btn btn-sm btn-warning" href="{{ URL::route('customers.edit', [$abi_customer->id] ) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank"><i class="fa fa-external-link"></i></a>
         @endif
 
 {{--
@@ -200,14 +217,16 @@
 			</td>
 		</tr>
 
-   @if ( isset($customer["abi_customer"]) && ($abi_customer = $customer["abi_customer"]) )
+   @if ( 0 && isset($customer["abi_customer"]) && ($abi_customer = $customer["abi_customer"]) )
 
     <tr class="danger">
       <td class="text-center"> </td>
       
-      <td title="{{ $abi_customer->reference_external }}"><a href="{{ URL::route('customers.edit', [$abi_customer->id] ) }}" title="{{l('Fetch', [], 'layouts')}}" target="_blank">{{ $abi_customer->id }}</a><br />
+      <td title="{{ $abi_customer->reference_external }}"><a href="{{ URL::route('customers.edit', [$abi_customer->id] ) }}" title="{{l('Go to', [], 'layouts')}}" target="_blank">{{ $abi_customer->id }}</a><br />
         {{ $abi_customer->reference_external }}
       </td>
+
+      <td class="text-center"> </td>
 
       <td title="{{ '' }}">{{ $abi_customer->name_fiscal }}<br />
 
@@ -229,11 +248,12 @@
       </td>
     </tr>
    @else
-
+{{--
     <tr>
       <td>
       </td>
     </tr>
+--}}
    @endif
 
 	@endforeach

@@ -1545,7 +1545,7 @@ class Product extends Model {
         $q = Product::select( $columns )
                     ->where('name', 'like', '%' . $query . '%')
                     ->orWhere('reference', 'like', '%' . $query . '%')
-                    ->take( intval( Configuration::get('DEF_ITEMS_PERAJAX') ) )
+//                    ->take( intval( Configuration::get('DEF_ITEMS_PERAJAX') ) )
                     ->orderBy('name');
 
         if ($onhand_only) $q = $q->where('quantity_onhand', '>', '0');

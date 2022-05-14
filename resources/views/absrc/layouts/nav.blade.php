@@ -124,19 +124,19 @@
 
 
 
-{{--
+
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bar-chart-o"></i> {{l('Reports', [], 'absrc/layouts')}} <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
+                         <li>
+                            <a href="{{ URL::to('absrc/helferin/home') }}">
+                                <i class="fa fa-gears text-info"></i> 
+                                {{l('Sales', [], 'absrc/layouts')}}</a>
+                        </li>
                         <li class="divider"></li>
-                         <!-- li>
-                            <a href="https://abillander.gitbooks.io/abillander-tutorial-spanish/content/" target="_blank">
-                                 {{l('Documentation', [], 'absrc/layouts')}}
-                            </a>
-                        </li -->
                     </ul>
                 </li>
---}}
+
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ Auth::user()->getFullName() }} <span class="caret"></span></a>

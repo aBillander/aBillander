@@ -71,7 +71,7 @@ border-color: #269abc;" data-toggle="dropdown" title="{{l('Back to', 'layouts')}
             <th>{{ l('Manufacturing Batch Size') }}</th -->
             <th class="text-center">{{l('Notes', [], 'layouts')}}</th>
             <th class="text-center">{{l('Active', [], 'layouts')}}</th>
-            <th class="text-center">{{l('Publish to web?')}}</th>
+            <th class="text-center">{{l('Published to web?')}}</th>
       <th class="text-right"> </th>
     </tr>
   </thead>
@@ -128,7 +128,7 @@ border-color: #269abc;" data-toggle="dropdown" title="{{l('Back to', 'layouts')}
                  </a>
                 @endif</td>
             <td class="text-center">@if ($product->active) <i class="fa fa-check-square" style="color: #38b44a;"></i> @else <i class="fa fa-square-o" style="color: #df382c;"></i> @endif</td>
-            <td class="text-center">@if ($product->publish_to_web) <i class="fa fa-check-square" style="color: #2780e3;"></i> @else <i class="fa fa-square-o" style="color: #2780e3;"></i> @endif</td>
+            <td class="text-center">@if ($product->webshop_id) <i class="fa fa-check-square" style="color: #2780e3;"></i> @else <i class="fa fa-square-o" style="color: #2780e3;"></i> @endif</td>
            <td class="text-right button-pad">
             </td>
     </tr>

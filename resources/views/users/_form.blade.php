@@ -2,7 +2,7 @@
 <div class="row">
 <div class="form-group col-lg-6 col-md-6 col-sm-6">
     {!! Form::label('name', l('User name')) !!}
-    {!! Form::text('name', null, array('class' => 'form-control')) !!}
+    {!! Form::text('name', null, array('class' => 'form-control',  "autocomplete" => "off")) !!}
 </div>
 <div class="form-group col-lg-6 col-md-6 col-sm-6">
     {!! Form::label('password', l('Password')) !!}
@@ -14,7 +14,7 @@
                  </a>
 @endif
 
-    {!! Form::password('password', array('id' => 'password', 'class' => 'form-control',  "autocomplete" => "off")) !!}
+    {!! Form::text('password', '', array('id' => 'password', 'class' => 'form-control',  "autocomplete" => "off")) !!}
 </div><br />
 </div>
 

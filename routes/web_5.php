@@ -63,7 +63,7 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::get( '/jennifer/reports/mod347/{mod347_year}/customer/{customer_id}', 'JenniferController@reportModelo347Customer')->name('jennifer.reports.mod347.customer');
         Route::get( '/jennifer/reports/mod347/{mod347_year}/supplier/{supplier_id}', 'JenniferController@reportModelo347Supplier')->name('jennifer.reports.mod347.supplier');
 
-        Route::group(['prefix' => 'accounting', 'namespace' => '\Accounting'], function ()
+        Route::group(['prefix' => 'accounting', 'namespace' => 'Accounting'], function ()
         {
             Route::resource('customers', 'AccountingCustomersController')->names('accounting.customers');
 
@@ -428,6 +428,8 @@ Route::group(['middleware' =>  ['restrictIp', 'auth', 'context']], function()
         Route::post('customers/{id}/bankaccount', 'CustomersController@updateBankAccount')->name('customers.bankaccount');
         Route::post('customers/invite', 'CustomersController@invite')->name('customers.invite');
 
+        Route::post('customers/{id}/risk', 'CustomersController@updateRisk')->name('customers.update.risk');
+
         Route::get('customers/{id}/product/{productid}/consumption', 'CustomersController@productConsumption' )->name('customer.product.consumption');
 
         Route::get('customers/{id}/recentsales',  'CustomersController@getRecentSales')->name('customer.recentsales');
@@ -690,6 +692,11 @@ foreach ($pairs as $pair) {
 
         Route::get( 'customershippingslipsinvoicer',          'CustomerShippingSlipsInvoicerController@create' )->name('customershippingslips.invoicer.create' );
         Route::post('customershippingslipsinvoicer/process',  'CustomerShippingSlipsInvoicerController@process')->name('customershippingslips.invoicer.process');
+        // Just in case server response is kind of timeout, prevent accidental "intro"
+        Route::get('customershippingslipsinvoicer/process',   function()
+                        {
+                                return redirect('/');
+                        });
 
         Route::get( 'customershippingslips/customers/{id}/invoiceables',  'CustomerShippingSlipsController@getInvoiceableShippingSlips')->name('customer.invoiceable.shippingslips');
         Route::post('customershippingslips/create/invoice',  'CustomerShippingSlipsController@createGroupInvoice')->name('customershippingslips.create.invoice');

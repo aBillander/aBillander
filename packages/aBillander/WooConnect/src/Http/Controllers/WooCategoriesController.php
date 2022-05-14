@@ -192,7 +192,19 @@ class WooCategoriesController extends Controller
 
 		// abi_r($data);die();
 
-		$result = WooCommerce::post('products/categories', $data);
+		try {
+
+			$result = WooCommerce::post('products/categories', $data);
+		}
+
+			catch(WooHttpClientException $e) {
+
+			$err = '<ul><li><strong>'.$e->getMessage().'</strong></li></ul>';
+
+			return redirect()->back()
+				->with('error', l('La Tienda Online ha rechazado la conexión, y ha dicho: ') . $err);
+		}
+
 
 		$abi_category->update(['webshop_id' => $result['id']]);
 

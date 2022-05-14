@@ -97,6 +97,7 @@ Route::group([
    Route::get('wproduct/{sku}/updateKey'    , 'WooProductsController@updateProductKey'   )->name('wproducts.update.product.key'   );
    Route::get('wproduct/{sku}/updateNames'  , 'WooProductsController@updateProductNames' )->name('wproducts.update.product.names' );
    Route::get('wproduct/{sku}/updateImages' , 'WooProductsController@updateProductImages')->name('wproducts.update.product.images' );
+   Route::get('wproduct/{sku}/updateAbiProductWebshopId'  , 'WooProductsController@updateAbiProductWebshopId' )->name('wproducts.update.abiproduct.webshopid' );
 
 
     Route::resource('wcategories', 'WooCategoriesController');

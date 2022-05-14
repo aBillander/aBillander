@@ -142,6 +142,8 @@ class CustomerShippingSlipsAsignaController extends Controller
 
         $csvSettings = [
             'delimiter' => ';',
+            'enclosure' => '',
+//            'excel_compatibility' => true,
 //            'use_bom' => false,
 //            'output_encoding' => 'ISO-8859-1',
         ];

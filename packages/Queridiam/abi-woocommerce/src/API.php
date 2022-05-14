@@ -27,7 +27,9 @@ class API
      */
     public function post($endpoint, $data)
     {
-        return $this->client->post($endpoint, $data);
+        $result = $this->client->post($endpoint, $data);
+
+        return json_decode(json_encode($result), true);
     }
 
     /**
@@ -40,7 +42,9 @@ class API
      */
     public function put($endpoint, $data)
     {
-        return $this->client->put($endpoint, $data);
+        $result = $this->client->put($endpoint, $data);
+
+        return json_decode(json_encode($result), true);
     }
 
     /**
@@ -56,6 +60,7 @@ class API
         $objects = $this->client->get($endpoint, $parameters);
 
         return json_decode(json_encode($objects), true);
+//        return json_decode(json_encode($objects, JSON_FORCE_OBJECT), true);
     }
 
     /**
@@ -68,7 +73,9 @@ class API
      */
     public function delete($endpoint, $parameters = [])
     {
-        return $this->client->delete($endpoint, $parameters);
+        $result = $this->client->delete($endpoint, $parameters);
+
+        return json_decode(json_encode($result), true);
     }
 
     /**

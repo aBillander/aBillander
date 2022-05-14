@@ -200,6 +200,18 @@ class AbsrcCustomersController extends Controller
         if ($bankaccount)
             $this->addFormDates( ['mandate_date'], $bankaccount );
 
+        // Models for Products tab
+        $models = ['CustomerOrder', 'CustomerShippingSlip', 'CustomerInvoice'];
+
+        $modelList = [];
+        foreach ($models as $model) {
+            # code...
+            $modelList[$model] = l($model, 'customers');
+        }
+
+        $default_model = Configuration::get('RECENT_SALES_CLASS');
+
+
         if ( !($aBookCount>0) )
         {
             // Empty Addresss Book!
@@ -214,7 +226,7 @@ class AbsrcCustomersController extends Controller
             }
 
             // Issue Warning!
-            return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions'))
+            return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'modelList', 'default_model'))
                 ->with('warning', l('You need one Address at list, for Customer (:id) :name', ['id' => $customer->id, 'name' => $customer->name_fiscal]));
         };
 
@@ -249,7 +261,7 @@ class AbsrcCustomersController extends Controller
 
             $mainAddressIndex = 0;
 
-            return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'sequenceList', 'invoices_templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'customer_groupList', 'price_listList', 'shipping_methodList'))
+            return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'sequenceList', 'invoices_templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'customer_groupList', 'price_listList', 'shipping_methodList', 'modelList', 'default_model'))
                 ->with('warning', $warning);
 
         } else {
@@ -292,7 +304,7 @@ class AbsrcCustomersController extends Controller
 
 //        abi_r($sequenceList1, true);
 
-        return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'sequenceList', 'invoices_templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'customer_groupList', 'price_listList', 'shipping_methodList'))
+        return view('absrc.customers.edit', compact('customer', 'aBook', 'mainAddressIndex', 'bankaccount', 'contacts', 'actions', 'sequenceList', 'invoices_templateList', 'payment_methodList', 'currencyList', 'salesrepList', 'customer_groupList', 'price_listList', 'shipping_methodList', 'modelList', 'default_model'))
                 ->with('warning', $warning);
     }
 
@@ -440,6 +452,25 @@ class AbsrcCustomersController extends Controller
      */
     public function ajaxCustomerSearch(Request $request)
     {
+
+        if ($request->has('customer_id'))
+        {
+            $search = $request->customer_id;
+
+            $customers = Customer::select('id', 'name_fiscal', 'identification', 'sales_equalization', 'payment_method_id', 'currency_id', 'invoicing_address_id', 'shipping_address_id', 'shipping_method_id', 'sales_rep_id')
+                                    ->ofSalesRep()
+                                    ->with('currency')
+                                    ->with('addresses')
+                                    ->find( $search );
+
+//            return $customers;
+//            return Product::searchByNameAutocomplete($query, $onhand_only);
+//            return Product::searchByNameAutocomplete($request->input('query'), $onhand_only);
+//            response( $customers );
+//            return json_encode( $customers );
+            return response()->json( $customers );
+        }
+        
         if ($request->has('term'))
         {
             $search = $request->term;
@@ -623,6 +654,10 @@ class AbsrcCustomersController extends Controller
      */
     public function getRecentSales($id, Request $request)
     {
+        $product_id = (int) $request->input('product_id', '');
+
+        $sales_model = $request->input('sales_model', '');
+
         $customer = $this->customer::findOrFail($id);
 
         // return 'OK';
@@ -635,10 +670,16 @@ class AbsrcCustomersController extends Controller
         if ( !($items_per_page_products >= 0) ) 
             $items_per_page_products = Configuration::get('DEF_ITEMS_PERPAGE');
 
+        $o_lines = $s_lines = $i_lines = collect([]);
+
         // See: https://stackoverflow.com/questions/28913014/laravel-eloquent-search-on-fields-of-related-model
+        if ( $sales_model == '' || $sales_model == 'CustomerOrder' )
         $o_lines = CustomerOrderLine::
                             with('document')
-                            ->whereHas('product')
+                            ->whereHas('product', function($q) use ($product_id) {
+                                    if ( $product_id > 0 )
+                                        $q->where('product_id', $product_id);
+                                })
                             ->with('product')
 //                            ->with(['currency' => function($q) {
 //                                    $q->orderBy('document_date', 'desc');
@@ -653,9 +694,13 @@ class AbsrcCustomersController extends Controller
                             ->get();
 
 /* */
+        if ( $sales_model == '' || $sales_model == 'CustomerShippingSlip' )
         $s_lines = CustomerShippingSlipLine::
                             with('document')
-                            ->whereHas('product')
+                            ->whereHas('product', function($q) use ($product_id) {
+                                    if ( $product_id > 0 )
+                                        $q->where('product_id', $product_id);
+                                })
                             ->with('product')
 //                            ->with(['currency' => function($q) {
 //                                    $q->orderBy('document_date', 'desc');
@@ -670,9 +715,13 @@ class AbsrcCustomersController extends Controller
                             ->get();
 
 
+        if ( $sales_model == '' || $sales_model == 'CustomerInvoice' )
         $i_lines = CustomerInvoiceLine::
                             with('document')
-                            ->whereHas('product')
+                            ->whereHas('product', function($q) use ($product_id) {
+                                    if ( $product_id > 0 )
+                                        $q->where('product_id', $product_id);
+                                })
                             ->with('product')
 //                            ->with(['currency' => function($q) {
 //                                    $q->orderBy('document_date', 'desc');

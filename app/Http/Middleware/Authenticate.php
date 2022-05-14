@@ -19,12 +19,12 @@ class Authenticate extends Middleware
         if (! $request->expectsJson()) {
             
             // ABCC routes
-            if ( $request->is('abcc/*') ) {
+            if ( $request->is('abcc*') ) {
                 return route('customer.login');
             }
             
             // ABSRC routes
-            if ( $request->is('absrc/*') ) {
+            if ( $request->is('absrc*') ) {
                 return route('salesrep.login');
             }
 

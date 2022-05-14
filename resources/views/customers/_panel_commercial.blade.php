@@ -34,6 +34,13 @@
 
         <div class="row">
 
+<div id="msg-success-update" class="alert alert-success alert-block" style="display:none;">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <span id="msg-success-update-counter" class="badge"></span>
+  <strong>{!!  l('This record has been successfully updated &#58&#58 (:id) ', ['id' => ''], 'layouts') !!}</strong>
+</div>
+
+
                    <div class="form-group col-lg-2 col-md-2 col-sm-2" id="is_invoiceable">
                      {!! Form::label('is_invoiceable', l('Is Invoiceable?'), ['class' => 'control-label']) !!}
                      <div>
@@ -98,8 +105,15 @@
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('outstanding_amount') ? 'has-error' : '' }}">
                      {{ l('Outstanding Amount') }}
+  <div class="input-group">
                      {!! Form::text('outstanding_amount', $customer->as_money('outstanding_amount', AbiContext::getContext()->language->currency), array('class' => 'form-control', 'id' => 'outstanding_amount', 'disabled' => "disabled")) !!}
                     {!! $errors->first('outstanding_amount', '<span class="help-block">:message</span>') !!}
+    <span class="input-group-btn">
+      <button class="calculate-risk btn btn-lightblue" type="button" title="{{l('Update Outstanding Amount and Unresolved Amount')}}">
+          <span class="fa fa-calculator"></span>
+      </button>
+    </span>
+  </div>
                   </div>
 
                   <div class="form-group col-lg-2 col-md-2 col-sm-2 {{ $errors->has('unresolved_amount') ? 'has-error' : '' }}">
@@ -267,3 +281,58 @@
                   </button>
                </div>
             </div>
+
+
+@section('scripts') @parent 
+
+<script>
+
+$(document).ready(function() {
+
+          $(document).on('click', '.calculate-risk', function(evnt) {
+
+              calculateRisk();
+              return false;
+
+          });
+
+});
+
+
+        function calculateRisk() {
+           
+           var url = "{{ route('customers.update.risk', $customer->id) }}";
+           var token = "{{ csrf_token() }}";
+
+           var field = 'popo';
+
+//           panel.addClass('loading');
+
+            $.ajax({
+                url: url,
+                headers : {'X-CSRF-TOKEN' : token},
+                method: 'POST',
+                dataType: 'JSON',
+                data: {
+                    field: field
+                },
+                success: function (response) {
+
+                   console.log(response);
+
+                   $("#outstanding_amount").val(response.outstanding);
+                   $("#unresolved_amount").val(response.unresolved);
+
+//                   panel.removeClass('loading');
+
+                   $("[data-toggle=popover]").popover();
+
+                    showAlertDivWithDelay("#msg-success-update");
+                }
+            });
+
+        }
+
+</script>
+
+@endsection

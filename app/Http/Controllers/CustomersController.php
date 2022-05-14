@@ -837,4 +837,22 @@ class CustomersController extends Controller
         return response()->json(['success'=>'Email sent.']);
     }
 
+
+
+
+    public function updateRisk(Request $request, $id)
+    {
+        $customer = $this->customer::findOrFail($id);
+
+        $customer->calculateRisk();
+        $customer->calculateUnresolved();
+
+        return response()->json( [
+                'msg' => 'OK',
+                'customer' => $customer->id,
+                'outstanding' => $customer->as_money('outstanding_amount', Context::getContext()->language->currency),
+                'unresolved'  => $customer->as_money('unresolved_amount', Context::getContext()->language->currency),
+        ] );
+    }
+
 }

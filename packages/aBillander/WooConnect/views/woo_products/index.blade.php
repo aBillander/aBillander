@@ -129,7 +129,11 @@
                         <a class="btn btn-xs btn-warning" href="{{ route('products.edit', $pid) }}" title="{{l('Go to local Product')}}" target="_blank"><i class="fa fa-external-link"></i></a>
         @endif
       </td>
-      <td><img width="32px" src="{{ optional($product['images'])[0]['src'] }}" style="border: 1px solid #dddddd;"></td>
+      <td>
+@if ( $product['images'] )
+        <img width="32px" src="{{ $product['images'][0]['src'] }}" style="border: 1px solid #dddddd;">
+@endif
+      </td>
       <td>{{ $product["name"] }}<br /><strong>{{ $product["slug"] }}</strong></td>
       <td>{{ optional($product["categories"])[0]["name"] }}</td>
       <td>{{ $product["type"] }}</td>

@@ -144,6 +144,8 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 
         Route::get('customers/{id}/product/{productid}/consumption', 'AbsrcCustomersController@productConsumption' )->name('absrc.customer.product.consumption');
 
+        Route::get('customers/{id}/recentsales',  'AbsrcCustomersController@getRecentSales')->name('absrc.customer.recentsales');
+
         Route::post('bankaccounts/iban/calculate', 'AbsrcBankAccountsController@ibanCalculate')->name('absrc.bankaccounts.iban.calculate' );
 
 /*        Route::resource('customers', 'CustomersController');
@@ -154,8 +156,6 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
         Route::post('customers/invite', 'CustomersController@invite')->name('customers.invite');
 
         Route::get('customers/{id}/product/{productid}/consumption', 'CustomersController@productConsumption' )->name('customer.product.consumption');
-
-        Route::get('customers/{id}/recentsales',  'CustomersController@getRecentSales')->name('customer.recentsales');
 */
 
 

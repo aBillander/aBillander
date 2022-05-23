@@ -215,12 +215,12 @@ foreach ($customers as $customer) {
                 $row[] = $customer->products_price != 0.0
                             ? 100.0 * ($customer->products_price - $customer->products_total) / $customer->products_price
                             : 0.0;
-                $row[] = $customer->products_cost * 1.0;
+                $row[] = '';    // $customer->products_cost * 1.0;
                 $row[] = $customer->document_commission * 1.0;
-                $row[] = Calculator::margin( $customer->products_cost, $customer->products_total, $customer->currency ) * 1.0;
-                $row[] = $customer->products_profit * 1.0;
+                $row[] = '';    // Calculator::margin( $customer->products_cost, $customer->products_total, $customer->currency ) * 1.0;
+                $row[] = '';    // $customer->products_profit * 1.0;
                 $row[] = abi_safe_division( $customer->products_cost + $customer->products_profit, $total ) * 100.0;
-                $row[] = abi_safe_division($customer->products_profit, $total_profit) * 100.0;
+                $row[] = '';    // abi_safe_division($customer->products_profit, $total_profit) * 100.0;
 
                 $row[] = $customer->grand_total * 1.0;
 
@@ -234,7 +234,8 @@ foreach ($customers as $customer) {
         // Totals
         $data[] = [''];
         $r = ($total_price != 0.0) ? 100.0 * ($total_price - $total) / $total_price : '';
-        $data[] = ['', '', '', 'Total:', $total_price * 1.0, $total * 1.0, $r, $total_cost * 1.00, $total_commission * 1.00, Calculator::margin( $total_cost, $total, Context::getContext()->company->currency ) * 1.0, $total_profit ];
+//        $data[] = ['', '', '', 'Total:', $total_price * 1.0, $total * 1.0, $r, $total_cost * 1.00, $total_commission * 1.00, Calculator::margin( $total_cost, $total, Context::getContext()->company->currency ) * 1.0, $total_profit ];
+        $data[] = ['', '', '', 'Total:', $total_price * 1.0, $total * 1.0, $r, '', $total_commission * 1.00 ];
 
 //        $i = count($data);
 
@@ -251,7 +252,7 @@ foreach ($customers as $customer) {
         $columnFormats = [
             'A' => NumberFormat::FORMAT_TEXT,
 //            'C' => NumberFormat::FORMAT_DATE_DDMMYYYY,
-            'D' => NumberFormat::FORMAT_NUMBER_00,
+            'D' => NumberFormat::FORMAT_NUMBER,
             'E' => NumberFormat::FORMAT_NUMBER_00,
             'F' => NumberFormat::FORMAT_NUMBER_00,
             'G' => NumberFormat::FORMAT_NUMBER_00,

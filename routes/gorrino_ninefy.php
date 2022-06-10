@@ -17,6 +17,27 @@ use Illuminate\Support\Facades\DB;
 
 Route::get('ninefy', function()
 {
+	// 2022-05-26
+	$date = '2022-05-26';
+
+	// Watch out:
+	// https://github.com/laravel/framework/issues/22900
+
+	// Table document_ascriptions
+	// Customers
+	table_models('document_ascriptions', 'leftable_type' , ['CustomerQuotation']);
+
+//	die('OK - '.$date);
+
+	// Suppliers
+	table_models('document_ascriptions', 'leftable_type' , ['SupplierOrder', 'SupplierShippingSlip']);
+	table_models('document_ascriptions', 'rightable_type', ['SupplierShippingSlip', 'SupplierInvoice']);
+
+	die('OK - '.$date);
+
+
+
+
 	// 2022-05-11
 	$date = '2022-05-11';
 	

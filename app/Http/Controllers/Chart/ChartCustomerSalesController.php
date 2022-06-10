@@ -37,7 +37,7 @@ class ChartCustomerSalesController extends Controller
 		
 		$this->first = $last->copy()->subMonths(11)->startOfMonth();	// 11 months plus current one makes 12 months, i.e. a year
 
-		// abi_r( $date );
+		// abi_r( $last );
 		// abi_r( $this->first );die();
 
 		$month_array = array();
@@ -46,13 +46,14 @@ class ChartCustomerSalesController extends Controller
 							->orderBy( 'document_date', 'ASC' )
 							->pluck( 'document_date' );
 		// abi_r($orders_dates[0]);abi_r('*********************');
-		$orders_dates = json_decode( $orders_dates );
+//		$orders_dates = json_decode( $orders_dates );	<== Somehow timezone is changed and date is altered!
 		// abi_r($orders_dates[0]);abi_r('*********************');die();
 		if ( ! empty( $orders_dates ) ) {
 			foreach ( $orders_dates as $unformatted_date ) {
 //				$date = new \DateTime( $unformatted_date->date );
-				$date = new \DateTime( $unformatted_date );
-				$month_no = $date->format( 'm' );
+				// $date = new \DateTime( $unformatted_date );
+//				$month_no = $date->format( 'm' );
+				$month_no = $unformatted_date->format( 'm' );
 				$month_name = l('month.'.$month_no);	//$date->format( 'M' );
 				$month_array[ $month_no ] = $month_name." ".$date->format( 'Y' );
 			}

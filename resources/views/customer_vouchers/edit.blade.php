@@ -82,6 +82,15 @@
             $('.extrafield').toggle("slide");
             return false;
           });
+
+          // Prevent form submission with [retun] key (if not, voucher is set to "uncollectible" Why?)
+          $(window).keydown(function(event){
+            if(event.keyCode == 13) {
+              event.preventDefault();
+              return false;
+            }
+          });
+
    });
 
 function checkFields() 

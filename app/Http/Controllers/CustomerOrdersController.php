@@ -792,6 +792,7 @@ class CustomerOrdersController extends BillableController
         $onhand_only = $request->input('onhand_only', 0);
 
         $document = $this->document
+                        ->with('customer')
                         ->with('lines')
                         ->with('lines.product')
                         ->findOrFail($id);
@@ -821,7 +822,11 @@ class CustomerOrdersController extends BillableController
 
         $templateList = Template::listFor( CustomerShippingSlip::class );
 
-        return view($this->view_path.'._panel_document_availability', $this->modelVars() + compact('document', 'sequenceList', 'templateList', 'onhand_only'));
+        $customerSequence = Configuration::getInt('DEF_CUSTOMER_SHIPPING_SLIP_SEQUENCE');
+
+        $customerTemplate = $document->customer->getShippingSlipTemplateId();
+
+        return view($this->view_path.'._panel_document_availability', $this->modelVars() + compact('document', 'sequenceList', 'templateList', 'customerSequence', 'customerTemplate', 'onhand_only'));
     }
 
 

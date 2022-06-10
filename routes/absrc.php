@@ -117,7 +117,13 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 //                                                        'as'   => 'products.ajax.optionsLookup' ));
 //        Route::post('products/ajax/combination_lookup'  , array('uses' => 'ProductsController@ajaxProductCombinationSearch', 
 //                                                        'as'   => 'products.ajax.combinationLookup' ));
-        
+
+        // Helferin
+        Route::get('/helferin/home', 'AbsrcHelferinController@index')->name('absrc.helferin.home');
+        Route::post('/helferin/reports/sales'  , 'AbsrcHelferinController@reportSales'  )->name('absrc.helferin.reports.sales');
+        Route::post('/helferin/reports/consumption'  , 'AbsrcHelferinController@reportConsumption'  )->name('absrc.helferin.reports.consumption');
+  
+
         Route::get('warehouses/{id}/inventory', 'AbsrcWarehousesController@indexProducts')->name('absrc.warehouse.inventory');
         Route::get('export/warehouses/{id}/inventory', 'AbsrcWarehousesController@exportProducts' )->name('absrc.warehouse.inventory.export');
 
@@ -144,6 +150,8 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
 
         Route::get('customers/{id}/product/{productid}/consumption', 'AbsrcCustomersController@productConsumption' )->name('absrc.customer.product.consumption');
 
+        Route::get('customers/{id}/recentsales',  'AbsrcCustomersController@getRecentSales')->name('absrc.customer.recentsales');
+
         Route::post('bankaccounts/iban/calculate', 'AbsrcBankAccountsController@ibanCalculate')->name('absrc.bankaccounts.iban.calculate' );
 
 /*        Route::resource('customers', 'CustomersController');
@@ -154,8 +162,6 @@ Route::group(['middleware' =>  ['auth:salesrep', 'context', 'absrccontext:salesr
         Route::post('customers/invite', 'CustomersController@invite')->name('customers.invite');
 
         Route::get('customers/{id}/product/{productid}/consumption', 'CustomersController@productConsumption' )->name('customer.product.consumption');
-
-        Route::get('customers/{id}/recentsales',  'CustomersController@getRecentSales')->name('customer.recentsales');
 */
 
 

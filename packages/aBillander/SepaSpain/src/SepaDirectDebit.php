@@ -184,6 +184,20 @@ class SepaDirectDebit extends Model
     {
         return Sequence::listFor( SepaDirectDebit::class );
     }
+
+
+    // Safely retrieve SepaDirectDebit Iban and Swift attributes
+    // Iban and Swift are properties related to SepaDirectDebit->bankaccount, 
+    // not related to SepaDirectDebit
+    public function getIbanAttribute($value)
+    {
+        return $this->bankaccount->iban;
+    }
+
+    public function getSwiftAttribute($value)
+    {
+        return $this->bankaccount->swift;
+    }
     
 
     /*
@@ -310,8 +324,8 @@ class SepaDirectDebit extends Model
                 'lclInstrm'     => $localInstrument,
                 'seqTp'         => $sequenceType,
                 'cdtr'          => $this->sanitize_name(Context::getContext()->company->name_fiscal),      // (max 70 characters)
-                'iban'          => $this->sanitize_iban( $this->iban ),            // IBAN of the Creditor
-                'bic'           => $this->swift,           // BIC of the Creditor
+                'iban'          => $this->sanitize_iban( $this->bankaccount->iban ),            // IBAN of the Creditor
+                'bic'           => $this->bankaccount->swift,           // BIC of the Creditor
                 'ci'            => $this->calculateCreditorID( Context::getContext()->company, $this->bankaccount ),    // Creditor-Identifier
             // optional
                 'ccy'           => $this->currency_iso_code ?: 'EUR',                   // Currency. Default is 'EUR'

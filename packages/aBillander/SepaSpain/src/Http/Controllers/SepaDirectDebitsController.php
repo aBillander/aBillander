@@ -300,7 +300,7 @@ class SepaDirectDebitsController extends Controller
     {
         // return 'OK - '.$cod;
 
-        $directdebit = $this->directdebit->with('vouchers')->findOrFail($id);
+        $directdebit = $this->directdebit->with('bankaccount')->with('vouchers')->findOrFail($id);
 
         if ( $directdebit->nbrItems() == 0 )
             return redirect()->back()

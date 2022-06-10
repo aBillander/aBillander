@@ -27,7 +27,7 @@
 						<div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
 							<label class="col-md-4 control-label">{{ l('E-Mail Address', [], 'layouts') }}</label>
 							<div class="col-md-6">
-								<input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
+								<input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" autocomplete="nope" required autofocus>
 
                                 @if ($errors->has('email'))
                                     <span class="help-block">
@@ -40,7 +40,7 @@
 						<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
 							<label class="col-md-4 control-label">{{ l('Password', [], 'layouts') }}</label>
 							<div class="col-md-6">
-								<input id="password" type="password" class="form-control" name="password" required>
+								<input id="password" type="password" class="form-control" name="password" autocomplete="current-password" required>
 
                                 @if ($errors->has('password'))
                                     <span class="help-block">

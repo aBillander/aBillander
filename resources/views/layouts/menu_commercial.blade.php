@@ -37,7 +37,7 @@
                         <li class="divider"></li>
                          <li>
                             <a href="{{ URL::to('salesreps') }}">
-                                 <i class="fa fa-binoculars text-warning"></i> 
+                                 <i class="fa fa-binoculars text-success"></i> 
                                  {{l('Sales Representatives', [], 'layouts')}}
                             </a>
                         </li>

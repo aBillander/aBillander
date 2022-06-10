@@ -115,8 +115,8 @@
    $(document).ready(function() {
 
 
-        $("#line_autoproduct_name").val();
-        $('#line_product_id').val();
+        $("#line_autoproduct_name").val('');
+        $('#line_product_id').val('');
         // To get focus;
         $("#line_autoproduct_name").focus();
 

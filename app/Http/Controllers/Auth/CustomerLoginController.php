@@ -49,7 +49,7 @@ class CustomerLoginController extends Controller
         if ( Configuration::get('ABCC_LOGIN_REDIRECT') && \Route::has(Configuration::get('ABCC_LOGIN_REDIRECT')) )
           return redirect()->route( Configuration::get('ABCC_LOGIN_REDIRECT') );
         else
-          return redirect()->intended(route('customer.dashboard'));
+          return redirect()->route('customer.dashboard');
       }
 
       // if unsuccessful, then redirect back to the login with the form data

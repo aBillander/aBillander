@@ -45,7 +45,7 @@ class SalesRepLoginController extends Controller
       if (Auth::guard('salesrep')->attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1], $request->remember)) {
         
         // if successful, then redirect to their intended location
-        return redirect()->intended(route('salesrep.dashboard'));
+        return redirect()->route('salesrep.dashboard');
       }
 
       // if unsuccessful, then redirect back to the login with the form data

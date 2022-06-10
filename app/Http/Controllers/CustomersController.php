@@ -844,43 +844,14 @@ class CustomersController extends Controller
     {
         $customer = $this->customer::findOrFail($id);
 
-        return $customer;
-
-        $document = $this->document
-//                        ->with('customershippingsliplines')
-//                        ->with('customershippingsliplines.product')
-                        ->findOrFail($document_id);
-
-        $field = $request->input('field', '');
-
-        if ($field == 'weight')
-        {
-            $value = $document->getWeight();
-            
-        } else 
-        if ($field == 'volume')
-        {
-            $value = $document->getVolume();
-            
-        } else 
-        {
-            return response()->json( [
-                    'msg' => 'KO',
-                    'document' => $document_id,
-                    'value' => '',
-            ] );
-            
-        }        
-
-        $document->{$field} = $value;
-
-        $document->save();
+        $customer->calculateRisk();
+        $customer->calculateUnresolved();
 
         return response()->json( [
                 'msg' => 'OK',
                 'customer' => $customer->id,
-                'outstanding' => $field,
-                'unresolved'  => $value,
+                'outstanding' => $customer->as_money('outstanding_amount', Context::getContext()->language->currency),
+                'unresolved'  => $customer->as_money('unresolved_amount', Context::getContext()->language->currency),
         ] );
     }
 

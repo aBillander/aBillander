@@ -51,16 +51,17 @@ class ChartDailyCustomerSalesController extends Controller
 							->orderBy( 'close_date', 'ASC' )
 							->pluck( 'close_date' );
 		// abi_r($orders_dates[0]);abi_r('*********************');
-		$orders_dates = json_decode( $orders_dates );
+//		$orders_dates = json_decode( $orders_dates );	<== Somehow timezone is changed and date is altered!
 		// abi_r($orders_dates[0]);abi_r('*********************');die();
 		if ( ! empty( $orders_dates ) ) {
 			foreach ( $orders_dates as $unformatted_date ) {
 //				$date = new \DateTime( $unformatted_date->date );
-				$date = new \DateTime( $unformatted_date );
-				$month_no = $date->format( 'Y-m-d' );
+				// $date = new \DateTime( $unformatted_date );
+//				$month_no = $date->format( 'Y-m-d' );
+				$month_no = $unformatted_date->format( 'Y-m-d' );
 				$month_name = l('month.'.$month_no);	//$date->format( 'M' );
 				// $month_array[ $month_no ] = $month_name." ".$date->format( 'Y' );
-				$month_array[ $month_no ] = $month_no." ".l('day.'.$date->format( 'N' ));
+				$month_array[ $month_no ] = $month_no." ".l('day.'.$unformatted_date->format( 'N' ));
 			}
 		}
 		// abi_r($month_array);die();

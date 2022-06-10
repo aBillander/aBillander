@@ -149,13 +149,13 @@
 
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('shippingslip_template_id') ? 'has-error' : '' }}">
             {{ l('Template') }}
-            {!! Form::select('shippingslip_template_id', $templateList, null, array('class' => 'form-control', 'id' => 'shippingslip_template_id')) !!}
+            {!! Form::select('shippingslip_template_id', $templateList, $customerTemplate, array('class' => 'form-control', 'id' => 'shippingslip_template_id')) !!}
             {!! $errors->first('shippingslip_template_id', '<span class="help-block">:message</span>') !!}
          </div>
 
          <div class="form-group col-lg-4 col-md-4 col-sm-4 {{ $errors->has('shippingslip_sequence_id') ? 'has-error' : '' }}">
             {{ l('Sequence') }}
-            {!! Form::select('shippingslip_sequence_id', $sequenceList, old('shippingslip_sequence_id'), array('class' => 'form-control', 'id' => 'shippingslip_sequence_id')) !!}
+            {!! Form::select('shippingslip_sequence_id', $sequenceList, $customerSequence, array('class' => 'form-control', 'id' => 'shippingslip_sequence_id')) !!}
             {!! $errors->first('shippingslip_sequence_id', '<span class="help-block">:message</span>') !!}
          </div>
 

@@ -862,6 +862,7 @@ class CustomerOrdersController extends BillableController
             'sequence_id'   => $request->input('shippingslip_sequence_id'), 
             'document_date' => $request->input('shippingslip_date'),
             'backorder'     => $request->input('backorder', Configuration::isTrue('ALLOW_CUSTOMER_BACKORDERS')),
+            'copy_comments' => $request->input('copy_comments', 0),
 
             'dispatch'      => $request->input('dispatch', []), 
         ];
@@ -918,6 +919,15 @@ class CustomerOrdersController extends BillableController
             'payment_method_id' => $document->payment_method_id,
             'template_id' => $params['template_id'],
         ];
+
+        if ( $params['copy_comments'] )
+        {
+            $data = $data + [
+                'notes_from_customer' => $document->notes_from_customer,
+                'notes'               => $document->notes,
+                'notes_to_customer'   => $document->notes_to_customer,
+            ];
+        }
 
         // Model specific data
         $extradata = [

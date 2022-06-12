@@ -245,6 +245,7 @@ return [
 	'Create Shipping Slip'     => 'Crear Albarán',
 	'Create Back-Order?'     => '¿Crear un retro-Pedido?',
 	'A new Customer Order will be created if Quantity on-hand is less than Order Quantity.'     => 'Se creará un nuevo Pedido si la Cantidad disponible es inferior a la Cantidad del Pedido.',
+	'Copy Order Comments?' => '¿Copiar Comentarios del Pedido?',
 
 	'Finish Up'     => 'Emitir',
 	'Invoice This'  => 'Albaranar',

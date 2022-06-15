@@ -93,6 +93,36 @@ class CustomerShippingSlip extends Billable
 */
 
 
+    public static function boot()
+    {
+        static::deleting(function($document)
+        {
+            // before delete() method call this
+
+            // If CustomerShippingSlip has been created AFTER (some) CustomerOrder (s),
+            // process CustomerOrder (s) first
+
+            $orders = $document->leftOrders();
+
+            if ( !$orders )
+                return ;    // nothing to do here
+
+            // Ascritions are deleted with method static::deleting of Billable.php
+            // But we need to delete here. Otherwise, we cannot unclose orders !!!
+            $document->leftAscriptions()->delete();
+
+            foreach ($orders as $order) {
+                // code...
+                $order->unclose();
+            }
+        });
+
+        // If this is executed first, ascriptions would not be available!!!
+        parent::boot();
+
+    }
+
+
     public function getDeletableAttribute()
     {
         return $this->status != 'closed' && !$this->invoiced_at && $this->rightAscriptions->isEmpty();

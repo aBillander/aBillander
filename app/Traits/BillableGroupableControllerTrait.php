@@ -301,8 +301,10 @@ foreach ($addresses as $shipping_address_id) {
             }
 
             // Not so fast, Sony Boy
-
-            $document->makeTotals();
+            
+            // Final touches
+            $document->aggregated_at = \Carbon\Carbon::now();
+            $document->save();      // Maybe not needed, because we are to close 
 
             // Close Order
             $document->close();
@@ -325,6 +327,9 @@ foreach ($addresses as $shipping_address_id) {
         }
 
         // Good boy, so far
+
+        // Not needed:
+        // $order->makeTotals();
 
         if ( $params['status'] == 'confirmed' )
             $order->confirm();

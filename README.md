@@ -24,7 +24,7 @@
 
 > microCRM
 
-[YouTube Channel](https://www.youtube.com/channel/UCTv7x_i1qiBWZkQsrE8Y6vA/videos)
+Check out our [YouTube Channel](https://www.youtube.com/channel/UCTv7x_i1qiBWZkQsrE8Y6vA/videos) .
 
 
 ## ab://ander/Status
@@ -49,14 +49,14 @@
 
 > SDG0: **MVP done** (2021/1). aBillander initial version. Production ready.
 
-> SDG1: **Better Documentation** .
+> SDG1: **POS integration** (in progress). Should be running live by the end of 2022 in One Customer (at least).
 
-> SDG2: **POS integration** .
+> SDG2: **Better Documentation** (in progress).
 
 > SDG3: **Products with Combinations** .
 
 
-Curated by **Lara Billander** (@aBillander)
+Curated by [**Lara Billander**](https://www.larabillander.com/) .
 
 Soli Deo Gloria - END of LINE
 

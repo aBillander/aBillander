@@ -185,6 +185,24 @@
            </div>
          </div>
 
+         <div class="form-group col-lg-4 col-md-4 col-sm-4" id="div-copy_comments">
+           {!! Form::label('copy_comments', l('Copy Order Comments?'), ['class' => 'control-label']) !!}
+           <div>
+             <div class="radio-inline">
+               <label>
+                 {!! Form::radio('copy_comments', '1', true, ['id' => 'copy_comments_on']) !!}
+                 {!! l('Yes', [], 'layouts') !!}
+               </label>
+             </div>
+             <div class="radio-inline">
+               <label>
+                 {!! Form::radio('copy_comments', '0', false, ['id' => 'copy_comments_off']) !!}
+                 {!! l('No', [], 'layouts') !!}
+               </label>
+             </div>
+           </div>
+         </div>
+
 </div>
 
 

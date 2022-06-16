@@ -71,6 +71,38 @@ class CustomerOrder extends Billable
                ];
 
 
+
+    public static function boot()
+    {
+        static::deleting(function($document)
+        {
+            // before delete() method call this
+
+            // If CustomerOrder has been created AFTER (some) CustomerOrder (s),
+            // process CustomerOrder (s) first
+
+            $orders = $document->leftAggregateOrders();
+
+            if ( !$orders )
+                return ;    // nothing to do here
+
+            // Ascritions are deleted with method static::deleting of Billable.php
+            // But we need to delete here. Otherwise, we cannot unclose orders !!!
+            $document->leftAscriptions()->delete();
+
+            foreach ($orders as $order) {
+                // code...
+                $order->unclose();
+            }
+        });
+
+        // If this is executed first, ascriptions would not be available!!!
+        parent::boot();
+
+    }
+
+
+
     public function getWebshopIdAttribute()
     {
         if ( Configuration::isTrue('ENABLE_WEBSHOP_CONNECTOR') && (strpos($this->reference, '#') !== FALSE) )
@@ -95,7 +127,11 @@ class CustomerOrder extends Billable
     {
         if ( $this->status != 'closed' ) return false;
 
-        if ( optional($this->rightAscriptions)->count() || optional($this->leftAscriptions)->count() ) return false;
+        // Too restrictive:
+        // if ( $this->rightAscriptions->count() || $this->leftAscriptions)->count() ) return false;
+
+        // If Customer Shipping Slip is present:
+        if ( $this->rightAscriptions->count() ) return false;
 
         return true;
     }

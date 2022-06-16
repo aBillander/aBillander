@@ -55,7 +55,7 @@ class ChartCustomerSalesController extends Controller
 //				$month_no = $date->format( 'm' );
 				$month_no = $unformatted_date->format( 'm' );
 				$month_name = l('month.'.$month_no);	//$date->format( 'M' );
-				$month_array[ $month_no ] = $month_name." ".$date->format( 'Y' );
+				$month_array[ $month_no ] = $month_name." ".$unformatted_date->format( 'Y' );
 			}
 		}
 		// abi_r($month_array);die();

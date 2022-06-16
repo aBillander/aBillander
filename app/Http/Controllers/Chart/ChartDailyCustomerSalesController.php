@@ -61,7 +61,7 @@ class ChartDailyCustomerSalesController extends Controller
 				$month_no = $unformatted_date->format( 'Y-m-d' );
 				$month_name = l('month.'.$month_no);	//$date->format( 'M' );
 				// $month_array[ $month_no ] = $month_name." ".$date->format( 'Y' );
-				$month_array[ $month_no ] = $month_no." ".l('day.'.$date->format( 'N' ));
+				$month_array[ $month_no ] = $month_no." ".l('day.'.$unformatted_date->format( 'N' ));
 			}
 		}
 		// abi_r($month_array);die();

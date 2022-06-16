@@ -1,6 +1,10 @@
 ## ab://ander/Project
 
-The **aBillander Project** is an Invoicing and Inventory System for SME's powered by  <º)♡><  and  Laravel.
+**aBillander** is an Invoicing and Inventory System integrated with WooCommerce, intended for SME's and powered by  <º)♡><  and  Laravel.
+
+<p align="center"><img src="packages/aBillander/hello-abi/dashboard.png"  height="auto" width="100%"></p>
+
+## ab://ander/Features
 
 > Sales and Receivables.
 
@@ -15,6 +19,8 @@ The **aBillander Project** is an Invoicing and Inventory System for SME's powere
 > Sales Representative Center
 
 > Manufacturing
+
+> Lots and Traceability
 
 > microCRM
 
@@ -36,22 +42,18 @@ The **aBillander Project** is an Invoicing and Inventory System for SME's powere
 
 > Branch *ninette* is intended for development.
 
-> Use branch *service* with Laravel 5.5 (deprecated).
+> Use branch *service* with Laravel 5.5 (not supported anymore).
 
 
 ## ab://ander/Roadmap/Milestones
 
-> SDG0: **MVP done** (2021/1). aBillander initial version.
+> SDG0: **MVP done** (2021/1). aBillander initial version. Production ready.
 
 > SDG1: **Better Documentation** .
 
-> SDG2: **Lots and Traceability** .
+> SDG2: **POS integration** .
 
-> SDG3: **Manufacturing enhancements** .
-
-> SDG4: **POS integration** .
-
-> SDG5: **Products with Combinations** .
+> SDG3: **Products with Combinations** .
 
 
 Curated by **Lara Billander** (@aBillander)

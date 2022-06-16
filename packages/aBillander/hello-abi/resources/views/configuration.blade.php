@@ -71,9 +71,9 @@
 
             </div>
             <div class="panel-footer text-right">
-                <a class="btn btn-link" href="{{ route('installer::requirements') }}">{{ __('pagination.previous') }}</a>
+                <a class="btn btn-link" href="{{ route('installer::requirements') }}">{!! __('pagination.previous') !!}</a>
                 <a class="btn btn-primary" href="{{ route('installer::mail') }}" {{ Session::get('error') ? 'disabled' : ''}}>
-                    {{ __('pagination.next') }}
+                    {!! __('pagination.next') !!}
                 </a>
             </div>
         </div>

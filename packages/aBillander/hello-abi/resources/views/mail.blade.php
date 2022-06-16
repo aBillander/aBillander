@@ -101,9 +101,9 @@
 
             </div>
             <div class="panel-footer text-right">
-                <a class="btn btn-link" href="{{ route('installer::requirements') }}">{{ __('pagination.previous') }}</a>
+                <a class="btn btn-link" href="{{ route('installer::requirements') }}">{!! __('pagination.previous') !!}</a>
                 <button class="btn btn-primary" type="submit">
-                    {{ __('pagination.next') }}
+                    {!! __('pagination.next') !!}
                 </button>
             </div>
         </div>

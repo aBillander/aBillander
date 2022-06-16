@@ -31,7 +31,7 @@
 
             <div class="panel-footer text-right">
                 <button class="btn btn-primary" type="submit">
-                    {{ __('pagination.next') }}
+                    {!! __('pagination.next') !!}
                 </button>
             </div>
         </div>

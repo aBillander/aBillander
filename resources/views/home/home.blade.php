@@ -6,10 +6,12 @@
 @section('content')
 
 <div class="page-header">
+{{--
     <div class="pull-right hide" style="padding-top: 4px;">
         <a href="{{ URL::to('jennifer/home') }}" class="btn btn-sm btn-success" 
             title="{{l('Jennifer', [], 'layouts')}}"><i class="fa fa-user-secret"></i> {{l('Jennifer', [], 'layouts')}}</a>
     </div>
+--}}
     <h2>
          
         <a class="btn btn-sm alert-warning" href="#" onclick="return false;" title=" _ninette_ ">
@@ -35,7 +37,7 @@
             <div class="col-lg-3 col-md-6">
             <div class="panel panel-info">
               <div class="panel-heading">
-                <h3 class="panel-title">Buscar Cliente</h3>
+                <h3 class="panel-title">{{ l('Search Customer') }}</h3>
               </div>
               <div class="panel-body">
 
@@ -56,7 +58,7 @@
             <div class="col-lg-3 col-md-6">
             <div class="panel panel-success">
               <div class="panel-heading">
-                <h3 class="panel-title">Buscar Producto</h3>
+                <h3 class="panel-title">{{ l('Search Product') }}</h3>
               </div>
               <div class="panel-body">
 
@@ -80,24 +82,24 @@
             <div class="col-lg-3 col-md-6">
             <div class="panel panel-warning">
               <div class="panel-heading">
-                <h3 class="panel-title">Copia de Seguridad</h3>
+                <h3 class="panel-title">{{ l('Data Base Backup') }}</h3>
               </div>
               <div class="panel-body">
 
                   <div class="row">
 
                      <div class="form-group col-lg-12">
-                        Última: 
+                        {{ l('Last:') }} 
                         <span class="xlead well xwell-sm alert-info" style="padding: 3px; border-radius: 3px;">
 @if ($last_backup)
                             {{ abi_date_full( \Carbon\Carbon::createFromTimestamp($last_backup->getMTime()) ) }}
 @else
-                            -- nunca --
+                            {{ l('-- never --') }}
 @endif                        </span>
 
                             <a class="btn btn-xs alert-success" href="{{ URL::to('dbbackups') }}" title="{{l('Go to', [], 'layouts')}}"><i class="fa fa-eye"></i></a>
                         <br/>
-                        Tamaño: 
+                        {{ l('Size:') }} 
                         <span class="text-info">
 @if ($last_backup)
                             &nbsp; {{ abi_formatBytes( $last_backup->getSize() ) }}
@@ -154,7 +156,7 @@
             <div class="col-lg-3 col-md-6">
             <div class="panel panel-primary">
               <div class="panel-heading">
-                <h3 class="panel-title">Pedidos</h3>
+                <h3 class="panel-title">{{ l('Customer Orders') }}</h3>
               </div>
               <div class="panel-body">
 
@@ -163,7 +165,7 @@
                      <div class="form-group col-lg-12 text-center">
                         
                         <a href="{{ route('customerorders.for.today') }}" class="btn xbtn-sm btn-success" 
-                                title=" Pedidos de hoy "><i class="fa fa-shopping-bag"></i> Pedidos de hoy</a>
+                                title=" {{ l('Today\'s Orders') }} "><i class="fa fa-shopping-bag"></i> {{ l('Today\'s Orders') }}</a>
 
                      </div>
 
@@ -173,7 +175,7 @@
 
                      <div class="form-group col-lg-12">
 
-                        <label for="autocustomerorder_name" class="control-label">Buscar</label>
+                        <label for="autocustomerorder_name" class="control-label">{{ l('Search') }}</label>
                         {!! Form::text('autocustomerorder_name', null, array('class' => 'form-control', 'id' => 'autocustomerorder_name')) !!}
 
                         {!! Form::hidden('customerorder_id', null, array('id' => 'customerorder_id')) !!}
@@ -189,7 +191,7 @@
             <div class="col-lg-3 col-md-6">
             <div class="panel panel-primary">
               <div class="panel-heading">
-                <h3 class="panel-title">Albaranes</h3>
+                <h3 class="panel-title">{{ l('Customer Shipping Slips') }}</h3>
               </div>
               <div class="panel-body">
 
@@ -198,7 +200,7 @@
                      <div class="form-group col-lg-12 text-center">
                         
                         <a href="{{ route('customershippingslips.for.today') }}" class="btn xbtn-sm btn-success" 
-                                title=" Albaranes de hoy "><i class="fa fa-truck"></i> Albaranes de hoy</a>
+                                title=" {{ l('Today\'s Shipping Slips') }} "><i class="fa fa-truck"></i> {{ l('Today\'s Shipping Slips') }}</a>
 
                      </div>
 
@@ -208,7 +210,7 @@
 
                      <div class="form-group col-lg-12">
 
-                        <label for="autocustomershippingslip_name" class="control-label">Buscar</label>
+                        <label for="autocustomershippingslip_name" class="control-label">{{ l('Search') }}</label>
                         {!! Form::text('autocustomershippingslip_name', null, array('class' => 'form-control', 'id' => 'autocustomershippingslip_name')) !!}
 
                         {!! Form::hidden('customershippingslip_id', null, array('id' => 'customershippingslip_id')) !!}
@@ -224,7 +226,7 @@
             <div class="col-lg-3 col-md-6">
             <div class="panel panel-primary">
               <div class="panel-heading">
-                <h3 class="panel-title">Facturas</h3>
+                <h3 class="panel-title">{{ l('Customer Invoices') }}</h3>
               </div>
               <div class="panel-body">
 
@@ -243,7 +245,7 @@
 
                      <div class="form-group col-lg-12">
 
-                        <label for="autocustomerinvoice_name" class="control-label">Buscar</label>
+                        <label for="autocustomerinvoice_name" class="control-label">{{ l('Search') }}</label>
                         {!! Form::text('autocustomerinvoice_name', null, array('class' => 'form-control', 'id' => 'autocustomerinvoice_name')) !!}
 
                         {!! Form::hidden('customerinvoice_id', null, array('id' => 'customerinvoice_id')) !!}

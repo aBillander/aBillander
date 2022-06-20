@@ -1,9 +1,11 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
-use App\Template;
-use App\Configuration;
+use App\Models\Template;
+use App\Models\Configuration;
   
 class TemplatesTableSeeder extends Seeder {
   

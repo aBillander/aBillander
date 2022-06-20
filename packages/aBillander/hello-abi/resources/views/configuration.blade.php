@@ -41,6 +41,7 @@
                         <div class="form-group col-sm-6">
                             <label class="control-label" for="inputDefault">{{ __('installer::main.config.name') }}</label><br>
                             <input type="text" name="DB_DATABASE" class="form-control" value="{{ config('database.connections.mysql.database') }}" required>
+                            <span class="help-block">{{ __('installer::main.config.name_help') }}</span>
                         </div>
                     </div>
                     <div class="row">

@@ -1,9 +1,11 @@
 <?php
 
+namespace Database\Seeders\es;
+
 use Illuminate\Database\Seeder;
 
-use App\Carrier;
-use App\Configuration;
+use App\Models\Carrier;
+use App\Models\Configuration;
   
 class esCarriersTableSeeder extends Seeder {
   

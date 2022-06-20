@@ -29,12 +29,12 @@ class EnvironmentManager
         'DB_USERNAME' => 'database.connections.mysql.username',
         'DB_PASSWORD' => 'database.connections.mysql.password',
 
-        'MAIL_DRIVER' => 'mail.driver',
-        'MAIL_HOST'   => 'mail.host',
-        'MAIL_PORT'   => 'mail.port',
-        'MAIL_USERNAME'   => 'mail.username',
-        'MAIL_PASSWORD'   => 'mail.password',
-        'MAIL_ENCRYPTION' => 'mail.encryption',
+        'MAIL_MAILER' => 'mail.default',
+        'MAIL_HOST'   => 'mail.mailers.smtp.host',
+        'MAIL_PORT'   => 'mail.mailers.smtp.port',
+        'MAIL_USERNAME'   => 'mail.mailers.smtp.username',
+        'MAIL_PASSWORD'   => 'mail.mailers.smtp.password',
+        'MAIL_ENCRYPTION' => 'mail.mailers.smtp.encryption',
 
         'MAIL_FROM_ADDRESS' => 'mail.from.address',
         'MAIL_FROM_NAME'    => 'mail.from.name',

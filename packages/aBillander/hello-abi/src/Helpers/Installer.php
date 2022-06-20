@@ -24,9 +24,9 @@ class Installer
         $installedLogFile = storage_path('installed');
 
         $dateStamp  = date("Y/m/d h:i:sa");
-        $dateStamp .= ' :: ' . abi_version();
-        $dateStamp .= ' :: ' . abi_laravel_version();
-        $dateStamp .= ' :: ' . abi_php_version();
+        $dateStamp .= ' :: aBillander v' . abi_version();
+        $dateStamp .= ' :: Laravel v'    . abi_laravel_version();
+        $dateStamp .= ' :: PHP v'        . abi_php_version();
 
         if (!file_exists($installedLogFile)) {
             $message = $dateStamp."\n";

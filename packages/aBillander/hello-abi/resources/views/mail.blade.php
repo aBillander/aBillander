@@ -27,8 +27,8 @@
                     <div class="row">
                         <div class="form-group col-sm-6">
                             <label class="control-label" for="inputDefault">{{ __('installer::main.mail.driver') }}</label><br>
-                            <select class="form-control" name="MAIL_DRIVER">
-                              <option value="smtp" {{ config('mail.driver') == 'smtp' ? 'selected' : '' }}>smtp</option>
+                            <select class="form-control" name="MAIL_MAILER">
+                              <option value="smtp" {{ config('mail.default') == 'smtp' ? 'selected' : '' }}>smtp</option>
                             </select>
                             <span class="help-block">{!! __('installer::main.mail.driver_help') !!}</span>
                         </div>
@@ -36,13 +36,13 @@
                     <div class="row">
                         <div class="form-group col-sm-6">
                             <label class="control-label" for="inputDefault">{{ __('installer::main.mail.host') }}</label><br>
-                            <input type="text" name="MAIL_HOST" class="form-control" value="{{ config('mail.host') }}" required>
+                            <input type="text" name="MAIL_HOST" class="form-control" value="{{ config('mail.mailers.smtp.host') }}" required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-6">
                             <label class="control-label" for="inputDefault">{{ __('installer::main.mail.port') }}</label><br>
-                            <input type="text" name="MAIL_PORT" class="form-control" value="{{ config('mail.port') }}" required>
+                            <input type="text" name="MAIL_PORT" class="form-control" value="{{ config('mail.mailers.smtp.port') }}" required>
                             <span class="help-block">{{ __('installer::main.mail.port_help') }}</span>
                         </div>
                     </div>
@@ -50,8 +50,8 @@
                         <div class="form-group col-sm-6">
                             <label class="control-label" for="inputDefault">{{ __('installer::main.mail.encryption') }}</label><br>
                             <select class="form-control" name="MAIL_ENCRYPTION">
-                              <option value="tls" {{ config('mail.encryption') == 'tls' ? 'selected' : '' }}>tls</option>
-                              <option value="ssl" {{ config('mail.encryption') == 'ssl' ? 'selected' : '' }}>ssl</option>
+                              <option value="tls" {{ config('mail.mailers.smtp.encryption') == 'tls' ? 'selected' : '' }}>tls</option>
+                              <option value="ssl" {{ config('mail.mailers.smtp.encryption') == 'ssl' ? 'selected' : '' }}>ssl</option>
                             </select>
                         </div>
                     </div>
@@ -60,7 +60,7 @@
                     <div class="row">
                         <div class="form-group col-sm-6">
                             <label class="control-label" for="inputDefault">{{ __('installer::main.mail.user') }}</label><br>
-                            <input type="text" name="MAIL_USERNAME" class="form-control" value="{{ config('mail.username') }}" required>
+                            <input type="text" name="MAIL_USERNAME" class="form-control" value="{{ config('mail.mailers.smtp.username') }}" required>
                         </div>
                     </div>
                     <div class="row">
@@ -68,7 +68,7 @@
                             <label class="control-label" for="inputDefault">{{ __('installer::main.mail.password') }}</label><br>
                             <!--input type="password" name="DB_PASSWORD" class="form-control" value="{{ config('database.connections.mysql.password') }}" required -->
   <div class="input-group">
-                            <input id="password-field" type="password" name="MAIL_PASSWORD" class="form-control" value="{{ config('mail.password') }}" required>
+                            <input id="password-field" type="password" name="MAIL_PASSWORD" class="form-control" value="{{ config('mail.mailers.smtp.password') }}" required>
     <span class="input-group-btn">
       <button class="btn btn-grey" type="button"><span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span></button>
     </span>

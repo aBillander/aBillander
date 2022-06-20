@@ -1,9 +1,11 @@
 <?php
 
+namespace Database\Seeders\en;
+
 use Illuminate\Database\Seeder;
 
-use App\Sequence;
-use App\Configuration;
+use App\Models\Sequence;
+use App\Models\Configuration;
   
 class enSequencesTableSeeder extends Seeder {
   

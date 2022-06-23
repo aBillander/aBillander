@@ -17,7 +17,7 @@ Route::group($envmanagerGroup, function () {
     
     // Route::resource('/', 'EnvManagerController')->names('envkeys');
 
-    Route::get('/', 'EnvManagerController@index')->name('index');
-    Route::post('/', 'WelcomeController@setLocale')->name('update');
+    Route::get('/', 'EnvManagerController@envkeys')->name('envkeys');
+    Route::post('/', 'EnvManagerController@envkeysUpdate')->name('envkeys.update');
 
 });

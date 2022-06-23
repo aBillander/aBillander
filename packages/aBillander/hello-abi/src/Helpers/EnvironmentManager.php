@@ -38,6 +38,16 @@ class EnvironmentManager
 
         'MAIL_FROM_ADDRESS' => 'mail.from.address',
         'MAIL_FROM_NAME'    => 'mail.from.name',
+
+
+        'WC_STORE_URL' => 'woocommerce.store_url',
+        'WC_CONSUMER_KEY'    => 'woocommerce.consumer_key',
+        'WC_CONSUMER_SECRET' => 'woocommerce.consumer_secret',
+        'WC_VERIFY_SSL' => 'woocommerce.verify_ssl',
+        'WC_VERSION' => 'woocommerce.api_version',
+        'WC_WP_TIMEOUT' => 'woocommerce.timeout',
+        'WC_WEBHOOK_SECRET_PRODUCT_UPDATED' => 'woocommerce.webhooks.product_updated',
+        'WC_WEBHOOK_SECRET_ORDER_CREATED' => 'woocommerce.webhooks.order_created',
     ];
 
     /**
@@ -46,6 +56,11 @@ class EnvironmentManager
     public function __construct()
     {
         $this->envPath = App::environmentFilePath();
+    }
+
+    static public function envToConfigTable()
+    {
+        return (new EnvironmentManager())->envToConfig;
     }
 
     /**
@@ -60,8 +75,19 @@ class EnvironmentManager
 
         foreach ($newValues as $envKey => $newValue) {
             $configKey = $this->envToConfig[$envKey];
+            $configValue = Config::get($configKey);
 
-            $oldLine = $envKey.'='.Config::get($configKey);
+            // Sanitize
+            if ( strpos($configValue, ' ') !== FALSE )
+                $configValue = '"'.$configValue.'"';
+
+            if ( $configValue === TRUE )
+                $configValue = 'true';
+
+            if ( $configValue === FALSE )
+                $configValue = 'false';
+
+            $oldLine = $envKey.'='.$configValue;
             $newLine = $envKey.'='.$newValue;
 
             $environment = str_replace($oldLine, $newLine, $environment);

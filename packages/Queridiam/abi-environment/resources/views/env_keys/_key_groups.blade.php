@@ -1,13 +1,18 @@
       <div class="col-lg-2 col-md-2 col-sm-3">
          <div class="list-group">
-            <a id="tab_index_1" href="{{ URL::route('wooconfigurationkeys.index') }}" class="list-group-item @if ($tab_index==1) active @endif">
-               <i class="fa fa-dashboard"></i>
-               &nbsp; {{ l('General') }}
+            <a id="tab_index_1" href="{{ URL::to('envmanager?tab_index=1') }}" class="list-group-item @if ($tab_index==1) active @endif">
+               <i class="fa fa-envelope-o"></i>
+               &nbsp; {{ l('SMTP Mail') }}
             </a>
-            <a id="tab_index_5" href="{{ URL::route('wooconnect.configuration') }}" class="list-group-item @if ($tab_index==5) active @endif">
-               <i class="fa fa-th-large"></i>
-               &nbsp; {{ l('Shop') }}
+
+@if ( AbiConfiguration::isTrue('ENABLE_WEBSHOP_CONNECTOR') )
+            <a id="tab_index_2" href="{{ URL::to('envmanager?tab_index=2') }}" class="list-group-item @if ($tab_index==2) active @endif">
+               <i class="fa fa-wordpress text-info"></i>
+               &nbsp; {{-- l('WooCommerce Shop') --}}{{ l('WooC link', 'wooc') }}
             </a>
+@endif
+
+{{--
             <a id="tab_index_2" href="{{ URL::route('wooconnect.configuration.taxes') }}" class="list-group-item @if ($tab_index==2) active @endif">
                <i class="fa fa-bank"></i></span>
                &nbsp; {{ l('Taxes') }}
@@ -35,5 +40,6 @@
                <i class="fa fa-book"></i></span>
                &nbsp; {{ l('All Keys') }}
             </a>
+--}}
          </div>
       </div>

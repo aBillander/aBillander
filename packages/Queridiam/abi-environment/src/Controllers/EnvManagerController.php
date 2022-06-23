@@ -3,29 +3,67 @@
 namespace Queridiam\EnvManager\Controllers;
 
 use App\Http\Controllers\Controller;
-
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use aBillander\Installer\Helpers\EnvironmentManager;
 
 class EnvManagerController extends Controller
 {
+   private $envPath;
 
    public $env_keys = [];
 
-   public function __construct()
-   {
+   public $envToConfig = [];
 
+   public function __construct(EnvironmentManager $environmentManager)
+   {
+    /**
+     * Set the full path to .env file.
+     */
+    $this->envPath = App::environmentFilePath();
+
+    /**
+     * The equivalence between .env and config keys.
+     *
+     * @var array
+     */
+    $this->envToConfig = EnvironmentManager::envToConfigTable();
+
+    /**
+     * Key Groups.
+     *
+     * @var array
+     */
         $this->env_keys = [
 
                 // SMTP mail keys
                 1 => [
 
-                        'WOOC_STORE_URL',
+                        'MAIL_MAILER',      // 'smtp', since this is the "default" mailer
+                        'MAIL_HOST',
+                        'MAIL_PORT',
+                        'MAIL_USERNAME',
+                        'MAIL_PASSWORD',
+                        'MAIL_ENCRYPTION',
+
+                        'MAIL_FROM_ADDRESS',
+                        'MAIL_FROM_NAME',
                     ],
 
                 // WooCommerce shop keys
                 2 => [
 
-                        'WOOC_STORE_URL',
+                        'WC_STORE_URL',
+                        'WC_CONSUMER_KEY',
+                        'WC_CONSUMER_SECRET',
+
+                        'WC_VERIFY_SSL',
+                        'WC_VERSION',
+                        'WC_WP_TIMEOUT',
+
+                        'WC_WEBHOOK_SECRET_PRODUCT_UPDATED',
+                        'WC_WEBHOOK_SECRET_ORDER_CREATED',
                     ],
         ];
 
@@ -37,10 +75,8 @@ class EnvManagerController extends Controller
      * @return Response
      */
 
-    public function index()
+    public function envkeys(Request $request)
     {
-        abi_r('xxx'); die();
-
         $env_keys = array();
         $tab_index =   $request->has('tab_index')
                         ? intval($request->input('tab_index'))
@@ -54,24 +90,80 @@ class EnvManagerController extends Controller
         $key_group = [];
 
         foreach ($this->env_keys[$tab_index] as $key)
-            $key_group[$key]= Configuration::get($key);
+        {
+            $config_key = $this->envToConfig[$key] ?? '';
+            if (!$config_key)
+                continue ;
 
-        $currencyList = Currency::pluck('name', 'id')->toArray();
-        $customer_groupList = CustomerGroup::pluck('name', 'id')->toArray();
-        $price_listList = PriceList::pluck('name', 'id')->toArray();
-        $warehouseList = Warehouse::pluck('name', 'id')->toArray();
-        if(count($warehouseList) != 1)
-            $warehouseList = ['0' => l('-- All --', [], 'layouts')] + $warehouseList;
+            $value = config($config_key);
 
-        $languageList = Language::pluck('name', 'id')->toArray();
-        $orders_sequenceList = Sequence::listFor( CustomerOrder::class );
-        $taxList = Tax::orderby('name', 'desc')->pluck('name', 'id')->toArray();
-        $woo_product_statusList = [];
-        foreach (WooProduct::$statuses as $value) {
-            // code...
-            $woo_product_statusList[$value] = $value;
+            if ( $value === TRUE )
+                $value = 'true';
+
+            if ( $value === FALSE )
+                $value = 'false';
+
+            $key_group[$key] = $value;
         }
 
-        return view( $tab_view, compact('tab_index', 'key_group', 'currencyList', 'customer_groupList', 'price_listList', 'warehouseList', 'languageList', 'orders_sequenceList', 'taxList', 'woo_product_statusList') );
+        return view( $tab_view, compact('tab_index', 'key_group') );
+    }
+
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @return Response
+     */
+    public function envkeysUpdate(Request $request, EnvironmentManager $environmentManager)
+    {
+        // To do:
+        // $request->validate($this->rules);
+
+        $tab_index =   $request->has('tab_index')
+                        ? intval($request->input('tab_index'))
+                        : -1;
+        
+        $key_group = isset( $this->env_keys[$tab_index] ) ?
+                            $this->env_keys[$tab_index]   :
+                            null ;
+
+        // Check tab_index
+        if (!$key_group) 
+            return redirect('404');
+
+        // Backup current .env file
+        $envBK = $this->envPath.'_'.Carbon::now()->format('Y-m-d');
+        // Only 1 backup per day
+        if ( !file_exists( $envBK ) ){      // File::exists($path);
+            copy($this->envPath, $envBK);   // File::copy(from_path, to_path);
+        } else {
+            $envBK = '';
+        }
+
+        // Save the config in the .env file
+        $databaseInputs = $key_group;
+        $environmentNewValues = $request->only($databaseInputs);
+
+        // Sanitize some vars
+        // MAIL_FROM_NAME
+        if ( array_key_exists('MAIL_FROM_NAME', $environmentNewValues) )
+        if ( strpos($environmentNewValues['MAIL_FROM_NAME'], ' ') !== FALSE )
+            $environmentNewValues['MAIL_FROM_NAME'] = '"'.$environmentNewValues['MAIL_FROM_NAME'].'"';
+
+        // WC_VERIFY_SSL
+        if ( array_key_exists('WC_VERIFY_SSL', $environmentNewValues) )
+        if ( $environmentNewValues['WC_VERIFY_SSL'] == 'true' || $environmentNewValues['WC_VERIFY_SSL'] == 'false' )
+            ;
+        else
+            $environmentNewValues['WC_VERIFY_SSL'] = (bool) $environmentNewValues['WC_VERIFY_SSL'] ?
+                                                                'true'  :
+                                                                'false' ;
+
+        // Ready for rock 'n roll?
+        $environmentManager->setValues($environmentNewValues);
+
+        return redirect('envmanager?tab_index='.$tab_index)
+                ->with('success', l('This record has been successfully updated &#58&#58 (:id) ', ['id' => $tab_index], 'layouts').' <br />['.$envBK.']' );
     }
 }

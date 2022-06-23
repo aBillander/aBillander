@@ -50,6 +50,28 @@
     
 
 
+    <div class="form-group">
+      <label for="" class="col-lg-4 control-label">
+
+        {{ l('.env File Manager', 'envmanager') }} &nbsp; 
+        <a href="{{ URL::to('envmanager') }}" title="{{l('Go to', [], 'layouts')}}" class="btn btn-sm btn-navy">
+            <i class="fa fa-dropbox"></i>&nbsp; .env
+        </a>
+
+      </label>
+      <div class="col-lg-8">
+        <div class="row">
+            <div class="col-lg-6">
+
+            </div>
+        <div class="col-lg-6"> </div>
+        </div>
+
+      </div>
+    </div>
+    
+
+
   </fieldset>
 
 

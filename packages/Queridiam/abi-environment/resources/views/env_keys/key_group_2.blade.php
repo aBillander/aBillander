@@ -38,7 +38,7 @@
   {!! Form::hidden('tab_index', $tab_index, array('id' => 'tab_index')) !!}
 
   <fieldset>
-    <legend>{{ l('SMTP Mail Settings') }} </legend>
+    <legend>{{ l('WooCommerce Shop Settings') }} </legend>
 
 
 
@@ -65,8 +65,6 @@ if($key == 'MAIL_MAILER' && $value == 'smtp')
     </div>
 
 @endforeach
-
-
 
 
     <div class="form-group">

@@ -111,7 +111,7 @@ return [
 	|
 	*/
 
-	'WOOC_STORE_URL.name'     => 'URL de la TIenda',
+	'WOOC_STORE_URL.name'     => 'URL de la Tienda',
 	'WOOC_STORE_URL.help'     => 'Algo como: <i>https://www.mywoostore.com/</i>',
 	'WOOC_CONSUMER_KEY.name'     => 'Clave de cliente',
 	'WOOC_CONSUMER_KEY.help'     => '',

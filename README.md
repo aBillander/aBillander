@@ -56,6 +56,23 @@ Check out our [YouTube Channel](https://www.youtube.com/channel/UCTv7x_i1qiBWZkQ
 > SDG3: **Products with Combinations** .
 
 
+## ab://ander/Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+## ab://ander/Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
+## ab://ander/Credits
+
+- [All Contributors](../../contributors)
+
+## ab://ander/License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+
 Curated by [**Lara Billander**](https://www.larabillander.com/) .
 
 Soli Deo Gloria - END of LINE

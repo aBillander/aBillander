@@ -56,15 +56,18 @@ Clone this repository, install the dependencies and create your `.env` file.
 
 You may also install via <a target="_blank" href="https://github.com/aBillander/aBillander/archive/refs/heads/master.zip">zip</a>, extract to any of your folders you wish, and install dependencies after that.
 
-Copy file `.env.example` to `.env` and you are ready to go.
+Copy file `.env.example` to `.env` and generate your application encryption key using:
+
+    $ php artisan key:generate
+
 
 ### Step 2: Run the Installer
 
 Head to http://mywebsite.test and the installer will start automatically. You will be asked to provide:
 
-> Email credentials (SMPT server). You can skip this step and modify your `.env` file later on.
-
 > Database credentials. Database should exist, and be empty.
+
+> Email credentials (SMPT server). You can skip this step and modify your `.env` file later on.
 
 > Your company data and first Administrator User.
 

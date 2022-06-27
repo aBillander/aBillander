@@ -30,6 +30,14 @@
 @push('scripts')
     <script type="text/javascript">
 
+        $(document).ready(function() {
+            @if( ($new_countryID = (int) old('address.country_id', 0)) > 0)
+
+                populateStatesByCountryID( {{ $new_countryID }}, {{ (int) old('address.state_id', 0) }} );
+
+            @endif
+        });
+
         $('select[name="state_selector"]').change(function () {
 
             $('#state_id').val( $('select[name="state_selector"]').val() );

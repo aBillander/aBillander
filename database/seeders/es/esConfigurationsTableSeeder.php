@@ -1,8 +1,10 @@
 <?php
 
+namespace Database\Seeders\es;
+
 use Illuminate\Database\Seeder;
 
-use App\Configuration;
+use App\Models\Configuration;
 
 // use Illuminate\Support\Facades\DB;
 // use App\Models\Contact;

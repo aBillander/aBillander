@@ -13,7 +13,7 @@ return [
     |
     */
     'core' => [
-        'minPhpVersion' => '7.0.0'
+        'minPhpVersion' => '8.0.0'
     ],
     'final' => [
         'key' => true,
@@ -48,6 +48,7 @@ return [
         'storage/framework/'     => '755',
         'storage/pdf/'           => '755',
         'storage/logs/'          => '755',
+        'storage/tenants/'       => '755',
     ],
 
     /*

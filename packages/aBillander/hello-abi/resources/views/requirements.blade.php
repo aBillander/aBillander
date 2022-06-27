@@ -81,9 +81,9 @@
 
         </div>
         <div class="panel-footer text-right">
-            <a class="btn btn-link" href="{{ route('installer::license') }}">{{ __('pagination.previous') }}</a>
+            <a class="btn btn-link" href="{{ route('installer::license') }}">{!! __('pagination.previous') !!}</a>
             <a class="btn btn-primary" href="{{ route('installer::configuration') }}" {{ $noErrors ? '' : 'disabled' }}>
-                {{ __('pagination.next') }}
+                {!! __('pagination.next') !!}
             </a>
         </div>
     </div>

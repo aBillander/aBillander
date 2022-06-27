@@ -101,7 +101,7 @@
                 <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
                     {{ l('Password', 'layouts') }}
   <div class="input-group">
-                    {!! Form::password('password', null, array('class' => 'form-control', 'id' => 'password-field')) !!}
+                    <input id="password-field" type="password" name="password" class="form-control" value="">
     <span class="input-group-btn">
       <button class="btn btn-grey" type="button"><span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span></button>
     </span>

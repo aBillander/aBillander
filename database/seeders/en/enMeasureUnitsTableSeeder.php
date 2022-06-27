@@ -1,9 +1,11 @@
 <?php
 
+namespace Database\Seeders\en;
+
 use Illuminate\Database\Seeder;
 
-use App\MeasureUnit;
-use App\Configuration;
+use App\Models\MeasureUnit;
+use App\Models\Configuration;
   
 class enMeasureUnitsTableSeeder extends Seeder {
   

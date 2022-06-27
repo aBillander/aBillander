@@ -1,9 +1,11 @@
 <?php
 
+namespace Database\Seeders\en;
+
 use Illuminate\Database\Seeder;
 
-use App\ShippingMethod;
-use App\Configuration;
+use App\Models\ShippingMethod;
+use App\Models\Configuration;
   
 class enShippingMethodsTableSeeder extends Seeder {
   

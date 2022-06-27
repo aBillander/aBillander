@@ -1,9 +1,11 @@
 <?php
 
+namespace Database\Seeders\en;
+
 use Illuminate\Database\Seeder;
 
-use App\PaymentMethod;
-use App\Configuration;
+use App\Models\PaymentMethod;
+use App\Models\Configuration;
   
 class enPaymentMethodsTableSeeder extends Seeder {
   

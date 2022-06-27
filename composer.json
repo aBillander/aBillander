@@ -37,7 +37,8 @@
             "aBillander\\Installer\\": "packages/aBillander/hello-abi/src/",
             "aBillander\\SepaSpain\\": "packages/aBillander/SepaSpain/src/",
             "aBillander\\WooConnect\\": "packages/aBillander/WooConnect/src/",
-            "Queridiam\\WooCommerce\\": "packages/Queridiam/abi-woocommerce/src/"
+            "Queridiam\\WooCommerce\\": "packages/Queridiam/abi-woocommerce/src/",
+            "Queridiam\\EnvManager\\": "packages/Queridiam/abi-environment/src/"
         },
         "files": [
             "app/Helpers/HelperFunctions.php"

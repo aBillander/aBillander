@@ -1,11 +1,13 @@
 <?php
 
+namespace Database\Seeders\es;
+
 use Illuminate\Database\Seeder;
 
-use App\Configuration;
-use App\Tax;
-use App\TaxRule;
-use App\Country;
+use App\Models\Configuration;
+use App\Models\Tax;
+use App\Models\TaxRule;
+use App\Models\Country;
   
 class esTaxesTableSeeder extends Seeder {
   

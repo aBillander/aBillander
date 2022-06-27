@@ -35,21 +35,21 @@ class DatabaseSeeder extends Seeder
 
         // abi_r(esTaxesTableSeeder::class); die();
 
-        $this->call($language . 'ConfigurationsTableSeeder');
+        $this->call('\\Database\\Seeders\\'.$language.'\\'.$language . 'ConfigurationsTableSeeder');
 
-        $this->call($language . 'TaxesTableSeeder');
+        $this->call('\\Database\\Seeders\\'.$language.'\\'.$language . 'TaxesTableSeeder');
 
-        $this->call($language . 'SequencesTableSeeder');
+        $this->call('\\Database\\Seeders\\'.$language.'\\'.$language . 'SequencesTableSeeder');
 
-        $this->call($language . 'MeasureUnitsTableSeeder');
+        $this->call('\\Database\\Seeders\\'.$language.'\\'.$language . 'MeasureUnitsTableSeeder');
 
-        $this->call($language . 'PaymentMethodsTableSeeder');
+        $this->call('\\Database\\Seeders\\'.$language.'\\'.$language . 'PaymentMethodsTableSeeder');
 
-        $this->call($language . 'PaymentTypesTableSeeder');
+        $this->call('\\Database\\Seeders\\'.$language.'\\'.$language . 'PaymentTypesTableSeeder');
 
-        $this->call($language . 'CarriersTableSeeder');
+        $this->call('\\Database\\Seeders\\'.$language.'\\'.$language . 'CarriersTableSeeder');
 
-        $this->call($language . 'ShippingMethodsTableSeeder');
+        $this->call('\\Database\\Seeders\\'.$language.'\\'.$language . 'ShippingMethodsTableSeeder');
 
     }
 }

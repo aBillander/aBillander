@@ -47,12 +47,13 @@ return [
 
     'config' => [
         'title' => 'Configuración',
-        'body' => 'Para usar aBillander, usted debe crear una base de datos para recolectar todas las actividades relacionadas con información de su negocio.<br /><br />Por favor, rellene estos datos con el fin de que aBillander pueda conectarse a su base de datos.',
+        'body' => 'Para usar aBillander, usted debe crear una Base de Datos, donde se almacenará toda la información relacionada con las actividades de su negocio.<br /><br />Por favor, rellene estos datos con el fin de que aBillander pueda conectarse a su Base de Datos.',
         'database' => 'Configure su Base de Datos rellenando los campos siguientes',
         'host' => 'Servidor de la base de datos',
         'port' => 'Puerto',
         'port_help' => 'El Puerto por defecto es 3306.',
         'name' => 'Nombre de la base de datos',
+        'name_help' => 'La Base de Datos debe existir, y debería estar vacía.',
         'login' => 'Nombre de usuario',
         'password' => 'Contraseña',
         'check' => 'Probar la conexión a la base de datos ahora',

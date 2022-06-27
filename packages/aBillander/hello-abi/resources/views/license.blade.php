@@ -47,9 +47,9 @@
             </div>
 
             <div class="panel-footer text-right">
-                <a class="btn btn-link" href="{{ route('installer::welcome') }}">{{ __('pagination.previous') }}</a>
+                <a class="btn btn-link" href="{{ route('installer::welcome') }}">{!! __('pagination.previous') !!}</a>
                 <button class="btn btn-primary" type="submit"  {{ $license == '' ? 'disabled' : '' }}>
-                    {{ __('pagination.next') }}
+                    {!! __('pagination.next') !!}
                 </button>
             </div>
         </div>

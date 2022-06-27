@@ -45,6 +45,32 @@ Check out our [YouTube Channel](https://www.youtube.com/channel/UCTv7x_i1qiBWZkQ
 > Use branch *service* with Laravel 5.5 (not supported anymore).
 
 
+## ab://ander/Installation
+
+### Step 1: Download the Repository
+
+Clone this repository, install the dependencies and create your `.env` file.
+
+    $ git clone https://github.com/aBillander/aBillander.git
+    $ composer install
+
+You may also install via <a target="_blank" href="https://github.com/aBillander/aBillander/archive/refs/heads/master.zip">zip</a>, extract to any of your folders you wish, and install dependencies after that.
+
+Copy file `.env.example` to `.env` and you are ready to go.
+
+### Step 2: Run the Installer
+
+Head to http://mywebsite.test and the installer will start automatically. You will be asked to provide:
+
+> Email credentials (SMPT server). You can skip this step and modify your `.env` file later on.
+
+> Database credentials. Database should exist, and be empty.
+
+> Your company data and first Administrator User.
+
+The Installer will create all database tables for you, and populate with some handy values, such as Languages, Currencies, Taxes, and more.
+
+
 ## ab://ander/Roadmap/Milestones
 
 > SDG0: **MVP done** (2021/1). aBillander initial version. Production ready.

@@ -1,8 +1,10 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
-use App\Country as Country;
-use App\State as State;
+use App\Models\Country;
+use App\Models\State;
   
 class CountriesTableSeeder extends Seeder {
   

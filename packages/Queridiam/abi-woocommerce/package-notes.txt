@@ -24,6 +24,8 @@ https://www.youtube.com/watch?v=IZUXntnPx9A&list=PLpzy7FIRqpGBQ_aqz_hXDBch1aAA-l
 https://www.larashout.com/laravel-package-development-part-2-adding-service-provider
 
 
+https://www.youtube.com/watch?v=BzEskEyMsL4
+
 1.- Create a Folder Structure
 
 packages
@@ -39,6 +41,8 @@ composer init
 
 Add the namespace of our package in “autoload > psr-4”
 
+composer dump-autoload
+
 4.- Create a Service Provider for Package
 
 php artisan make:provider TodolistServiceProvider
@@ -50,6 +54,7 @@ php artisan make:provider TodolistServiceProvider
                     TodolistServiceProvider.php
 
 change the namespace of the file to “wisdmlabs\todolist“.
+
 we need to our service provider in the file “config/app.php“.
 
 5.- Create the Migration
@@ -85,7 +90,7 @@ Move to providers/wisdmlabs/todolist/src/Task.php. don’t forget to change the 
      */
     public function register()
     {
-        $this->app->make('wisdmLabs\todolist\TodolistController');
+        $this->app->make('wisdmLabs\todolist\TodolistController');    <= not needed?
     }
 
 

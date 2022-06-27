@@ -47,12 +47,13 @@ return [
 
     'config' => [
         'title' => 'Configuration',
-        'body' => 'To use aBillander, you must create a database to collect all of your business data-related activities.<br /><br />Please fill in these details so that aBillander can connect to your database.',
+        'body' => 'To use aBillander, you must create a Database, where all the information related to your business activities will be stored.<br /><br />Please fill in these details so that aBillander can connect to your Database.',
         'database' => 'Configure your database by filling out the following fields',
         'host' => 'Database host',
         'port' => 'Database port',
         'port_help' => 'Default port is 3306.',
         'name' => 'Database name',
+        'name_help' => 'Database must exist, and should be empty.',
         'login' => 'Database login',
         'password' => 'Database password',
         'check' => 'Test Database connection now!',

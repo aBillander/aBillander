@@ -1,8 +1,10 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
-use App\Configuration;
+use App\Models\Configuration;
 
 // use Illuminate\Support\Facades\DB;
 // use App\Models\Contact;
@@ -13,7 +15,7 @@ class ConfigurationsTableSeeder extends Seeder {
 	{
 		// Uncomment the below to wipe the table clean before populating
 		// DB::table('configurations')->truncate();
-		DB::table('configurations')->delete();
+		\DB::table('configurations')->delete();
 
 		Configuration::loadConfiguration();
 
@@ -68,7 +70,7 @@ $confs = [
 ['ALLOW_SALES_RISK_EXCEEDED', '0'],
 ['ALLOW_SALES_WITHOUT_STOCK', '0'],
 ['BUSINESS_NAME_TO_SHOW', 'fiscal'],
-['CURRENCY_CONVERTER_API_KEY', '']
+['CURRENCY_CONVERTER_API_KEY', ''],
 ['CUSTOMER_INVOICE_BANNER', 'Place your Order at www.mystore.com'],	// 'Haga su pedido en www.mitienda.es' or &nbsp; (otherwise header pagenumber not well located)
 ['CUSTOMER_INVOICE_CAPTION', 'Registered with the Commercial Registry of City.'],	// 'Sociedad inscrita en el Registro Mercantil de Ciudad.'
 ['CUSTOMER_INVOICE_TAX_LABEL', 'VAT'],
@@ -145,7 +147,7 @@ $confs = [
 ['PRINT_LOT_NUMBER_ON_DOCUMENTS', '0'],
 ['ENABLE_WEBSHOP_CONNECTOR', '0'],
 ['ENABLE_FSOL_CONNECTOR', '0'],
-['FILE_ALLOWED_EXTENSIONS', 'pdf,jpg,jpeg,png,docx']
+['FILE_ALLOWED_EXTENSIONS', 'pdf,jpg,jpeg,png,docx'],
 ['FSOL_ABI_CUSTOMER_CODE_BASE', '80000'],
 ['FSOL_AUSCFG', ''],
 ['FSOL_CBDCFG', ''],
@@ -266,7 +268,7 @@ $confs = [
 		);
 
 		// Uncomment the below to run the seeder
-		DB::table('configurations')->insert($configurations);
+		\DB::table('configurations')->insert($configurations);
 
 		*/
 	}

@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
 class CurrenciesTableSeeder extends Seeder {
@@ -8,7 +10,7 @@ class CurrenciesTableSeeder extends Seeder {
 	{
 		// Uncomment the below to wipe the table clean before populating
 		// DB::table('configurations')->truncate();
-		DB::table('currencies')->delete();
+		\DB::table('currencies')->delete();
 		
 		$configurations = array(
 			array(	'name'         => 'Euro', 
@@ -83,7 +85,7 @@ class CurrenciesTableSeeder extends Seeder {
 		);
 
 		// Uncomment the below to run the seeder
-		DB::table('currencies')->insert($configurations);
+		\DB::table('currencies')->insert($configurations);
 /*
 		$c = \App\Currency::where('iso_code', '=', 'EUR')->first();
 		\App\Configuration::updateValue('DEF_CURRENCY', $c->id);

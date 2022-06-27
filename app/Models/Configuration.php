@@ -5,7 +5,7 @@ namespace App\Models;
 // Check this: http://www.qcode.in/save-laravel-app-settings-in-database/
 
 use Illuminate\Database\Eloquent\Model;
-// use aBillander\Installer\Helpers\Installer;
+use aBillander\Installer\Helpers\Installer;
 
 class Configuration extends Model
 {
@@ -29,8 +29,8 @@ class Configuration extends Model
 
 	public static function loadConfiguration()
 	{
-//		if (Installer::alreadyInstalled()) {
-		if ( 1 || \Schema::hasTable('configurations') ) {
+		if (Installer::alreadyInstalled())
+		if ( \Schema::hasTable('configurations') ) {
 
 			self::$_CONF = array();
 

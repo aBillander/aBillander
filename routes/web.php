@@ -59,7 +59,7 @@ require __DIR__.'/web_5.php';
 
 
 if (file_exists(__DIR__.'/gorrino_routes.php')) {
-    include __DIR__.'/gorrino_routes.php';
+    include_once __DIR__.'/gorrino_routes.php';
 }
 
 

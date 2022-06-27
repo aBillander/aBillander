@@ -31,7 +31,10 @@ Route::get('clear-cache', function()
     // php artisan clear-compiled       // https://stillat.com/blog/2016/12/07/laravel-artisan-general-command-the-clear-compiled-command
     // composer dump-autoload
 
-    return redirect()->back()->with('success', l('Cache has been cleared &#58&#58 (:cache) ', ['cache' => 'cache:clear, config:clear, route:clear, view:clear'], 'layouts'));
+    if ( \Auth::check() )
+        return redirect()->back()->with('success', l('Cache has been cleared &#58&#58 (:cache) ', ['cache' => 'cache:clear, config:clear, route:clear, view:clear'], 'layouts'));
+
+    return '<h2>'.l('Cache has been cleared &#58&#58 (:cache) ', ['cache' => 'cache:clear, config:clear, route:clear, view:clear'], 'layouts').'</h2>';
 
 })->name('clear-cache');
 

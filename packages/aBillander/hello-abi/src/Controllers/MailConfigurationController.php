@@ -18,7 +18,7 @@ class MailConfigurationController extends Controller
      * @var array
      */
     protected $rules = [
-        'MAIL_DRIVER' => 'required',
+        'MAIL_MAILER' => 'required',
         'MAIL_HOST'   => 'required|string',
         'MAIL_PORT'   => 'required|integer',
         'MAIL_USERNAME'   => 'required|string',

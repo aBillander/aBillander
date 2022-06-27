@@ -17,7 +17,7 @@ class CreateStockCountLinesTable extends Migration
         
         Schema::create('stock_count_lines', function (Blueprint $table) {
             $table->increments('id');
-            // $table->timestamp('date');
+            // $table->timestamp('date')->nullable();
 
 //            $table->decimal('quantity_before_count', 20, 6);
             $table->decimal('quantity', 20, 6);

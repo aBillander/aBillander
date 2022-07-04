@@ -60,6 +60,8 @@ Copy file `.env.example` to `.env` and generate your application encryption key 
 
     $ php artisan key:generate
 
+An alternative way is to download the [lastest release](https://github.com/aBillander/aBillander/releases).
+
 
 ### Step 2: Run the Installer
 

@@ -6,7 +6,6 @@ use App\Models\Cheque;
 use App\Models\ChequeDetail;
 use App\Models\Configuration;
 use App\Models\CustomerInvoice;
-use App\Models\Configuration;
 use App\Models\Payment;
 use App\Models\PaymentType;
 use Illuminate\Http\Request;

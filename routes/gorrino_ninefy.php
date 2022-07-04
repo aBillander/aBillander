@@ -17,6 +17,19 @@ use Illuminate\Support\Facades\DB;
 
 Route::get('ninefy', function()
 {
+	// 2022-06-27
+	$date = '2022-06-27';
+
+	// Watch out:
+	// https://stackoverflow.com/questions/57832169/laravel-automatically-add-on-update-current-timestamp-to-some-certain-columns
+
+	DB::statement("ALTER TABLE `stock_movements` CHANGE `date` `date` TIMESTAMP NULL DEFAULT NULL; ;");
+
+	DB::statement("ALTER TABLE `currency_conversion_rates` CHANGE `date` `date` TIMESTAMP NULL DEFAULT NULL; ;");
+
+	die('OK - '.$date);
+
+
 	// 2022-05-26
 	$date = '2022-05-26';
 

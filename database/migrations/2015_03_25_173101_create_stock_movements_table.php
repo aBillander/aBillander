@@ -18,7 +18,7 @@ class CreateStockMovementsTable extends Migration {
 		Schema::create('stock_movements', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->timestamp('date');
+			$table->timestamp('date')->nullable();
 
 			$table->integer('stockmovementable_id');
 			$table->string('stockmovementable_type');

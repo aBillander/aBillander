@@ -14,7 +14,7 @@ class Configuration extends Model
      *
      * @var string
      */
-    const VERSION = '9.2.22';
+    const VERSION = '9.22.0624';
 
 
     protected $fillable = [ 'name', 'value', 'description' ];

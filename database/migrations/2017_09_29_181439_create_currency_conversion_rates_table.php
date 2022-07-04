@@ -15,7 +15,7 @@ class CreateCurrencyConversionRatesTable extends Migration
     {
         Schema::create('currency_conversion_rates', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamp('date');
+            $table->timestamp('date')->nullable();
             $table->integer('currency_id')->unsigned()->nullable(false);
             $table->decimal('conversion_rate', 20, 6)->default(1.0);
             

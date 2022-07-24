@@ -201,6 +201,7 @@ return [
         aBillander\WooConnect\WooConnectServiceProvider::class,
         Queridiam\WooCommerce\ServiceProvider::class,
         Queridiam\EnvManager\EnvManagerServiceProvider::class,
+        Queridiam\POS\POSServiceProvider::class,
 //        Queridiam\FSxConnector\FSxConnectorServiceProvider::class,
 //        Queridiam\FSxConnector\FSxViewComposerServiceProvider::class,
 

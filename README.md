@@ -1,6 +1,6 @@
 ## ab://ander/Project
 
-**aBillander** is an Invoicing and Inventory System integrated with WooCommerce, intended for SME's and powered by  <º)♡><  and  Laravel.
+**aBillander** is an Invoicing, Inventory and POS System integrated with WooCommerce, intended for SME's and powered by  <º)♡><  and  Laravel.
 
 <p align="center"><img src="packages/aBillander/hello-abi/dashboard.png"  height="auto" width="100%"></p>
 
@@ -24,6 +24,8 @@
 
 > microCRM
 
+> Point Of Sale (POS)
+
 Check out our [YouTube Channel](https://www.youtube.com/channel/UCTv7x_i1qiBWZkQsrE8Y6vA/videos) .
 
 
@@ -41,6 +43,8 @@ Check out our [YouTube Channel](https://www.youtube.com/channel/UCTv7x_i1qiBWZkQ
 > Use branch *master* with Laravel 9.x.
 
 > Branch *ninette* is intended for development.
+
+> Branch *_POS_* contains Point Of Sale (POS) features (under development).
 
 > Use branch *service* with Laravel 5.5 (not supported anymore).
 

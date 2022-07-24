@@ -1,0 +1,50 @@
+{
+    "name": "Queridiam/abi-pos",
+    "description": "Point Of Sale (POS)",
+    "homepage": "https://github.com/MQueridiam",
+    "license": "MIT",
+    "keywords": [
+        "aBillander",
+        "laravel",
+        "Queridiam",
+        "Point of Sale"
+    ],
+    "authors": [
+        {
+            "name": "Markus Queridiam",
+            "email": "support@abillander.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : "^8.0",
+        "laravel/framework": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Queridiam\\POS\\": "src/"
+        }
+    },
+      "autoload-dev": {
+        "psr-4": {
+          "Queridiam\\POS\\Test\\": "tests"
+        }
+      },
+      "require-dev": {
+        "fakerphp/faker": "^1.9.1",
+        "mockery/mockery": "^1.4.4",
+        "nunomaduro/collision": "^6.1",
+        "phpunit/phpunit": "^9.5.10"
+      },
+      "extra": {
+        "laravel": {
+          "providers": [
+            "Queridiam\\POS\\POSServiceProvider"
+          ],
+          "aliases": {
+          }
+        }
+      },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

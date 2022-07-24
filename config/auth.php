@@ -50,6 +50,11 @@ return [
             'driver' => 'session',
             'provider' => 'sales_rep_users',
         ],
+
+        'cashier' => [
+            'driver' => 'session',
+            'provider' => 'cashier_users',
+        ],
     ],
 
     /*
@@ -83,6 +88,11 @@ return [
         'sales_rep_users' => [
             'driver' => 'eloquent',
             'model' => App\Models\SalesRepUser::class,
+        ],
+
+        'cashier_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\CashierUser::class,
         ],
 
         // 'users' => [
@@ -123,6 +133,13 @@ return [
         
         'sales_rep_users' => [
             'provider' => 'sales_rep_users',
+            'table' => 'password_resets',
+            'expire' => 60,                 // Minutes
+            'throttle' => 60,
+        ],
+        
+        'cashier_users' => [
+            'provider' => 'cashier_users',
             'table' => 'password_resets',
             'expire' => 60,                 // Minutes
             'throttle' => 60,

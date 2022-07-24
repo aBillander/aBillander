@@ -2,7 +2,10 @@
 
 namespace Queridiam\POS;
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
+
+use Queridiam\POS\Middleware\SetPosContextMiddleware;
 
 class POSServiceProvider extends IlluminateServiceProvider
 {
@@ -18,7 +21,7 @@ class POSServiceProvider extends IlluminateServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Router $router)
     {
         // Routes
         $this->loadRoutesFrom(__DIR__ . '/routes/routes.php');
@@ -42,6 +45,11 @@ class POSServiceProvider extends IlluminateServiceProvider
         // Migrations
         // Will be loaded when executing: php artisan migrate
         $this->loadMigrationsFrom(__DIR__ . '/migrations');
+
+
+        // Middleware
+//        $router->middlewareGroup('installer',[CanInstall::class, NegotiateLanguage::class]);
+        $router->aliasMiddleware('poscontext', SetPosContextMiddleware::class);
     }
 
     /**

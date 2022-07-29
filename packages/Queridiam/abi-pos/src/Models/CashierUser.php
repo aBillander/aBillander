@@ -25,7 +25,7 @@ class CashierUser extends Authenticatable
      * Always load relations.
      *
      */
-    public $with = ['customer'];
+//    public $with = ['customer'];
 
     /**
      * The attributes that should be mutated to dates.

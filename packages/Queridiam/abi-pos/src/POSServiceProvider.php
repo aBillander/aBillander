@@ -5,7 +5,7 @@ namespace Queridiam\POS;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
-use Queridiam\POS\Middleware\SetPosContextMiddleware;
+use Queridiam\POS\Http\Middleware\SetPosContextMiddleware;
 
 class POSServiceProvider extends IlluminateServiceProvider
 {

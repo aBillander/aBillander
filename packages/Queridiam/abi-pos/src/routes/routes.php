@@ -42,7 +42,7 @@ $posGroup =
     'prefix' => 'pos',
     'as' => 'pos::',
     'namespace' => 'Queridiam\\POS\\Http\\Controllers',
-//    'middleware' => ['web', 'auth', 'context'],
+//    'middleware' => ['restrictIp', 'auth', 'context'],
 //    'middleware' => ['poscontext'],
 ];
 
@@ -51,12 +51,6 @@ Route::group($posGroup, function () {
     Route::get('hello', function () {
         abi_r('Hello world of POS!'.' - '.route('pos::welcome').' - '.asset(''));
     })->name('welcome');
-    
-    
-    // Route::resource('/', 'EnvManagerController')->names('envkeys');
-
-    Route::get('/', 'EnvManagerController@envkeys')->name('envkeys');
-    Route::post('/', 'EnvManagerController@envkeysUpdate')->name('envkeys.update');
 
 });
 
@@ -66,31 +60,31 @@ Route::group($posGroup, function () {
 /* ********************************************************** */
 
 
+// Not-Secure POS-Routes
 Route::group($posGroup, function ()
 {
-
-  Route::group(['middleware' => ['guest:cashier', 'guestcontext']], function ()
-  {
+    Route::group(['middleware' => ['guest:cashier', 'guestcontext']], function ()
+    {
 /*
-    Route::get('/login', 'Auth\CustomerLoginController@showLoginForm')->name('customer.login');
-    Route::post('/login', 'Auth\CustomerLoginController@login')->name('customer.login.submit');
-    Route::post('/logout', 'Auth\CustomerLoginController@customerLogout')->name('customer.logout');
+        Route::get('/login', 'Auth\CustomerLoginController@showLoginForm')->name('customer.login');
+        Route::post('/login', 'Auth\CustomerLoginController@login')->name('customer.login.submit');
+        Route::post('/logout', 'Auth\CustomerLoginController@customerLogout')->name('customer.logout');
 
-    Route::get('/register', 'Auth\CustomerRegisterController@showRegistrationForm')->name('customer.register');
-    Route::post('/register', 'Auth\CustomerRegisterController@register')->name('customer.register.submit');
+        Route::get('/register', 'Auth\CustomerRegisterController@showRegistrationForm')->name('customer.register');
+        Route::post('/register', 'Auth\CustomerRegisterController@register')->name('customer.register.submit');
 
 
-    Route::get('forgot-password', [CustomerPasswordResetLinkController::class, 'create'])
-                ->name('customer.password.request');
+        Route::get('forgot-password', [CustomerPasswordResetLinkController::class, 'create'])
+                    ->name('customer.password.request');
 
-    Route::post('forgot-password', [CustomerPasswordResetLinkController::class, 'store'])
-                ->name('customer.password.email');
+        Route::post('forgot-password', [CustomerPasswordResetLinkController::class, 'store'])
+                    ->name('customer.password.email');
 
-    Route::get('reset-password/{token}', [CustomerNewPasswordController::class, 'create'])
-                ->name('customer.password.reset');
+        Route::get('reset-password/{token}', [CustomerNewPasswordController::class, 'create'])
+                    ->name('customer.password.reset');
 
-    Route::post('reset-password', [CustomerNewPasswordController::class, 'store'])
-                ->name('customer.password.update');
+        Route::post('reset-password', [CustomerNewPasswordController::class, 'store'])
+                    ->name('customer.password.update');
 
 */
 /*
@@ -101,7 +95,7 @@ Route::group($posGroup, function ()
     Route::get('password/reset/{token}', ['as' => 'customer.password.reset', 'uses' => 'Auth\CustomerResetPasswordController@showResetForm']);
 */
 
-  });
+    });
 
 });
 
@@ -109,14 +103,30 @@ Route::group($posGroup, function ()
 /* ********************************************************** */
 
 
+// Secure POS-Routes 
 Route::group($posGroup, function ()
 {
+    Route::group(['middleware' => ['auth:cashier', 'context', 'poscontext:cashier']], function ()
+    {
 
-  Route::group(['middleware' => ['auth:cashier', 'context', 'poscontext:cashier']], function ()
-  {
+
+    });
+
+});
 
 
-  });
+/* ********************************************************** */
+
+
+// Secure Admin-Routes
+Route::group($posGroup, function ()
+{
+    Route::group(['middleware' =>  ['restrictIp', 'web', 'auth', 'context']], function()
+    {
+        Route::resource('cashregisters', 'CashRegistersController');
+
+
+    });
 
 });
 

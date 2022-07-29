@@ -189,6 +189,11 @@ class SetContextMiddleware {
 				//
 				Context::getContext()->controller = 'accounting/'.$request->segment(2);
 
+			} else
+			if ( $dominion == 'pos' ) {
+				//
+				Context::getContext()->controller = 'pos/'.$request->segment(2);
+
 			} else {
 				//
 				Context::getContext()->controller = $dominion;
@@ -196,8 +201,8 @@ class SetContextMiddleware {
 				// Replace commented lines above
 				if ( $request->segment(3) )
 				{
-					$pos = strpos($request->segment(3), \Str::singular($request->segment(1)));
-					if ( $pos === 0 )
+					$position = strpos($request->segment(3), \Str::singular($request->segment(1)));
+					if ( $position === 0 )
 						Context::getContext()->controller = $request->segment(3);
 					else
 					{

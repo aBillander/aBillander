@@ -63,13 +63,13 @@ Route::group($posGroup, function () {
 // Not-Secure POS-Routes
 Route::group($posGroup, function ()
 {
-    Route::group(['middleware' => ['guest:cashier', 'guestcontext']], function ()
+    Route::group(['middleware' => ['web', 'guest:cashier', 'guestcontext']], function ()
     {
-/*
-        Route::get('/login', 'Auth\CustomerLoginController@showLoginForm')->name('customer.login');
-        Route::post('/login', 'Auth\CustomerLoginController@login')->name('customer.login.submit');
-        Route::post('/logout', 'Auth\CustomerLoginController@customerLogout')->name('customer.logout');
+        Route::get('/login', 'Auth\CashierLoginController@showLoginForm')->name('cashier.login');
+        Route::post('/login', 'Auth\CashierLoginController@login')->name('cashier.login.submit');
+        Route::post('/logout', 'Auth\CashierLoginController@cashierLogout')->name('cashier.logout');
 
+/*
         Route::get('/register', 'Auth\CustomerRegisterController@showRegistrationForm')->name('customer.register');
         Route::post('/register', 'Auth\CustomerRegisterController@register')->name('customer.register.submit');
 

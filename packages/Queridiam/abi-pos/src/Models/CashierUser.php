@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Queridiam\POS\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;

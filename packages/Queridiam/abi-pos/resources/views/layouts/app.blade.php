@@ -1,6 +1,6 @@
 @inject('request', 'Illuminate\Http\Request')
 
-@if($request->segment(1) == 'pos' && ($request->segment(2) == 'create' || $request->segment(3) == 'edit'))
+@if($request->segment(2) == 'pos' && ($request->segment(3) == 'create' || $request->segment(4) == 'edit'))
     @php
         $pos_layout = true;
     @endphp
@@ -15,7 +15,7 @@
 @endphp
 
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{in_array(session()->get('user.language', config('app.locale')), config('constants.langs_rtl')) ? 'rtl' : 'ltr'}}">
+<html lang="{{ AbiContext::getContext()->language->iso_code }}">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,7 +27,7 @@
 
         <title>@yield('title') - {{ Session::get('business.name') }}</title>
         
-        @include('layouts.partials.css')
+        @include('pos::layouts.partials.css')
 
         @yield('css')
     </head>
@@ -41,10 +41,10 @@
                 }
             </script>
             @if(!$pos_layout)
-                @include('layouts.partials.header')
-                @include('layouts.partials.sidebar')
+                @include('pos::layouts.partials.header')
+                @include('pos::layouts.partials.sidebar')
             @else
-                @include('layouts.partials.header-pos')
+                @include('pos::layouts.partials.header-pos')
             @endif
 
             @if(in_array($_SERVER['REMOTE_ADDR'], $whitelist))
@@ -57,6 +57,7 @@
                 <div id="app">
                     @yield('vue')
                 </div>
+{{--
                 <!-- Add currency related field-->
                 <input type="hidden" id="__code" value="{{session('currency')['code']}}">
                 <input type="hidden" id="__symbol" value="{{session('currency')['symbol']}}">
@@ -66,12 +67,15 @@
                 <input type="hidden" id="__precision" value="{{session('business.currency_precision', 2)}}">
                 <input type="hidden" id="__quantity_precision" value="{{session('business.quantity_precision', 2)}}">
                 <!-- End of currency related field-->
-                @can('view_export_buttons')
+--}}
+                @ can('view_export_buttons')
                     <input type="hidden" id="view_export_buttons">
-                @endcan
+                @ endcan
+{{--
                 @if(isMobile())
                     <input type="hidden" id="__is_mobile">
                 @endif
+--}}
                 @if (session('status'))
                     <input type="hidden" id="status_span" data-status="{{ session('status.success') }}" data-msg="{{ session('status.msg') }}">
                 @endif
@@ -81,35 +85,31 @@
                     <div class='scroll icon'><i class="fas fa-angle-up"></i></div>
                 </div>
 
-                @if(config('constants.iraqi_selling_price_adjustment'))
-                    <input type="hidden" id="iraqi_selling_price_adjustment">
-                @endif
-
                 <!-- This will be printed -->
                 <section class="invoice print_section" id="receipt_section">
                 </section>
                 
             </div>
-            @include('home.todays_profit_modal')
+            @include('pos::home.todays_profit_modal')
             <!-- /.content-wrapper -->
 
             @if(!$pos_layout)
-                @include('layouts.partials.footer')
+                @include('pos::layouts.partials.footer')
             @else
-                @include('layouts.partials.footer_pos')
+                @include('pos::layouts.partials.footer_pos')
             @endif
 
             <audio id="success-audio">
-              <source src="{{ asset('/audio/success.ogg?v=' . $asset_v) }}" type="audio/ogg">
-              <source src="{{ asset('/audio/success.mp3?v=' . $asset_v) }}" type="audio/mpeg">
+              <source src="{{ asset('assets/abi-pos/audio/success.ogg?v=' . $asset_v) }}" type="audio/ogg">
+              <source src="{{ asset('assets/abi-pos/audio/success.mp3?v=' . $asset_v) }}" type="audio/mpeg">
             </audio>
             <audio id="error-audio">
-              <source src="{{ asset('/audio/error.ogg?v=' . $asset_v) }}" type="audio/ogg">
-              <source src="{{ asset('/audio/error.mp3?v=' . $asset_v) }}" type="audio/mpeg">
+              <source src="{{ asset('assets/abi-pos/audio/error.ogg?v=' . $asset_v) }}" type="audio/ogg">
+              <source src="{{ asset('assets/abi-pos/audio/error.mp3?v=' . $asset_v) }}" type="audio/mpeg">
             </audio>
             <audio id="warning-audio">
-              <source src="{{ asset('/audio/warning.ogg?v=' . $asset_v) }}" type="audio/ogg">
-              <source src="{{ asset('/audio/warning.mp3?v=' . $asset_v) }}" type="audio/mpeg">
+              <source src="{{ asset('assets/abi-pos/audio/warning.ogg?v=' . $asset_v) }}" type="audio/ogg">
+              <source src="{{ asset('assets/abi-pos/audio/warning.mp3?v=' . $asset_v) }}" type="audio/mpeg">
             </audio>
         </div>
 
@@ -117,7 +117,7 @@
             {!! $__additional_html !!}
         @endif
 
-        @include('layouts.partials.javascripts')
+        @include('pos::layouts.partials.javascripts')
 
         <div class="modal fade view_modal" tabindex="-1" role="dialog" 
         aria-labelledby="gridSystemModalLabel"></div>

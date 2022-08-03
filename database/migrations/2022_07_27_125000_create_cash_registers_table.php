@@ -23,16 +23,24 @@ return new class extends Migration
             $table->text('description')->nullable();
 
             $table->tinyInteger('active')->default(1);
-            $table->string('status', 32)->nullable(false)->default('closed');   // 'open', 'closed', '?'
+            $table->string('status', 32)->nullable(false)->default('regular');   // 'regular', 'decommissioned', '?'
+//          ^--Cash Register is open if it has an open CashRegisterJournal; otherwise is closed
 
-            $table->string('location', 64)->nullable();
+//            $table->tinyInteger('display_prices_tax_inc')->default(0);
+
+            $table->string('location', 64)->nullable();     // Within a Store, Branch, etc
 
             // Manufacturer
 
             // Image
 
-            $table->integer('cashier_user_id')->unsigned()->nullable();
-            // A cash register should has a CashierUser assigned in order to open, manage and close it. Otherwise cash register cannot be operated after any CashierUser login
+            // Documents
+
+//            $table->integer('cashier_user_id')->unsigned()->nullable();
+//            ^-- A cash register should has a CashierUser assigned in order to open, manage and close it. Otherwise cash register cannot be operated after any CashierUser login. Relation is stablished on Cashier User, since a Cashier User has one Cash Register after login (for now...)
+
+            $table->integer('currency_id')->unsigned()->nullable(false);
+            $table->integer('selling_location_id')->unsigned()->nullable(); // Store, outlet, etc., with address and maybe local settings
 
 //            $table->text('notes')->nullable();
 

@@ -6,14 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Models\Currency;
+
 class CashRegister extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
     public static $statuses = array(
-            'open',
-            'closed',
+            'regular', 
+            'decommissioned',
         );
 
     protected $dates = ['deleted_at'];
@@ -23,7 +25,7 @@ class CashRegister extends Model
     
     protected $fillable = [ 'alias', 'name', 'reference', 'barcode', 
                             'description', 'location',      //  location    varchar(64)
-                            'active', 'status', 'cashier_user_id', 
+                            'active', 'status', 
                           ];
 
     public static $rules = [
@@ -93,6 +95,11 @@ class CashRegister extends Model
 
     public function cashieruser()
     {
-        return $this->hasOne(CashierUser::class);
+        return $this->hasOne(CashierUser::class, 'cash_register_id');
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
     }
 }

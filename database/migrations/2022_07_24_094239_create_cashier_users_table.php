@@ -29,17 +29,11 @@ class CreateCashierUsersTable extends Migration
             $table->rememberToken();
 
             $table->tinyInteger('active')->default(1);
-            $table->tinyInteger('is_principal')->default(0);
+            $table->string('status', 32)->nullable(false)->default('regular');  // Values: 'regular', 'terminated'
 
-            $table->tinyInteger('enable_quotations')->default(-1);   // Use default Customer Center setting
-            $table->tinyInteger('enable_min_order')->default(-1);   // Use default Customer Center setting
-            $table->tinyInteger('use_default_min_order_value')->default(1);   // Use default Customer Center setting
-            $table->decimal('min_order_value', 20, 6)->default(0.0);   // Use default Customer Center setting
-            $table->tinyInteger('display_prices_tax_inc')->default(0);
-
+            $table->integer('cash_register_id')->unsigned()->nullable();    // Assigned to this particaular cash register machine (pos). To Do: one Cashier user may be assigned to more than one registers.
             $table->integer('language_id')->unsigned()->nullable(false); 
-            $table->integer('customer_id')->unsigned()->nullable(false); 
-            $table->integer('address_id')->unsigned()->nullable(); 
+            $table->integer('sales_rep_id')->unsigned()->nullable();        // To compute max_sales_discount_percent y sales_commission
 
             $table->timestamps();
             $table->softDeletes();

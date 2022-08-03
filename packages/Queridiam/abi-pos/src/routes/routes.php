@@ -69,10 +69,6 @@ Route::group($posGroup, function ()
         Route::post('/login', 'Auth\CashierLoginController@login')->name('cashier.login.submit');
         Route::post('/logout', 'Auth\CashierLoginController@cashierLogout')->name('cashier.logout');
 
-        Route::resource('pos', 'POSController')->only('create', 'store');
-
-        Route::get('/get-product-suggestion', 'POSController@getProductSuggestion');
-
 /*
         Route::get('/register', 'Auth\CustomerRegisterController@showRegistrationForm')->name('customer.register');
         Route::post('/register', 'Auth\CustomerRegisterController@register')->name('customer.register.submit');
@@ -110,8 +106,14 @@ Route::group($posGroup, function ()
 // Secure POS-Routes 
 Route::group($posGroup, function ()
 {
-    Route::group(['middleware' => ['auth:cashier', 'context', 'poscontext:cashier']], function ()
+    Route::group(['middleware' => ['web', 'auth:cashier', 'context', 'poscontext:cashier']], function ()
     {
+
+        // Route::resource('pos', 'POSController')->only('create', 'store');
+        Route::get('/interface', 'POSController@create')->name('interface');
+        Route::post('/pos', 'POSController@store')->name('interface.store');
+
+        Route::get('/get-product-suggestion', 'POSController@getProductSuggestion');
 
 
     });

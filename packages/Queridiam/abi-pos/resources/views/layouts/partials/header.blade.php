@@ -15,7 +15,7 @@
         <span class="sr-only">Toggle navigation</span>
       </a>
 
-      @if(Module::has('Superadmin'))
+      @if(0 && "Module::has('Superadmin')")
         @includeIf('superadmin::layouts.partials.active_subscription')
       @endif
 
@@ -26,7 +26,7 @@
       <!-- Navbar Right Menu -->
       <div class="navbar-custom-menu">
 
-        @if(Module::has('Essentials'))
+        @if(0 && "Module::has('Essentials')")
           @includeIf('essentials::layouts.partials.header_part')
         @endif
 
@@ -36,24 +36,24 @@
           </button>
           <ul class="dropdown-menu">
             @if(config('app.env') != 'demo')
-              <li><a href="{{route('calendar')}}">
+              <li><a href="{ {route('calendar')} }">
                   <i class="fas fa-calendar-alt" aria-hidden="true"></i> @lang('lang_v1.calendar')
               </a></li>
             @endif
-            @if(Module::has('Essentials'))
+            @if(0 && "Module::has('Essentials')")
               <li><a href="#" class="btn-modal" data-href="{{action('\Modules\Essentials\Http\Controllers\ToDoController@create')}}" data-container="#task_modal">
                   <i class="fas fa-clipboard-check" aria-hidden="true"></i> @lang( 'essentials::lang.add_to_do' )
               </a></li>
             @endif
             <!-- Help Button -->
-            @if(auth()->user()->hasRole('Admin#' . auth()->user()->business_id))
+            @if(0 && "auth()->user()->hasRole('Admin#' . auth()->user()->business_id)")
               <li><a id="start_tour" href="#">
                   <i class="fas fa-question-circle" aria-hidden="true"></i> @lang('lang_v1.application_tour')
               </a></li>
             @endif
           </ul>
         </div>
-        <button id="btnCalculator" title="@lang('lang_v1.calculator')" type="button" class="btn btn-success btn-flat pull-left m-8 btn-sm mt-10 popover-default hidden-xs" data-toggle="popover" data-trigger="click" data-content='@include("layouts.partials.calculator")' data-html="true" data-placement="bottom">
+        <button id="btnCalculator" title="@lang('lang_v1.calculator')" type="button" class="btn btn-success btn-flat pull-left m-8 btn-sm mt-10 popover-default hidden-xs" data-toggle="popover" data-trigger="click" data-content='@include("pos::layouts.partials.calculator")' data-html="true" data-placement="bottom">
             <strong><i class="fa fa-calculator fa-lg" aria-hidden="true"></i></strong>
         </button>
         
@@ -80,7 +80,7 @@
           @endcan
         @endif
 
-        @if(Module::has('Repair'))
+        @if(0 && "Module::has('Repair')")
           @includeIf('repair::layouts.partials.header')
         @endif
 
@@ -90,10 +90,10 @@
           </button>
         @endcan
 
-        <div class="m-8 pull-left mt-15 hidden-xs" style="color: #fff;"><strong>{{ @format_date('now') }}</strong></div>
+        <div class="m-8 pull-left mt-15 hidden-xs" style="color: #fff;"><strong>{{ "@format_date('now')" }}</strong></div>
 
         <ul class="nav navbar-nav">
-          @include('layouts.partials.header-notifications')
+          @include('pos::layouts.partials.header-notifications')
           <!-- User Account Menu -->
           <li class="dropdown user user-menu">
             <!-- Menu Toggle Button -->
@@ -122,10 +122,10 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="{{action('UserController@getProfile')}}" class="btn btn-default btn-flat">@lang('lang_v1.profile')</a>
+                  <a href="{ {action('UserController@getProfile')} }" class="btn btn-default btn-flat">@lang('lang_v1.profile')</a>
                 </div>
                 <div class="pull-right">
-                  <a href="{{action('Auth\LoginController@logout')}}" class="btn btn-default btn-flat">@lang('lang_v1.sign_out')</a>
+                  <a href="{ {action('Auth\LoginController@logout')} }" class="btn btn-default btn-flat">@lang('lang_v1.sign_out')</a>
                 </div>
               </li>
             </ul>

@@ -3,12 +3,12 @@
 namespace App\Http\Middleware\CustomerCenter;
 
 use App\Models\Cart;
-use App\Models\Company as Company;
-use App\Models\Configuration as Configuration;
-use App\Models\Context as Context;
-use App\Models\Currency as Currency;
-use App\Models\Language as Language;
-use App\Models\User as User;
+use App\Models\Company;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Language;
+use App\Models\User;
 use Auth;
 use Closure;
 use Config, App;

@@ -27,6 +27,11 @@ class Authenticate extends Middleware
             if ( $request->is('absrc*') ) {
                 return route('salesrep.login');
             }
+            
+            // POS routes
+            if ( $request->is('pos*') ) {
+                return route('pos::cashier.login');
+            }
 
 
             // Default route

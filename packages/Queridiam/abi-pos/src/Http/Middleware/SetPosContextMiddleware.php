@@ -1,14 +1,14 @@
 <?php
 
-namespace Queridiam\POS\Middleware;
+namespace Queridiam\POS\Http\Middleware;
 
 use App\Models\Cart;
-use App\Models\Company as Company;
-use App\Models\Configuration as Configuration;
-use App\Models\Context as Context;
-use App\Models\Currency as Currency;
-use App\Models\Language as Language;
-use App\Models\User as User;
+use App\Models\Company;
+use App\Models\Configuration;
+use App\Models\Context;
+use App\Models\Currency;
+use App\Models\Language;
+use Queridiam\POS\Models\CashierUser;
 use Auth;
 use Closure;
 use Config, App;
@@ -28,30 +28,28 @@ class SetPosContextMiddleware {
 	 */
 	public function handle($request, Closure $next, $guard = null)
 	{
-		// if ( !auth()->check() || !auth()->user()->isAdmin() ) // Not logged or not Admin
-//		if ( !$request->user() || !$request->user()->isActive() ) /** if not logged at all redirect to home. this is to prevent an error if the user is not logged in and tries to access the portal via the url **/
-//		{
+        
 
-        abi_r('OK', true);die(7);
+		return $next($request);
 
-        if ($guard == "customer" && Auth::guard($guard)->check())
+
+
+        if ($guard == "cashier" && Auth::guard($guard)->check())
         {
             if ( !Auth::guard($guard)->user()->isActive() )
             {
                 Auth::logout();
-                return redirect()->route('customer.login')->with('warning', l('Your session has expired because your account is deactivated.', 'abcc/layouts'));
+                return redirect()->route('pos::cashier.login')->with('warning', l('Your session has expired because your account is deactivated.', 'pos/layouts'));
             }
         } else {
         	return $next($request);
         }
-//		}
 
+		$cashier_user = Auth::guard($guard)->user();
+        $customer     = Auth::guard($guard)->user()->customer;
+        $language     = $cashier_user->language;
 
-		$customer_user = Auth::guard($guard)->user();
-        $customer      = Auth::guard($guard)->user()->customer;
-        $language      = $customer_user->language;
-
-//        abi_r($customer_user, true);
+//        abi_r($cashier_user, true);
 
 //		 abi_r($this->customer->name_fiscal);die();
 
@@ -68,7 +66,7 @@ class SetPosContextMiddleware {
 
 		// abi_r($cart->customer->name, true);
 
-		Context::getContext()->customer_user = $customer_user;
+		Context::getContext()->cashier_user = $cashier_user;
 		Context::getContext()->customer      = $customer;
 		Context::getContext()->language      = $language;
 		Context::getContext()->currency      = $customer->currency;

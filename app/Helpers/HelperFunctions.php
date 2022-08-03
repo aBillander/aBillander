@@ -24,6 +24,8 @@ function l($string = NULL, $data = [], $langfile = NULL)
         if ($langfile == NULL) $langfile = Context::getContext()->controller ?? '';
         if ($langfile == ''  ) $langfile = 'layouts';
 
+        // abi_r($langfile);
+
         if (Lang::has('localized/'.$langfile.'.'.$string))
             return Lang::get('localized/'.$langfile.'.'.$string, $data);
 

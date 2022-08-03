@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use App\Models\Configuration;
+use App\Models\Language;
+
 // use Illuminate\Database\Eloquent\SoftDeletes;
 
 // use App\Notifications\CashierResetPasswordNotification;
@@ -62,7 +65,7 @@ class CashierUser extends Authenticatable
     public static $rules = array(
         'customer_id' => 'exists:customers,id', 
         'language_id' => 'exists:languages,id', 
-        'email' => 'required|email|unique:customer_users,email',
+        'email' => 'required|email|unique:cashier_users,email',
         'password'    => 'required|min:8|max:32',
 //        'language_id' => 'exists:languages,id',
 //        'customer_id' => 'exists:customers,id',

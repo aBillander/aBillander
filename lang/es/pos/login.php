@@ -11,7 +11,7 @@ return [
 	|
 	*/
 
-	'POS &#58&#58 Login' => 'TPV &#58&#58 Login',
+	'POS :: Login' => 'TPV :: Login',
 	'Cash Register Manager' => 'Terminal Punto de Venta',
 
 	'Login'     => 'Acceder',

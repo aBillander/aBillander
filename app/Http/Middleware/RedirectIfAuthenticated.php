@@ -39,6 +39,11 @@ class RedirectIfAuthenticated
                     return redirect()->route('salesrep.dashboard');
                 }
                 
+                // Cashiers
+                if ( $guard == 'cashier' ) {
+                    return redirect()->route('pos::interface');
+                }
+                
                 // Regular Users
                 if ( $guard == 'web' ) {
                     $home_page = Auth::user()->home_page;

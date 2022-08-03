@@ -92,7 +92,7 @@ return [
 
         'cashier_users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\CashierUser::class,
+            'model' => Queridiam\POS\Models\CashierUser::class,
         ],
 
         // 'users' => [

@@ -36,20 +36,22 @@ class CashierLoginController extends Controller
     public function login(Request $request)
     {
       // Validate the form data
-        $vrules = CustomerUser::$rules;
+        $vrules = CashierUser::$rules;
 
         if ( isset($vrules['email']) ) $vrules['email'] .= ','. $request->email.',email';  // Unique
       
       $this->validate($request, $vrules);
 
+      // abi_r($request->all());die();
+
       // Attempt to log the user in
-      if (Auth::guard('customer')->attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1], $request->remember)) {
+      if (Auth::guard('cashier')->attempt(['email' => $request->email, 'password' => $request->password, 'active' => 1], $request->remember)) {
         
         // if successful, then redirect to their intended location
-        if ( Configuration::get('ABCC_LOGIN_REDIRECT') && \Route::has(Configuration::get('ABCC_LOGIN_REDIRECT')) )
-          return redirect()->route( Configuration::get('ABCC_LOGIN_REDIRECT') );
+        if ( Configuration::get('POS_LOGIN_REDIRECT') && \Route::has(Configuration::get('POS_LOGIN_REDIRECT')) )
+          return redirect()->route( Configuration::get('POS_LOGIN_REDIRECT') );
         else
-          return redirect()->route('customer.dashboard');
+          return redirect()->route('pos::interface');
       }
 
       // if unsuccessful, then redirect back to the login with the form data

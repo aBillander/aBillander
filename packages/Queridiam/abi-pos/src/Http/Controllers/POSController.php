@@ -22,7 +22,67 @@ class POSController extends Controller
      */
     public function index()
     {
-        //
+        $business_id = 1;
+
+        $business_locations = [];
+        $customers = [];
+      
+        $sales_representative = [];
+        
+        $is_cmsn_agent_enabled = request()->session()->get('business.sales_cmsn_agnt');
+        $commission_agents = [];
+        if (!empty($is_cmsn_agent_enabled)) {
+            $commission_agents = User::forDropdown($business_id, false, true, true);
+        }
+
+        $is_tables_enabled = false; // $this->transactionUtil->isModuleEnabled('tables');
+        $is_service_staff_enabled = true;   // $this->transactionUtil->isModuleEnabled('service_staff');
+
+        //Service staff filter
+        $service_staffs = null;
+        if ($is_service_staff_enabled) {
+            $service_staffs = [];   // $this->productUtil->serviceStaffDropdown($business_id);
+        }
+
+        $is_types_service_enabled = false;  // $this->moduleUtil->isModuleEnabled('types_of_service');
+
+        $shipping_statuses = [];    // $this->transactionUtil->shipping_statuses();
+
+        return view('pos::pos.index')->with(compact('business_locations', 'customers', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses'));
+
+        /* */
+
+        if (!auth()->user()->can('sell.view') && !auth()->user()->can('sell.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = request()->session()->get('user.business_id');
+
+        $business_locations = BusinessLocation::forDropdown($business_id, false);
+        $customers = Contact::customersDropdown($business_id, false);
+      
+        $sales_representative = User::forDropdown($business_id, false, false, true);
+        
+        $is_cmsn_agent_enabled = request()->session()->get('business.sales_cmsn_agnt');
+        $commission_agents = [];
+        if (!empty($is_cmsn_agent_enabled)) {
+            $commission_agents = User::forDropdown($business_id, false, true, true);
+        }
+
+        $is_tables_enabled = $this->transactionUtil->isModuleEnabled('tables');
+        $is_service_staff_enabled = $this->transactionUtil->isModuleEnabled('service_staff');
+
+        //Service staff filter
+        $service_staffs = null;
+        if ($is_service_staff_enabled) {
+            $service_staffs = $this->productUtil->serviceStaffDropdown($business_id);
+        }
+
+        $is_types_service_enabled = $this->moduleUtil->isModuleEnabled('types_of_service');
+
+        $shipping_statuses = $this->transactionUtil->shipping_statuses();
+
+        return view('sale_pos.index')->with(compact('business_locations', 'customers', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses'));
     }
 
     /**

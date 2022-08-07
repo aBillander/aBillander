@@ -109,7 +109,18 @@ Route::group($posGroup, function ()
     Route::group(['middleware' => ['web', 'auth:cashier', 'context', 'poscontext:cashier']], function ()
     {
 
+        Route::get('/home', 'POSHomeController@index')->name('home');
+/*
+        Route::get('/home/get-totals', 'HomeController@getTotals');
+        Route::get('/home/product-stock-alert', 'HomeController@getProductStockAlert');
+        Route::get('/home/purchase-payment-dues', 'HomeController@getPurchasePaymentDues');
+        Route::get('/home/sales-payment-dues', 'HomeController@getSalesPaymentDues');
+        Route::post('/attach-medias-to-model', 'HomeController@attachMediasToGivenModel')->name('attach.medias.to.model');
+        Route::get('/calendar', 'HomeController@getCalendar')->name('calendar');
+*/
+
         // Route::resource('pos', 'POSController')->only('create', 'store');
+        Route::get('/dashboard', 'POSController@index' )->name('dashboard');
         Route::get('/interface', 'POSController@create')->name('interface');
         Route::post('/pos', 'POSController@store')->name('interface.store');
 

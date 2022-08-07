@@ -1,6 +1,7 @@
+
 @inject('request', 'Illuminate\Http\Request')
 
-@if($request->segment(2) == 'pos' && ($request->segment(3) == 'create' || $request->segment(4) == 'edit'))
+@if($request->segment(2) == 'pos' && ($request->segment(3) == 'interface' || $request->segment(4) == 'edit'))
     @php
         $pos_layout = true;
     @endphp
@@ -25,7 +26,10 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>@yield('title') - {{ Session::get('business.name') }}</title>
+        <title>@section('title'):: {{ config('app.name', 'aBillander') }} @show </title>
+        
+        <!-- Styles -->
+        <link rel="shortcut icon" href="{{ asset('assets/theme/company_pos_icon.png') }}" type="image/x-icon">
         
         @include('pos::layouts.partials.css')
 
@@ -68,9 +72,9 @@
                 <input type="hidden" id="__quantity_precision" value="{{session('business.quantity_precision', 2)}}">
                 <!-- End of currency related field-->
 --}}
-                @ can('view_export_buttons')
+                
                     <input type="hidden" id="view_export_buttons">
-                @ endcan
+                
 {{--
                 @if(isMobile())
                     <input type="hidden" id="__is_mobile">

@@ -36,13 +36,18 @@ return new class extends Migration
 
             // Documents
 
+//            $table->text('notes')->nullable();
+
 //            $table->integer('cashier_user_id')->unsigned()->nullable();
 //            ^-- A cash register should has a CashierUser assigned in order to open, manage and close it. Otherwise cash register cannot be operated after any CashierUser login. Relation is stablished on Cashier User, since a Cashier User has one Cash Register after login (for now...)
 
             $table->integer('currency_id')->unsigned()->nullable(false);
+            $table->text('cash_denomination_set_id')->nullable();
+            $table->integer('price_list_id')->unsigned()->nullable();
+//          ^-- If null, use Product record value, or Customer Price List; 
+//              otherwise, use this Price List, or Customer Price List 
+            $table->integer('warehouse_id')->unsigned()->nullable(false);
             $table->integer('selling_location_id')->unsigned()->nullable(); // Store, outlet, etc., with address and maybe local settings
-
-//            $table->text('notes')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

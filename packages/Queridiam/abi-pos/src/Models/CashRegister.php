@@ -26,6 +26,7 @@ class CashRegister extends Model
     protected $fillable = [ 'alias', 'name', 'reference', 'barcode', 
                             'description', 'location',      //  location    varchar(64)
                             'active', 'status', 
+                            'currency_id', 'cash_denomination_set_id', 'price_list_id', 'warehouse_id', 'selling_location_id', 
                           ];
 
     public static $rules = [

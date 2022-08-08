@@ -1,13 +1,16 @@
-@extends('layouts.app')
-@section('title', __('home.home'))
+@extends('pos::layouts.app')
+
+@section('title') {{ l('POS Home') }} @parent @endsection
 
 @section('content')
 
 <!-- Content Header (Page header) -->
 <section class="content-header content-header-custom">
-    <h1>{{ __('home.welcome_message', ['name' => Session::get('user.first_name')]) }}
+    <h1>{{ l('Welcome :name !', ['name' => auth()->user()->full_name]) }}
     </h1>
 </section>
+
+{{--
 <!-- Main content -->
 <section class="content content-custom no-print">
     <br>
@@ -504,6 +507,9 @@
    <!-- can('dashboard.data') end -->
 </section>
 <!-- /.content -->
+--}}
+
+{{--
 <div class="modal fade payment_modal" tabindex="-1" role="dialog" 
     aria-labelledby="gridSystemModalLabel">
 </div>
@@ -511,7 +517,10 @@
 <div class="modal fade edit_payment_modal" tabindex="-1" role="dialog" 
     aria-labelledby="gridSystemModalLabel">
 </div>
+--}}
 @stop
+
+{{--
 @section('javascript')
     <script src="{{ asset('js/home.js?v=' . $asset_v) }}"></script>
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
@@ -693,4 +702,4 @@
     });
     </script>
 @endsection
-
+--}}

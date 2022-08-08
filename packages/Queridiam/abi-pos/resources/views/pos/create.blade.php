@@ -1,6 +1,6 @@
-@extends('pos::layouts.app')
+@extends('pos::layouts.app', ['pos_layout' => true])
 
-@section('title', __('sale.pos_sale'))
+@section('title') {{ l('Cash Register') }} @parent @endsection
 
 @section('content')
 <section class="content no-print">
@@ -50,7 +50,9 @@
 			</div>
 		</div>
 	</div>
+
 	@include('pos::pos.partials.pos_form_actions')
+
 	{!! Form::close() !!}
 </section>
 

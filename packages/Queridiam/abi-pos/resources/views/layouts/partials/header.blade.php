@@ -68,7 +68,7 @@
             <strong><i class="fa fa-window-close fa-lg"></i></strong>
           </button>
 
-          <a href="{ {action('SellPosController@create')} }" title="{{ l('POS Interface') }}" data-toggle="tooltip" data-placement="bottom" class="btn btn-flat pull-left m-8 btn-sm mt-10 btn-success">
+          <a href="{{ route('pos::interface') }}" title="{{ l('POS Interface') }}" data-toggle="tooltip" data-placement="bottom" class="btn btn-flat pull-left m-8 btn-sm mt-10 btn-success">
             <strong><i class="fa fa-th-large"></i> &nbsp; {{ l('POS') }}</strong>
           </a>
 

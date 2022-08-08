@@ -18,6 +18,8 @@ class POSHomeController extends Controller
 
    public function index()
    {
-        return 'Hello motto!';
+        return view('pos::home.index');
+
+        return view('home.index', compact('sells_chart_1', 'sells_chart_2', 'widgets', 'all_locations', 'common_settings', 'is_admin'));
    }
 }

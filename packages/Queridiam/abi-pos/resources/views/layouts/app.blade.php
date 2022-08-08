@@ -1,4 +1,4 @@
-
+{{--
 @inject('request', 'Illuminate\Http\Request')
 
 @if($request->segment(2) == 'pos' && ($request->segment(3) == 'interface' || $request->segment(4) == 'edit'))
@@ -10,6 +10,11 @@
         $pos_layout = false;
     @endphp
 @endif
+--}}
+
+@php
+    $pos_layout = $pos_layout ?? false;
+@endphp
 
 @php
     $whitelist = ['127.0.0.1', '::1'];

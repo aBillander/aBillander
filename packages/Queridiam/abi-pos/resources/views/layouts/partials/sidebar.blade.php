@@ -11,7 +11,9 @@
     <!-- Sidebar Menu -->
 
 <ul class="sidebar-menu tree" data-widget="tree">
-<li class="active"><a href="http://localhost/upos/public/home"><i class="fa fas fa-tachometer-alt"></i> <span>Home</span></a></li>
+<li @if ( Route::currentRouteName() == 'pos::home' ) class="active" @endif >
+    <a href="{{ route('pos::home') }}"><i class="fa fas fa-tachometer-alt"></i> <span>{{ l('Home', 'pos/sidebar') }}</span></a>
+</li>
 
 {{--
 <li class="treeview">
@@ -81,9 +83,16 @@
                 </li>
 --}}
 
-<li class="treeview" id="tour_step7">
+<li class="treeview 
+@if ( 
+        ( Route::currentRouteName() == 'pos::dashboard' ) ||
+        ( Route::currentRouteName() == 'pos::interface' ) 
+    ) 
+        active 
+@endif 
+                  " id="tour_step7">
                   <a href="#">
-                    <i class="fa fas fa-arrow-circle-up"></i> <span>Sell</span>
+                    <i class="fa fas fa-arrow-circle-up"></i> <span>{{ l('POS', 'pos/sidebar') }}</span>
                     <span class="pull-right-container">
                       <i class="fa fa-angle-left pull-right"></i>
                     </span>
@@ -95,8 +104,18 @@
 <li><a href="http://localhost/upos/public/sells/create"><i class="fa fas fa-plus-circle"></i> <span>Add Sale</span></a></li>
 --}}
 
-<li><a href="http://localhost/upos/public/pos"><i class="fa fas fa-list"></i> <span>List POS</span></a></li>
-<li><a href="{{ route('pos::interface') }}"><i class="fa fas fa-plus-circle"></i> <span>POS</span></a></li>
+<li @if ( Route::currentRouteName() == 'pos::dashboard' ) class="active" @endif >
+    <a href="{{ route('pos::dashboard') }}"><i class="fa fas fa-list"></i> <span>{{ l('POS Dashboard', 'pos/sidebar') }}</span></a>
+</li>
+<li>
+    <a href="{{ route('pos::interface') }}"><i class="fa fas fa-plus-circle"></i> <span>{{ l('POS Interface', 'pos/sidebar') }}</span></a>
+</li>
+<li>
+    <a href="{{ route('pos::interface') }}"><i class="fa fas fa-plus-circle"></i> <span>{{ l('POS Orders', 'pos/sidebar') }}</span></a>
+</li>
+<li>
+    <a href="{{ route('pos::interface') }}"><i class="fa fas fa-plus-circle"></i> <span>{{ l('POS Sesions', 'pos/sidebar') }}</span></a>
+</li>
 
 {{--
 <li><a href="http://localhost/upos/public/sells/create?status=draft"><i class="fa fas fa-plus-circle"></i> <span>Add Draft</span></a></li>

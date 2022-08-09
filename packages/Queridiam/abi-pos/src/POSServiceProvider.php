@@ -5,6 +5,7 @@ namespace Queridiam\POS;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 
 use Queridiam\POS\Http\Middleware\SetPosContextMiddleware;
@@ -124,6 +125,17 @@ class POSServiceProvider extends IlluminateServiceProvider
             }
         );
 -- */
+
+        //Blade directive to display help text.
+        Blade::directive('show_tooltip', function ($message) {
+            return "<?php
+                if(1||session('business.enable_tooltip')){
+                    echo '<i class=\"fa fa-info-circle text-info hover-q no-print \" aria-hidden=\"true\" 
+                    data-container=\"body\" data-toggle=\"popover\" data-placement=\"auto bottom\" 
+                    data-content=\"' . $message . '\" data-html=\"true\" data-trigger=\"hover\"></i>';
+                }
+                ?>";
+        });
 
     }
 

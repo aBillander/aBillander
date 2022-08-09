@@ -2,10 +2,10 @@
 	<div class="col-md-12">
 		<table class="table table-condensed">
 			<tr>
-				<td><b>@lang('sale.item'):</b>&nbsp;
+				<td><b>{{ l('Items') }}:</b>&nbsp;
 					<span class="total_quantity">0</span></td>
 				<td>
-					<b>@lang('sale.total'):</b> &nbsp;
+					<b>{{ l('Total') }}:</b> &nbsp;
 					<span class="price_total">0</span>
 				</td>
 			</tr>
@@ -13,17 +13,16 @@
 				<td>
 					<b>
 						@if($is_discount_enabled)
-							@lang('sale.discount')
-							@show_tooltip(__('tooltip.sale_discount'))
+							{{ l('Discount') }}
+							@show_tooltip( l('Add/Edit Discount.') )
 						@endif
 						@if($is_rp_enabled)
-							{{session('business.rp_name')}}
+							{{session('business.rp_name')}} {{-- reward_point --}}
 						@endif
 						@if($is_discount_enabled)
 							(-):
-							@if($edit_discount)
-							<i class="fas fa-edit cursor-pointer" id="pos-edit-discount" title="@lang('sale.edit_discount')" aria-hidden="true" data-toggle="modal" data-target="#posEditDiscountModal"></i>
-							@endif
+
+							<i class="fas fa-edit cursor-pointer" id="pos-edit-discount" title="{{ l('Edit Discount') }}" aria-hidden="true" data-toggle="modal" data-target="#posEditDiscountModal"></i>
 						
 							<span id="total_discount">0</span>
 						@endif
@@ -38,10 +37,10 @@
 							</span>
 					</b> 
 				</td>
-				<td class="@if($pos_settings['disable_order_tax'] != 0) hide @endif">
+				<td class="">
 					<span>
-						<b>@lang('sale.order_tax')(+): @show_tooltip(__('tooltip.sale_tax'))</b>
-						<i class="fas fa-edit cursor-pointer" title="@lang('sale.edit_order_tax')" aria-hidden="true" data-toggle="modal" data-target="#posEditOrderTaxModal" id="pos-edit-tax" ></i> 
+						<b>{{ l('Taxes') }}(+): @show_tooltip( l('Click on the edit icon below to add/update Order Tax.'))</b>
+						<i class="fas fa-edit cursor-pointer" title="{ l('Edit Taxes') }}" aria-hidden="true" data-toggle="modal" data-target="#posEditOrderTaxModal" id="pos-edit-tax" ></i> 
 						<span id="order_tax">
 							@if(empty($edit))
 								0
@@ -63,9 +62,10 @@
 				<td>
 					<span>
 
-						<b>@lang('sale.shipping')(+): @show_tooltip(__('tooltip.shipping'))</b> 
-						<i class="fas fa-edit cursor-pointer"  title="@lang('sale.shipping')" aria-hidden="true" data-toggle="modal" data-target="#posShippingModal"></i>
+						<b>{{ l('Shipping') }}(+): @show_tooltip( l('Set Shipping Details and Shipping Charges. Click on the edit icon below to add/edit Shipping Details and Charges.') )</b> 
+						<i class="fas fa-edit cursor-pointer"  title="{{ l('Shipping') }}" aria-hidden="true" data-toggle="modal" data-target="#posShippingModal"></i>
 						<span id="shipping_charges_amount">0</span>
+
 						<input type="hidden" name="shipping_details" id="shipping_details" value="@if(empty($edit)){{''}}@else{{$transaction->shipping_details}}@endif" data-default="">
 
 						<input type="hidden" name="shipping_address" id="shipping_address" value="@if(empty($edit)){{''}}@else{{$transaction->shipping_address}}@endif">
@@ -77,18 +77,18 @@
 						<input type="hidden" name="shipping_charges" id="shipping_charges" value="@ if(empty($edit)){ {@ num_format(0.00)}} @ else{ {@ num_format($transaction->shipping_charges)}} @ endif" data-default="0.00">
 					</span>
 				</td>
-				@if(in_array('types_of_service', $enabled_modules))
+				@if(1||in_array('types_of_service', $enabled_modules))
 					<td class="col-sm-3 col-xs-6 d-inline-table">
-						<b>@lang('lang_v1.packing_charge')(+):</b>
+						<b>{{ l('Packing Charge') }}(+):</b>
 						<i class="fas fa-edit cursor-pointer service_modal_btn"></i> 
 						<span id="packing_charge_text">
 							0
 						</span>
 					</td>
 				@endif
-				@if(!empty($pos_settings['amount_rounding_method']) && $pos_settings['amount_rounding_method'] > 0)
+				@if(1||!empty($pos_settings['amount_rounding_method']) && $pos_settings['amount_rounding_method'] > 0)
 				<td>
-					<b id="round_off">@lang('lang_v1.round_off'):</b> <span id="round_off_text">0</span>								
+					<b id="round_off">{{ l('Round Off') }}:</b> <span id="round_off_text">0</span>								
 					<input type="hidden" name="round_off_amount" id="round_off_amount" value=0>
 				</td>
 				@endif

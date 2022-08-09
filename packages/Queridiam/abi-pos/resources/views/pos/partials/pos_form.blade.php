@@ -30,20 +30,21 @@
 		<div class="form-group">
 			<div class="input-group">
 				<div class="input-group-btn">
-					<button type="button" class="btn btn-default bg-white btn-flat" data-toggle="modal" data-target="#configure_search_modal" title="{{__('lang_v1.configure_product_search')}}"><i class="fas fa-search-plus"></i></button>
+					<button type="button" class="btn btn-default bg-white btn-flat" data-toggle="modal" data-target="#configure_search_modal" title="{{ l('Configure Product search') }}"><i class="fas fa-search-plus"></i></button>
 				</div>
-				{!! Form::text('search_product', null, ['class' => 'form-control mousetrap', 'id' => 'search_product', 'placeholder' => __('lang_v1.search_product_placeholder'),
+				{!! Form::text('search_product', null, ['class' => 'form-control mousetrap', 'id' => 'search_product', 'placeholder' => l('Enter Product Name / SKU / Barcode'),
 				'disabled' => isset($default_location)? true : false,
 				'autofocus' => isset($default_location)? false : true,
 				]); !!}
 				<span class="input-group-btn">
 
+{{--
 					<!-- Show button for weighing scale modal -->
 					@if(isset($pos_settings['enable_weighing_scale']) && $pos_settings['enable_weighing_scale'] == 1)
 						<button type="button" class="btn btn-default bg-white btn-flat" id="weighing_scale_btn" data-toggle="modal" data-target="#weighing_scale_modal" 
 						title="@lang('lang_v1.weighing_scale')"><i class="fa fa-digital-tachograph text-primary fa-lg"></i></button>
 					@endif
-					
+--}}					
 
 					<button type="button" class="btn btn-default bg-white btn-flat pos_add_quick_product" data-href="{ {action('ProductController@quickAdd')} }" data-container=".quick_add_product_modal"><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
 				</span>
@@ -52,28 +53,33 @@
 	</div>
 </div>
 <div class="row">
-	@if(!empty($pos_settings['show_invoice_layout']))
+
+@if(0)
+
+	@if(1||!empty($pos_settings['show_invoice_layout']))
 	<div class="col-md-4">
 		<div class="form-group">
 		{!! Form::select('invoice_layout_id', 
-					$invoice_layouts, $default_location->invoice_layout_id, ['class' => 'form-control select2', 'placeholder' => __('lang_v1.select_invoice_layout'), 'id' => 'invoice_layout_id']); !!}
+					$invoice_layouts=[], $default_location->invoice_layout_id ?? 0, ['class' => 'form-control select2', 'placeholder' => __('lang_v1.select_invoice_layout'), 'id' => 'invoice_layout_id']); !!}
 		</div>
 	</div>
 	@endif
+
 	<input type="hidden" name="pay_term_number" id="pay_term_number" value="{{$walk_in_customer['pay_term_number'] ?? ''}}">
 	<input type="hidden" name="pay_term_type" id="pay_term_type" value="{{$walk_in_customer['pay_term_type'] ?? ''}}">
 	
-	@if(!empty($commission_agent))
+	@if(1||!empty($commission_agent))
 		@php
 			$is_commission_agent_required = !empty($pos_settings['is_commission_agent_required']);
 		@endphp
 		<div class="col-md-4">
 			<div class="form-group">
 			{!! Form::select('commission_agent', 
-						$commission_agent, null, ['class' => 'form-control select2', 'placeholder' => __('lang_v1.commission_agent'), 'id' => 'commission_agent', 'required' => $is_commission_agent_required]); !!}
+						$commission_agent=[], null, ['class' => 'form-control select2', 'placeholder' => __('lang_v1.commission_agent'), 'id' => 'commission_agent', 'required' => $is_commission_agent_required]); !!}
 			</div>
 		</div>
 	@endif
+
 	@if(!empty($pos_settings['enable_transaction_date']))
 		<div class="col-md-4 col-sm-6">
 			<div class="form-group">
@@ -81,11 +87,13 @@
 					<span class="input-group-addon">
 						<i class="fa fa-calendar"></i>
 					</span>
-					{!! Form::text('transaction_date', $default_datetime, ['class' => 'form-control', 'readonly', 'required', 'id' => 'transaction_date']); !!}
+					{!! Form::text('transaction_date', $default_datetime??'--', ['class' => 'form-control', 'readonly', 'required', 'id' => 'transaction_date']); !!}
 				</div>
 			</div>
 		</div>
 	@endif
+
+{{--
 	@if(config('constants.enable_sell_in_diff_currency') == true)
 		<div class="col-md-4 col-sm-6">
 			<div class="form-group">
@@ -98,6 +106,8 @@
 			</div>
 		</div>
 	@endif
+--}}
+
 	@if(!empty($price_groups) && count($price_groups) > 1)
 		<div class="col-md-4 col-sm-6">
 			<div class="form-group">
@@ -127,14 +137,14 @@
 		{!! Form::hidden('default_price_group', $default_price_group_id, ['id' => 'default_price_group']) !!}
 	@endif
 
-	@if(in_array('types_of_service', $enabled_modules) && !empty($types_of_service))
+	@if(1||in_array('types_of_service', $enabled_modules) && !empty($types_of_service=[]))
 		<div class="col-md-4 col-sm-6">
 			<div class="form-group">
 				<div class="input-group">
 					<span class="input-group-addon">
 						<i class="fa fa-external-link-square-alt text-primary service_modal_btn"></i>
 					</span>
-					{!! Form::select('types_of_service_id', $types_of_service, null, ['class' => 'form-control', 'id' => 'types_of_service_id', 'style' => 'width: 100%;', 'placeholder' => __('lang_v1.select_types_of_service')]); !!}
+					{!! Form::select('types_of_service_id', $types_of_service=[], null, ['class' => 'form-control', 'id' => 'types_of_service_id', 'style' => 'width: 100%;', 'placeholder' => __('lang_v1.select_types_of_service')]); !!}
 
 					{!! Form::hidden('types_of_service_price_group', null, ['id' => 'types_of_service_price_group']) !!}
 
@@ -148,13 +158,17 @@
 		<div class="modal fade types_of_service_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel"></div>
 	@endif
 
-	@if(!empty($pos_settings['show_invoice_scheme']))
+	@if(1||!empty($pos_settings['show_invoice_scheme']))
 		<div class="col-md-4 col-sm-6">
 			<div class="form-group">
-				{!! Form::select('invoice_scheme_id', $invoice_schemes, $default_invoice_schemes->id, ['class' => 'form-control', 'placeholder' => __('lang_v1.select_invoice_scheme')]); !!}
+				{!! Form::select('invoice_scheme_id', $invoice_schemes=[], $default_invoice_schemes->id??0, ['class' => 'form-control', 'placeholder' => __('lang_v1.select_invoice_scheme')]); !!}
 			</div>
 		</div>
 	@endif
+
+@endif
+
+{{--
 	@if(in_array('subscription', $enabled_modules))
 		<div class="col-md-4 col-sm-6">
 			<label>
@@ -169,8 +183,10 @@
       		<div class="col-md-3"></div>
     	</span>
     @endif
-    
+--}}
+
 </div>
+
 <!-- include module fields -->
 @if(!empty($pos_module_data))
     @foreach($pos_module_data as $key => $value)
@@ -179,6 +195,7 @@
         @endif
     @endforeach
 @endif
+
 <div class="row">
 	<div class="col-sm-12 pos_product_div">
 		<input type="hidden" name="sell_price_tax" id="sell_price_tax" value="{ {$business_details->sell_price_tax} }">
@@ -195,22 +212,22 @@
 		<table class="table table-condensed table-bordered table-striped table-responsive" id="pos_table">
 			<thead>
 				<tr>
-					<th class="tex-center @if(!empty($pos_settings['inline_service_staff'])) col-md-3 @else col-md-4 @endif">	
-						@lang('sale.product') @show_tooltip(__('lang_v1.tooltip_sell_product_column'))
+					<th class="tex-center @if(!empty($line_discount)) col-md-3 @else col-md-4 @endif">	
+						{{ l('Product') }} @show_tooltip( l('Click <i>product name</i> to edit price, discount & tax. <br/>Click <i>Comment Icon</i> to enter serial number / IMEI or additional note.<br/><br/>Click <i>Modifier Icon</i>(if enabled) for modifiers') )
 					</th>
 					<th class="text-center col-md-3">
-						@lang('sale.qty')
+						{{ l('Quantity') }}
 					</th>
-					@if(!empty($pos_settings['inline_service_staff']))
+					@if(!empty($line_discount))
 						<th class="text-center col-md-2">
 							@lang('restaurant.service_staff')
 						</th>
 					@endif
-					<th class="text-center col-md-2 {{$hide_tax}}">
-						@lang('sale.price_inc_tax')
+					<th class="text-center col-md-2">
+						{{ l('Price (tax inc.)') }} 
 					</th>
 					<th class="text-center col-md-2">
-						@lang('sale.subtotal')
+						{{ l('Subtotal') }} @show_tooltip( l('Taxes included') )
 					</th>
 					<th class="text-center"><i class="fas fa-times" aria-hidden="true"></i></th>
 				</tr>

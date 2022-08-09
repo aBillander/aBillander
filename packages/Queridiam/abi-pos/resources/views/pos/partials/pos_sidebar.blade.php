@@ -4,11 +4,11 @@
 @endif
 </div>
 <div class="row">
-	@if(!empty($categories))
+	@if(1||!empty($categories))
 		<div class="col-md-4" id="product_category_div">
 			<select class="select2" id="product_category" style="width:100% !important">
 
-				<option value="all">@lang('lang_v1.all_category')</option>
+				<option value="all">{{ l('All Categories') }}</option>
 
 				@foreach($categories as $category)
 					<option value="{{$category['id']}}">{{$category['name']}}</option>

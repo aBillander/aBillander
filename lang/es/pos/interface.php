@@ -48,6 +48,31 @@ return [
 	*/
 
 	'Enter Customer name / phone' => 'Introduzca el Nombre / Teléfono de un Cliente',
+	"Configure Product search" => "Configurar la búsqueda de Productos",
+	"Enter Product Name / SKU / Barcode" => "Introduzca el Nombre del Producto / SKU / Código de Barras",
+
+	'Product'     => 'Producto',
+	'Click <i>product name</i> to edit price, discount & tax. <br/>Click <i>Comment Icon</i> to enter serial number / IMEI or additional note.<br/><br/>Click <i>Modifier Icon</i>(if enabled) for modifiers' => 'Hacer clic <i>product name</i> para editar precio, descuento e impuestos. <br/>Hacer clic <i>Icono de comentario</i> para ingresar el número de serie / IMEI o nota adicional.<br/><br/>Hacer clic <i>Icono modificador</i>(si está habilitado) para modificadores',
+	'Quantity'     => 'Cantidad',
+	'Price (tax inc.)'     => 'PVP',
+	'Subtotal'     => 'Subtotal',
+	'Taxes included'     => 'Con los Impuestos incluidos',
+
+	'Items'     => 'Artículos',
+	'Total'     => 'Total',
+	'Discount'     => 'Descuento',
+	"Add/Edit Discount." => "Añadir / Modificar el Descuento.",
+	"Edit Discount" => "Modificar Descuento",
+	"Taxes" => "Impuestos",
+	"Edit Taxes" => "Modificar Impuestos",
+	"Click on the edit icon below to add/update Order Tax." => "Haga clic en el icono de editar a continuación para agregar / actualizar el impuesto a la orden.",
+	"Shipping"=>"Envío",
+	"Shipping Details"=>"Detalles del Envío",
+	"Shipping Charges"=>"Gastos de Envío",
+	'Set Shipping Details and Shipping Charges. Click on the edit icon below to add/edit Shipping Details and Charges.'     => 'Establecezca Detalles del Envío y Gastos de Envío. Haga clic en el ícono de edición a continuación para agregar/modificar los Detalles del envío y Gastos.',
+
+	"Packing Charge"=>"Embalaje",
+	"Round Off" => "Redondeo",
 	''     => '',
 
 	/*
@@ -59,6 +84,12 @@ return [
 	|
 	*/
 
+	'All Brands' => 'Todas las Marcas',
+	'All Categories' => 'Todas las Categorías',
+	"No Products to display" => "No hay Productos para mostrar",
+	''     => '',
+	''     => '',
+	''     => '',
 	''     => '',
 
 	/*

@@ -35,7 +35,7 @@
 	<input type="hidden" id="no_products_found">
 	<div class="col-md-12">
 		<h4 class="text-center">
-			@lang('lang_v1.no_products_to_display')
+			{{ l('No Products to display', 'pos/interface') }}
 		</h4>
 	</div>
 @endforelse

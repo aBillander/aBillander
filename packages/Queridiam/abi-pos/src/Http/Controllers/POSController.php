@@ -116,7 +116,9 @@ class POSController extends Controller
             'cancelled' => __('restaurant.cancelled')
         ];       // $this->transactionUtil->shipping_statuses();
 
-        $brands = ['all' => __('lang_v1.all_brands')];
+        $brands = ['all' => l('All Brands', 'pos/interface')];
+
+        $categories = [];
 
         return view('pos::pos.create')
             ->with(compact(
@@ -128,6 +130,7 @@ class POSController extends Controller
                 'payment_types',
                 'change_return',
                 'shipping_statuses',
+                'categories',
                 'brands'
             ));
 
@@ -194,7 +197,7 @@ class POSController extends Controller
         //If brands, category are enabled then send else false.
         $categories = (request()->session()->get('business.enable_category') == 1) ? Category::catAndSubCategories($business_id) : false;
         $brands = (request()->session()->get('business.enable_brand') == 1) ? Brands::forDropdown($business_id)
-                    ->prepend(__('lang_v1.all_brands'), 'all') : false;
+                    ->prepend( l('All Brands', 'pos/interface'), 'all' ) : false;
 
         $change_return = $this->dummyPaymentLine;
 

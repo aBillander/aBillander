@@ -52,6 +52,13 @@ Route::group($posGroup, function () {
         abi_r('Hello world of POS!'.' - '.route('pos::welcome').' - '.asset(''));
     })->name('welcome');
 
+    Route::get('test', function () {
+        $v = \Queridiam\POS\Models\SellingLocation::find(2);
+
+        abi_r($v->address);
+        abi_r($v->cashregisters);
+    });
+
 });
 
 // https://www.youtube.com/watch?v=PqAaBo_I_a4
@@ -108,6 +115,8 @@ Route::group($posGroup, function ()
 {
     Route::group(['middleware' => ['web', 'auth:cashier', 'context', 'poscontext:cashier']], function ()
     {
+
+        Route::get('/', 'POSHomeController@index')->name('home');
 
         Route::get('/home', 'POSHomeController@index')->name('home');
 /*

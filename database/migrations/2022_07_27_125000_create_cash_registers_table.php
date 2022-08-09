@@ -22,6 +22,12 @@ return new class extends Migration
             $table->string('barcode', 180)->nullable();
             $table->text('description')->nullable();
 
+            // Inherited from Selling Location
+            $table->text('cash_denominations')->nullable();    // Comma/semicolon separated values. Example: 100,200,500,2000 or 0,01;0,02;0,05;... or 0.01;0.02;0.05;...
+
+            // Inherited from Selling Location
+            $table->text('allowed_payment_methods')->nullable();    // JSON
+
             $table->tinyInteger('active')->default(1);
             $table->string('status', 32)->nullable(false)->default('regular');   // 'regular', 'decommissioned', '?'
 //          ^--Cash Register is open if it has an open CashRegisterJournal; otherwise is closed
@@ -42,12 +48,19 @@ return new class extends Migration
 //            ^-- A cash register should has a CashierUser assigned in order to open, manage and close it. Otherwise cash register cannot be operated after any CashierUser login. Relation is stablished on Cashier User, since a Cashier User has one Cash Register after login (for now...)
 
             $table->integer('currency_id')->unsigned()->nullable(false);
-            $table->text('cash_denomination_set_id')->nullable();
+//            $table->text('cash_denomination_set_id')->nullable();
+            $table->integer('counter_sale_sequence_id')->unsigned()->nullable(false);
+            $table->integer('counter_sale_template_id')->unsigned()->nullable(false);
+            $table->integer('invoice_sequence_id')->unsigned()->nullable(false);
+            $table->integer('invoice_template_id')->unsigned()->nullable(false);
             $table->integer('price_list_id')->unsigned()->nullable();
 //          ^-- If null, use Product record value, or Customer Price List; 
-//              otherwise, use this Price List, or Customer Price List 
+//              otherwise, use this Price List, or Customer Price List
             $table->integer('warehouse_id')->unsigned()->nullable(false);
-            $table->integer('selling_location_id')->unsigned()->nullable(); // Store, outlet, etc., with address and maybe local settings
+
+            $table->integer('selling_location_id')->unsigned()->nullable(false); // Store, outlet, etc., with address and maybe local settings. Useful for taking default values for all Cash Registers in the same location.
+
+            $table->integer('open_cash_register_session_id')->unsigned()->nullable();    // When not null, an open cash register Sesion is available. Prevent "left behind open sessions"
 
             $table->timestamps();
             $table->softDeletes();

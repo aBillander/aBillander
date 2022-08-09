@@ -24,7 +24,7 @@ class CreateCashierUsersTable extends Migration
 //            $table->string('home_page', 128)->nullable();       // Redirect after login to route_home
             $table->string('firstname', 32)->nullable();
             $table->string('lastname', 32)->nullable();
-//            $table->string('timezone', 32)->nullable();
+//            $table->string('timezone', 32)->nullable();   <= timezone is a property of Cash Register, not of the employee who use it!
 
             $table->rememberToken();
 

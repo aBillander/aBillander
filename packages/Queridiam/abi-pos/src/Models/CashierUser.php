@@ -177,4 +177,10 @@ class CashierUser extends Authenticatable
     {
         return $this->belongsTo(SalesRep::class, 'sales_rep_id');
     }
+
+
+    public function cashregistersessions() 
+    {
+        return $this->hasMany(CashRegisterSession::class, 'cashier_user_id');
+    }
 }

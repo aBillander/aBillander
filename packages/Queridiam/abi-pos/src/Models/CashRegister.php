@@ -2,11 +2,14 @@
 
 namespace Queridiam\POS\Models;
 
+use App\Models\Currency;
+use App\Models\PriceList;
+use App\Models\Sequence;
+use App\Models\Template;
+use App\Models\Warehouse;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-use App\Models\Currency;
 
 class CashRegister extends Model
 {
@@ -23,10 +26,14 @@ class CashRegister extends Model
 
     protected $appends = ['full_name'];
     
-    protected $fillable = [ 'alias', 'name', 'reference', 'barcode', 
-                            'description', 'location',      //  location    varchar(64)
+    protected $fillable = [ 'alias', 'name', 'reference', 'barcode', 'description', 
+                            'cash_denominations', 'allowed_payment_methods', 
+                            'active', 'status', 'location', 
                             'active', 'status', 
-                            'currency_id', 'cash_denomination_set_id', 'price_list_id', 'warehouse_id', 'selling_location_id', 
+                            'currency_id', // 'cash_denomination_set_id', 
+                            'counter_sale_sequence_id', 'counter_sale_template_id', 'invoice_sequence_id', 'invoice_template_id', 
+                            'price_list_id', 'warehouse_id', 'selling_location_id', 
+                            'cash_register_session_id', 
                           ];
 
     public static $rules = [
@@ -102,5 +109,49 @@ class CashRegister extends Model
     public function currency()
     {
         return $this->belongsTo(Currency::class);
+    }
+
+    public function pricelist()
+    {
+        return $this->belongsTo(PriceList::class, 'price_list_id');
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
+    }
+
+    public function sellinglocation()
+    {
+        return $this->belongsTo(SellingLocation::class, 'selling_location_id');
+    }
+
+
+
+    public function countersalesequence() 
+    {
+        return $this->belongsTo(Sequence::class, 'counter_sale_sequence_id');
+    }
+
+    public function countersaletemplate() 
+    {
+        return $this->belongsTo(Template::class, 'counter_sale_template_id');
+    }
+
+
+    public function invoicesequence() 
+    {
+        return $this->belongsTo(Sequence::class, 'invoice_sequence_id');
+    }
+
+    public function invoicetemplate() 
+    {
+        return $this->belongsTo(Template::class, 'invoice_template_id');
+    }
+
+
+    public function cashregistersessions() 
+    {
+        return $this->hasMany(CashRegisterSession::class, 'cash_register_id');
     }
 }

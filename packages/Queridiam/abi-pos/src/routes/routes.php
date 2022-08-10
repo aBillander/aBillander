@@ -149,6 +149,12 @@ Route::group($posGroup, function ()
         Route::get('/get-product-suggestion', 'POSController@getProductSuggestion');
 
 
+
+        Route::get( '/account/edit', 'POSCashierUsersController@edit'  )->name('account.edit');
+        Route::post('/account',      'POSCashierUsersController@update')->name('account.update');
+        Route::post('/account/password', 'POSCashierUsersController@updatePassword')->name('account.update.assword');
+
+
     });
 
 });

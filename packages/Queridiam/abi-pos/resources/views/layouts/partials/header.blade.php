@@ -109,7 +109,7 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="{ {action('UserController@getProfile')} }" class="btn btn-default btn-flat">{{ l('My Profile') }}</a>
+                  <a href="{{ route('pos::account.edit') }}" class="btn btn-default btn-flat">{{ l('My Profile') }}</a>
                 </div>
                 <div class="pull-right">
                     <a class="btn btn-default btn-flat" 

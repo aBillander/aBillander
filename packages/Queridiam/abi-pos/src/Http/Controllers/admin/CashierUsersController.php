@@ -1,10 +1,14 @@
 <?php
 
-namespace Queridiam\POS\Http\Controllers;
+namespace Queridiam\POS\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Queridiam\POS\Models\CashRegister;
 use Illuminate\Http\Request;
+
+/*
+    aBillander Admin controllers
+*/
 
 class CashierUsersController extends Controller
 {

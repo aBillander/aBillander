@@ -41,7 +41,7 @@ class RedirectIfAuthenticated
                 
                 // Cashiers
                 if ( $guard == 'cashier' ) {
-                    return redirect()->route('pos::interface');
+                    return redirect()->route('pos::home');
                 }
                 
                 // Regular Users

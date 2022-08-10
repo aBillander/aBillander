@@ -98,8 +98,8 @@
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
               <li class="user-header">
-                @if(!empty(Session::get('business.logo')))
-                  <img src="{{ asset( 'uploads/business_logos/' . Session::get('business.logo') ) }}" alt="Logo">
+                @if(1||!empty(Session::get('business.logo')))
+                  <img src="{{ asset( 'assets/abi-pos/uploads/business_logos/' . 'cashier_user_default.jpg' ) }}" alt="Logo" style="max-width: 120px"> {{-- 260×120 --}}
                 @endif
                 <p>
                   {{ Auth::User()->firstname }} {{ Auth::User()->lastname }}
@@ -109,10 +109,19 @@
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="{ {action('UserController@getProfile')} }" class="btn btn-default btn-flat">@lang('lang_v1.profile')</a>
+                  <a href="{ {action('UserController@getProfile')} }" class="btn btn-default btn-flat">{{ l('My Profile') }}</a>
                 </div>
                 <div class="pull-right">
-                  <a href="{ {action('Auth\LoginController@logout')} }" class="btn btn-default btn-flat">@lang('lang_v1.sign_out')</a>
+                    <a class="btn btn-default btn-flat" 
+                        href="javascript:void(0);"
+                        onclick="event.preventDefault();
+                                 document.getElementById('cashier-logout-form').submit();">
+                        <i class="fa fa-power-off"></i> {{ l('Sign Out') }}
+                    </a>
+
+                    <form id="cashier-logout-form" action="{{ route('pos::cashier.logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form>
                 </div>
               </li>
             </ul>

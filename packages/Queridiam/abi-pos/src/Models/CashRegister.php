@@ -16,6 +16,12 @@ class CashRegister extends Model
     use HasFactory;
     use SoftDeletes;
 
+    /**
+     * Always load relations.
+     *
+     */
+    public $with = ['opensession'];
+
     public static $statuses = array(
             'regular', 
             'decommissioned',
@@ -95,6 +101,19 @@ class CashRegister extends Model
     }
 
 
+    public function getIsActiveAttribute()
+    {
+        return $this->active > 0;
+    }
+
+    // Alias
+    public function isActive()
+    {
+        // Accessor
+        return $this->is_active;
+    }
+
+
     /*
     |--------------------------------------------------------------------------
     | Relationships
@@ -153,5 +172,11 @@ class CashRegister extends Model
     public function cashregistersessions() 
     {
         return $this->hasMany(CashRegisterSession::class, 'cash_register_id');
+    }
+
+    public function opensession() 
+    {
+        return $this->belongsTo(CashRegisterSession::class, 'cash_register_session_id')
+                    ->where('close_date', NULL);
     }
 }

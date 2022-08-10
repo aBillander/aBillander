@@ -74,7 +74,7 @@ Route::group($posGroup, function ()
     {
         Route::get('/login', 'Auth\CashierLoginController@showLoginForm')->name('cashier.login');
         Route::post('/login', 'Auth\CashierLoginController@login')->name('cashier.login.submit');
-        Route::post('/logout', 'Auth\CashierLoginController@cashierLogout')->name('cashier.logout');
+//        Route::post('/logout', 'Auth\CashierLoginController@cashierLogout')->name('cashier.logout');
 
 /*
         Route::get('/register', 'Auth\CustomerRegisterController@showRegistrationForm')->name('customer.register');
@@ -105,6 +105,19 @@ Route::group($posGroup, function ()
     });
 
 });
+
+/* */
+Route::group($posGroup, function ()
+{
+    Route::group(['middleware' => ['web']], function ()         // With middleware auth:cashier will not log out the user: never reaches Auth\CashierLoginController@cashierLogout
+    // With middleware 'web' seems to work
+    {
+        Route::post('/logout', 'Auth\CashierLoginController@cashierLogout')->name('cashier.logout');
+
+    });
+
+});
+/* */
 
 
 /* ********************************************************** */

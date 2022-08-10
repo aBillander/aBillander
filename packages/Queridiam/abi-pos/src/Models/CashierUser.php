@@ -29,7 +29,7 @@ class CashierUser extends Authenticatable
      * Always load relations.
      *
      */
-//    public $with = ['customer'];
+    public $with = ['cashregister'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -95,13 +95,12 @@ class CashierUser extends Authenticatable
 
     public function getIsActiveAttribute()
     {
-        // Is Customer Active?
-        // Maybe a global scope is applied to Customers
-        if ( !$this->customer )
+        // Is Cash Register Active?
+        if ( !$this->cashregister )
             return false;
         
-        // Customer is not Active
-        if ( !$this->customer->is_active )
+        // Cash Register is not Active
+        if ( !$this->cashregister->is_active )
             return false;
         
         return $this->active > 0;

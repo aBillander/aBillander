@@ -15,6 +15,9 @@ return [
 	'POS' => 'TPV',
 	'POS Interface' => 'Pantalla TPV',
 	'Calculator' => 'Calculadora',
+
+	"My Profile" => "Mi perfil",
+	"Sign Out" => "Salir",
 	
 	'PEO' => 'Hello Cashier!',
 

@@ -2,7 +2,7 @@
 
 namespace Queridiam\POS\Http\Middleware;
 
-use App\Models\Cart;
+// use App\Models\Cart;
 use App\Models\Company;
 use App\Models\Configuration;
 use App\Models\Context;
@@ -28,12 +28,6 @@ class SetPosContextMiddleware {
 	 */
 	public function handle($request, Closure $next, $guard = null)
 	{
-        
-
-		return $next($request);
-
-
-
         if ($guard == "cashier" && Auth::guard($guard)->check())
         {
             if ( !Auth::guard($guard)->user()->isActive() )
@@ -46,14 +40,14 @@ class SetPosContextMiddleware {
         }
 
 		$cashier_user = Auth::guard($guard)->user();
-        $customer     = Auth::guard($guard)->user()->customer;
+        $cashregister = Auth::guard($guard)->user()->cashregister;
         $language     = $cashier_user->language;
 
 //        abi_r($cashier_user, true);
 
 //		 abi_r($this->customer->name_fiscal);die();
 
-		$cart = Cart::getCustomerUserCart();
+//		$cart = Cart::getCustomerUserCart();
 /*
 			Context::getContext()->user       = $user;
 			Context::getContext()->language   = $language;
@@ -67,10 +61,10 @@ class SetPosContextMiddleware {
 		// abi_r($cart->customer->name, true);
 
 		Context::getContext()->cashier_user = $cashier_user;
-		Context::getContext()->customer      = $customer;
+		Context::getContext()->cashregister  = $cashregister;
 		Context::getContext()->language      = $language;
-		Context::getContext()->currency      = $customer->currency;
-		Context::getContext()->cart          = $cart;
+		Context::getContext()->currency      = $cashregister->currency;
+//		Context::getContext()->cart          = $cart;
 
 		// abi_r($guard);die();
 

@@ -51,7 +51,7 @@ class CashierLoginController extends Controller
         if ( Configuration::get('POS_LOGIN_REDIRECT') && \Route::has(Configuration::get('POS_LOGIN_REDIRECT')) )
           return redirect()->route( Configuration::get('POS_LOGIN_REDIRECT') );
         else
-          return redirect()->route('pos::interface');
+          return redirect()->route('pos::home');
       }
 
       // if unsuccessful, then redirect back to the login with the form data
@@ -80,7 +80,7 @@ class CashierLoginController extends Controller
     public function cashierLogout()
     {
         Auth::guard('cashier')->logout();
-        return redirect('/');
+        return redirect('/pos');
     }
 
     /**

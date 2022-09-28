@@ -151,8 +151,26 @@ class WooConnector {    // extends Model {
 
 //        abi_r($filtered, true);
 
+        if ( is_array($filtered) && (reset($filtered)['value'] ?? null) )
+            return reset($filtered)['value'];
+
+        /*
+            $setting_id comes from a hardcoded array (this file, line 14)
+
+            if you disable shipping, this key
+             woocommerce_shipping_tax_class
+            is not served throu API, and reset($filtered) IS NOT an array
+        */
+
+/*
+        abi_r($setting_id);
+        abi_r($settings);
+        abi_r($filtered);
+        abi_r('', true);
+*/
+
         // Return: string or array
-        return reset($filtered)['value'];
+        return '';  // reset($filtered)['value'];
     }
 
     

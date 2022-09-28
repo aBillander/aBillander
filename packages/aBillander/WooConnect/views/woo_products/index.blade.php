@@ -99,7 +99,7 @@
 	<thead>
 		<tr>
       <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
-      <th class="text-left">{{l('SKU')}}</th>
+      <th class="text-left">{{l('SKU')}} / {{l('EAN')}}</th>
       <th colspan="2"><span style="font-weight: normal !important">{{l('Product Name')}}</span><br />{{l('Slug')}}</th>
       <th>{{l('Category')}}</th>
       <th>{{l('Type')}}</th>
@@ -123,7 +123,7 @@
       @else
       <td class="text-center warning">{!! Form::checkbox('worders[]', $product['id'], false, ['class' => 'case checkbox']) !!}</td>
       @endif
-      <td title="{{ $product['id'] }}">{{ $product["sku"] }}
+      <td title="{{ $product['id'] }}">{{ $product["sku"] }} / <br /> {{ $product["ean"] }}
               
         @if ( ($pid = $abi_product_ids[$product["sku"]]) > 0 )
                         <a class="btn btn-xs btn-warning" href="{{ route('products.edit', $pid) }}" title="{{l('Go to local Product')}}" target="_blank"><i class="fa fa-external-link"></i></a>

@@ -47,6 +47,7 @@ class WooConfigurationKeysController extends Controller {
                         'WOOC_DEF_ORDERS_SEQUENCE',
                         'WOOC_DEF_SHIPPING_TAX',
 
+                        'WOOC_PRODUCT_EAN_META',
                         'WOOC_ORDER_NIF_META',
                         'WOOC_ORDERS_PER_PAGE',
 

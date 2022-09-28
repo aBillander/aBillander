@@ -143,6 +143,9 @@
                           <li><a href="{{ route('wproducts.update.product.price', [$product->reference] ) }}"><i class="fa fa-money"></i> &nbsp;{{l('Update Price')}}</a></li>
                           <li><a href="{{ route('wproducts.update.product.key', [$product->reference, 'key' => 'name'] ) }}"><i class="fa fa-flag-o"></i> &nbsp;{{l('Update Name')}}</a></li>
                           <li><a href="{{ route('wproducts.update.product.key', [$product->reference, 'key' => 'description'] ) }}"><i class="fa fa-flag"></i> &nbsp;{{l('Update Description')}}</a></li>
+
+                          <li><a href="{{ route('wproducts.update.product.key', [$product->reference, 'key' => 'ean'] ) }}"><i class="fa fa-hand-o-up"></i> &nbsp;{{l('Update EAN')}}</a></li>
+
                           <li><a href="{{ route('wproducts.update.product.images', [$product->reference] ) }}"><i class="fa fa-image"></i> &nbsp;{{l('Update Images')}}</a></li>
                           <li class="divider"></li>
                           <li><a href="{{ route('wproducts.update.abiproduct.webshopid', [$product->reference] ) }}"><i class="fa fa-arrows-h"></i> &nbsp;{{l('Sync Webshop ID')}}</a></li>

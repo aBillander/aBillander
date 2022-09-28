@@ -264,6 +264,17 @@ class WooProductsController extends Controller
 */
 		];
 
+		if ( $key_ean = Configuration::get('WOOC_PRODUCT_EAN_META') )
+		{
+		$data['meta_data'][] =
+			[
+//				'id' => '',		// read-only
+				'key' => $key_ean,	//'_alg_ean',
+				'value' => "$abi_product->ean13",
+			];
+
+		}
+
 		// Taxes		
         // Dictionary
         $dic_taxes = json_decode(Configuration::get('WOOC_TAXES_DICTIONARY_CACHE'), true);
@@ -813,13 +824,32 @@ The image in position 0 is your featured image.
 
         $key = $request->key;
 
+        $value = $product->{$key};
+
         // Happyly update WooCommerce Names ;)
 		$data = [ 
-			$key        => $product->{$key},
+			$key        => $value,
 		];
+
+		// abi_r($data); 
+
+		if ( $key_ean = Configuration::get('WOOC_PRODUCT_EAN_META') )
+		{
+		$data['meta_data'][] =
+			[
+//				'id' => '',		// read-only
+				'key' => $key_ean,	//'_alg_ean',
+				'value' => "$product->ean13",
+			];
+
+		}
+
+		// abi_r($data); die();
 
 		// To do: catch errores
 		WooCommerce::put('products/'.$wproduct_id, $data);
+
+		// abi_r($result);die();
 
 
         return redirect()->to( route('products.edit', [$product->id]) . '#internet' )
@@ -890,7 +920,7 @@ if ( $abi_images->count() > 0 )
 
 		foreach ($abi_images as $abi_image) {
 			# code...
-			$src = \URL::to( \App\Image::pathProducts() . $abi_image->getImageFolder() . $abi_image->id . '.' . $abi_image->extension );
+			$src = \URL::to( \App\Models\Image::pathProducts() . $abi_image->getImageFolder() . $abi_image->id . '.' . $abi_image->extension );
 			// $src = 'http://abimfg.gmdistribuciones.es/tenants/abimfg/images_p/4/0/2/0/4020.JPG';
 			$data['images'][] = 
 				[

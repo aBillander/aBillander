@@ -159,10 +159,12 @@ class WooCustomersController extends Controller
 
 		$customers = collect($results);
 
+if( $customers->count() > 0 ) {
 		// Allready imported? Let's see deeply
 		$first = $customers->first()["id"];
 		$last  = $customers->last()["id"];
 
+}	// End of   if( $customers->count() > 0 )
 
 		$customers = new LengthAwarePaginator($customers, $total, $perPage, $page, ['path' => $request->url(), '
 			query' => $query]);

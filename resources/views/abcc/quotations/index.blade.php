@@ -82,12 +82,12 @@
                 @endif
             </td>
             <td>
-@if ( $order->status == 'closed' )
+@if ( $order->status == 'closed' && $order->order )
             {{ abi_date_short($order->order->document_date) }}
 @endif
             </td>
             <td>
-@if ( $order->status == 'closed' )
+@if ( $order->status == 'closed' && $order->order )
             <a href="{{ route('abcc.order.pdf',  [$order->order->id]) }}" title="{{l('Show', [], 'layouts')}}" target="_blank">{{ $order->order->document_reference }}
                 <span class="btn btn-sm btn-grey" title="{{l('PDF Export', [], 'layouts')}}"><i class="fa fa-file-pdf-o"></i></span>
             </a>

@@ -114,6 +114,16 @@
           {!! Form::hidden('invoice_to_id', null, array('id' => 'invoice_to_id')) !!}
       </div>
 
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('id_from', l('From ID', 'layouts')) !!}
+        {!! Form::text('id_from', null, array('id' => 'id_from', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-1 col-md-1 col-sm-1">
+        {!! Form::label('id_to', l('To ID', 'layouts')) !!}
+        {!! Form::text('id_to', null, array('id' => 'id_to', 'class' => 'form-control')) !!}
+    </div>
+
 
       <div class="form-group col-lg-2 col-md-2 col-sm-2">
           {!! Form::label('items_per_page', l('Items per page', 'layouts')) !!}
@@ -145,7 +155,7 @@
     <thead>
         <tr>
             <th class="text-center">{!! Form::checkbox('', null, false, ['id' => 'ckbCheckAll']) !!}</th>
-            <th class="text-left">{{ l('ID', 'layouts') }}
+            <th class="text-left">{{ l('ID', 'layouts') }} / 
 
 <a class="btn btn-xs btn-blue" href="javascript:void(0);" title="{{l('Print selected Documents', [], 'layouts')}}" onclick = "this.disabled=true;$('#form-select-documents').attr('target', '_blank');$('#form-select-documents').attr('action', '{{ route( 'customerinvoices.bulk.pdf', ['event' => 'Posted'] )}}');$('#form-select-documents').submit();return false;"><i class="fa fa-print"></i> &nbsp;{{l('Print', 'layouts')}}</a>
 
@@ -187,7 +197,7 @@
         @foreach ($documents as $document)
         <tr>
             <td class="text-center warning">{!! Form::checkbox('document_group[]', $document->id, false, ['class' => 'case xcheckbox']) !!}</td>
-            <td title="{{ $document->id }}"> 
+            <td>{{ $document->id }} / 
                 @if ($document->document_id>0)
                 {{ $document->document_reference }}
                 @else

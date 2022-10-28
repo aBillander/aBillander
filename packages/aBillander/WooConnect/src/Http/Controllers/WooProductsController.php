@@ -786,12 +786,20 @@ The image in position 0 is your featured image.
 
         $cpl_id = Configuration::getInt('WOOC_DEF_CUSTOMER_PRICE_LIST');
         $price = $product->getPriceByList( PriceList::find($cpl_id) );
-
+/*
+        abi_r($cpl_id);
+        abi_r('*****************************');
+        abi_r(PriceList::find($cpl_id));
+        abi_r('*****************************');
+        abi_r($price);
+        abi_r('*****************************');
+        abi_r($price->getPrice(), true);
+*/
         // Happyly update WooCommerce Price ;)
 		$data = [
 //		    'stock_quantity'   => $stock,		// Integer
 //		    'stock_status' => '', 	// 	string 	Controls the stock status of the product. Options: instock, outofstock, onbackorder. Default is instock.
-		    'regular_price' => $price->getPrice(),	// string
+		    'regular_price' => (string) $price->getPrice(),	// string
 		];
 
 		// To do: catch errores

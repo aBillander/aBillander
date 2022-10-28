@@ -27,7 +27,7 @@
 <div class="container">
     <div class="row">
 
-            <div class="col-lg-3 col-md-6">
+            <div class="col-lg-6 col-md-6">
             <div class="panel panel-primary">
               <div class="panel-heading">
                 <h3 class="panel-title"><i class="fa fa-money"></i> Facturas</h3>
@@ -40,21 +40,35 @@
 
                   <div class="row">
 
-    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('invoices_date_from_form', 'Fecha desde') !!}
         {!! Form::text('invoices_date_from_form', null, array('id' => 'invoices_date_from_form', 'class' => 'form-control')) !!}
     </div>
 
-    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('invoices_date_to_form', 'Fecha hasta') !!}
         {!! Form::text('invoices_date_to_form', null, array('id' => 'invoices_date_to_form', 'class' => 'form-control')) !!}
+    </div>
+
+                  <!-- /div>
+
+                  <div class="row" -->
+
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
+        {!! Form::label('invoices_id_from', l('From ID', 'layouts')) !!}
+        {!! Form::text('invoices_id_from', null, array('id' => 'invoices_id_from', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
+        {!! Form::label('invoices_id_to', l('To ID', 'layouts')) !!}
+        {!! Form::text('invoices_id_to', null, array('id' => 'invoices_id_to', 'class' => 'form-control')) !!}
     </div>
 
                   </div>
 
                   <div class="row">
 
-    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+    <div class="form-group col-lg-3 col-md-3 col-sm-3">
         {!! Form::label('invoices_report_format', 'Formato') !!}
                            <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                       data-container="body" 
@@ -64,7 +78,7 @@
         {!! Form::select('invoices_report_format', $invoices_report_formatList, 'loose', array('class' => 'form-control')) !!}
     </div>
 
-    <div class="form-group col-lg-6 col-md-6 col-sm-64 {{ $errors->has('invoices_customer_id') ? 'has-error' : '' }}">
+    <div class="form-group col-lg-6 col-md-6 col-sm-6 {{ $errors->has('invoices_customer_id') ? 'has-error' : '' }}">
        {!! Form::label('invoices_autocustomer_name', l('Customer', 'customerorders')) !!}
                  <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
                                     data-content="{{ l('Search by Name or Identification (VAT Number).', 'customerorders') }}">
@@ -211,46 +225,6 @@
     <!-- /div>< ! -- div class="row" ENDS - - >
     <div class="row" -->
 
-            <div class="col-lg-3 col-md-6">
-            <div class="panel panel-info">
-              <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-files-o"></i> Acumulados Modelo 347</h3>
-              </div>
-
-
-{!! Form::open(array('route' => 'jennifer.reports.index347', 'class' => 'form')) !!}
-
-              <div class="panel-body">
-
-                  <div class="row">
-
-    <div class="form-group col-lg-6 col-md-6 col-sm-6">
-        {!! Form::label('mod347_year', 'Año') !!}
-        {!! Form::text('mod347_year', \Carbon\Carbon::now()->year, array('id' => 'mod347_year', 'class' => 'form-control')) !!}
-    </div>
-
-    <div class="form-group col-lg-6 col-md-6 col-sm-6">
-        {!! Form::label('mod347_clave', 'Clave') !!}
-        {!! Form::select('mod347_clave', $mod347_claveList, 'B', array('class' => 'form-control')) !!}
-    </div>
-
-                  </div>
-
-              </div>
-
-               <div class="panel-footer text-right">
-                  <button class="btn btn-success" type="submit" onclick="this.disabled=false;this.form.submit();">
-                     <i class="fa fa-file-text-o"></i>
-                     &nbsp; Ver Listado
-                  </button>
-
-            </div>
-
-{!! Form::close() !!}
-
-            </div>
-            </div>
-
 
 
     </div><!-- div class="row" ENDS -->
@@ -289,6 +263,46 @@
         {!! $errors->first('balance_customer_id', '<span class="help-block">:message</span>') !!}
 
         {!! Form::hidden('balance_customer_id', null, array('id' => 'balance_customer_id')) !!}
+    </div>
+
+                  </div>
+
+              </div>
+
+               <div class="panel-footer text-right">
+                  <button class="btn btn-success" type="submit" onclick="this.disabled=false;this.form.submit();">
+                     <i class="fa fa-file-text-o"></i>
+                     &nbsp; Ver Listado
+                  </button>
+
+            </div>
+
+{!! Form::close() !!}
+
+            </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-files-o"></i> Acumulados Modelo 347</h3>
+              </div>
+
+
+{!! Form::open(array('route' => 'jennifer.reports.index347', 'class' => 'form')) !!}
+
+              <div class="panel-body">
+
+                  <div class="row">
+
+    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+        {!! Form::label('mod347_year', 'Año') !!}
+        {!! Form::text('mod347_year', \Carbon\Carbon::now()->year, array('id' => 'mod347_year', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-6 col-md-6 col-sm-6">
+        {!! Form::label('mod347_clave', 'Clave') !!}
+        {!! Form::select('mod347_clave', $mod347_claveList, 'B', array('class' => 'form-control')) !!}
     </div>
 
                   </div>

@@ -381,6 +381,8 @@ class Product extends Model {
 
     public function getQuantityOnorderAttribute()
     {
+        return 0.0; // <<== Watch out!!!
+
         // On Order by Supplier Orders
         // Document status = 'confirmed'
         $lines1 = SupplierOrderLine::
@@ -503,6 +505,8 @@ class Product extends Model {
     public function getQuantityAllocatedAttribute()
     // To Do: refactor using getAllocations()
     {
+        return 0.0; // <<== Watch out!!!
+
         $date = Configuration::get('STOCKMOVEMENTS_AFTER_DATE');
 
         try {
@@ -577,6 +581,8 @@ class Product extends Model {
 
     public function getQuantityAvailableAttribute()
     {
+        return $this->quantity_onhand;
+
         $value =      $this->quantity_onhand  
                     + $this->quantity_onorder 
                     - $this->quantity_allocated 

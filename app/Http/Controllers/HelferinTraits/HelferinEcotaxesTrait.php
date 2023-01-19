@@ -77,19 +77,50 @@ trait HelferinEcotaxesTrait
 
         $ribbon = 'fecha ' . $ribbon;
 
-        $nbr_documents = $document_class::
-                          whereHas('lines', function ($query) {
 
-                                $query->where('line_type', 'product');
-                                $query->where('ecotax_id', '>', 0);
+/*
+
+https://www.google.com/search?channel=fs&client=ubuntu&q=laravel+wherehas+timeout
+
+https://stackoverflow.com/questions/46785552/poor-wherehas-performance-in-laravel
+
+Change whereHas according to:
+
+        Replay::whereHas('players', function ($query) {
+            $query->where('battletag_name', 'test');
+        })->limit(100);
+
+
+        Replay::whereIn('id', function ($query) {
+            $query->select('replay_id')->from('players')->where('battletag_name', 'test');
+        })->limit(100);
+
+Try this package: https://github.com/biiiiiigmonster/hasin
+
+Maybe indexes:
+
+ALTER TABLE `customer_invoice_lines` ADD INDEX(`line_type`);
+
+ALTER TABLE `customer_invoice_lines` ADD INDEX(`ecotax_id`); 
+
+*/
+
+
+        // abi_r($document_class, true);   \App\Models\CustomerInvoice
+        $nbr_documents = $document_class::
+                          whereIn('id', function ($query) use ($document_model, $model) {
+
+                                $query->select( \Str::snake($document_model).'_id' )
+                                      ->from( \Str::snake(\Str::plural($model)) )
+                                      ->where('line_type', 'product')->where('ecotax_id', '>', 0);
                         })
                         ->when($date_from, function($query) use ($date_from) {
 
-                                $query->where('document_date', '>=', $date_from.' 00:00:00');
+                                $query->where('document_date', '>=', $date_from);
                         })
                         ->when($date_to, function($query) use ($date_to) {
 
-                                $query->where('document_date', '<=', $date_to.' 23:59:59');
+                                $query->where('document_date', '<=', $date_to);
                         })
 //                        ->orderBy('document_date', 'asc')
                         ->get()
@@ -101,6 +132,9 @@ trait HelferinEcotaxesTrait
         }
             echo " &nbsp; Total Facturas: ".$nbr_documents->count()."<br />";die();
 */
+
+
+        // abi_r($nbr_documents, true);
 
         // Sheet Header Report Data
         $data[] = [Context::getContext()->company->name_fiscal];

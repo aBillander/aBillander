@@ -99,17 +99,28 @@
                                 <p class="MsoNormal">Gracias y saludos,<u></u><u></u></p>
                                 <p class="MsoNormal"><u></u>&nbsp;<u></u></p>
                                 <p class="MsoNormal"><u></u>&nbsp;<u></u></p>
-                                <p class="MsoNormal">Gustavo Medina Rodriguez</p>
-                                <p class="MsoNormal">
-Distribuciones SLU</p>
-                                <p class="MsoNormal">
-Avda. Pintor Felo Monzón 32</p>
-                                <p class="MsoNormal">
-35019 Las Palmas de Gran Canaria (Las Palmas)</p>
-                                <p class="MsoNormal">
-CIF: B76260660 / Tel: 677 801 573</p>
-                                <p class="MsoNormal">
-gustavomedina@gmdistribuciones.es
+                                <p class="MsoNormal"><span style="font-size:9.0pt;font-family:&quot;Comic Sans MS&quot;;color:#1f497d">Lidia Martínez <u></u><u></u></span></p>
+                                <p class="MsoNormal"><span style="font-size:9.0pt;font-family:&quot;Comic Sans MS&quot;;color:#1f497d"><a href="https://www.google.com/maps/search/C%2F+Rodriguez+de+la+Fuente,+18+41310+Brenes,+Sevilla,+Spain?entry=gmail&amp;source=g">C/ Rodriguez de la Fuente, 18</a><u></u><u></u></span></p>
+                                <p class="MsoNormal"><span style="font-size:9.0pt;font-family:&quot;Comic Sans MS&quot;;color:#1f497d"><a href="https://www.google.com/maps/search/C%2F+Rodriguez+de+la+Fuente,+18+41310+Brenes,+Sevilla,+Spain?entry=gmail&amp;source=g">41310 Brenes, Sevilla, Spain</a><u></u><u></u></span></p>
+                                <p class="MsoNormal"><span style="font-size:9.0pt;font-family:&quot;Comic Sans MS&quot;;color:#1f497d">+ 34 692 813 253<u></u><u></u></span></p>
+                                <p class="MsoNormal"><span style="font-size:9.0pt;font-family:&quot;Comic Sans MS&quot;;color:#1f497d"><a href="http://www.laextranatural.com/" target="_blank"><span style="color:blue">www.laextranatural.com</span></a> <u></u><u></u></span></p>
+                                <p class="MsoNormal"><span style="color:#1f497d"><u></u>&nbsp;<u></u></span></p>
+                                <p class="MsoNormal"><span style="color:#1f497d"><img id="m_-2377189133069245543Imagen_x0020_1" src="{{ asset('assets/theme/images/email_company_logo.png') }}" alt="" width="306" height="79" border="0"></span><span style="color:#1f497d"><u></u><u></u></span></p>
+                                <p class="MsoNormal"><span style="color:#1f497d"><u></u>&nbsp;<u></u></span></p>
+                                <p class="MsoNormal" style="text-align:justify"><span style="font-size:8.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#1f497d">De
+                                  acuerdo con los establecido en la Ley de Protección de Datos de 
+                                  Carácter Personal, les informamos que los datos que figuran en esta 
+                                  comunicación están incluidos en un fichero automatizado propiedad de LA 
+                                  EXTRANATURAL, S.L.. Para el ejercicio de los derechos de acceso, 
+                                  rectificación, cancelación u oposición, podrán dirigirse en cualquier 
+                                  momento a dicha entidad, en el domicilio sito en <a href="https://www.google.com/maps/search/Calle+Dr+F%C3%A9lix+Rodr%C3%ADguez+de+la+Fuente,+18?entry=gmail&amp;source=g">Calle Dr Félix Rodríguez de la Fuente, 18</a>,
+                                  41.310 Brenes, Sevilla. Este documento se dirige exclusivamente a su 
+                                  destinatario. Por poder contener información confidencial sometida a 
+                                  secreto profesional o cuya divulgación esté prohibida en virtud de la 
+                                  persona autorizada por éste, que la información contenida en el mismo es
+                                  reservada y su utilización o divulgación con cualquier fin está 
+                                  prohibida. Si ha recibido este documento por error, le rogamos nos lo 
+                                  comunique a <a href="mailto:laextranatural@laextranatural.es" target="_blank">laextranatural@laextranatural.<wbr>es</a> y proceda a su destrucción.<u></u><u></u></span>
                                 </p>
                                 
                                 

@@ -475,10 +475,12 @@ foreach ($customers as $customer) {
         // Attached file stuff
         $attachment_data = $mod347->getCustomerInvoicesAttachment($customer_id);
 
+        // abi_r('*************');abi_r($attachment_data);die();
+
         // MAIL stuff
         try {
 
-            $pathToFile     = $attachment_data['full'];
+            $pathToFile     = $attachment_data;
 
             $subject = l('Informacion 347 de :year', [ 'year' => $mod347_year ]);
 

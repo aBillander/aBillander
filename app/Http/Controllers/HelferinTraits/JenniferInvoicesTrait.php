@@ -29,6 +29,14 @@ trait JenniferInvoicesTrait
         $date_to   = $request->input('invoices_date_to'  )
                      ? Carbon::createFromFormat('Y-m-d', $request->input('invoices_date_to'  ))
                      : null;
+
+        $id_from = $request->input('invoices_id_from')
+                     ? (int) $request->input('invoices_id_from')
+                     : null;
+        
+        $id_to   = $request->input('invoices_id_to'  )
+                     ? (int) $request->input('invoices_id_to'  )
+                     : null;
         
         $invoices_report_format = $request->input('invoices_report_format');
 
@@ -53,6 +61,14 @@ trait JenniferInvoicesTrait
                             ->where( function($query) use ($date_to  ){
                                         if ( $date_to   )
                                         $query->where('document_date', '<=', $date_to  ->endOfDay()  );
+                                } )
+                            ->where( function($query) use ($id_from){
+                                        if ( $id_from )
+                                        $query->where('id', '>=', $id_from);
+                                } )
+                            ->where( function($query) use ($id_to  ){
+                                        if ( $id_to   )
+                                        $query->where('id', '<=', $id_to  );
                                 } )
                             ->where( function($query) use ($customer_id){
                                         if ( $customer_id > 0 )
@@ -94,6 +110,22 @@ trait JenniferInvoicesTrait
             $ribbon = 'todas';
 
         }
+
+        $ribbon1 = '';
+
+        if ( $request->input('invoices_id_from') )
+        {
+            $ribbon1 .= ' desde id=' . $request->input('invoices_id_from');
+
+        }
+
+        if ( $request->input('invoices_id_to') )
+        {
+            $ribbon1 .= ' hasta id=' . $request->input('invoices_id_to');
+
+        }
+
+        $ribbon = $ribbon . ' ; ' . $ribbon1;
 
         $customer_ribbon = 'Clientes';
         if ( $customer_id > 0 && $documents->first() )
@@ -295,7 +327,7 @@ if ( $invoices_report_format == 'compact') {
 
         $merges = ['A1:C1', 'A2:C2'];
 
-        $sheetTitle = 'Facturas_' . $request->input('invoices_date_from') . '_' . $request->input('invoices_date_to');
+        $sheetTitle = 'Facturas_' . $request->input('invoices_date_from') . '_' . $request->input('invoices_date_to') . '-' . $request->input('invoices_id_from') . '_' . $request->input('invoices_id_to');
 
         $export = new ArrayExport($data, $styles, $sheetTitle, $columnFormats, $merges);
 

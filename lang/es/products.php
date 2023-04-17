@@ -326,6 +326,7 @@ return [
     'Update Name' => 'Actualizar Nombre',
     'Update Description' => 'Actualizar Descripción',
     'Update Name & Description' => 'Actualizar Nombre y Descripción',
+    'Update EAN' => 'Actualizar EAN',
     'Update Images' => 'Actualizar Imágenes',
 
 

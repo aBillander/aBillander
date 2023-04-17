@@ -87,7 +87,7 @@ class AssemblyOrder extends Model
     
     public static function createWithLines($data = [])
     {
-        $product = \App\Product::with('packitems')
+        $product = Product::with('packitems')
         					   ->with('packitems.product')
                                ->findOrFail( $data['product_id'] );
 

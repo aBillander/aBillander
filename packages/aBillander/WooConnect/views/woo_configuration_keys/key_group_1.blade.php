@@ -202,6 +202,20 @@
       </div>
     </div>
 
+    <div class="form-group {{ $errors->has('WOOC_PRODUCT_EAN_META') ? 'has-error' : '' }}">
+      <label for="WOOC_PRODUCT_EAN_META" class="col-lg-4 control-label">{!! l('WOOC_PRODUCT_EAN_META.name') !!}</label>
+      <div class="col-lg-8">
+        <div class="row">
+        <div class="col-lg-6">
+        <input class="form-control" type="text" id="WOOC_PRODUCT_EAN_META" name="WOOC_PRODUCT_EAN_META" placeholder="" value="{{ old('WOOC_PRODUCT_EAN_META', $key_group['WOOC_PRODUCT_EAN_META']) }}" />
+        {{ $errors->first('WOOC_PRODUCT_EAN_META', '<span class="help-block">:message</span>') }}
+        </div>
+        <div class="col-lg-6"> </div>
+        </div>
+        <span class="help-block">{!! l('WOOC_PRODUCT_EAN_META.help') !!}</span>
+      </div>
+    </div>
+
     <div class="form-group {{ $errors->has('WOOC_ORDER_NIF_META') ? 'has-error' : '' }}">
       <label for="WOOC_ORDER_NIF_META" class="col-lg-4 control-label">{!! l('WOOC_ORDER_NIF_META.name') !!}</label>
       <div class="col-lg-8">

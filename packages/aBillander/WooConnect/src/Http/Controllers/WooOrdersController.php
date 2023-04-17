@@ -145,6 +145,7 @@ class WooOrdersController extends Controller
 
 //		abi_r($results);abi_r('*************************');abi_r($orders);die();
 
+if( $orders->count() > 0 ) {
 		// Allready imported? Let's see deeply
 		$first = $orders->first()["id"];
 		$last  = $orders->last()["id"];
@@ -194,6 +195,7 @@ $orders = $orders->map(function ($order, $key) use ($abi_orders)
 });
 //		abi_r($orders, true);
 
+}	// End of   if( $orders->count() > 0 )
 
 		$orders = new LengthAwarePaginator($orders, $total, $perPage, $page, ['path' => $request->url(), 'query' => $query]);
 

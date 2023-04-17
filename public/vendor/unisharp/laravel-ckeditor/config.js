@@ -35,4 +35,17 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
+
+	// Allow **ALL** tags
+	// https://stackoverflow.com/questions/11686019/how-to-disable-ckeditor-removing-tags
+	// https://stackoverflow.com/questions/15753956/ckeditor-strips-inline-attributes
+	// 
+	// https://ckeditor.com/docs/ckeditor4/latest/guide/dev_advanced_content_filter.html
+	// https://ckeditor.com/docs/ckeditor4/latest/examples/acf.html
+	// 
+	// https://ckeditor.com/docs/ckeditor4/latest/features/colorbutton.html
+	// https://ckeditor.com/cke4/addon/colorbutton
+	config.allowedContent = true;
+	config.extraAllowedContent = '*(*);*{*}';
+	config.extraAllowedContent = 'div;span;ul;li;table;td;style;*[id];*(*);*{*}';
 };

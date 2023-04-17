@@ -323,19 +323,17 @@ class Modelo347 {
 
         } else {
             //
-            $pathToFile     = storage_path() . '/exports/' . $fileName .'.xlsx';// die($pathToFile);
+            // $pathToFile     = storage_path() . '/exports/' . $sheetFileName .'.xlsx';// die($pathToFile);
+            $pathToFile     = $sheetFileName .'.xlsx';
+
+            // abi_r($pathToFile);
 
             // return storage information
-            $storage_data = Excel::store($export, $pathToFile);
-/*
-Key     Explanation
-full    Full path with filename
-path    Path without filename
-file    Filename
-title   File title
-ext     File extension
-*/
-            return $storage_data;
+            $storage_data = Excel::store($export, $pathToFile, '1');
+
+            // abi_r($storage_data , true);
+
+            return storage_path() . '/exports/' . $pathToFile;
         }
 
 
@@ -503,7 +501,7 @@ ext     File extension
 
         } else {
             //
-            $pathToFile     = storage_path() . '/exports/' . $fileName .'.xlsx';// die($pathToFile);
+            $pathToFile     = storage_path() . '/exports/' . $sheetFileName .'.xlsx';// die($pathToFile);
 
             // return storage information
             $storage_data = Excel::store($export, $pathToFile);
@@ -774,7 +772,7 @@ ext     File extension
 
         } else {
             //
-            $pathToFile     = storage_path() . '/exports/' . $fileName .'.xlsx';// die($pathToFile);
+            $pathToFile     = storage_path() . '/exports/' . $sheetFileName .'.xlsx';// die($pathToFile);
 
             // return storage information
             $storage_data = Excel::store($export, $pathToFile);

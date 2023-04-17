@@ -62,6 +62,17 @@ GROUP BY
 Route::get('migratethis', function()
 {
 	// 2022-05-11
+	$date = '2022-09-26';
+	
+	Configuration::updateValue('WOOC_PRODUCT_EAN_META', '_alg_ean');
+
+	die('OK - '.$date);
+
+
+	/* **************************************************************** */
+
+
+	// 2022-05-11
 	$date = '2022-05-11';
 	
 	DB::statement("ALTER TABLE `password_resets` ADD `model_name` varchar(64) not null default '".addslashes(App\Models\User::class)."' AFTER `token`;");

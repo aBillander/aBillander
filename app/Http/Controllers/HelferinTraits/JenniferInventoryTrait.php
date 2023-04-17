@@ -27,6 +27,15 @@ trait JenniferInventoryTrait
         if ( !array_key_exists($valuation_method, $valuation_methodList))
             $valuation_method = array_keys($valuation_methodList)[0];     // count($arr) ? array_keys($arr)[0] : null;
 
+/*
+
+ALTER TABLE `stock_movements` ADD INDEX(`product_id`); 
+
+ALTER TABLE `stock_movements` ADD INDEX(`warehouse_id`); 
+
+OPTIMIZE TABLE `stock_movements` 
+
+*/
 
         $products = Product::
                             with('measureunit')

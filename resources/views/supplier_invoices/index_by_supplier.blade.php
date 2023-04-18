@@ -125,7 +125,7 @@
 
 <div class="form-group col-lg-2 col-md-2 col-sm-2" style="padding-top: 22px">
 {!! Form::submit(l('Filter', [], 'layouts'), array('class' => 'btn btn-success')) !!}
-{!! link_to_route('supplier.'.str_replace('supplier', '', $model_path ), l('Reset', [], 'layouts'), null, array('class' => 'btn btn-warning')) !!}
+{!! link_to_route('supplier.'.str_replace('supplier', '', $model_path ), l('Reset', [], 'layouts'), $supplier->id, array('class' => 'btn btn-warning')) !!}
 </div>
 
 </div>

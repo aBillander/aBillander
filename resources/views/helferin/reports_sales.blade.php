@@ -18,6 +18,16 @@ border-color: #772953;">
                   <div class="row">
 
     <div class="form-group col-lg-2 col-md-2 col-sm-2">
+        {!! Form::label('sales_report_layout', 'Formato') !!}
+                           <a href="javascript:void(0);" data-toggle="popover" data-placement="top" 
+                                      data-container="body" 
+                                      data-content="{{ l('El formato "Clásico" muestra la Rentabilidad de los Productos. El formato "Por Documento" contiene más columnas, y muestra la Rentabilidad total de los Documentos.') }}">
+                                  <i class="fa fa-question-circle abi-help"></i>
+                           </a>
+        {!! Form::select('sales_report_layout', $saleslayoutList, null, array('id' => 'sales_report_layout', 'class' => 'form-control')) !!}
+    </div>
+
+    <div class="form-group col-lg-2 col-md-2 col-sm-2">
         {!! Form::label('sales_date_from_form', 'Fecha desde') !!}
         {!! Form::text('sales_date_from_form', null, array('id' => 'sales_date_from_form', 'class' => 'form-control')) !!}
     </div>

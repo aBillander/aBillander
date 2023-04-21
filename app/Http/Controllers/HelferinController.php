@@ -61,7 +61,12 @@ class HelferinController extends Controller
 
         $default_model = Configuration::get('RECENT_SALES_CLASS');
 
-        return view('helferin.home', compact('modelList', 'default_model'));
+        $saleslayoutList = [
+            'classic'   => l('Clásico'),
+            'documents' => l('Por Documento'),
+        ];
+
+        return view('helferin.home', compact('modelList', 'default_model', 'saleslayoutList'));
     }
 
 

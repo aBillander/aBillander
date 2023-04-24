@@ -169,7 +169,7 @@ class ImportProductPricesController extends Controller
                     // Product
                     $product = null;
 
-                    if ( array_key_exists('id', $data) )
+                    if ( array_key_exists('id', $data) && ($data['id'] > 0) )
                         $product = $this->product->where('id', $data['id'])->first();
                     else
                     if ($data['reference'])

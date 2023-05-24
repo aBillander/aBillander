@@ -187,7 +187,7 @@
 @if ( $route = $stockmovement->getStockmovementableDocumentRoute() )
 {{-- optional(optional($stockmovement->stockmovementable)->document)->id --} }
         <!-- a href="{{ route($route.'.edit', ['0']).'?document_reference='.$stockmovement->document_reference }}" title="{{l('Open Document', [], 'layouts')}}" target="_new" -->  --}}
-        <a href="{{ route($route.'.edit', [optional(optional($stockmovement->stockmovementable)->document)->id]) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $stockmovement->document_reference }}</a>
+        <a href="{{ route($route.'.edit', [optional(optional($stockmovement->stockmovementable)->document)->id ?? '0']) }}" title="{{l('Go to', [], 'layouts')}}" target="_new">{{ $stockmovement->document_reference }}</a>
     @if ( !optional(optional($stockmovement->stockmovementable)->document)->id ) 
         <i class="fa fa-exclamation-triangle btn-xs btn-danger" title="{{l('Document ID not found', 'layouts')}}"></i>
     @endif

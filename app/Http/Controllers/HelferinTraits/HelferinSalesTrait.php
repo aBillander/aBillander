@@ -40,11 +40,11 @@ trait HelferinSalesTrait
 
         $customer_id = $request->input('sales_customer_id', null);
 
-/*
-        $date_from = Carbon::createFromFormat('Y-m-d', '2022-04-01')->startOfDay();
-        $date_to   = Carbon::createFromFormat('Y-m-d', '2022-04-30')->endOfDay();
-        $customer_id = 295;
-*/
+/* * /
+        $date_from = Carbon::createFromFormat('Y-m-d', '2023-03-01')->startOfDay();
+        $date_to   = Carbon::createFromFormat('Y-m-d', '2023-03-31')->endOfDay();
+        $customer_id = 12;
+/ * */
         
         // abi_r($request->input('sales_customer_id', null));
         // abi_r($request->input('sales_date_from')); die();

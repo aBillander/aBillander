@@ -58,17 +58,44 @@ trait BillableProfitabilityTrait
 
         $total_discount_lines = $lines->sum(function ($line) {
 
-                return $line->quantity * $line->unit_final_price;
+                return (-1.0) * $line->quantity * $line->unit_final_price;
 
             });
 
         return $total_discount_lines;
     }
 
+    public function getDocumentDiscountAttribute()
+    {
+        $d = ( 1.0 - $this->document_discount_percent / 100.0 ) * ( 1.0 - $this->document_ppd_percent / 100.0 );
+
+        $document_discount = ($d != 0.0) ?
+                                $this->total_currency_tax_excl * (1.0/$d - 1.0) :
+                                0.0;
+
+        return $document_discount;
+    }
+
+    public function aux($p)
+    {
+        $p = $p/100.0;
+
+        return $p/(1.0-$p);
+    }
+
 
     public function getTotalRevenueWithDiscount()
     {
-        return ( $this->getTotalRevenue() - $this->document_total_discount_lines ) * ( 1.0 - $this->document_discount_percent / 100.0 ) * ( 1.0 - $this->document_ppd_percent / 100.0 );
+/*
+        abi_r($this->getTotalRevenue());
+        abi_r($this->document_total_discount_lines);
+        abi_r($this->getTotalRevenue() - $this->document_total_discount_lines);
+        abi_r($this->document_discount);
+        abi_r($this->getTotalRevenue() - $this->document_total_discount_lines - $this->document_discount);
+        die();
+*/
+
+        return ( $this->getTotalRevenue() - $this->document_total_discount_lines - $this->document_discount );
     }
 
     // Alias
